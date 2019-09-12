@@ -60,7 +60,7 @@ public class GA extends Plugin{
 	@Override
 	public void registerClientCommands(CommandHandler handler){
 
-		handler.<Player>register("info", "查询我的信息", (args, player) -> {
+		handler.<Player>register("info","info me.", (args, player) -> {
 			// This command must be executed on a different thread.
 			// Otherwise, the server will lag when this command is run.
 			Thread thread1 = new Thread(new Runnable() {
@@ -84,7 +84,7 @@ public class GA extends Plugin{
 			thread1.start();
 		});
 
-		handler.<Player>register("status", "查看服务器当前状态", (args, player) -> {
+		handler.<Player>register("status","查看服务器当前状态", (args, player) -> {
 			float fps = Math.round((int)60f / Time.delta());
 			float memory = Core.app.getJavaHeap() / 1024 / 1024;
 			player.sendMessage("FPS:"+fps+  "占用内存:"+memory+"MB");
@@ -106,14 +106,14 @@ public class GA extends Plugin{
 		});
 
 
-		handler.<Player>register("getpos", "查看当前坐标", (args, player) -> {
+		handler.<Player>register("getpos","查看当前坐标", (args, player) -> {
 			//player.sendMessage("X: " + Math.round(player.x) + " Y: " + Math.round(player.y));
 			player.sendMessage("[green]当前坐标是:[] X = " + Math.round(player.x/8) + "; Y = " + Math.round(player.y/8));
 		});
 
-		handler.<Player>register("tpp", "<player> <player>", "[red]Admin:[] tp到指定XY", (args, player) -> {
+		handler.<Player>register("tpp","<player> <player>","[red]Admin:[] tp到指定XY", (args, player) -> {
 			if(!player.isAdmin){
-				player.sendMessage("[green]注意:[] 你不是管理员!");
+				player.sendMessage("[green]Notice:[] You're not admin!");
 			} else {
 				try{
 					int x = Integer.parseInt(args[0])*8;
@@ -129,10 +129,10 @@ public class GA extends Plugin{
 			}
 		});
 
-		handler.<Player>register("tp", "<player...>", "[red]Admin:[] tp到指定玩家边", (args, player) -> {
+		handler.<Player>register("tp","<player...>","[red]Admin:[] tp到指定玩家边", (args, player) -> {
 			Player other = Vars.playerGroup.find(p->p.name.equalsIgnoreCase(args[0]));
 			if(!player.isAdmin){
-				player.sendMessage("[green]注意:[] 你不是管理员!");
+				player.sendMessage("[green]Notice:[] You're not admin!");
 			} else {
 				if(other == null){
 					player.sendMessage("[scarlet]名称无效!");
@@ -142,17 +142,15 @@ public class GA extends Plugin{
 			}
 		});
 
-		handler.<Player>register("suicide", "自杀", (args, player) -> {
-			if(!player.isAdmin){
+		handler.<Player>register("suicide","Kill yourself.", (args, player) -> {
 				player.onPlayerDeath(player);
-				Call.sendMessage(player.name+"[] [green]自杀[] 了.");
-			}
+				Call.sendMessage(player.name+"[] [green]suicide[] command.");
 		});
 
-		handler.<Player>register("team", "", "[red]Admin:[] 更换队伍", (args, player) ->{
+		handler.<Player>register("team","","[red]Admin:[] 更换队伍", (args, player) ->{
 			//change team
 			if(!player.isAdmin){
-				player.sendMessage("[green]注意:[] 你不是管理员!");
+				player.sendMessage("[green]Notice:[] You're not admin!");
 				} else {
 				if (!Vars.state.rules.pvp){
 					player.sendMessage("当前模式不是PVP");
@@ -174,10 +172,10 @@ public class GA extends Plugin{
 			}
 		});
 
-		handler.<Player>register("difficulty", "<difficulty>", "[red]Admin:[] ¸ü¸ÄÄÑ¶È", (args, player) -> {
+		handler.<Player>register("difficulty","<difficulty>","[red]Admin:[] ", (args, player) -> {
 			
 			if(!player.isAdmin){
-				player.sendMessage("[green]注意:[] 你不是管理员!");
+				player.sendMessage("[green]Notice:[] You're not admin!");
 			} else {
 				try{
 					Difficulty.valueOf(args[0]);
@@ -188,26 +186,25 @@ public class GA extends Plugin{
 			}
 		});
 
-		handler.<Player>register("gameover", "", "[red]Admin:[] 结束游戏", (args, player) -> {
+		handler.<Player>register("gameover","","[red]Admin:[] 结束游戏", (args, player) -> {
 			
 			if(!player.isAdmin){
-				player.sendMessage("[green]注意:[] 你不是管理员!");
+				player.sendMessage("[green]Notice:[] You're not admin!");
 			} else {
-			
+			/*
                 netServer.kickAll(KickReason.gameover);
                 state.set(State.menu);
                 net.closeServer();
-			
-			//fuck*
-			//
-			//Severcontor.java
+            */
 			}
+
 		});
 
-		handler.<Player>register("host", "<mapname> [mode]", "[red]Admin:[] ½áÊøÓÎÏ·", (args, player) -> {
+/*
+		handler.<Player>register("host","<mapname> [mode]","[red]Admin:[] ½áÊøÓÎÏ·", (args, player) -> {
 			
 			if(!player.isAdmin){
-				player.sendMessage("[green]注意:[] 你不是管理员!");
+				player.sendMessage("[green]Notice:[] You're not admin!");
 			} else {
 				if("sandbox".equalsIgnoreCase(args[1])){
 				}else if ("pvp".equalsIgnoreCase(args[1])){
@@ -257,22 +254,30 @@ public class GA extends Plugin{
 			}
 			
 		});
+		//It can be used normally. :)
+		*/
 
-		handler.<Player>register("runwave", "", "[red]Admin:[] 下一波", (args, player) -> {
+		handler.<Player>register("runwave","","[red]Admin:[] runwave.", (args, player) -> {
 			
 			if(!player.isAdmin){
-				player.sendMessage("[green]注意:[] 你不是管理员!");
+				player.sendMessage("[green]Notice:[] You're not admin!");
 			} else {
 				logic.runWave();
 			}
 		});
 
-		handler.<Player>register("time", "查看服务器当前时间", (args, player) -> {
+		handler.<Player>register("time","View the current time of the server.", (args, player) -> {
 			LocalDateTime now = LocalDateTime.now();
 			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yy-M-d a h:m.ss");
 			String nowString = now.format(dateTimeFormatter);
-			player.sendMessage("[green]服务器当前时间为[white]: "+nowString);
+			player.sendMessage("[green]The current server time is[white]: "+nowString);
 		});
+
+		handler.<Player>register("tr","<language> [Code name]","test", (args, player) -> {
+			player.sendMessage("zh-China ja-Japanese en-English ru-Russia");
+//NOT-sleep
+        	Call.sendMessage(result);
+        	});
 
 	}
 

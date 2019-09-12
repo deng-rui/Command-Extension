@@ -33,6 +33,8 @@
 - [x] time - Show server time.
 - [x] team - Set PvP team.
 - [ ] banlist - Show server ban list.
+- [x] host - host.
+- [ ] gameover - vote....
 
 ### Building a Jar
 
