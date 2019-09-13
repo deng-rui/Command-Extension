@@ -48,14 +48,18 @@ import io.anuke.mindustry.type.*;
 import static java.lang.System.out;
 import static io.anuke.mindustry.Vars.*;
 import static io.anuke.mindustry.Vars.player;
+//
 import static extension.Extend.*;
-import static extension.Tool.HttpRequest;
+import static extension.GoogleApi.*;
+import static extension.Tool.*;
 //Static
+import io.anuke.mindustry.game.Stats.*;
 
 public class Main extends Plugin{
 
 	Extend extend = new Extend ();
 	Tool tool = new Tool ();
+	GoogleApi googleApi = new GoogleApi ();
 
 	@Override
 	public void registerClientCommands(CommandHandler handler){
@@ -187,7 +191,7 @@ public class Main extends Plugin{
 		});
 		//It can be used normally. :)
 
-		handler.<Player>register("runwave","","[red]Admin:[] Runwave.", (args, player) -> {
+		handler.<Player>register("runwave","[red]Admin:[] Runwave.", (args, player) -> {
 			
 			if(!player.isAdmin){
 				player.sendMessage("[green]Careful:[] You're not admin!");
@@ -199,9 +203,8 @@ public class Main extends Plugin{
 		handler.<Player>register("time","View the current time of the server.", (args, player) -> player.sendMessage("[green]The current server time is[white]: "+extend.time()));
 
 		handler.<Player>register("tr","<language> [Output-language]","test", (args, player) -> {
-			/*
+			//No spaces are allowed in the input language:ги
 			player.sendMessage("zh-China ja-Japanese en-English ru-Russia");
-			GoogleApi googleApi = new GoogleApi();
 			try{
 				Thread.currentThread().sleep(1000);
 				}catch(InterruptedException ie){
@@ -213,8 +216,9 @@ public class Main extends Plugin{
 				}catch(Exception e){
 					return;
 				}
-				*/
+				
 			});
+
 
 	}
 

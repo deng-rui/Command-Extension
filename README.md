@@ -2,18 +2,6 @@
 
 Unfinished, plug-in borrows J-Vds and Kieaer partial algorithms
 
-## command
-/info           Query your own information
-/getpos         View the current coordinates
-/tpp            Delivery
-/tp             Delivery
-/difficulty     Setup difficulty
-/suicide        suicide
-/team           Replacement team
-/runwave        next wave
-/host           Map change
-/time           Viewing time
-
 ### Building a Jar
 
 `gradlew jar` / `./gradlew jar`

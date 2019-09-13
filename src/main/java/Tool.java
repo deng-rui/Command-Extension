@@ -5,9 +5,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.Map;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+//import org.jsoup.Jsoup;
+//import org.jsoup.nodes.Document;
 
 public class Tool {
 	public static String HttpRequest(String httpurl) {
@@ -62,5 +70,21 @@ public class Tool {
     	}else{
     		return result;
 		}
+		//Method two
+		/*
+		try{
+			Document doc = Jsoup.connect(httpurl).get();
+			String result = doc.text();
+			if (result.length() == 0) {
+    			result = "Lan IP!";
+    			return result;
+    		}else{
+    			return result;
+			}
+		} catch (Exception e){
+    			return null;
+		}
+		*/
+		
 	}
 }
