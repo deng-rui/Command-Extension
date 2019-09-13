@@ -2,7 +2,7 @@
 
 Unfinished, plug-in borrows J-Vds and Kieaer partial algorithms
 
-Commands that have been issued have been compiled, and you can compile them yourself and try to use them. ：）
+Published files have been compiled and you can compile and try to use them yourself. :)
 
 ### Building a Jar
 
