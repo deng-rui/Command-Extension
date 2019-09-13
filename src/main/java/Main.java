@@ -50,7 +50,6 @@ import static io.anuke.mindustry.Vars.*;
 import static io.anuke.mindustry.Vars.player;
 //
 import static extension.Extend.*;
-import static extension.GoogleApi.*;
 import static extension.Tool.*;
 //Static
 import io.anuke.mindustry.game.Stats.*;
@@ -59,7 +58,6 @@ public class Main extends Plugin{
 
 	Extend extend = new Extend ();
 	Tool tool = new Tool ();
-	GoogleApi googleApi = new GoogleApi ();
 
 	@Override
 	public void registerClientCommands(CommandHandler handler){
@@ -211,8 +209,8 @@ public class Main extends Plugin{
 					ie.printStackTrace();
 				}
 			try{
-				String result = googleApi.translate(args[0],args[1]);
-				Call.sendMessage(player.name+"[green] say:[]: "+result);
+				String result = tool.translate(args[0],args[1]);
+				Call.sendMessage(player.name+"[green] say[]: "+result);
 				}catch(Exception e){
 					return;
 				}
