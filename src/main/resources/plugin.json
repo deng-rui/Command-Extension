@@ -1,7 +1,7 @@
 {
-  "name": "GA",
+  "name": "Command extension",
   "author": "Dr",
-  "main": "Dr.GA",
-  "description": "NOT TAB",
-  "version": 1.0
+  "main": "extension.Main",
+  "description": "Command extension",
+  "version": 1.1
 }
