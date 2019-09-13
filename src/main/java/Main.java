@@ -87,14 +87,11 @@ public class Main extends Plugin{
 
 		handler.<Player>register("tpp","<player> <player>","[red]Admin:[] Transfer to specified coordinates", (args, player) -> {
 			if(!player.isAdmin){
-				player.sendMessage("[green]Notice:[] You're not admin!");
+				player.sendMessage("[green]Careful:[] You're not admin!");
 			} else {
 				try{
 					int x = Integer.parseInt(args[0])*8;
 					int y = Integer.parseInt(args[1])*8;
-					//strict off
-					//Call.onPositionSet(player.con.id, (float)x, (float)y);
-					//strict on + local
 					player.setNet((float)x, (float)y);
 					player.set((float)x, (float)y);
 				} catch (Exception e){
@@ -106,7 +103,7 @@ public class Main extends Plugin{
 		handler.<Player>register("tp","<player...>","[red]Admin:[] Teleport to other players", (args, player) -> {
 			Player other = Vars.playerGroup.find(p->p.name.equalsIgnoreCase(args[0]));
 			if(!player.isAdmin){
-				player.sendMessage("[green]Notice:[] You're not admin!");
+				player.sendMessage("[green]Careful:[] You're not admin!");
 			} else {
 				if(other == null){
 					player.sendMessage("[scarlet]playname command!");
@@ -124,7 +121,7 @@ public class Main extends Plugin{
 		handler.<Player>register("team","","[red]Admin:[] Replacement team", (args, player) ->{
 			//change team
 			if(!player.isAdmin){
-				player.sendMessage("[green]Notice:[] You're not admin!");
+				player.sendMessage("[green]Careful:[] You're not admin!");
 				} else {
 				if (!Vars.state.rules.pvp){
 					player.sendMessage("Patterns are not PVP");
@@ -148,7 +145,7 @@ public class Main extends Plugin{
 
 		handler.<Player>register("difficulty", "<difficulty>", "[red]Admin:[] Set server difficulty", (args, player) -> {
 			if(!player.isAdmin){
-				player.sendMessage("[green]Notice: [] You're not admin!");
+				player.sendMessage("[green]Careful: [] You're not admin!");
 			} else {
 				try{
 					Difficulty.valueOf(args[0]);
@@ -162,7 +159,7 @@ public class Main extends Plugin{
 		handler.<Player>register("gameover","","[red]Admin:[] End the game", (args, player) -> {
 			
 			if(!player.isAdmin){
-				player.sendMessage("[green]Notice:[] You're not admin!");
+				player.sendMessage("[green]Careful:[] You're not admin!");
 			} else {
 			/*
 				netServer.kickAll(KickReason.gameover);
@@ -177,7 +174,7 @@ public class Main extends Plugin{
 		handler.<Player>register("host","<mapname> [mode]","[red]Admin:[] ", (args, player) -> {
 			
 			if(!player.isAdmin){
-				player.sendMessage("[green]Notice:[] You're not admin!");
+				player.sendMessage("[green]Careful:[] You're not admin!");
 			} else {
 				String result=extend.host(args[0],args[1],"N");
 				if (result != "Y") {
@@ -193,7 +190,7 @@ public class Main extends Plugin{
 		handler.<Player>register("runwave","","[red]Admin:[] Runwave.", (args, player) -> {
 			
 			if(!player.isAdmin){
-				player.sendMessage("[green]Notice:[] You're not admin!");
+				player.sendMessage("[green]Careful:[] You're not admin!");
 			} else {
 				logic.runWave();
 			}
