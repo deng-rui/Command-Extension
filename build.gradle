@@ -10,12 +10,13 @@ repositories{
 }
 
 dependencies{
-    compileOnly "com.github.Anuken.Arc:arc-core:-SNAPSHOT"
-    compileOnly "com.github.Anuken.Mindustry:core:-SNAPSHOT"
+    compileOnly "com.github.Anuken.Arc:arc-core:master-SNAPSHOT"
+    compileOnly "com.github.Anuken.Mindustry:core:master-SNAPSHOT"
     //compile 'org.jsoup:jsoup:1.12.1'
     //compile 'org.apache.commons:commons-lang3:3.9'
     compile 'org.apache.httpcomponents:httpclient:4.5.10'
     compile 'com.alibaba:fastjson:1.2.60'
+    //compile 'org.xerial:sqlite-jdbc:3.28.0'
 }
 
 jar{

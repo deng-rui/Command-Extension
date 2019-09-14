@@ -43,6 +43,7 @@ import io.anuke.mindustry.net.Packets.KickReason ;
 import io.anuke.mindustry.plugin.*;
 import io.anuke.mindustry.plugin.Plugins.*;
 import io.anuke.mindustry.type.*;
+import io.anuke.mindustry.Vars;
 //Mindustry
 
 import static java.lang.System.out;

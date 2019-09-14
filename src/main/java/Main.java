@@ -42,22 +42,45 @@ import io.anuke.mindustry.net.NetConnection;
 import io.anuke.mindustry.net.Packets.KickReason ;
 import io.anuke.mindustry.plugin.*;
 import io.anuke.mindustry.plugin.Plugins.*;
-import io.anuke.mindustry.type.*;
 //Mindustry
 
 import static java.lang.System.out;
 import static io.anuke.mindustry.Vars.*;
-import static io.anuke.mindustry.Vars.player;
+import static io.anuke.mindustry.Vars.player;//import io.anuke.mindustry.game.Stats.*;
 //
 import static extension.Extend.*;
 import static extension.Tool.*;
 //Static
-import io.anuke.mindustry.game.Stats.*;
+
 
 public class Main extends Plugin{
 
+	private boolean translateo=false;
+
 	Extend extend = new Extend ();
 	Tool tool = new Tool ();
+
+	public Main(){
+		Events.on(EventType.PlayerChatEvent.class, e -> {
+			String check = String.valueOf(e.message.charAt(0));
+			//check if command
+			if(!check.equals("/")) {
+				boolean valid = e.message.matches("\\w+");
+				// check if enable translate
+				if (!valid && translateo) {
+					try{
+						Thread.currentThread().sleep(2000);
+						String translationa = tool.translate(e.message,"en");
+						Call.sendMessage(e.player.name+"[green] say[]: "+translationa);
+						}catch(InterruptedException ie){
+							ie.printStackTrace();
+						}catch(Exception ie){
+							return;
+						}
+				}
+			}
+		});
+	}
 
 	@Override
 	public void registerClientCommands(CommandHandler handler){
@@ -190,7 +213,6 @@ public class Main extends Plugin{
 		//It can be used normally. :)
 
 		handler.<Player>register("runwave","[red]Admin:[] Runwave.", (args, player) -> {
-			
 			if(!player.isAdmin){
 				player.sendMessage("[green]Careful:[] You're not admin!");
 			} else {
@@ -211,13 +233,27 @@ public class Main extends Plugin{
 					ie.printStackTrace();
 				}
 			try{
-				String translation = tool.translate(text,args[1]);
-				Call.sendMessage(player.name+"[green] say[]: "+translation);
+				String translationm = tool.translate(text,args[1]);
+				Call.sendMessage(player.name+"[green] say[]: "+translationm);
 				}catch(Exception e){
 					return;
 				}
 			
 			});
+
+		handler.<Player>register("trr","<on/off>","View the current time of the server.", (args, player) -> {
+			if(!player.isAdmin){
+				player.sendMessage("[green]Careful:[] You're not admin!");
+			} else {
+				if (args[0] != "on") {
+					translateo=true;
+					player.sendMessage("[green]Careful:[] true");
+				}else{
+					translateo=false;
+					player.sendMessage("[green]Careful:[] false");
+				}
+			}
+		});
 	}
 
 }
