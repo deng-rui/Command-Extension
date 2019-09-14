@@ -200,24 +200,24 @@ public class Main extends Plugin{
 
 		handler.<Player>register("time","View the current time of the server.", (args, player) -> player.sendMessage("[green]The current server time is[white]: "+extend.time()));
 
-		handler.<Player>register("tr","<language> [Output-language]","test", (args, player) -> {
-			//No spaces are allowed in the input language:£¨
-			player.sendMessage("zh-China ja-Japanese en-English ru-Russia");
+		handler.<Player>register("tr","<text> <Output-language>","Google translation(Use - instead of spaces in text)", (args, player) -> {
+			//No spaces are allowed in the input language¡§
+			player.sendMessage("zh-China ja-Japanese en-English ru-Russia,If null, it defaults to Engilsh.");
+			player.sendMessage("Use - instead of spaces in text");
+			String text = args[0].replace('-',' ');	
 			try{
-				Thread.currentThread().sleep(1000);
+				Thread.currentThread().sleep(2500);
 				}catch(InterruptedException ie){
 					ie.printStackTrace();
 				}
 			try{
-				String result = tool.translate(args[0],args[1]);
-				Call.sendMessage(player.name+"[green] say[]: "+result);
+				String translation = tool.translate(text,args[1]);
+				Call.sendMessage(player.name+"[green] say[]: "+translation);
 				}catch(Exception e){
 					return;
 				}
-				
+			
 			});
-
-
 	}
 
 }

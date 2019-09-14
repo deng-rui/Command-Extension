@@ -71,13 +71,13 @@ public class Extend{
 		switch(then){
 		case "getfps":
 		Float floatee = new Float(fps);
-    	return floatee.toString();
+		return floatee.toString();
 		case "getmemory":
 		Float floatee1 = new Float(memory);
-    	return floatee1.toString();
+		return floatee1.toString();
 		case "getbancount":
 		Float floatee2 = new Float(bancount);
-    	return floatee2.toString();
+		return floatee2.toString();
 		default :
 		return null;
 		//Laziness,Avoid opening more if
@@ -88,7 +88,7 @@ public class Extend{
 		String resultt = null;
 		if("sandbox".equalsIgnoreCase(gamemodes)){
 		}else if ("pvp".equalsIgnoreCase(gamemodes)){
-		}else if ("accatk".equalsIgnoreCase(gamemodes)){
+		}else if ("attack".equalsIgnoreCase(gamemodes)){
 		}else if ("survival".equalsIgnoreCase(gamemodes)){
 		}else{
 			resultt = "N";
