@@ -60,7 +60,7 @@ public class Main extends Plugin{
 
 	Extend extend = new Extend ();
 	Tool tool = new Tool ();
-/*
+	
 	public Main(){
 		Events.on(EventType.PlayerChatEvent.class, e -> {
 			String check = String.valueOf(e.message.charAt(0));
@@ -82,7 +82,6 @@ public class Main extends Plugin{
 			}
 		});
 	}
-*/
 
 	@Override
 	public void registerClientCommands(CommandHandler handler){
@@ -199,7 +198,6 @@ public class Main extends Plugin{
 
 
 		handler.<Player>register("host","<mapname> [mode]","[red]Admin:[] ", (args, player) -> {
-			/*
 			if(!player.isAdmin){
 				player.sendMessage("[green]Careful:[] You're not admin!");
 			} else {
@@ -211,7 +209,6 @@ public class Main extends Plugin{
 					extend.host(args[0],args[1],"Y");
 				}
 			}
-			*/
 		});
 		//It can be used normally. :)
 
