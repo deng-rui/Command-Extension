@@ -50,6 +50,7 @@ import static io.anuke.mindustry.Vars.player;//import io.anuke.mindustry.game.St
 //
 import static extension.Extend.*;
 import static extension.Tool.*;
+import static extension.SQLiteJDBC.*;
 //Static
 
 
@@ -59,7 +60,7 @@ public class Main extends Plugin{
 
 	Extend extend = new Extend ();
 	Tool tool = new Tool ();
-
+/*
 	public Main(){
 		Events.on(EventType.PlayerChatEvent.class, e -> {
 			String check = String.valueOf(e.message.charAt(0));
@@ -81,6 +82,7 @@ public class Main extends Plugin{
 			}
 		});
 	}
+*/
 
 	@Override
 	public void registerClientCommands(CommandHandler handler){
@@ -197,7 +199,7 @@ public class Main extends Plugin{
 
 
 		handler.<Player>register("host","<mapname> [mode]","[red]Admin:[] ", (args, player) -> {
-			
+			/*
 			if(!player.isAdmin){
 				player.sendMessage("[green]Careful:[] You're not admin!");
 			} else {
@@ -209,6 +211,7 @@ public class Main extends Plugin{
 					extend.host(args[0],args[1],"Y");
 				}
 			}
+			*/
 		});
 		//It can be used normally. :)
 
@@ -241,7 +244,7 @@ public class Main extends Plugin{
 			
 			});
 
-		handler.<Player>register("trr","<on/off>","View the current time of the server.", (args, player) -> {
+		handler.<Player>register("trr","<on/off>","Whether on/off launches Google Translation is not the default", (args, player) -> {
 			if(!player.isAdmin){
 				player.sendMessage("[green]Careful:[] You're not admin!");
 			} else {
@@ -252,6 +255,20 @@ public class Main extends Plugin{
 					translateo=false;
 					player.sendMessage("[green]Careful:[] false");
 				}
+			}
+		});
+
+		handler.<Player>register("sql","Whether on/off launches Google Translation is not the default", (args, player) -> {
+			if(!player.isAdmin){
+				player.sendMessage("[green]Careful:[] You're not admin!");
+			} else {
+				
+				String u="ACFDNDSDJSDGJV=";
+				SQLiteJDBC sql = new SQLiteJDBC ();
+				sql.main();
+				sql.main1();
+				String iid=main2(u);
+player.sendMessage(iid);
 			}
 		});
 	}
