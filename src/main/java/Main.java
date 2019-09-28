@@ -46,11 +46,12 @@ import io.anuke.mindustry.plugin.Plugins.*;
 
 import static java.lang.System.out;
 import static io.anuke.mindustry.Vars.*;
-import static io.anuke.mindustry.Vars.player;//import io.anuke.mindustry.game.Stats.*;
+import static io.anuke.mindustry.Vars.player;
 //
-import static extension.Extend.*;
-import static extension.Tool.*;
-import static extension.SQLiteJDBC.*;
+import extension.extend.Url;
+import extension.extend.Extend;
+import extension.extend.Googletranslate;
+//GA-Exted
 //Static
 
 
@@ -58,9 +59,10 @@ public class Main extends Plugin{
 
 	private boolean translateo=false;
 
-	Extend extend = new Extend ();
-	Tool tool = new Tool ();
-	
+	Extend extend = new Extend();
+	Url url = new Url();
+	Googletranslate googletranslate = new Googletranslate();
+
 	public Main(){
 		Events.on(EventType.PlayerChatEvent.class, e -> {
 			String check = String.valueOf(e.message.charAt(0));
@@ -71,8 +73,8 @@ public class Main extends Plugin{
 				if (!valid && translateo) {
 					try{
 						Thread.currentThread().sleep(2000);
-						String translationa = tool.translate(e.message,"en");
-						Call.sendMessage(e.player.name+"[green] say[]: "+translationa);
+						String translationa = googletranslate.translate(e.message,"en");
+						Call.sendMessage("["+e.player.name+"]"+"[green] : [] "+translationa+"   -From Google Translator");
 						}catch(InterruptedException ie){
 							ie.printStackTrace();
 						}catch(Exception ie){
@@ -88,7 +90,7 @@ public class Main extends Plugin{
 
 		handler.<Player>register("info","info me.", (args, player) -> {
 			String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
-			String Country = tool.HttpRequest("http://ip-api.com/line/"+ip+"?fields=country");
+			String Country = url.HttpRequest("http://ip-api.com/line/"+ip+"?fields=country");
 			player.sendMessage("[green][INFO][] Acquisition...");
 			try{
 				Thread.currentThread().sleep(10000);
@@ -103,7 +105,7 @@ public class Main extends Plugin{
 		});
 
 		handler.<Player>register("status","View server status", (args, player) -> {
-			player.sendMessage("FPS:"+extend.status("getfps")+  "Occupied memory:"+extend.status("getmemory")+"MB");
+			player.sendMessage("FPS:"+extend.status("getfps")+"  Occupied memory:"+extend.status("getmemory")+"MB");
 			player.sendMessage("Online number:"+Vars.playerGroup.size());
 			player.sendMessage("Total [scarlet]"+extend.status("getbancount")+"[] players banned.");
 		});
@@ -233,8 +235,8 @@ public class Main extends Plugin{
 					ie.printStackTrace();
 				}
 			try{
-				String translationm = tool.translate(text,args[1]);
-				Call.sendMessage(player.name+"[green] say[]: "+translationm);
+				String translationm = googletranslate.translate(text,args[1]);
+				Call.sendMessage("["+player.name+"]"+"[green] : []"+translationm+"   -From Google Translator");
 				}catch(Exception e){
 					return;
 				}
@@ -255,19 +257,6 @@ public class Main extends Plugin{
 			}
 		});
 
-		handler.<Player>register("sql","Whether on/off launches Google Translation is not the default", (args, player) -> {
-			if(!player.isAdmin){
-				player.sendMessage("[green]Careful:[] You're not admin!");
-			} else {
-				
-				String u="ACFDNDSDJSDGJV=";
-				SQLiteJDBC sql = new SQLiteJDBC ();
-				sql.main();
-				sql.main1();
-				String iid=main2(u);
-player.sendMessage(iid);
-			}
-		});
 	}
 
 }
