@@ -2,8 +2,6 @@ package extension;
 
 import java.io.*;
 import java.net.*;
-import java.time.*;
-import java.time.format.*;
 import java.util.*;
 import java.lang.Math;
 import java.lang.reflect.Method;
@@ -16,9 +14,6 @@ import io.anuke.arc.files.*;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.Timer;
 import io.anuke.arc.util.CommandHandler.*;
-import io.anuke.arc.util.Timer.*;
-import io.anuke.arc.collection.*;
-import io.anuke.arc.collection.Array.*;
 //Arc
 
 import io.anuke.mindustry.*;
@@ -30,7 +25,7 @@ import io.anuke.mindustry.entities.type.*;
 import io.anuke.mindustry.game.*;
 import io.anuke.mindustry.game.Team;
 import io.anuke.mindustry.game.Difficulty;
-import io.anuke.mindustry.game.EventType;
+import io.anuke.mindustry.game.EventType.*;
 import io.anuke.mindustry.game.EventType.PlayerJoin;
 import io.anuke.mindustry.gen.*;
 import io.anuke.mindustry.io.*;
@@ -40,14 +35,15 @@ import io.anuke.mindustry.net.Administration.PlayerInfo ;
 import io.anuke.mindustry.net.Packets.KickReason;
 import io.anuke.mindustry.net.NetConnection;
 import io.anuke.mindustry.net.Packets.KickReason ;
-import io.anuke.mindustry.plugin.*;
-import io.anuke.mindustry.plugin.Plugins.*;
+import io.anuke.mindustry.plugin.Plugin;
+import io.anuke.mindustry.Vars;
 //Mindustry
 
 import static java.lang.System.out;
 import static io.anuke.mindustry.Vars.*;
 import static io.anuke.mindustry.Vars.player;
 //
+
 import extension.extend.Url;
 import extension.extend.Extend;
 import extension.extend.Googletranslate;
@@ -225,7 +221,7 @@ public class Main extends Plugin{
 		handler.<Player>register("time","View the current time of the server.", (args, player) -> player.sendMessage("[green]The current server time is[white]: "+extend.time()));
 
 		handler.<Player>register("tr","<text> <Output-language>","Google translation(Use - instead of spaces in text)", (args, player) -> {
-			//No spaces are allowed in the input language¡§
+			//No spaces are allowed in the input language??
 			player.sendMessage("zh-China ja-Japanese en-English ru-Russia,If null, it defaults to Engilsh.");
 			player.sendMessage("Use - instead of spaces in text");
 			String text = args[0].replace('-',' ');	
@@ -247,13 +243,40 @@ public class Main extends Plugin{
 			if(!player.isAdmin){
 				player.sendMessage("[green]Careful:[] You're not admin!");
 			} else {
-				if (args[0] != "on") {
-					translateo=true;
+				if (args.length == 1 && args[0].equals("on")) {
+					boolean translateo=true;
 					player.sendMessage("[green]Careful:[] true");
 				}else{
-					translateo=false;
+					boolean translateo=false;
 					player.sendMessage("[green]Careful:[] false");
 				}
+			}
+		});
+
+		handler.<Player>register("vote", "<gameover/kick> [playername...]", "Vote", (args, player) -> {
+			String result=null;
+			if (args[0] == "gameover" || args[0] == "kick" || args[0] == "ban") {
+				result=extend.vote(player.name);
+				Call.sendMessage("[green] Gameover vote started!");
+				if (result == "N") {
+						Call.sendMessage("[green] [red]vote failed.");
+						return;
+				}else if (result == "Found") {
+					player.sendMessage("[green] Vote not processing!");
+					return;
+				}
+			}
+				switch(args[0]) {
+				case "gameover":
+					Call.sendMessage("[green] Gameover vote passed!");
+					Events.fire(new GameOverEvent(Team.crux));
+					break;
+				case "kick":
+					Player target = playerGroup.find(p -> p.name.equals(args[1]));
+            		target.con.kick(KickReason.kick);
+            		break;
+				default:
+					break;
 			}
 		});
 

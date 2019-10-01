@@ -5,6 +5,7 @@ import java.net.*;
 import java.time.*;
 import java.time.format.*;
 import java.util.*;
+import java.util.ArrayList;
 import java.lang.Math;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
@@ -41,17 +42,23 @@ import io.anuke.mindustry.net.Packets.KickReason;
 import io.anuke.mindustry.net.NetConnection;
 import io.anuke.mindustry.net.Packets.KickReason ;
 import io.anuke.mindustry.plugin.*;
-import io.anuke.mindustry.plugin.Plugins.*;
+import io.anuke.mindustry.plugin.Plugin;
 import io.anuke.mindustry.type.*;
 import io.anuke.mindustry.Vars;
 //Mindustry
 
 import static java.lang.System.out;
+
 import static io.anuke.mindustry.Vars.*;
 import static io.anuke.mindustry.Vars.player;
 //Static
 
 public class Extend{
+
+    //private HashSet<Player> votes = new HashSet<>();
+    private ArrayList<String> votes = new ArrayList<>();
+    private boolean enable = true;
+
 	public static String status(String then) {
 		float fps = Math.round((int)60f / Time.delta());
 		float memory = Core.app.getJavaHeap() / 1024 / 1024;
@@ -142,4 +149,24 @@ public class Extend{
 	return nowString;
 	}
 
+	public String vote(String name) {
+
+	String result = null;
+
+            if (!this.enable) {
+                result = "disabled";
+				return result;
+            }
+            votes.add(name);
+            int cur = this.votes.size();
+            int req = (int) Math.ceil(0.6 * Vars.playerGroup.size());
+            if (cur < req) {
+            	result = "N";
+                return result;
+            }
+
+            votes.clear();
+            result = "Y";
+			return result;
+	}
 }
