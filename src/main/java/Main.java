@@ -3,14 +3,9 @@ package extension;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-//import java.lang.Math;
-//import java.lang.reflect.Method;
-//import java.time.LocalDateTime;
-//import java.time.format.DateTimeFormatter;
 //Java
 
 import io.anuke.arc.*;
-//import io.anuke.arc.files.*;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.Timer;
 import io.anuke.arc.util.CommandHandler.*;
@@ -29,8 +24,6 @@ import io.anuke.mindustry.game.EventType.*;
 import io.anuke.mindustry.game.EventType.PlayerJoin;
 import io.anuke.mindustry.gen.*;
 import io.anuke.mindustry.io.*;
-//import io.anuke.mindustry.maps.Map;
-//import io.anuke.mindustry.maps.*;
 import io.anuke.mindustry.net.Administration.PlayerInfo ;
 import io.anuke.mindustry.net.Packets.KickReason;
 import io.anuke.mindustry.net.NetConnection;
@@ -38,7 +31,6 @@ import io.anuke.mindustry.plugin.Plugin;
 import io.anuke.mindustry.Vars;
 //Mindustry
 
-//import static java.lang.System.out;
 import static io.anuke.mindustry.Vars.*;
 import static io.anuke.mindustry.Vars.player;
 //
@@ -258,8 +250,8 @@ public class Main extends Plugin{
 				result=extend.vote(player.name);
 				Call.sendMessage("[green] Gameover vote started!");
 				if (result == "N") {
-						Call.sendMessage("[green] [red]vote failed.");
-						return;
+					Call.sendMessage("[green] [red]vote failed.");
+					return;
 				}else if (result == "Found") {
 					player.sendMessage("[green] Vote not processing!");
 					return;
