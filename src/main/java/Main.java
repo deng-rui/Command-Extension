@@ -176,11 +176,7 @@ public class Main extends Plugin{
 			if(!player.isAdmin){
 				player.sendMessage("[green]Careful:[] You're not admin!");
 			} else {
-			/*
-				netServer.kickAll(KickReason.gameover);
-				state.set(State.menu);
-				net.closeServer();
-			*/
+				Events.fire(new GameOverEvent(Team.crux));
 			}
 
 		});
@@ -243,7 +239,7 @@ public class Main extends Plugin{
 				}
 			}
 		});
-
+/*
 		handler.<Player>register("vote", "<gameover/kick> [playername...]", "Vote", (args, player) -> {
 			String result=null;
 			if (args[0] == "gameover" || args[0] == "kick" || args[0] == "ban") {
@@ -264,12 +260,14 @@ public class Main extends Plugin{
 					break;
 				case "kick":
 					Player target = playerGroup.find(p -> p.name.equals(args[1]));
-            		target.con.kick(KickReason.kick);
-            		break;
+					target.con.kick(KickReason.kick);
+					break;
 				default:
 					break;
 			}
 		});
+*/
+		handler.<Player>register("tpa", "<Player name>", "Vote", (args, player) -> {
 
 	}
 

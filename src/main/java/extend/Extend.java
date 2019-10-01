@@ -55,9 +55,9 @@ import static io.anuke.mindustry.Vars.player;
 
 public class Extend{
 
-    //private HashSet<Player> votes = new HashSet<>();
-    private ArrayList<String> votes = new ArrayList<>();
-    private boolean enable = true;
+	//private HashSet<Player> votes = new HashSet<>();
+	private ArrayList<String> votes = new ArrayList<>();
+	private boolean enable = true;
 
 	public static String status(String then) {
 		float fps = Math.round((int)60f / Time.delta());
@@ -143,30 +143,30 @@ public class Extend{
 	}
 
 	public static String time() {
-	LocalDateTime now = LocalDateTime.now();
-	DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yy-M-d a h:m.ss");
-	String nowString = now.format(dateTimeFormatter);
-	return nowString;
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yy-M-d a h:m.ss");
+		String nowString = now.format(dateTimeFormatter);
+		return nowString;
 	}
 
 	public String vote(String name) {
 
-	String result = null;
+		String result = null;
 
-            if (!this.enable) {
-                result = "disabled";
+			if (!this.enable) {
+				result = "disabled";
 				return result;
-            }
-            votes.add(name);
-            int cur = this.votes.size();
-            int req = (int) Math.ceil(0.6 * Vars.playerGroup.size());
-            if (cur < req) {
-            	result = "N";
-                return result;
-            }
+			}
+			votes.add(name);
+			int cur = this.votes.size();
+			int req = (int) Math.ceil(0.6 * Vars.playerGroup.size());
+			if (cur < req) {
+				result = "N";
+				return result;
+			}
 
-            votes.clear();
-            result = "Y";
+			votes.clear();
+			result = "Y";
 			return result;
 	}
 }
