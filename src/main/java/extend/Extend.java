@@ -158,7 +158,7 @@ public class Extend{
 				return result;
 			}
 			votes.add(name);
-			int cur = this.votes.size();
+			int cur = votes.size();
 			int req = (int) Math.ceil(0.6 * Vars.playerGroup.size());
 			if (cur < req) {
 				result = "N";
@@ -170,3 +170,4 @@ public class Extend{
 			return result;
 	}
 }
+

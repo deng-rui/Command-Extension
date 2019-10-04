@@ -70,6 +70,13 @@ public class Main extends Plugin{
 				}
 			}
 		});
+
+	File file = new File(Core.settings.getDataDirectory().child("plugins/GA/settings.json").readString());
+	if (!file.exists()) {
+    	
+	}
+	JSONObject settings = Core.settings.getDataDirectory().child("plugins/GA/settings.json").readString();
+	if(db.get("language") == "zh_CN")
 	}
 
 	@Override
@@ -267,7 +274,7 @@ public class Main extends Plugin{
 			}
 		});
 */
-		handler.<Player>register("tpa", "<Player name>", "Vote", (args, player) -> {
+		//handler.<Player>register("tpa", "<Player name>", "Vote", (args, player) -> {
 
 	}
 
