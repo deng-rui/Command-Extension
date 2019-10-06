@@ -35,26 +35,35 @@ import static io.anuke.mindustry.Vars.*;
 import static io.anuke.mindustry.Vars.player;
 //
 
-import extension.extend.Url;
 import extension.extend.Extend;
 import extension.extend.Googletranslate;
+import extension.extend.Json;
+import extension.auxiliary.Language;
 //GA-Exted
+import static extension.extend.Url.HttpRequest;
 //Static
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+//Json
 
 
 public class Main extends Plugin{
 
-	private boolean translateo=false;
-
 	Extend extend = new Extend();
-	Url url = new Url();
 	Googletranslate googletranslate = new Googletranslate();
+	Json json = new Json();
+	Language language = new Language();
 
 	public Main(){
+
 		Events.on(EventType.PlayerChatEvent.class, e -> {
 			String check = String.valueOf(e.message.charAt(0));
 			//check if command
 			if(!check.equals("/")) {
+				JSONObject date = json.getData();
+				boolean translateo = (boolean) date.get("translateo");
 				boolean valid = e.message.matches("\\w+");
 				// check if enable translate
 				if (!valid && translateo) {
@@ -71,41 +80,42 @@ public class Main extends Plugin{
 			}
 		});
 
-	File file = new File(Core.settings.getDataDirectory().child("plugins/GA/settings.json").readString());
-	if (!file.exists()) {
-    	
+		if(!Core.settings.getDataDirectory().child("plugins/GA/setting.json").exists()){
+			json.addjson();
+		}
+		//language.language();
+
 	}
-	JSONObject settings = Core.settings.getDataDirectory().child("plugins/GA/settings.json").readString();
-	if(db.get("language") == "zh_CN")
-	}
+
+		
 
 	@Override
 	public void registerClientCommands(CommandHandler handler){
 
-		handler.<Player>register("info","info me.", (args, player) -> {
+		handler.<Player>register("info",language.getinput("info",null,null), (args, player) -> {
 			String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
-			String Country = url.HttpRequest("http://ip-api.com/line/"+ip+"?fields=country");
-			player.sendMessage("[green][INFO][] Acquisition...");
+			String Country = HttpRequest("http://ip-api.com/line/"+ip+"?fields=country");
+			player.sendMessage(language.getinput("info.load",null,null));
 			try{
 				Thread.currentThread().sleep(10000);
 				}catch(InterruptedException ie){
 					ie.printStackTrace();
 				}
-			player.sendMessage("[green]Name[]: "+player.name);
-			player.sendMessage("[green]UUID[]: "+player.uuid);
-			player.sendMessage("[green]Equipment[]: "+player.isMobile);
-			player.sendMessage("[green]IP[]: "+ip);
-			player.sendMessage("[green]Country[]: "+Country);
+			player.sendMessage(language.getinput("info.name",player.name,null));
+			player.sendMessage(language.getinput("info.uuid",player.uuid,null));
+			player.sendMessage(language.getinput("info.equipment",String.valueOf(player.isMobile),null));
+			player.sendMessage(language.getinput("info.ip",ip,null));
+			player.sendMessage(language.getinput("info.country",Country,null));
 		});
 
-		handler.<Player>register("status","View server status", (args, player) -> {
+		handler.<Player>register("status",language.getinput("status",null,null), (args, player) -> {
 			player.sendMessage("FPS:"+extend.status("getfps")+"  Occupied memory:"+extend.status("getmemory")+"MB");
-			player.sendMessage("Online number:"+Vars.playerGroup.size());
-			player.sendMessage("Total [scarlet]"+extend.status("getbancount")+"[] players banned.");
+			player.sendMessage(language.getinput("status.number",String.valueOf(Vars.playerGroup.size()),null));
+			player.sendMessage(language.getinput("status.ban",extend.status("getbancount"),null));
 		});
 
 
-		handler.<Player>register("getpos","View the current coordinates", (args, player) -> player.sendMessage("[green]The current coordinate is:[] X = " + Math.round(player.x/8) + "; Y = " + Math.round(player.y/8)));
+		handler.<Player>register("getpos",language.getinput("getpos",null,null), (args, player) -> player.sendMessage(language.getinput("getpos.info",String.valueOf(Math.round(player.x/8)),String.valueOf(Math.round(player.y/8)))));
 
 		handler.<Player>register("tpp","<player> <player>","[red]Admin:[] Transfer to specified coordinates", (args, player) -> {
 			if(!player.isAdmin){
@@ -117,7 +127,7 @@ public class Main extends Plugin{
 					player.setNet((float)x, (float)y);
 					player.set((float)x, (float)y);
 				} catch (Exception e){
-				player.sendMessage("[scarlet] XY command!");
+				player.sendMessage(language.getinput("tpp.fail",null,null));
 				}
 			}
 		});
@@ -128,25 +138,25 @@ public class Main extends Plugin{
 				player.sendMessage("[green]Careful:[] You're not admin!");
 			} else {
 				if(other == null){
-					player.sendMessage("[scarlet]playname command!");
+					player.sendMessage(language.getinput("tp.fail",null,null));
 					return;
 				}
 				player.setNet(other.x, other.y);
 			}
 		});
 
-		handler.<Player>register("suicide","Kill yourself.", (args, player) -> {
+		handler.<Player>register("suicide",language.getinput("suicide",null,null), (args, player) -> {
 				player.onPlayerDeath(player);
-				Call.sendMessage(player.name+"[] [green]suicide[] command.");
+				Call.sendMessage(language.getinput("suicide.tips",player.name,null));
 		});
 
-		handler.<Player>register("team","","[red]Admin:[] Replacement team", (args, player) ->{
+		handler.<Player>register("team","",language.getinput("team",null,null), (args, player) ->{
 			//change team
 			if(!player.isAdmin){
 				player.sendMessage("[green]Careful:[] You're not admin!");
 				} else {
 				if (!Vars.state.rules.pvp){
-					player.sendMessage("Patterns are not PVP");
+					player.sendMessage(language.getinput("team.fail",null,null));
 					return;
 				}
 				int index = player.getTeam().ordinal()+1;
@@ -165,20 +175,20 @@ public class Main extends Plugin{
 			}
 		});
 
-		handler.<Player>register("difficulty", "<difficulty>", "[red]Admin:[] Set server difficulty", (args, player) -> {
+		handler.<Player>register("difficulty", "<difficulty>", language.getinput("difficulty",null,null), (args, player) -> {
 			if(!player.isAdmin){
 				player.sendMessage("[green]Careful: [] You're not admin!");
 			} else {
 				try{
 					Difficulty.valueOf(args[0]);
-					player.sendMessage("Difficulty set to '"+args[0]+"'.");
+					player.sendMessage(language.getinput("difficulty.success",args[0],null));
 				}catch(IllegalArgumentException e){
-					player.sendMessage("No difficulty with name '"+args[0]+"' found.");
+					player.sendMessage(language.getinput("difficulty.fail",args[0],null));
 				}
 			}
 		});
 
-		handler.<Player>register("gameover","","[red]Admin:[] End the game", (args, player) -> {
+		handler.<Player>register("gameover","",language.getinput("gameover",null,null), (args, player) -> {
 			
 			if(!player.isAdmin){
 				player.sendMessage("[green]Careful:[] You're not admin!");
@@ -189,7 +199,7 @@ public class Main extends Plugin{
 		});
 
 
-		handler.<Player>register("host","<mapname> [mode]","[red]Admin:[] ", (args, player) -> {
+		handler.<Player>register("host","<mapname> [mode]",language.getinput("host",null,null), (args, player) -> {
 			if(!player.isAdmin){
 				player.sendMessage("[green]Careful:[] You're not admin!");
 			} else {
@@ -204,7 +214,7 @@ public class Main extends Plugin{
 		});
 		//It can be used normally. :)
 
-		handler.<Player>register("runwave","[red]Admin:[] Runwave.", (args, player) -> {
+		handler.<Player>register("runwave",language.getinput("runwave",args[0],null), (args, player) -> {
 			if(!player.isAdmin){
 				player.sendMessage("[green]Careful:[] You're not admin!");
 			} else {
@@ -212,9 +222,9 @@ public class Main extends Plugin{
 			}
 		});
 
-		handler.<Player>register("time","View the current time of the server.", (args, player) -> player.sendMessage("[green]The current server time is[white]: "+extend.time()));
+		handler.<Player>register("time",language.getinput("time",null,null), (args, player) -> player.sendMessage("[green]The current server time is[white]: "+extend.time()));
 
-		handler.<Player>register("tr","<text> <Output-language>","Google translation(Use - instead of spaces in text)", (args, player) -> {
+		handler.<Player>register("tr","<text> <Output-language>",language.getinput("tr",null,null), (args, player) -> {
 			//No spaces are allowed in the input language??
 			player.sendMessage("zh-China ja-Japanese en-English ru-Russia,If null, it defaults to Engilsh.");
 			player.sendMessage("Use - instead of spaces in text");
@@ -233,15 +243,18 @@ public class Main extends Plugin{
 			
 			});
 
-		handler.<Player>register("trr","<on/off>","Whether on/off launches Google Translation is not the default", (args, player) -> {
+		handler.<Player>register("trr","<on/off>",language.getinput("trr",null,null), (args, player) -> {
 			if(!player.isAdmin){
 				player.sendMessage("[green]Careful:[] You're not admin!");
 			} else {
+				JSONObject date = json.getData();
 				if (args.length == 1 && args[0].equals("on")) {
-					boolean translateo=true;
+					date.put("translateo", true);
+					Core.settings.getDataDirectory().child("plugins/GA/setting.json").writeString((String.valueOf(date)));
 					player.sendMessage("[green]Careful:[] true");
 				}else{
-					boolean translateo=false;
+					date.put("translateo", false);
+					Core.settings.getDataDirectory().child("plugins/GA/setting.json").writeString((String.valueOf(date)));
 					player.sendMessage("[green]Careful:[] false");
 				}
 			}
