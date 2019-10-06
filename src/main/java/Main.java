@@ -119,7 +119,7 @@ public class Main extends Plugin{
 
 		handler.<Player>register("tpp","<player> <player>","[red]Admin:[] Transfer to specified coordinates", (args, player) -> {
 			if(!player.isAdmin){
-				player.sendMessage("[green]Careful:[] You're not admin!");
+				player.sendMessage(language.getinput("admin.no",null,null));
 			} else {
 				try{
 					int x = Integer.parseInt(args[0])*8;
@@ -135,7 +135,7 @@ public class Main extends Plugin{
 		handler.<Player>register("tp","<player...>","[red]Admin:[] Teleport to other players", (args, player) -> {
 			Player other = Vars.playerGroup.find(p->p.name.equalsIgnoreCase(args[0]));
 			if(!player.isAdmin){
-				player.sendMessage("[green]Careful:[] You're not admin!");
+				player.sendMessage(language.getinput("admin.no",null,null));
 			} else {
 				if(other == null){
 					player.sendMessage(language.getinput("tp.fail",null,null));
@@ -153,7 +153,7 @@ public class Main extends Plugin{
 		handler.<Player>register("team","",language.getinput("team",null,null), (args, player) ->{
 			//change team
 			if(!player.isAdmin){
-				player.sendMessage("[green]Careful:[] You're not admin!");
+				player.sendMessage(language.getinput("admin.no",null,null));
 				} else {
 				if (!Vars.state.rules.pvp){
 					player.sendMessage(language.getinput("team.fail",null,null));
@@ -191,7 +191,7 @@ public class Main extends Plugin{
 		handler.<Player>register("gameover","",language.getinput("gameover",null,null), (args, player) -> {
 			
 			if(!player.isAdmin){
-				player.sendMessage("[green]Careful:[] You're not admin!");
+				player.sendMessage(language.getinput("admin.no",null,null));
 			} else {
 				Events.fire(new GameOverEvent(Team.crux));
 			}
@@ -201,13 +201,13 @@ public class Main extends Plugin{
 
 		handler.<Player>register("host","<mapname> [mode]",language.getinput("host",null,null), (args, player) -> {
 			if(!player.isAdmin){
-				player.sendMessage("[green]Careful:[] You're not admin!");
+				player.sendMessage(language.getinput("admin.no",null,null));
 			} else {
 				String result=extend.host(args[0],args[1],"N");
 				if (result != "Y") {
-					player.sendMessage("Mode:"+args[1]+" is invalid!");
+					player.sendMessage(language.getinput("host.mode",args[1],null));
 				}else{
-					Call.sendMessage("[red]Restart after 10s, please re-enter![]");
+					Call.sendMessage(language.getinput("host.re",null,null));
 					extend.host(args[0],args[1],"Y");
 				}
 			}
@@ -216,18 +216,18 @@ public class Main extends Plugin{
 
 		handler.<Player>register("runwave",language.getinput("runwave",args[0],null), (args, player) -> {
 			if(!player.isAdmin){
-				player.sendMessage("[green]Careful:[] You're not admin!");
+				player.sendMessage(language.getinput("admin.no",null,null));
 			} else {
 				logic.runWave();
 			}
 		});
 
-		handler.<Player>register("time",language.getinput("time",null,null), (args, player) -> player.sendMessage("[green]The current server time is[white]: "+extend.time()));
+		handler.<Player>register("time",language.getinput("time",null,null), (args, player) -> player.sendMessage(language.getinput("time.info",extend.time(),null)));
 
 		handler.<Player>register("tr","<text> <Output-language>",language.getinput("tr",null,null), (args, player) -> {
 			//No spaces are allowed in the input language??
-			player.sendMessage("zh-China ja-Japanese en-English ru-Russia,If null, it defaults to Engilsh.");
-			player.sendMessage("Use - instead of spaces in text");
+			player.sendMessage(language.getinput("tr.tips",null,null));
+			player.sendMessage(language.getinput("tr.tips1",null,null));
 			String text = args[0].replace('-',' ');	
 			try{
 				Thread.currentThread().sleep(2500);
@@ -236,7 +236,7 @@ public class Main extends Plugin{
 				}
 			try{
 				String translationm = googletranslate.translate(text,args[1]);
-				Call.sendMessage("["+player.name+"]"+"[green] : []"+translationm+"   -From Google Translator");
+				Call.sendMessage(language.getinput("tips.return",player.name,translationm));
 				}catch(Exception e){
 					return;
 				}
@@ -245,17 +245,17 @@ public class Main extends Plugin{
 
 		handler.<Player>register("trr","<on/off>",language.getinput("trr",null,null), (args, player) -> {
 			if(!player.isAdmin){
-				player.sendMessage("[green]Careful:[] You're not admin!");
+				player.sendMessage(language.getinput("admin.no",null,null));
 			} else {
 				JSONObject date = json.getData();
 				if (args.length == 1 && args[0].equals("on")) {
 					date.put("translateo", true);
 					Core.settings.getDataDirectory().child("plugins/GA/setting.json").writeString((String.valueOf(date)));
-					player.sendMessage("[green]Careful:[] true");
+					player.sendMessage(language.getinput("tr.on",null,null));
 				}else{
 					date.put("translateo", false);
 					Core.settings.getDataDirectory().child("plugins/GA/setting.json").writeString((String.valueOf(date)));
-					player.sendMessage("[green]Careful:[] false");
+					player.sendMessage(language.getinput("tr.off",null,null));
 				}
 			}
 		});
