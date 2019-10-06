@@ -117,7 +117,7 @@ public class Main extends Plugin{
 
 		handler.<Player>register("getpos",language.getinput("getpos",null,null), (args, player) -> player.sendMessage(language.getinput("getpos.info",String.valueOf(Math.round(player.x/8)),String.valueOf(Math.round(player.y/8)))));
 
-		handler.<Player>register("tpp","<player> <player>","[red]Admin:[] Transfer to specified coordinates", (args, player) -> {
+		handler.<Player>register("tpp","<player> <player>",language.getinput("tpp",null,null), (args, player) -> {
 			if(!player.isAdmin){
 				player.sendMessage(language.getinput("admin.no",null,null));
 			} else {
@@ -132,7 +132,7 @@ public class Main extends Plugin{
 			}
 		});
 
-		handler.<Player>register("tp","<player...>","[red]Admin:[] Teleport to other players", (args, player) -> {
+		handler.<Player>register("tp","<player...>",language.getinput("tp",null,null), (args, player) -> {
 			Player other = Vars.playerGroup.find(p->p.name.equalsIgnoreCase(args[0]));
 			if(!player.isAdmin){
 				player.sendMessage(language.getinput("admin.no",null,null));
@@ -214,7 +214,7 @@ public class Main extends Plugin{
 		});
 		//It can be used normally. :)
 
-		handler.<Player>register("runwave",language.getinput("runwave",args[0],null), (args, player) -> {
+		handler.<Player>register("runwave",language.getinput("runwave",null,null), (args, player) -> {
 			if(!player.isAdmin){
 				player.sendMessage(language.getinput("admin.no",null,null));
 			} else {
