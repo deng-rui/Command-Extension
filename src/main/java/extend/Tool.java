@@ -5,23 +5,23 @@ import java.util.regex.Matcher;
 //Java
 
 public class Tool {
-	    public static String unicodeToString(String str) {
+		public static String unicodeToString(String str) {
 
-        Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
+		Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
 
-        Matcher matcher = pattern.matcher(str);
+		Matcher matcher = pattern.matcher(str);
 
-        char ch;
+		char ch;
 
-        while (matcher.find()) {
+		while (matcher.find()) {
 
-            ch = (char) Integer.parseInt(matcher.group(2), 16);
+			ch = (char) Integer.parseInt(matcher.group(2), 16);
 
-            str = str.replace(matcher.group(1), ch+"" );
+			str = str.replace(matcher.group(1), ch+"" );
 
-        }
+		}
 
-        return str;
+		return str;
 
-    }
+	}
 }
