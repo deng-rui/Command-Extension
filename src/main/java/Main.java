@@ -34,13 +34,12 @@ import io.anuke.mindustry.Vars;
 import static io.anuke.mindustry.Vars.*;
 import static io.anuke.mindustry.Vars.player;
 //
-
-import extension.extend.Extend;
 import extension.extend.Googletranslate;
-import extension.extend.Json;
 import extension.auxiliary.Language;
 //GA-Exted
 import static extension.extend.Url.HttpRequest;
+import static extension.extend.Extend.*;
+import static extension.extend.Json.*;
 //Static
 
 import org.json.JSONArray;
@@ -51,9 +50,7 @@ import org.json.JSONTokener;
 
 public class Main extends Plugin{
 
-	Extend extend = new Extend();
 	Googletranslate googletranslate = new Googletranslate();
-	Json json = new Json();
 	Language language = new Language();
 
 	public Main(){
@@ -62,9 +59,9 @@ public class Main extends Plugin{
 			String check = String.valueOf(e.message.charAt(0));
 			//check if command
 			if(!check.equals("/")) {
-				JSONObject date = json.getData();
-				boolean translateo = (boolean) date.get("translateo");
 				boolean valid = e.message.matches("\\w+");
+				JSONObject date = getData();
+				boolean translateo = (boolean) date.get("translateo");
 				// check if enable translate
 				if (!valid && translateo) {
 					try{
@@ -81,7 +78,7 @@ public class Main extends Plugin{
 		});
 
 		if(!Core.settings.getDataDirectory().child("plugins/GA/setting.json").exists()){
-			json.addjson();
+			addjson();
 		}
 		//language.language();
 
@@ -109,9 +106,9 @@ public class Main extends Plugin{
 		});
 
 		handler.<Player>register("status",language.getinput("status",null,null), (args, player) -> {
-			player.sendMessage("FPS:"+extend.status("getfps")+"  Occupied memory:"+extend.status("getmemory")+"MB");
+			player.sendMessage("FPS:"+status("getfps")+"  Occupied memory:"+status("getmemory")+"MB");
 			player.sendMessage(language.getinput("status.number",String.valueOf(Vars.playerGroup.size()),null));
-			player.sendMessage(language.getinput("status.ban",extend.status("getbancount"),null));
+			player.sendMessage(language.getinput("status.ban",status("getbancount"),null));
 		});
 
 
@@ -203,12 +200,12 @@ public class Main extends Plugin{
 			if(!player.isAdmin){
 				player.sendMessage(language.getinput("admin.no",null,null));
 			} else {
-				String result=extend.host(args[0],args[1],"N");
+				String result=host(args[0],args[1],"N");
 				if (result != "Y") {
 					player.sendMessage(language.getinput("host.mode",args[1],null));
 				}else{
 					Call.sendMessage(language.getinput("host.re",null,null));
-					extend.host(args[0],args[1],"Y");
+					host(args[0],args[1],"Y");
 				}
 			}
 		});
@@ -222,7 +219,7 @@ public class Main extends Plugin{
 			}
 		});
 
-		handler.<Player>register("time",language.getinput("time",null,null), (args, player) -> player.sendMessage(language.getinput("time.info",extend.time(),null)));
+		handler.<Player>register("time",language.getinput("time",null,null), (args, player) -> player.sendMessage(language.getinput("time.info",timee(),null)));
 
 		handler.<Player>register("tr","<text> <Output-language>",language.getinput("tr",null,null), (args, player) -> {
 			//No spaces are allowed in the input language??
@@ -236,7 +233,7 @@ public class Main extends Plugin{
 				}
 			try{
 				String translationm = googletranslate.translate(text,args[1]);
-				Call.sendMessage(language.getinput("tips.return",player.name,translationm));
+				Call.sendMessage(language.getinput("tr.return",player.name,translationm));
 				}catch(Exception e){
 					return;
 				}
@@ -247,15 +244,15 @@ public class Main extends Plugin{
 			if(!player.isAdmin){
 				player.sendMessage(language.getinput("admin.no",null,null));
 			} else {
-				JSONObject date = json.getData();
+				JSONObject date = getData();
 				if (args.length == 1 && args[0].equals("on")) {
 					date.put("translateo", true);
 					Core.settings.getDataDirectory().child("plugins/GA/setting.json").writeString((String.valueOf(date)));
-					player.sendMessage(language.getinput("tr.on",null,null));
+					player.sendMessage(language.getinput("trr.on",null,null));
 				}else{
 					date.put("translateo", false);
 					Core.settings.getDataDirectory().child("plugins/GA/setting.json").writeString((String.valueOf(date)));
-					player.sendMessage(language.getinput("tr.off",null,null));
+					player.sendMessage(language.getinput("trr.off",null,null));
 				}
 			}
 		});
@@ -286,9 +283,20 @@ public class Main extends Plugin{
 					break;
 			}
 		});
-*/
-		//handler.<Player>register("tpa", "<Player name>", "Vote", (args, player) -> {
 
+		handler.<Player>register("setting","<text> [text]",language.getinput("setting",null,null), (args, player) -> {
+			switch(args[0]) {
+				case "help":
+					break;
+				case "Automatic-translation":
+					break;
+				case "language":
+					break;
+				default:
+					break;
+			}
+		});
+*/
 	}
 
 }

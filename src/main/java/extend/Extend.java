@@ -142,13 +142,14 @@ public class Extend{
 		return null;
 	}
 
-	public static String time() {
+	public static String timee() {
 		LocalDateTime now = LocalDateTime.now();
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yy-M-d a h:m.ss");
 		String nowString = now.format(dateTimeFormatter);
 		return nowString;
 	}
 
+/*
 	public String vote(String name) {
 
 		String result = null;
@@ -169,5 +170,10 @@ public class Extend{
 			result = "Y";
 			return result;
 	}
+
+	public static String time() {
+		
+	}
+	*/
 }
 
