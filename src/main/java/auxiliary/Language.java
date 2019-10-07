@@ -10,7 +10,7 @@ import io.anuke.arc.Core;
 //Arc
 
 import static extension.extend.Json.getData;
-import static extension.extend.Tool.*;
+import static extension.extend.tool.unicode.*;
 //GA-Exted
 
 import org.json.JSONArray;

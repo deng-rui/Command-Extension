@@ -7,11 +7,22 @@ Published files have been compiled and you can compile and try to use them yours
 ## Warning!!!
 By default, Google Translator should not set the source time to 0, otherwise it will be forbidden to access Google's API by ip.
 
-### Building a Jar
+### command
 
-`gradlew jar` / `./gradlew jar`
-
-Output jar should be in `build/libs`.
+info=info me.
+status=View server status.
+getpos=View the current coordinates.
+tpp=Transfer to specified coordinates.
+tp=Teleport to other players.
+suicide=Kill yourself.
+team=Replacement team.
+difficulty=Set server difficulty.
+gameover=End the game.
+host=Start a new game.
+runwave=Runwave.
+time=View the current time of the server.
+tr=Google translation(Use - instead of spaces in text).
+trr=Whether on/off launches Google Translation is not the default.
 
 
 ### Installing

@@ -233,29 +233,12 @@ public class Main extends Plugin{
 				}
 			try{
 				String translationm = googletranslate.translate(text,args[1]);
-				Call.sendMessage(language.getinput("tr.return",player.name,translationm));
+				Call.sendMessage("["+player.name+"]"+"[green] : [] "+translationm+"   -From Google Translator");
 				}catch(Exception e){
 					return;
 				}
 			
 			});
-
-		handler.<Player>register("trr","<on/off>",language.getinput("trr",null,null), (args, player) -> {
-			if(!player.isAdmin){
-				player.sendMessage(language.getinput("admin.no",null,null));
-			} else {
-				JSONObject date = getData();
-				if (args.length == 1 && args[0].equals("on")) {
-					date.put("translateo", true);
-					Core.settings.getDataDirectory().child("plugins/GA/setting.json").writeString((String.valueOf(date)));
-					player.sendMessage(language.getinput("trr.on",null,null));
-				}else{
-					date.put("translateo", false);
-					Core.settings.getDataDirectory().child("plugins/GA/setting.json").writeString((String.valueOf(date)));
-					player.sendMessage(language.getinput("trr.off",null,null));
-				}
-			}
-		});
 /*
 		handler.<Player>register("vote", "<gameover/kick> [playername...]", "Vote", (args, player) -> {
 			String result=null;
@@ -285,12 +268,30 @@ public class Main extends Plugin{
 		});
 
 		handler.<Player>register("setting","<text> [text]",language.getinput("setting",null,null), (args, player) -> {
+			if(!player.isAdmin){
+				player.sendMessage(language.getinput("admin.no",null,null));
+				return;
+			}
 			switch(args[0]) {
 				case "help":
+					player.sendMessage(language.getinput("setting.help",null,null));
 					break;
 				case "Automatic-translation":
+					JSONObject date = getData();
+					if (args.length == 1 && args[0].equals("on")) {
+						date.put("translateo", true);
+						Core.settings.getDataDirectory().child("plugins/GA/setting.json").writeString((String.valueOf(date)));
+						player.sendMessage(language.getinput("setting.trr.on",null,null));
+					}else{
+						date.put("translateo", false);
+						Core.settings.getDataDirectory().child("plugins/GA/setting.json").writeString((String.valueOf(date)));
+						player.sendMessage(language.getinput("setting.trr.off",null,null));
+					}
 					break;
 				case "language":
+					player.sendMessage(language.getinput("setting.language.info",null,null));
+					String result = setting_language(args[0],args[1]);
+					if(result = "Y")
 					break;
 				default:
 					break;

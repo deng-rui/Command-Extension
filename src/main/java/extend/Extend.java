@@ -171,9 +171,9 @@ public class Extend{
 			return result;
 	}
 
-	public static String time() {
+	public static String setting_language() {
 		
 	}
-	*/
+*/	
 }
 

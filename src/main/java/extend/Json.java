@@ -10,13 +10,16 @@ import org.json.JSONTokener;
 
 public class Json {
 	//JSONObject db = "/GA-resources/zh-CN.json";
-	//String db = Core.settings.getaddDirectory().child("plugins/Essentials/blacklist.json").readString();
 
 	public static void addjson() {
 		JSONObject add = new JSONObject();
+		/*
 		add.put("languageO", "en");
 		add.put("languageT", "US");
-		add.put("translateo", "false");
+		*/
+		add.put("languageO", "zh");
+		add.put("languageT", "CN");
+		add.put("translateo", false);
 		String json = add.toString();
 		Core.settings.getDataDirectory().child("plugins/GA/setting.json").writeString(json);
 	}

@@ -1,10 +1,10 @@
-package extension.extend;
+package extension.extend.tool;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 //Java
 
-public class Tool {
+public class unicode {
 		public static String unicodeToString(String str) {
 
 		Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
