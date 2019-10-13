@@ -8,7 +8,6 @@ Published files have been compiled and you can compile and try to use them yours
 By default, Google Translator should not set the source time to 0, otherwise it will be forbidden to access Google's API by ip.
 
 ### command
-
 info=info me.
 status=View server status.
 getpos=View the current coordinates.
