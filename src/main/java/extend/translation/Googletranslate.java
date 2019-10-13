@@ -1,4 +1,4 @@
-package extension.extend;
+package extension.extend.translation;
 
 import com.alibaba.fastjson.JSONArray;
 
@@ -17,21 +17,15 @@ import java.net.InetSocketAddress;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.HttpHost;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-
 import static extension.extend.tool.Translation_support.*;
+import static extension.extend.tool.HttpRequest.doGet;
+import static extension.extend.tool.Tool.isBlank;
+import static extension.extend.tool.Tool.isNotBlank;
 
 
 public class Googletranslate {
 
-	private static final String PATH = "/GA-resources/gettk.js";
+	private static final String PATH = "/GA-resources/tk/Google.js";
 	public String url;
 	public void setUrl(String url) {
 		this.url = url;

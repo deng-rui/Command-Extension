@@ -34,10 +34,11 @@ import io.anuke.mindustry.Vars;
 import static io.anuke.mindustry.Vars.*;
 import static io.anuke.mindustry.Vars.player;
 //
-import extension.extend.Googletranslate;
+import extension.extend.translation.Googletranslate;
+//import extension.extend.translation.Tencenttranslate;
 import extension.auxiliary.Language;
 //GA-Exted
-import static extension.extend.Url.HttpRequest;
+import static extension.extend.tool.HttpRequest.doGet;
 import static extension.extend.Extend.*;
 import static extension.extend.Json.*;
 //Static
@@ -91,10 +92,10 @@ public class Main extends Plugin{
 
 		handler.<Player>register("info",language.getinput("info",null,null), (args, player) -> {
 			String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
-			String Country = HttpRequest("http://ip-api.com/line/"+ip+"?fields=country");
+			String Country = doGet("http://ip-api.com/line/"+ip+"?fields=country");
 			player.sendMessage(language.getinput("info.load",null,null));
 			try{
-				Thread.currentThread().sleep(10000);
+				Thread.currentThread().sleep(2000);
 				}catch(InterruptedException ie){
 					ie.printStackTrace();
 				}
