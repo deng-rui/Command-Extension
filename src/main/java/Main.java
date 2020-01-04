@@ -5,34 +5,35 @@ import java.net.*;
 import java.util.*;
 //Java
 
-import io.anuke.arc.*;
-import io.anuke.arc.util.*;
-import io.anuke.arc.util.Timer;
-import io.anuke.arc.util.CommandHandler.*;
+import arc.*;
+import arc.util.*;
+import arc.util.Timer;
+import arc.util.CommandHandler.*;
 //Arc
 
-import io.anuke.mindustry.*;
-import io.anuke.mindustry.core.*;
-import io.anuke.mindustry.core.GameState.*;
-import io.anuke.mindustry.content.*;
-import io.anuke.mindustry.entities.*;
-import io.anuke.mindustry.entities.type.*;
-import io.anuke.mindustry.game.*;
-import io.anuke.mindustry.game.Team;
-import io.anuke.mindustry.game.Difficulty;
-import io.anuke.mindustry.game.EventType.*;
-import io.anuke.mindustry.game.EventType.PlayerJoin;
-import io.anuke.mindustry.gen.*;
-import io.anuke.mindustry.io.*;
-import io.anuke.mindustry.net.Administration.PlayerInfo ;
-import io.anuke.mindustry.net.Packets.KickReason;
-import io.anuke.mindustry.net.NetConnection;
-import io.anuke.mindustry.plugin.Plugin;
-import io.anuke.mindustry.Vars;
+import mindustry.*;
+import mindustry.core.*;
+import mindustry.core.GameState.*;
+import mindustry.content.*;
+import mindustry.entities.*;
+import mindustry.entities.type.*;
+import mindustry.entities.type.Player;
+import mindustry.game.*;
+import mindustry.game.Team;
+import mindustry.game.Difficulty;
+import mindustry.game.EventType.*;
+import mindustry.game.EventType.PlayerJoin;
+import mindustry.gen.*;
+import mindustry.io.*;
+import mindustry.net.Administration.PlayerInfo ;
+import mindustry.net.Packets.KickReason;
+import mindustry.net.NetConnection;
+import mindustry.plugin.Plugin;
+import mindustry.Vars;
 //Mindustry
 
-import static io.anuke.mindustry.Vars.*;
-import static io.anuke.mindustry.Vars.player;
+import static mindustry.Vars.*;
+import static mindustry.Vars.player;
 //
 import extension.extend.translation.Googletranslate;
 //import extension.extend.translation.Tencenttranslate;
@@ -148,7 +149,7 @@ public class Main extends Plugin{
 				Call.sendMessage(language.getinput("suicide.tips",player.name,null));
 		});
 
-		handler.<Player>register("team","",language.getinput("team",null,null), (args, player) ->{
+		handler.<Player>register("team",language.getinput("team",null,null), (args, player) ->{
 			//change team
 			if(!player.isAdmin){
 				player.sendMessage(language.getinput("admin.no",null,null));
@@ -157,13 +158,13 @@ public class Main extends Plugin{
 					player.sendMessage(language.getinput("team.fail",null,null));
 					return;
 				}
-				int index = player.getTeam().ordinal()+1;
-				while (index != player.getTeam().ordinal()){
-					if (index >= Team.all.length){
+				int index = player.getTeam().id+1;
+				while (index != player.getTeam().id){
+					if (index >= Team.all().length){
 						index = 0;
 					}
-					if (!Vars.state.teams.get(Team.all[index]).cores.isEmpty()){
-						player.setTeam(Team.all[index]);
+					if (!Vars.state.teams.get(Team.all()[index]).cores.isEmpty()){
+						player.setTeam(Team.all()[index]);
 						break;
 					}
 					index++;
@@ -171,6 +172,7 @@ public class Main extends Plugin{
 				//kill player
 				Call.onPlayerDeath(player);
 			}
+
 		});
 
 		handler.<Player>register("difficulty", "<difficulty>", language.getinput("difficulty",null,null), (args, player) -> {
@@ -302,3 +304,11 @@ public class Main extends Plugin{
 	}
 
 }
+
+/*2020/1/4 10:64:33
+ *本项目使用算法
+ *名称					使用算法	  			来源
+ *Language.Java			UTF8Control  		https://answer-id.com/52120414
+ *Googletranslate.Java	Googletranslate		https://github.com/PopsiCola/GoogleTranslate
+ *Main.Java 			info 				https://github.com/Kieaer/Essentials
+*/

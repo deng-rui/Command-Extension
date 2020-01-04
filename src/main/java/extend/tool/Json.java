@@ -1,4 +1,4 @@
-package extension.extend;
+package extension.extend.tool;
 
 import arc.Core;
 //Arc
@@ -21,12 +21,11 @@ public class Json {
 		add.put("languageT", "CN");
 		add.put("translateo", false);
 		String json = add.toString();
-		Core.settings.getDataDirectory().child("plugins/GA/setting.json").writeString(json);
+		Core.settings.getDataDirectory().child("mods/GA/setting.json").writeString(json);
 	}
 
-	public static JSONObject getData(){
-		String data = Core.settings.getDataDirectory().child("plugins/GA/setting.json").readString();
-		JSONTokener parser = new JSONTokener(data);
+	public static JSONObject getData(String fill){
+		JSONTokener parser = new JSONTokener(fill);
 		JSONObject object = new JSONObject(parser);
 		return object;
 	}

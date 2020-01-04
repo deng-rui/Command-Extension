@@ -12,45 +12,45 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 //Java
 
-import io.anuke.arc.*;
-import io.anuke.arc.files.*;
-import io.anuke.arc.util.*;
-import io.anuke.arc.util.Timer;
-import io.anuke.arc.util.CommandHandler.*;
-import io.anuke.arc.util.Timer.*;
-import io.anuke.arc.collection.*;
-import io.anuke.arc.collection.Array.*;
+import arc.*;
+import arc.Core;
+import arc.files.*;
+import arc.util.*;
+import arc.util.Timer;
+import arc.util.CommandHandler.*;
+import arc.util.Timer.*;
+import arc.struct.Array;
 //Arc
 
-import io.anuke.mindustry.*;
-import io.anuke.mindustry.core.*;
-import io.anuke.mindustry.core.GameState.*;
-import io.anuke.mindustry.content.*;
-import io.anuke.mindustry.entities.*;
-import io.anuke.mindustry.entities.type.*;
-import io.anuke.mindustry.game.*;
-import io.anuke.mindustry.game.Team;
-import io.anuke.mindustry.game.Difficulty;
-import io.anuke.mindustry.game.EventType;
-import io.anuke.mindustry.game.EventType.PlayerJoin;
-import io.anuke.mindustry.gen.*;
-import io.anuke.mindustry.io.*;
-import io.anuke.mindustry.maps.Map;
-import io.anuke.mindustry.maps.*;
-import io.anuke.mindustry.net.Administration.PlayerInfo ;
-import io.anuke.mindustry.net.Packets.KickReason;
-import io.anuke.mindustry.net.NetConnection;
-import io.anuke.mindustry.net.Packets.KickReason ;
-import io.anuke.mindustry.plugin.*;
-import io.anuke.mindustry.plugin.Plugin;
-import io.anuke.mindustry.type.*;
-import io.anuke.mindustry.Vars;
+import mindustry.*;
+import mindustry.core.*;
+import mindustry.core.GameState.*;
+import mindustry.content.*;
+import mindustry.entities.*;
+import mindustry.entities.type.*;
+import mindustry.game.*;
+import mindustry.game.Team;
+import mindustry.game.Difficulty;
+import mindustry.game.EventType;
+import mindustry.game.EventType.PlayerJoin;
+import mindustry.gen.*;
+import mindustry.io.*;
+import mindustry.maps.Map;
+import mindustry.maps.*;
+import mindustry.net.Administration.PlayerInfo ;
+import mindustry.net.Packets.KickReason;
+import mindustry.net.NetConnection;
+import mindustry.net.Packets.KickReason ;
+import mindustry.plugin.*;
+import mindustry.plugin.Plugin;
+import mindustry.type.*;
+import mindustry.Vars;
 //Mindustry
 
 import static java.lang.System.out;
 
-import static io.anuke.mindustry.Vars.*;
-import static io.anuke.mindustry.Vars.player;
+import static mindustry.Vars.*;
+import static mindustry.Vars.player;
 //Static
 
 public class Extend{
@@ -66,12 +66,12 @@ public class Extend{
 		int idb = 0;
 		int ipb = 0;
 
-		Array<PlayerInfo> bans = Vars.netServer.admins.getBanned();
+		Array<PlayerInfo> bans = netServer.admins.getBanned();
 		for(PlayerInfo info : bans){
 			idb++;
 		}
 
-		Array<String> ipbans = Vars.netServer.admins.getBannedIPs();
+		Array<String> ipbans = netServer.admins.getBannedIPs();
 		for(String string : ipbans){
 			ipb++;
 		}
