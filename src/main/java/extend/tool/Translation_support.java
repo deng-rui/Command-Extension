@@ -13,6 +13,9 @@ import java.text.ParseException;
 import static extension.extend.tool.HttpRequest.*;
 import static extension.extend.tool.Tool.*;
 
+import static extension.extend.tool.Json.*;
+//TEST
+
 public class Translation_support {
 
 	public static String extractByStartAndEnd(String str, String startStr, String endStr) {
@@ -54,33 +57,19 @@ public class Translation_support {
 		return result;
 	}
 
-	public static String getkeys(String url,String keys) throws Exception {
+	public static String getkeys(String url,String keys,int numbero,int numbert) throws Exception {
 		try {
 			String result = doGet(url);
+			String text = removeAllBlank(result);
+			TEST("TEST",text,"mods/A.json");
 			if (isNotBlank(result)) {
-				if (result.indexOf(keys) > -1) {
-					String matchString = findMatchString(result, keys+".*?',");
-					String tkk = matchString.substring(5, matchString.length() - 2);
+					String matchString = findMatchString(text, keys);
+					String tkk = matchString.substring(numbero, matchString.length() - numbert);
 					return tkk;
-				}
 			}
 		} catch (Exception e) {
 		}
 		return null;
 	}
 
-	public static String getkeys_ljbd(String url,String keys) throws Exception {
-		try {
-			String result = doGet(url);
-			if (isNotBlank(result)) {
-				if (result.indexOf(keys) > -1) {
-					String matchString = findMatchString(result, keys+".*?';");
-					String tkk = matchString.substring(5, matchString.length() - 2);
-					return tkk;
-				}
-			}
-		} catch (Exception e) {
-		}
-		return null;
-	}
 }

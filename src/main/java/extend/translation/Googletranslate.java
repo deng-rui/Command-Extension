@@ -83,7 +83,7 @@ public class Googletranslate {
 			return null;
 		}
 
-		String tkk = getkeys("https://translate.google.cn/","tkk:");
+		String tkk = getkeys("https://translate.google.cn/","tkk:.*?',",Integer.parseInt("5"),Integer.parseInt("2"));
 
 		if (isBlank(tkk)) {
 		}
