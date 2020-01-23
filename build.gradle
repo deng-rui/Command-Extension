@@ -26,7 +26,9 @@ dependencies{
     compile group: 'com.alibaba', name: 'fastjson', version: '1.2.62'
     //compile 'org.xerial:sqlite-jdbc:3.28.0'
     compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.2'
-    compile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+    //compile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+    //compile group: 'net.sourceforge.htmlunit', name: 'htmlunit', version: '2.36.0'
+
 
 }
 

@@ -11,7 +11,7 @@ import arc.Core;
 
 import extension.auxiliary.UTF8Control;
 
-import static extension.extend.tool.Json.getData;
+import static extension.tool.Json.getData;
 //GA-Exted
 
 import org.json.JSONArray;

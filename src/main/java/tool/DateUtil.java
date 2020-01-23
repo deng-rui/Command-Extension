@@ -1,4 +1,4 @@
-package extension.extend.tool;
+package extension.tool;
 
 import java.text.SimpleDateFormat;
 import java.text.ParseException;

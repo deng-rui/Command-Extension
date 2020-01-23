@@ -4,6 +4,9 @@ Unfinished, plug-in borrows J-Vds and Kieaer partial algorithms
 
 Published files have been compiled and you can compile and try to use them yourself. :)
 
+##Plug in's current main direction:
+1.translate
+
 ## Warning!!!
 By default, Google Translator should not set the source time to 0, otherwise it will be forbidden to access Google's API by ip.
 
@@ -31,5 +34,5 @@ trr=Whether on/off launches Google Translation is not the default.
 
 ### Installing
 
-Simply place the output jar from the step above in your server's `config/plugins` directory and restart the server.
-List your currently installed plugins by running the `plugins` command.
+Simply place the output jar from the step above in your server's `config/mods` directory and restart the server.
+List your currently installed plugins by running the `mods` command.

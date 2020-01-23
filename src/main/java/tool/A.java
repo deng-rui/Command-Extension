@@ -1,4 +1,32 @@
-/*
+/*package extension.extend.tool;
+
+import com.gargoylesoftware.htmlunit.*;
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.DomElement;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.util.Cookie;
+
+import java.util.List;
+import java.util.Set;
+
+public class A {
+
+    public static void getCookie(String url) throws Exception {
+        WebClient webClient = new WebClient(BrowserVersion.CHROME);
+        // 等待后台 JS 执行
+        webClient.waitForBackgroundJavaScript(10000);
+        HtmlPage page = webClient.getPage(url);
+
+        // 获取 Cookie
+        Set<Cookie> cookies = webClient.getCookieManager().getCookies();
+        for (Cookie cookie : cookies) {
+            System.out.println(cookie.getName() + ": " + cookie.getValue());
+        }
+    }
+}
+
 //Debugging part
 package extension.extend.tool;
 
@@ -20,22 +48,6 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
- 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.cookie.CookieSpecProvider;
-import org.apache.http.message.BasicHeader;
-import java.util.Date;
-
-
 import  org.apache.http.Consts;
 import  org.apache.http.NameValuePair;
 import  org.apache.http.client.CookieStore;
@@ -52,6 +64,22 @@ import  org.apache.http.impl.client.CloseableHttpClient;
 import  org.apache.http.impl.client.HttpClients;
 import  org.apache.http.message.BasicNameValuePair;
 import  org.apache.http.util.EntityUtils;
+ 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
+
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.cookie.CookieSpecProvider;
+import org.apache.http.message.BasicHeader;
+import java.util.Date;
+
+
 
 public class A {
 
@@ -168,6 +196,5 @@ public class A {
        e.printStackTrace();
      }
    }
-*/
 }
-
+*/

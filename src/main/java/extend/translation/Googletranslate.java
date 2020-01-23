@@ -17,10 +17,10 @@ import java.net.InetSocketAddress;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static extension.extend.tool.Translation_support.*;
-import static extension.extend.tool.HttpRequest.doGet;
-import static extension.extend.tool.Tool.isBlank;
-import static extension.extend.tool.Tool.isNotBlank;
+import static extension.extend.Translation_support.*;
+import static extension.tool.HttpRequest.doGet;
+import static extension.tool.Tool.isBlank;
+import static extension.tool.Tool.isNotBlank;
 
 
 public class Googletranslate {

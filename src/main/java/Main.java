@@ -39,12 +39,12 @@ import extension.extend.translation.Googletranslate;
 import extension.extend.translation.Baidutranslate;
 //import extension.extend.translation.Tencenttranslate;
 import extension.auxiliary.Language;
-//import extension.extend.tool.A;
+//import extension.tool.A;
 //GA-Exted
-import static extension.extend.tool.HttpRequest.doGet;
-import static extension.extend.tool.HttpRequest.doCookie;
+import static extension.tool.HttpRequest.doGet;
+import static extension.tool.HttpRequest.doCookie;
 import static extension.extend.Extend.*;
-import static extension.extend.tool.Json.*;
+import static extension.tool.Json.*;
 //Static
 
 import org.json.JSONArray;
@@ -58,6 +58,7 @@ public class Main extends Plugin{
 	Googletranslate googletranslate = new Googletranslate();
 	Baidutranslate baidutranslate = new Baidutranslate();
 	Language language = new Language();
+	ClientCommands clientCommands = new ClientCommands();
 
 	public Main(){
 
@@ -87,24 +88,21 @@ public class Main extends Plugin{
 			Initialization();
 		}
 		
-		//language.language();
+		//language.language();	
 
-		
-		
-		
-/*
 //Debugging part
-
+/*
 try{
 	A a = new A();
 	doCookie("https://fanyi.baidu.com/");
-	a.gtCookie("https://www.baidu.com/");
+	a.getCookie("https://fanyi.baidu.com/");
+	
+	//System.out.println(">>>>>>ter:"+baidutranslate.translate("engilsh","zh"));
 	}catch(Exception ie){
-	}
 }
-
 //很遗憾，我尝试获取cookie，可cookie均是过期：（
 */
+}
 		
 
 	@Override
@@ -127,9 +125,9 @@ try{
 		});
 
 		handler.<Player>register("status",language.getinput("status"), (args, player) -> {
-			player.sendMessage("FPS:"+status("getfps")+"  Occupied memory:"+status("getmemory")+"MB");
+			player.sendMessage("FPS:"+clientCommands.status("getfps")+"  Occupied memory:"+clientCommands.status("getmemory")+"MB");
 			player.sendMessage(language.getinput("status.number",String.valueOf(Vars.playerGroup.size())));
-			player.sendMessage(language.getinput("status.ban",status("getbancount")));
+			player.sendMessage(language.getinput("status.ban",clientCommands.status("getbancount")));
 		});
 
 
@@ -222,12 +220,12 @@ try{
 			if(!player.isAdmin){
 				player.sendMessage(language.getinput("admin.no"));
 			} else {
-				String result=host(args[0],args[1],"N");
+				String result=clientCommands.host(args[0],args[1],"N");
 				if (result != "Y") {
 					player.sendMessage(language.getinput("host.mode",args[1]));
 				}else{
 					Call.sendMessage(language.getinput("host.re"));
-					host(args[0],args[1],"Y");
+					clientCommands.host(args[0],args[1],"Y");
 				}
 			}
 		});
@@ -241,7 +239,7 @@ try{
 			}
 		});
 
-		handler.<Player>register("time",language.getinput("time"), (args, player) -> player.sendMessage(language.getinput("time.info",timee())));
+		handler.<Player>register("time",language.getinput("time"), (args, player) -> player.sendMessage(language.getinput("time.info",clientCommands.timee())));
 
 		handler.<Player>register("tr","<text> <Output-language>",language.getinput("tr"), (args, player) -> {
 			//No spaces are allowed in the input language??
@@ -264,28 +262,31 @@ try{
 			});
 /*
 		handler.<Player>register("vote", "<gameover/kick> [playername...]", "Vote", (args, player) -> {
-			String result=null;
-			if (args[0] == "gameover" || args[0] == "kick" || args[0] == "ban") {
-				result=extend.vote(player.name);
-				Call.sendMessage("[green] Gameover vote started!");
-				if (result == "N") {
-					Call.sendMessage("[green] [red]vote failed.");
-					return;
-				}else if (result == "Found") {
-					player.sendMessage("[green] Vote not processing!");
-					return;
-				}
-			}
-				switch(args[0]) {
-				case "gameover":
-					Call.sendMessage("[green] Gameover vote passed!");
-					Events.fire(new GameOverEvent(Team.crux));
-					break;
+			switch(args[0]) {
 				case "kick":
-					Player target = playerGroup.find(p -> p.name.equals(args[1]));
-					target.con.kick(KickReason.kick);
+					Player result = Vars.playerGroup.find(p -> p.name.equalsIgnoreCase(args[1]));
+					if (result == null) {
+						player.sendMessage(language.getinput("vote.err.no"));
+						return;
+					}
+					if (result.isAdmin){
+						player.sendMessage(language.getinput("vote.err.admin"));
+						return;
+					}
+					Vote vote = new Vote(player, args[0], other);
+					vote.command();
+					break;
+				case "gameover": 
+					Player result = Vars.playerGroup.find(p -> Events.fire(new GameOverEvent(Team.crux)));
+					if (result == null) {
+						player.sendMessage(language.getinput("vote.err.no"));
+						return;
+					}
+					Vote vote = new Vote(player, args[0], other);
+					vote.command();
 					break;
 				default:
+					player.sendMessage(language.getinput("vote.err.no"));
 					break;
 			}
 		});

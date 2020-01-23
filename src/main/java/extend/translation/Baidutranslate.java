@@ -1,7 +1,7 @@
 package extension.extend.translation;
 
 import com.alibaba.fastjson.JSONArray;
-//import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 
 import java.io.*;
 import java.net.*;
@@ -29,11 +29,11 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import static extension.extend.tool.HttpRequest.doPost;
-import static extension.extend.tool.Translation_support.*;
-import static extension.extend.tool.Tool.isBlank;
-import static extension.extend.tool.Tool.isNotBlank;
-import static extension.extend.tool.Json.*;
+import static extension.extend.Translation_support.*;
+import static extension.tool.HttpRequest.doPost;
+import static extension.tool.Tool.isBlank;
+import static extension.tool.Tool.isNotBlank;
+import static extension.tool.Json.*;
 
 
 
@@ -78,7 +78,7 @@ public class Baidutranslate {
 		try {
 			if (engine instanceof Invocable) {
 				Invocable invocable = (Invocable) engine;
-				result = (String) invocable.invokeFunction("tk", new Object[]{word, gtk});
+				result = (String) invocable.invokeFunction("token", new Object[]{word, gtk});
 			}
 		} catch (Exception e) {
 		}
@@ -86,6 +86,7 @@ public class Baidutranslate {
 	}
 
 	public String translate(String word, String from, String to) throws Exception {
+		String dst = null;
 		try {
 			word = URLEncoder.encode(word, "UTF-8");
 			System.out.println(">>>>>>word:"+word);
@@ -93,22 +94,29 @@ public class Baidutranslate {
 					e.printStackTrace();
 		}
 		String gtk = getkeys("https://fanyi.baidu.com/","gtk:'.*?'",Integer.parseInt("5"),Integer.parseInt("1"));
-		//System.out.println(">>>>>>gtk:"+gtk);
+		System.out.println(gtk);
 		if (isBlank(word))return null;
-		String token = getkeys("https://fanyi.baidu.com/","token:'.*?'",Integer.parseInt("7"),Integer.parseInt("1"));
-		//String token = "e71079254d803f6dfe41ab57f20e1120";
-		//System.out.println(">>>>>>token:"+token);
+		//String token = getkeys("https://fanyi.baidu.com/","token:'.*?'",Integer.parseInt("7"),Integer.parseInt("1"));
+		String token = "9ce13f0597499da92fec34778ef36d91";
+		System.out.println(token);
 		//本地获取token过旧，可能是我网络问题:(
 		if (isBlank(token))return null;
 		String sign = getTK(word, gtk);
-		//System.out.println(">>>>>>sign:"+sign);
+		System.out.println(sign);
 		if (isBlank(sign))return null;
-        String paramMap = "from="+from+"&to="+to+"&query="+word+"&transtype=realtime"+"&simple_means_flag=3"+"&sign="+sign+"&token="+token;
-        System.out.println(">>>>>>paramMap:"+paramMap);
- 		return doPost("https://fanyi.baidu.com/v2transapi?from=auto&to="+to, paramMap);
-    }
+		String paramMap = "from="+from+"&to="+to+"&query="+word+"&transtype=realtime"+"&simple_means_flag=3"+"&sign="+sign+"&token="+token;
+		System.out.println(paramMap);
+		String result = doPost("https://fanyi.baidu.com/v2transapi?from=auto&to="+to, paramMap);
+		System.out.println(result);
 
-    public String translate(String word, String to) throws Exception {
+		JSONObject jsonObject = (JSONObject) JSONObject.parseObject(result).getJSONObject("trans_result").getJSONObject("data");
+		System.out.println(jsonObject);
+			dst = jsonObject.getString("dst");
+			System.out.println(dst);
+			return dst;  
+	}
+
+	public String translate(String word, String to) throws Exception {
 		return translate(word, "en", to);
 	}
 
