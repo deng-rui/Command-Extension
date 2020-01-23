@@ -14,6 +14,7 @@ By default, Google Translator should not set the source time to 0, otherwise it 
 Baidu Translate Cookie and tonken timeliness
 add Tencent translation
 
+"Baidu translation gives up temporarily"
 
 ### command
 info=info me.  
