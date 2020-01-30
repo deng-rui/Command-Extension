@@ -1,4 +1,5 @@
 ## Premise
+Recovery daily change of the project
 
 Unfinished, plug-in borrows J-Vds and Kieaer partial algorithms
 
@@ -37,3 +38,7 @@ trr=Whether on/off launches Google Translation is not the default.
 
 Simply place the output jar from the step above in your server's `config/mods` directory and restart the server.
 List your currently installed plugins by running the `mods` command.
+
+### NOT TAB
+This plug-in is used on mindustry.ga:60001
+If necessary, you can try to change the localization parameters yourself
