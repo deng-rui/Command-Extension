@@ -43,6 +43,7 @@ import extension.auxiliary.Language;
 //GA-Exted
 import static extension.tool.HttpRequest.doGet;
 import static extension.tool.HttpRequest.doCookie;
+import static extension.extend.Extend.ClientCommands.*;
 import static extension.extend.Extend.*;
 import static extension.tool.Json.*;
 //Static
@@ -58,7 +59,8 @@ public class Main extends Plugin{
 	Googletranslate googletranslate = new Googletranslate();
 	Baidutranslate baidutranslate = new Baidutranslate();
 	Language language = new Language();
-	ClientCommands clientCommands = new ClientCommands();
+//改进全局变量
+//VOTE
 
 	public Main(){
 
@@ -84,10 +86,14 @@ public class Main extends Plugin{
 			}
 		});
 
+		Events.on(EventType.PlayerJoin.class, e -> {
+			Call.onInfoMessage(e.player.con,language.getinput("join.start",timee()));
+		});
+
 		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists()){
 			Initialization();
-		}
-		
+		};
+
 		//language.language();	
 
 //Debugging part
@@ -107,6 +113,7 @@ try{
 
 	@Override
 	public void registerClientCommands(CommandHandler handler){
+		handler.removeCommand("vote");
 
 		handler.<Player>register("info",language.getinput("info"), (args, player) -> {
 			String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
@@ -125,9 +132,9 @@ try{
 		});
 
 		handler.<Player>register("status",language.getinput("status"), (args, player) -> {
-			player.sendMessage("FPS:"+clientCommands.status("getfps")+"  Occupied memory:"+clientCommands.status("getmemory")+"MB");
+			player.sendMessage("FPS:"+status("getfps")+"  Occupied memory:"+status("getmemory")+"MB");
 			player.sendMessage(language.getinput("status.number",String.valueOf(Vars.playerGroup.size())));
-			player.sendMessage(language.getinput("status.ban",clientCommands.status("getbancount")));
+			player.sendMessage(language.getinput("status.ban",status("getbancount")));
 		});
 
 
@@ -176,6 +183,7 @@ try{
 					return;
 				}
 				int index = player.getTeam().id+1;
+				player.sendMessage(String.valueOf(index));
 				while (index != player.getTeam().id){
 					if (index >= Team.all().length){
 						index = 0;
@@ -220,12 +228,12 @@ try{
 			if(!player.isAdmin){
 				player.sendMessage(language.getinput("admin.no"));
 			} else {
-				String result=clientCommands.host(args[0],args[1],"N");
+				String result=host(args[0],args[1],"N");
 				if (result != "Y") {
 					player.sendMessage(language.getinput("host.mode",args[1]));
 				}else{
 					Call.sendMessage(language.getinput("host.re"));
-					clientCommands.host(args[0],args[1],"Y");
+					host(args[0],args[1],"Y");
 				}
 			}
 		});
@@ -239,7 +247,7 @@ try{
 			}
 		});
 
-		handler.<Player>register("time",language.getinput("time"), (args, player) -> player.sendMessage(language.getinput("time.info",clientCommands.timee())));
+		handler.<Player>register("time",language.getinput("time"), (args, player) -> player.sendMessage(language.getinput("time.info",timee())));
 
 		handler.<Player>register("tr","<text> <Output-language>",language.getinput("tr"), (args, player) -> {
 			//No spaces are allowed in the input language??
@@ -260,37 +268,22 @@ try{
 				}
 			
 			});
-/*
+
 		handler.<Player>register("vote", "<gameover/kick> [playername...]", "Vote", (args, player) -> {
 			switch(args[0]) {
 				case "kick":
-					Player result = Vars.playerGroup.find(p -> p.name.equalsIgnoreCase(args[1]));
-					if (result == null) {
-						player.sendMessage(language.getinput("vote.err.no"));
-						return;
-					}
-					if (result.isAdmin){
-						player.sendMessage(language.getinput("vote.err.admin"));
-						return;
-					}
-					Vote vote = new Vote(player, args[0], other);
-					vote.command();
+				Player other = Vars.playerGroup.find(p -> p.name.equalsIgnoreCase(args[1]));
+					vote(args[0]);
 					break;
 				case "gameover": 
-					Player result = Vars.playerGroup.find(p -> Events.fire(new GameOverEvent(Team.crux)));
-					if (result == null) {
-						player.sendMessage(language.getinput("vote.err.no"));
-						return;
-					}
-					Vote vote = new Vote(player, args[0], other);
-					vote.command();
+					vote(args[0]);
 					break;
 				default:
 					player.sendMessage(language.getinput("vote.err.no"));
 					break;
 			}
 		});
-
+/*
 		handler.<Player>register("setting","<text> [text]",language.getinput("setting"), (args, player) -> {
 			if(!player.isAdmin){
 				player.sendMessage(language.getinput("admin.no"));
