@@ -23,7 +23,6 @@ import arc.struct.Array;
 
 import mindustry.*;
 import mindustry.core.*;
-import mindustry.core.NetServer.TeamAssigner;
 import mindustry.core.GameState.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -46,6 +45,9 @@ import mindustry.plugin.Plugin;
 import mindustry.type.*;
 import mindustry.Vars;
 //Mindustry
+
+import extension.extend.translation.Googletranslate;
+//GA-Exted
 
 import static java.lang.System.out;
 
@@ -164,16 +166,23 @@ public class Extend{
 		public static void setting_language() {
 
 		}
-
-		public static String getRandom(int length){
-		String val = "";
-		Random random = new Random();
-		for (int i = 0; i < length; i++) {
-			val += String.valueOf(random.nextInt(10));
-		}
-		return val;
 	}
 
+	public static class Event{
+
+		public static String PlayerChatEvent_translate(String text) {
+			Googletranslate googletranslate = new Googletranslate();
+			try{
+				Thread.currentThread().sleep(2000);
+				String translationa = googletranslate.translate(text,"en");
+				return translationa;
+			}catch(InterruptedException ie){
+				ie.printStackTrace();
+			}catch(Exception ie){
+				return null;
+			}
+			return null;
+		}
 	}
 }
 

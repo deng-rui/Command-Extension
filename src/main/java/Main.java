@@ -44,7 +44,10 @@ import extension.auxiliary.Language;
 import static extension.tool.HttpRequest.doGet;
 import static extension.tool.HttpRequest.doCookie;
 import static extension.extend.Extend.ClientCommands.*;
+import static extension.extend.Extend.Event.*;
 import static extension.extend.Extend.*;
+import static extension.auxiliary.Strings.*;
+
 import static extension.tool.Json.*;
 //Static
 
@@ -73,26 +76,27 @@ public class Main extends Plugin{
 				boolean translateo = (boolean) date.get("translateo");
 				// check if enable translate
 				if (!valid && translateo) {
-					try{
-						Thread.currentThread().sleep(2000);
-						String translationa = googletranslate.translate(e.message,"en");
-						Call.sendMessage("["+e.player.name+"]"+"[green] : [] "+translationa+"   -From Google Translator");
-						}catch(InterruptedException ie){
-							ie.printStackTrace();
-						}catch(Exception ie){
-							return;
-						}
+					Call.sendMessage("["+e.player.name+"]"+"[green] : [] "+PlayerChatEvent_translate(e.message)+"   -From Google Translator");
 				}
 			}
 		});
 
 		Events.on(EventType.PlayerJoin.class, e -> {
-			Call.onInfoMessage(e.player.con,language.getinput("join.start",timee()));
+			Call.onInfoMessage(e.player.con,language.getinput("join.start",timee(),getGC_1(),getGC_2(),getGC_3()));
+		});
+
+		Events.on(GameOverEvent.class, e -> {
+			setGC();
 		});
 
 		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists()){
 			Initialization();
 		};
+
+		if(state.rules.pvp && "禁止".equalsIgnoreCase(getGC_1())) {
+			state.rules.playerDamageMultiplier = 0f;
+			state.rules.playerHealthMultiplier = 0.001f;
+		}
 
 		//language.language();	
 
@@ -110,10 +114,36 @@ try{
 */
 }
 		
+	@Override
+	public void registerServerCommands(CommandHandler handler){
+		handler.register("gac","<PHONENUMB> <ON/OFF>", "NOT", (arg) -> {
+			switch(arg[0]){
+			case "1":
+				if("Y".equalsIgnoreCase(arg[1])) {
+					setGC_1("允许");
+					state.rules.playerDamageMultiplier = 0.33f;
+					state.rules.playerHealthMultiplier = 1f;
+
+				}
+				if ("N".equalsIgnoreCase(arg[1])) {
+					setGC_1("禁止");
+					state.rules.playerDamageMultiplier = 0.0000f;
+					state.rules.playerHealthMultiplier = 0.0001f;
+				}
+			case "2":
+				if("Y".equalsIgnoreCase(arg[1]))setGC_2("允许");
+				if ("N".equalsIgnoreCase(arg[1]))setGC_2("禁止");
+			case "3":
+				if("Y".equalsIgnoreCase(arg[1]))setGC_3("允许");
+				if ("N".equalsIgnoreCase(arg[1]))setGC_3("禁止");
+			}
+			//if("sandbox".equalsIgnoreCase(gamemodes)){
+		});
+	};
 
 	@Override
 	public void registerClientCommands(CommandHandler handler){
-		handler.removeCommand("vote");
+		handler.removeCommand("votekick");
 
 		handler.<Player>register("info",language.getinput("info"), (args, player) -> {
 			String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
@@ -139,6 +169,8 @@ try{
 
 
 		handler.<Player>register("getpos",language.getinput("getpos"), (args, player) -> player.sendMessage(language.getinput("getpos.info",String.valueOf(Math.round(player.x/8)),String.valueOf(Math.round(player.y/8)))));
+
+		handler.<Player>register("gc",language.getinput("gc"), (args, player) -> Call.onInfoMessage(player.con,language.getinput("gc.info")));
 
 		handler.<Player>register("tpp","<player> <player>",language.getinput("tpp"), (args, player) -> {
 			if(!player.isAdmin){
@@ -268,7 +300,7 @@ try{
 				}
 			
 			});
-
+/*
 		handler.<Player>register("vote", "<gameover/kick> [playername...]", "Vote", (args, player) -> {
 			switch(args[0]) {
 				case "kick":
@@ -283,7 +315,7 @@ try{
 					break;
 			}
 		});
-/*
+
 		handler.<Player>register("setting","<text> [text]",language.getinput("setting"), (args, player) -> {
 			if(!player.isAdmin){
 				player.sendMessage(language.getinput("admin.no"));

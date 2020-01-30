@@ -30,12 +30,5 @@ public class Tool {
 	public static boolean isNotBlank(String string) {
 		return !isBlank(string);
 	}
-
-	public static class RuntimeData {
-	private static final Map<String, Team> teams = new LinkedHashMap<>();
-	public static Map<String, Team> getTeams() {
-	  return teams;
-	}
-   
-}
+	
 }
