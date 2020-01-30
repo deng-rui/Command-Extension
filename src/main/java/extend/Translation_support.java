@@ -59,9 +59,9 @@ public class Translation_support {
 
 	public static String getkeys(String url,String keys,int numbero,int numbert) throws Exception {
 		try {
-			String result = doGet(url);
+			String result = getPageSource(url);
 			String text = removeAllBlank(result);
-			//TEST("TEST",text,"mods/A.json");
+			TEST("TEST",text,"mods/A.json");
 			if (isNotBlank(result)) {
 					String matchString = findMatchString(text, keys);
 					String tkk = matchString.substring(numbero, matchString.length() - numbert);

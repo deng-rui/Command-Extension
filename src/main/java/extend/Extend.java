@@ -5,10 +5,11 @@ import java.net.*;
 import java.time.*;
 import java.time.format.*;
 import java.util.*;
+import java.util.ArrayList;
 import java.lang.Math;
 import java.lang.reflect.Method;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 //Java
 
 import arc.*;
@@ -23,7 +24,6 @@ import arc.struct.Array;
 
 import mindustry.*;
 import mindustry.core.*;
-import mindustry.core.NetServer.TeamAssigner;
 import mindustry.core.GameState.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -51,8 +51,6 @@ import static java.lang.System.out;
 
 import static mindustry.Vars.*;
 import static mindustry.Vars.player;
-import static extension.auxiliary.Booleans.*;
-import static extension.tool.Tool.RuntimeData;
 //Static
 
 public class Extend{
@@ -146,33 +144,21 @@ public class Extend{
 		}
 
 		public static String timee() {
-			TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
 			LocalDateTime now = LocalDateTime.now();
-			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd a h:m:ss");
+			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yy-M-d a h:m.ss");
 			String nowString = now.format(dateTimeFormatter);
 			return nowString;
 		}
 
-		public static void vote(String type) {
-			setvote(true);
-			long start = System.currentTimeMillis();
-			final long end = start + 60 * 60 * 1000;
-			final Timer timer = new Timer();
-			int i = 1;
-		}
+
+		public static void command(){
+
+	        }
+
 
 		public static void setting_language() {
-
+			
 		}
-
-		public static String getRandom(int length){
-		String val = "";
-		Random random = new Random();
-		for (int i = 0; i < length; i++) {
-			val += String.valueOf(random.nextInt(10));
-		}
-		return val;
-	}
 
 	}
 }
