@@ -42,5 +42,5 @@ jar{
 tasks.withType(JavaCompile) {  
     options.encoding = "UTF-8"  
     //options.compilerArgs << "-Xlint:unchecked" << "-Werror"
-    options.compilerArgs << "-Xdiags:verbose" << "-Werror"
+    //options.compilerArgs << "-Xdiags:verbose" << "-Werror"
 }
