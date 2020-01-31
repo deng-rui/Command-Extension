@@ -11,7 +11,7 @@ repositories{
 
 ext{
     //the build number that this plugin is made for
-    mindustryVersion = 'v102'
+    mindustryVersion = 'v103'
 }
 
 dependencies{
@@ -41,4 +41,6 @@ jar{
 
 tasks.withType(JavaCompile) {  
     options.encoding = "UTF-8"  
+    //options.compilerArgs << "-Xlint:unchecked" << "-Werror"
+    options.compilerArgs << "-Xdiags:verbose" << "-Werror"
 }

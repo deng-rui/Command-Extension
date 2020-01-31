@@ -17,12 +17,10 @@ import mindustry.core.GameState.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.type.*;
-import mindustry.entities.type.Player;
 import mindustry.game.*;
 import mindustry.game.Team;
 import mindustry.game.Difficulty;
 import mindustry.game.EventType.*;
-import mindustry.game.EventType.PlayerJoin;
 import mindustry.gen.*;
 import mindustry.io.*;
 import mindustry.net.Administration.PlayerInfo ;
@@ -34,20 +32,24 @@ import mindustry.Vars;
 
 import static mindustry.Vars.*;
 import static mindustry.Vars.player;
+import static mindustry.core.NetClient.colorizeName;
+import static mindustry.core.NetClient.sendChatMessage;
 //
-import extension.extend.translation.Googletranslate;
-import extension.extend.translation.Baidutranslate;
-//import extension.extend.translation.Tencenttranslate;
+import extension.util.translation.Googletranslate;
+import extension.util.translation.Baidutranslate;
+//import extension.util.translation.Tencenttranslate;
 import extension.auxiliary.Language;
 //import extension.tool.A;
 //GA-Exted
+
 import static extension.tool.HttpRequest.doGet;
 import static extension.tool.HttpRequest.doCookie;
-import static extension.extend.Extend.ClientCommands.*;
-import static extension.extend.Extend.Event.*;
-import static extension.extend.Extend.*;
+import static extension.util.Translation_support.*;
+import static extension.util.Extend.ClientCommands.*;
+import static extension.util.Extend.Event.*;
+import static extension.util.Extend.*;
+import static extension.util.Sensitive_Thesaurus.*;
 import static extension.auxiliary.Strings.*;
-
 import static extension.tool.Json.*;
 //Static
 
@@ -64,39 +66,43 @@ public class Main extends Plugin{
 	Language language = new Language();
 //改进全局变量
 //VOTE
-
+	@SuppressWarnings("unchecked")
 	public Main(){
 
 		Events.on(EventType.PlayerChatEvent.class, e -> {
-			String check = String.valueOf(e.message.charAt(0));
-			//check if command
-			if(!check.equals("/")) {
-				boolean valid = e.message.matches("\\w+");
-				JSONObject date = getData("mods/GA/setting.json");
-				boolean translateo = (boolean) date.get("translateo");
-				// check if enable translate
-				if (!valid && translateo) {
-					Call.sendMessage("["+e.player.name+"]"+"[green] : [] "+PlayerChatEvent_translate(e.message)+"   -From Google Translator");
+			String result = PlayerChatEvent_translate(String.valueOf(e.message.charAt(0)),e.message);
+			if (null != result)Call.sendMessage("["+e.player.name+"]"+"[green] : [] "+result+"   -From Google Translator");
+			//自动翻译
+			Set<String> set;
+			set = Sensitive_Thesaurus(removeAll_EN(e.message));
+			if (0 < set.size())PlayerChatEvent_Sensitive_Thesaurus(e.player, set.iterator().next());
+			set = Sensitive_Thesaurus(removeAll_CH(e.message));
+			if (0 < set.size())PlayerChatEvent_Sensitive_Thesaurus(e.player, set.iterator().next());
+			//中英分检测
+		});
+
+		Events.on(EventType.PlayerJoin.class, e -> {
+			Call.onInfoMessage(e.player.con,language.getinput("join.start",timee(),getGC_1()));
+			if (Vars.state.rules.pvp){
+				if("禁止".equalsIgnoreCase(getGC_1())){
+					state.rules.playerDamageMultiplier = 0f;
+					state.rules.playerHealthMultiplier = 0.01f;
+				}else{
+					state.rules.playerDamageMultiplier = 0.33f;
+					state.rules.playerHealthMultiplier = 1f;
 				}
 			}
 		});
 
-		Events.on(EventType.PlayerJoin.class, e -> {
-			Call.onInfoMessage(e.player.con,language.getinput("join.start",timee(),getGC_1(),getGC_2(),getGC_3()));
-		});
-
 		Events.on(GameOverEvent.class, e -> {
-			setGC();
+			if (Vars.state.rules.pvp){
+				setGC();
+			}
 		});
 
 		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists()){
 			Initialization();
 		};
-
-		if(state.rules.pvp && "禁止".equalsIgnoreCase(getGC_1())) {
-			state.rules.playerDamageMultiplier = 0f;
-			state.rules.playerHealthMultiplier = 0.001f;
-		}
 
 		//language.language();	
 
@@ -116,29 +122,12 @@ try{
 		
 	@Override
 	public void registerServerCommands(CommandHandler handler){
-		handler.register("gac","<PHONENUMB> <ON/OFF>", "NOT", (arg) -> {
-			switch(arg[0]){
-			case "1":
-				if("Y".equalsIgnoreCase(arg[1])) {
-					setGC_1("允许");
-					state.rules.playerDamageMultiplier = 0.33f;
-					state.rules.playerHealthMultiplier = 1f;
-
-				}
-				if ("N".equalsIgnoreCase(arg[1])) {
-					setGC_1("禁止");
-					state.rules.playerDamageMultiplier = 0.0000f;
-					state.rules.playerHealthMultiplier = 0.0001f;
-				}
-			case "2":
-				if("Y".equalsIgnoreCase(arg[1]))setGC_2("允许");
-				if ("N".equalsIgnoreCase(arg[1]))setGC_2("禁止");
-			case "3":
-				if("Y".equalsIgnoreCase(arg[1]))setGC_3("允许");
-				if ("N".equalsIgnoreCase(arg[1]))setGC_3("禁止");
-			}
+		handler.register("gac","<ON/OFF>", "NOT", (arg) -> {
+				if("Y".equalsIgnoreCase(arg[0]))setGC_1("允许");
+				if ("N".equalsIgnoreCase(arg[0]))setGC_1("禁止");
 			//if("sandbox".equalsIgnoreCase(gamemodes)){
 		});
+
 	};
 
 	@Override
