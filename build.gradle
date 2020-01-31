@@ -22,10 +22,10 @@ dependencies{
     //compile 'org.jsoup:jsoup:1.12.1'
     compile group: 'org.json', name: 'json', version: '20190722'
     //compile 'org.apache.commons:commons-lang3:3.9'
-    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.10'
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.11'
     compile group: 'com.alibaba', name: 'fastjson', version: '1.2.62'
     //compile 'org.xerial:sqlite-jdbc:3.28.0'
-    compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.2'
+    //compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.2'
     //compile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
     //compile group: 'net.sourceforge.htmlunit', name: 'htmlunit', version: '2.36.0'
 
