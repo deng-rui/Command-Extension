@@ -39,6 +39,7 @@ import extension.util.translation.Googletranslate;
 import extension.util.translation.Baidutranslate;
 //import extension.util.translation.Tencenttranslate;
 import extension.auxiliary.Language;
+import static extension.tool.SQLite.*;
 //import extension.tool.A;
 //GA-Exted
 
@@ -103,6 +104,10 @@ public class Main extends Plugin{
 		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists()){
 			Initialization();
 		};
+
+		InitializationSQLite();
+		addSQLite();
+		getSQLite();
 
 		//language.language();	
 
