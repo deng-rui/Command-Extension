@@ -1,5 +1,10 @@
 package extension.tool;
 
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
 
 public class DateUtil {
@@ -29,14 +34,14 @@ public class DateUtil {
 		return null;
 	}
  
-	   public static String getLocalTimeFromUTC(String UTCTime, String ){
+	   public static String getLocalTimeFromUTC(String UTCTime, String GMT){
 		Date UTCDate;
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		 
 		String localTimeStr = null ;
 		try {
 			UTCDate = format.parse(UTCTime);
-			format.setTimeZone(TimeZone.getTimeZone("GMT-8")) ;
+			format.setTimeZone(TimeZone.getTimeZone(GMT)) ;
 			localTimeStr = format.format(UTCDate) ;
 		} catch (ParseException e) {
 			e.printStackTrace();
