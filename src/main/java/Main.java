@@ -31,33 +31,24 @@ import mindustry.Vars;
 //Mindustry
 
 import static mindustry.Vars.*;
-import static mindustry.Vars.player;
-import static mindustry.core.NetClient.colorizeName;
-import static mindustry.core.NetClient.sendChatMessage;
-//
+//Mindustry-Static
+
 import extension.util.translation.Googletranslate;
 import extension.util.translation.Baidutranslate;
-//import extension.util.translation.Tencenttranslate;
 import extension.auxiliary.Language;
-import static extension.tool.SQLite.*;
-//import extension.tool.A;
 //GA-Exted
 
+import static extension.auxiliary.Strings.*;
 import static extension.tool.HttpRequest.doGet;
 import static extension.tool.HttpRequest.doCookie;
-import static extension.util.Translation_support.*;
-import static extension.util.Extend.ClientCommands.*;
-import static extension.util.Extend.Event.*;
-import static extension.util.Extend.*;
-import static extension.util.Sensitive_Thesaurus.*;
-import static extension.auxiliary.Strings.*;
 import static extension.tool.Json.*;
+import static extension.tool.SQLite.*;
+import static extension.util.Extend.*;
+import static extension.util.Extend.Event.*;
+import static extension.util.Extend.ClientCommands.*;
+import static extension.util.Sensitive_Thesaurus.*;
+import static extension.util.Translation_support.*;
 //Static
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-//Json
 
 
 public class Main extends Plugin{
@@ -87,7 +78,7 @@ public class Main extends Plugin{
 			if (Vars.state.rules.pvp){
 				if("禁止".equalsIgnoreCase(getGC_1())){
 					state.rules.playerDamageMultiplier = 0f;
-					state.rules.playerHealthMultiplier = 0.01f;
+					state.rules.playerHealthMultiplier = 0.5f;
 				}else{
 					state.rules.playerDamageMultiplier = 0.33f;
 					state.rules.playerHealthMultiplier = 1f;
@@ -105,9 +96,9 @@ public class Main extends Plugin{
 			Initialization();
 		};
 
-		InitializationSQLite();
-		addSQLite();
-		getSQLite();
+		//InitializationSQLite();
+		//addSQLite();
+		//getSQLite();
 
 		//language.language();	
 

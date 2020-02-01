@@ -56,6 +56,27 @@ public class SQLite {
 		System.out.println("Table created successfully");
 	}
 
+	public static void InitializationPlayers(String UUID,String NAME,String IP,String GMT,String Country,String Language) {
+		Statement stmt = null;
+		String sql;
+		try {
+			Connection c = connectSQLite();
+			c.setAutoCommit(false);
+			System.out.println("Opened database successfully");
+			stmt = c.createStatement();
+			sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
+					  "VALUES ("+UUID+","+NAME+","+IP+","+GMT+","+Country+","+Language+",'','','1','','','','','','','','','','','','','')"; 
+			stmt.executeUpdate(sql);
+		  stmt.close();
+		  c.commit();
+		  c.close();
+		} catch ( Exception e ) {
+		  System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+		  System.exit(0);
+		}
+		System.out.println("Records created successfully");
+	}
+
 	public static void addSQLite() {
 		Statement stmt = null;
 		String sql;
@@ -65,10 +86,10 @@ public class SQLite {
 			System.out.println("Opened database successfully");
 			stmt = c.createStatement();
 			sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
-					  "VALUES ('ZNSDsdjdemDRtest==','Dr','1.1.1.1','GMT+8','ZH-CN','ZH-CN','','','','1','','','','','','','','','','','','','');"; 
+					  "VALUES ('ZNSDsdjdemDRtest==','Dr','1.1.1.1','GMT+8','ZH-CN','ZH-CN','','','','1','','','','','','','','','','','','','')"; 
 			stmt.executeUpdate(sql);
 			sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
-					  "VALUES ('DRtest==','DrX','1.1.1.1X','GMT+8X','ZH-CNX','ZH-CN','','','','0','','','','','','','','','','','','','');"; 
+					  "VALUES ('DRtest==','DrX','1.1.1.1X','GMT+8X','ZH-CNX','ZH-CN','','','','0','','','','','','','','','','','','','')"; 
 		  stmt.executeUpdate(sql);
 		  stmt.close();
 		  c.commit();

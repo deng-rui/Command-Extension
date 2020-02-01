@@ -14,9 +14,8 @@ import extension.auxiliary.UTF8Control;
 import static extension.tool.Json.getData;
 //GA-Exted
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONTokener;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 //Json
  
 public class Language {
