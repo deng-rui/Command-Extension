@@ -9,9 +9,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-/**参考DFA算法demo:http://blog.csdn.net/chenssy/article/details/26961957*/
+
 public class Sensitive_Thesaurus {
-	public static String filePath = "/GA-resources/other/Sensitive_Thesaurus.txt";//敏感词库文件路径
+	public static String filePath = "/GA-resources/other/Sensitive_Thesaurus.txt";
 	public static Set<String> words;
 	public static Map<String,String> wordMap;
 	public static int minMatchTYpe = 1;      //最小匹配规则
@@ -26,12 +26,9 @@ public class Sensitive_Thesaurus {
         String temp=null;  
         //int line=1;  
         try{  
-            //reader=new BufferedReader(new FileReader(file));这样在web运行的时候，读取会乱码 
             reader=new BufferedReader(new InputStreamReader(Sensitive_Thesaurus.class.getResourceAsStream(path),"UTF-8"));  
             while((temp=reader.readLine())!=null){  
-                //System.out.println("line"+line+":"+temp);  
-                keyWordSet.add(temp);
-                //line++;  
+                keyWordSet.add(temp); 
             }  
         } catch(Exception e){  
             e.printStackTrace();  
@@ -207,7 +204,6 @@ public class Sensitive_Thesaurus {
 		Set<String> set = Sensitive_Thesaurus.getBadWord(text, 2);
 		Boolean i = Sensitive_Thesaurus.isContaintBadWord(text, 2);
 		long endTime = System.currentTimeMillis();
-		//System.out.println("语句中包含敏感词的个数为：" + set.size() + "。包含：" + set);
 		return set;
 	}
 }

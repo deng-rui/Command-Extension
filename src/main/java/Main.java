@@ -342,8 +342,9 @@ try{
 
 /*2020/1/4 10:64:33
  *本项目使用算法
- *名称					使用算法	  			来源
- *UTF8Control.Java		UTF8Control  		https://answer-id.com/52120414
- *Googletranslate.Java	Googletranslate		https://github.com/PopsiCola/GoogleTranslate
- *Main.Java 			info 				https://github.com/Kieaer/Essentials
+ *名称								使用算法	  			来源
+ *UTF8Control.Java					UTF8Control  		https://answer-id.com/52120414
+ *Googletranslate.Java				Googletranslate		https://github.com/PopsiCola/GoogleTranslate
+ *Main.Java 						info 				https://github.com/Kieaer/Essentials
+ *Sensitive_Thesaurus.Java 			参考DFA算法 			http://blog.csdn.net/chenssy/article/details/26961957
 */
