@@ -38,7 +38,7 @@ public class SQLite {
 						//胜利 输数-2
 						"Authority 		TEXT 	NOT NULL,"+
 						//权限-1
-						"Lastchat 		INT 	NOT NULL,"+
+						"Lastchat 		TEXT 	NOT NULL,"+
 						"Chatcount 		INT 	NOT NULL,"+
 						//聊天计数-2
 						"Deadcount		INT 	NOT NULL,"+
