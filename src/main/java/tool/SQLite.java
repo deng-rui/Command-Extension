@@ -20,31 +20,30 @@ public class SQLite {
 						"Country 		TEXT 	NOT NULL,"+
 						"Language 		TEXT 	NOT NULL,"+
 						//玩家普通信息-6
-						"Kickcount		INT 	NOT NULL,"+
-						"Sensitive 		INT 	NOT NULL,"+
+						"Kickcount		INT 	DEFAULT 0,"+
+						"Sensitive 		INT 	DEFAULT 0,"+
 						//被踢 敏感词次数-2
-						"Placecount 	INT 	NOT NULL,"+
-						"Translate 		BIT 	DEFAULT 1,"+
+						"Translate 		BIT 	DEFAULT 0,"+
 						//翻译权限-2
-						"Level 			INT 	NOT NULL,"+
-						"Exp 			INT 	NOT NULL,"+
-						"Reqexp 		INT 	NOT NULL,"+
-						"Reqtotalexp 	INT 	NOT NULL,"+
+						"Level 			INT 	DEFAULT 0,"+
+						"Exp 			INT 	DEFAULT 0,"+
+						"Reqexp 		INT 	DEFAULT 0,"+
+						"Reqtotalexp 	INT 	DEFAULT 0,"+
 						//等级-4
-						"Playtime 		REAL 	NOT NULL,"+
+						"Playtime 		REAL 	DEFAULT 0,"+
 						//游戏时长-1
-						"Pvpwincount 	INT 	NOT NULL,"+
-						"Pvplosecount 	INT 	NOT NULL,"+
+						"Pvpwincount 	INT 	DEFAULT 0,"+
+						"Pvplosecount 	INT 	DEFAULT 0,"+
 						//胜利 输数-2
 						"Authority 		TEXT 	NOT NULL,"+
 						//权限-1
 						"Lastchat 		TEXT 	NOT NULL,"+
-						"Chatcount 		INT 	NOT NULL,"+
+						"Chatcount 		INT 	DEFAULT 0,"+
 						//聊天计数-2
-						"Deadcount		INT 	NOT NULL,"+
-						"Killcount 		INT 	NOT NULL,"+
-						"Joincount 		INT 	NOT NULL,"+
-						"Breakcount 	INT 	NOT NULL)"; 
+						"Deadcount		INT 	DEFAULT 0,"+
+						"Killcount 		INT 	DEFAULT 0,"+
+						"Joincount 		INT 	DEFAULT 0,"+
+						"Breakcount 	INT 	DEFAULT 0)"; 
 						//玩家死亡 击杀 加入 退出次数-4
 						//TEST阶段 仅在GA-PVP使用-24
 			stmt.executeUpdate(sql);
@@ -65,11 +64,11 @@ public class SQLite {
 			c.setAutoCommit(false);
 			System.out.println("Opened database successfully");
 			stmt = c.createStatement();
-			sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,Kickcount,Sensitive,Placecount,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
-					  "VALUES ('ZNSDsdjdemDRtest==','Dr','1.1.1.1','GMT+8','ZH-CN','ZH-CN','','','','1','','','','','','','','','','','','','','');"; 
+			sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
+					  "VALUES ('ZNSDsdjdemDRtest==','Dr','1.1.1.1','GMT+8','ZH-CN','ZH-CN','','','','1','','','','','','','','','','','','','');"; 
 			stmt.executeUpdate(sql);
-			sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,Kickcount,Sensitive,Placecount,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
-					  "VALUES ('DRtest==','DrX','1.1.1.1X','GMT+8X','ZH-CNX','ZH-CN','','','','0','','','','','','','','','','','','','','');"; 
+			sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
+					  "VALUES ('DRtest==','DrX','1.1.1.1X','GMT+8X','ZH-CNX','ZH-CN','','','','0','','','','','','','','','','','','','');"; 
 		  stmt.executeUpdate(sql);
 		  stmt.close();
 		  c.commit();
