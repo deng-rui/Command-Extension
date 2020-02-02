@@ -58,9 +58,9 @@ public class Main extends Plugin{
 	Language language = new Language();
 //改进全局变量
 //VOTE
+	
 	@SuppressWarnings("unchecked")
-	public Main(){
-
+	public void Main(){
 		Events.on(EventType.PlayerChatEvent.class, e -> {
 			String result = PlayerChatEvent_translate(String.valueOf(e.message.charAt(0)),e.message);
 			if (null != result)Call.sendMessage("["+e.player.name+"]"+"[green] : [] "+result+"   -From Google Translator");
@@ -95,7 +95,16 @@ public class Main extends Plugin{
 		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists()){
 			Initialization();
 		};
+	}
 
+	@Override
+	public void init() {
+			netServer.admins.addChatFilter((player, text) -> {
+				return replaceBadWord(text,2,"*");
+			});
+
+			Main();
+	}
 		//InitializationSQLite();
 		//addSQLite();
 		//getSQLite();
@@ -104,6 +113,7 @@ public class Main extends Plugin{
 
 //Debugging part
 /*
+
 try{
 	A a = new A();
 	doCookie("https://fanyi.baidu.com/");
@@ -114,7 +124,7 @@ try{
 }
 //很遗憾，我尝试获取cookie，可cookie均是过期：（
 */
-}
+	
 		
 	@Override
 	public void registerServerCommands(CommandHandler handler){

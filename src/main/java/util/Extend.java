@@ -56,6 +56,9 @@ import com.alibaba.fastjson.JSONObject;
 
 public class Extend{
 
+	private static final char[] SPECIAL_CHARS = new char[]{
+    ' '};
+
 	public static class ClientCommands{
 		//private HashSet<Player> votes = new HashSet<>();
 		private ArrayList<String> votes = new ArrayList<>();
@@ -110,6 +113,7 @@ public class Extend{
 			if (wait != "Y") {
 				return resultt;
 			}else{
+				/*
 			try{
 				Thread.currentThread().sleep(5000);
 				}catch(InterruptedException ie){
@@ -139,8 +143,9 @@ public class Extend{
 				state.set(State.menu);
 			}catch(IOException e){
 				state.set(State.menu);
+			}*/
 			}
-			}
+
 			return null;
 		}
 
@@ -163,6 +168,7 @@ public class Extend{
 		public static void setting_language() {
 
 		}
+
 	}
 
 	public static class Event{
