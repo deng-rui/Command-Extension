@@ -10,16 +10,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 //Json
 //写的越久，BUG越多，伤痕越疼，脾气越差/-活得越久 故事越多 伤痕越疼，脾气越差
-/*
-正在进行-临时批注
-目的:
-全面替换json alibaba.json接替org.json
-2020.2.1.21.00
-TEMP-
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-*/
 
 public class Json {
 

@@ -20,11 +20,6 @@ import com.alibaba.fastjson.JSONObject;
  
 public class Language {
 
-	//private final static String file_en_US="GA-resources/bundles/en_US.properties";
-	//private static String file="GA-resources.bundles.info";
-	//private static Locale locale = new Locale("en", "US");
-	//private static ResourceBundle bundle = ResourceBundle.getBundle("GA-resources/bundles/GA", locale);
-
 	public String getinput(String input) {
 		return getinputt(input,null);
 	}
@@ -58,23 +53,6 @@ public class Language {
 		Locale locale = new Locale(o,t);
 		ResourceBundle bundle = ResourceBundle.getBundle("GA-resources/bundles/GA", locale, new UTF8Control());
 		//UTF-8 害死人.jpg
-		/*
-		if(input !=null){
-			if(p1 == null && p2 == null){
-				String result = bundle.getString(input);
-				//bundle.getString(input);
-				return result;
-			}else if(p1 != null && p2 == null){
-				Object[] params = {p1};
-				String result = new MessageFormat(bundle.getString(input),locale).format(params);
-				return result;
-			}else if(p1 != null && p2 != null){
-				Object[] params = {p1,p2};
-				String result = new MessageFormat(bundle.getString(input),locale).format(params);
-				return result;
-			}
-		}
-		*/
 		if(input !=null){
 			if(params == null){
 				String result = bundle.getString(input);
@@ -86,7 +64,6 @@ public class Language {
 		}
 		return null;
 	}
-
 
 	public String getinputt(String input,Object[] params) {
 		JSONObject date = getData("mods/GA/setting.json");
@@ -102,14 +79,6 @@ public class Language {
 		}
 		return null;
 	}
-	/*
-	public void language() {
-		try{
-		language(null);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	*/
+
 }
 

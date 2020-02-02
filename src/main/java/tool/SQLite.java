@@ -56,7 +56,7 @@ public class SQLite {
 		System.out.println("Table created successfully");
 	}
 
-	public static void InitializationPlayers(String UUID,String NAME,String IP,String GMT,String Country,String Language) {
+	public static void InitializationPlayersSQLite(String UUID,String NAME,String IP,String GMT,String Country,String Language) {
 		Statement stmt = null;
 		String sql;
 		try {
@@ -65,7 +65,7 @@ public class SQLite {
 			System.out.println("Opened database successfully");
 			stmt = c.createStatement();
 			sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
-					  "VALUES ("+UUID+","+NAME+","+IP+","+GMT+","+Country+","+Language+",'','','1','','','','','','','','','','','','','')"; 
+					  "VALUES ("+UUID+","+NAME+","+IP+","+GMT+","+Country+","+Language+",'','','0','','','','','','','','','','','','','')"; 
 			stmt.executeUpdate(sql);
 		  stmt.close();
 		  c.commit();
