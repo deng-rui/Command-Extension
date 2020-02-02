@@ -37,28 +37,27 @@ import mindustry.type.*;
 import mindustry.Vars;
 //Mindustry
 
+import static mindustry.Vars.*;
+//Mindustry-Static
 
 import extension.util.translation.Googletranslate;
 import extension.auxiliary.Language;
 //GA-Exted
 
-import static java.lang.System.out;
-
-import static mindustry.Vars.*;
-import static mindustry.core.NetClient.colorizeName;
-import mindustry.ui.fragments.ChatFragment.*;
 import static extension.auxiliary.Booleans.*;
 import static extension.auxiliary.Strings.*;
 import static extension.auxiliary.Maps.*;
 import static extension.tool.Json.*;
 //Static
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONTokener;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 //Json
 
 public class Extend{
+
+	private static final char[] SPECIAL_CHARS = new char[]{
+    ' '};
 
 	public static class ClientCommands{
 		//private HashSet<Player> votes = new HashSet<>();
@@ -114,6 +113,7 @@ public class Extend{
 			if (wait != "Y") {
 				return resultt;
 			}else{
+				/*
 			try{
 				Thread.currentThread().sleep(5000);
 				}catch(InterruptedException ie){
@@ -143,8 +143,9 @@ public class Extend{
 				state.set(State.menu);
 			}catch(IOException e){
 				state.set(State.menu);
+			}*/
 			}
-			}
+
 			return null;
 		}
 
@@ -167,6 +168,7 @@ public class Extend{
 		public static void setting_language() {
 
 		}
+
 	}
 
 	public static class Event{
