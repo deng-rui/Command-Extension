@@ -44,8 +44,9 @@ import static extension.tool.HttpRequest.doCookie;
 import static extension.tool.Json.*;
 import static extension.tool.SQLite.*;
 import static extension.util.Extend.*;
-import static extension.util.Extend.Event.*;
 import static extension.util.Extend.ClientCommands.*;
+import static extension.util.Extend.Event.*;
+import static extension.util.Extend.Init.*;
 import static extension.util.Sensitive_Thesaurus.*;
 import static extension.util.Translation_support.*;
 //Static
@@ -99,8 +100,8 @@ public class Main extends Plugin{
 
 	@Override
 	public void init() {
-			netServer.admins.addChatFilter((player, text) -> {
-				return replaceBadWord(text,2,"*");
+			netServer.admins.addChatFilter((player, message) -> {
+				return netServer_addChatFilter_Sensitive_Thesaurus(player,message);
 			});
 
 			Main();

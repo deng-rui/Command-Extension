@@ -28,7 +28,8 @@ import mindustry.gen.*;
 import mindustry.io.*;
 import mindustry.maps.Map;
 import mindustry.maps.*;
-import mindustry.net.Administration.PlayerInfo ;
+import mindustry.net.Administration.*;
+import mindustry.net.Administration.PlayerInfo;
 import mindustry.net.Packets.KickReason;
 import mindustry.net.NetConnection;
 import mindustry.net.Packets.KickReason ;
@@ -48,6 +49,7 @@ import static extension.auxiliary.Booleans.*;
 import static extension.auxiliary.Strings.*;
 import static extension.auxiliary.Maps.*;
 import static extension.tool.Json.*;
+import static extension.util.Sensitive_Thesaurus.*;
 //Static
 
 import com.alibaba.fastjson.JSONArray;
@@ -211,6 +213,39 @@ public class Extend{
 			//player.sendMessage(language.getinput("Sensitive_Thesaurus",player.name));
 		}
 
+	}
+
+	public static class Init{
+		public static String netServer_addChatFilter_Sensitive_Thesaurus(Player player, String message) {
+			long resetTime = Config.messageRateLimit.num() * 1000;
+            if(Config.antiSpam.bool() && !player.isLocal && !player.isAdmin){
+                //prevent people from spamming messages quickly
+                if(resetTime > 0 && Time.timeSinceMillis(player.getInfo().lastMessageTime) < resetTime){
+                    //supress message
+                    player.sendMessage("[scarlet]You may only send messages every " + Config.messageRateLimit.num() + " seconds.");
+                    player.getInfo().messageInfractions ++;
+                    //kick player for spamming and prevent connection if they've done this several times
+                    if(player.getInfo().messageInfractions >= Config.messageSpamKick.num() && Config.messageSpamKick.num() != 0){
+                        player.con.kick("You have been kicked for spamming.", 1000 * 60 * 2);
+                    }
+                    player.getInfo().lastSentMessage = message;
+                    return null;
+                }else{
+                    player.getInfo().messageInfractions = 0;
+                }
+
+                //prevent players from sending the same message twice in the span of 50 seconds
+                if(message.equals(player.getInfo().lastSentMessage) && Time.timeSinceMillis(player.getInfo().lastMessageTime) < 1000 * 50){
+                    player.sendMessage("[scarlet]You may not send the same message twice.");
+                    return null;
+                }
+
+                player.getInfo().lastSentMessage = message;
+                player.getInfo().lastMessageTime = Time.millis();
+            }
+
+			return replaceBadWord(message,2,"*");
+		}
 	}
 }
 
