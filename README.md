@@ -1,4 +1,7 @@
 ## Premise
+
+Please pay attention to timeliness in the beginning of reconstruction of this project
+
 Recovery daily change of the project
 
 Unfinished, plug-in borrows J-Vds and Kieaer partial algorithms
