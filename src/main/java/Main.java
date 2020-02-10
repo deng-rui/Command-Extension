@@ -62,7 +62,7 @@ public class Main extends Plugin{
 //VOTE
 	
 	@SuppressWarnings("unchecked")
-	public void Main()
+	public void Main() {
 		Events.on(EventType.PlayerChatEvent.class, e -> {
 			String result = PlayerChatEvent_translate(String.valueOf(e.message.charAt(0)),e.message);
 			if (null != result)Call.sendMessage("["+e.player.name+"]"+"[green] : [] "+result+"   -From Google Translator");

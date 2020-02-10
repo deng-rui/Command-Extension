@@ -29,6 +29,7 @@ public class Librarydependency {
 			url = "https://repo1.maven.org/maven2"+url_temp;
 			downUrl(url,name+".jar",savePath);
 			//maven NO CN
+			
 		}
 		
 	}
