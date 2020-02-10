@@ -62,7 +62,7 @@ public class Main extends Plugin{
 //VOTE
 	
 	@SuppressWarnings("unchecked")
-	public void Main(){
+	public void Main()
 		Events.on(EventType.PlayerChatEvent.class, e -> {
 			String result = PlayerChatEvent_translate(String.valueOf(e.message.charAt(0)),e.message);
 			if (null != result)Call.sendMessage("["+e.player.name+"]"+"[green] : [] "+result+"   -From Google Translator");
@@ -112,23 +112,6 @@ public class Main extends Plugin{
 		//InitializationSQLite();
 		//addSQLite();
 		//getSQLite();
-
-		//language.language();	
-
-//Debugging part
-/*
-
-try{
-	A a = new A();
-	doCookie("https://fanyi.baidu.com/");
-	a.getCookie("https://fanyi.baidu.com/");
-	
-	//System.out.println(">>>>>>ter:"+baidutranslate.translate("engilsh","zh"));
-	}catch(Exception ie){
-}
-//很遗憾，我尝试获取cookie，可cookie均是过期：（
-*/
-	
 		
 	@Override
 	public void registerServerCommands(CommandHandler handler){
