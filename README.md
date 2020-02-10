@@ -1,10 +1,10 @@
 ## Acknowledgement/鸣谢
 
-EN:Thank wzyzer and linglan512572354 for their help in this project
-CN:在本项目中 感谢wzyzer以及linglan512572354所提供的帮助 
+EN:Thank wzyzer and linglan512572354 for their help in this project  
+CN:在本项目中 感谢wzyzer以及linglan512572354所提供的帮助  
 
-wzyzer:https://github.com/way-zer
-linglan512572354:https://github.com/linglan512572354
+wzyzer:https://github.com/way-zer  
+linglan512572354:https://github.com/linglan512572354  
 
 
 ## Premise
