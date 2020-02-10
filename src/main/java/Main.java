@@ -41,6 +41,7 @@ import extension.auxiliary.Language;
 import static extension.auxiliary.Strings.*;
 import static extension.tool.HttpRequest.doGet;
 import static extension.tool.HttpRequest.doCookie;
+import static extension.tool.Librarydependency.*;
 import static extension.tool.Json.*;
 import static extension.tool.SQLite.*;
 import static extension.util.Extend.*;
@@ -105,6 +106,8 @@ public class Main extends Plugin{
 			});
 
 			Main();
+
+			downLoadFromUrl("org.xerial","sqlite-jdbc","3.30.1","China",Core.settings.getDataDirectory().child("mods/GA/Lib"));
 	}
 		//InitializationSQLite();
 		//addSQLite();

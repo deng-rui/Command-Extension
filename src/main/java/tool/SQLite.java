@@ -4,7 +4,8 @@ import arc.Core;
 import java.sql.*;
 
 public class SQLite {
-	
+
+	//map
 	public static void InitializationSQLite() {
 		Statement stmt = null;
 		try {
