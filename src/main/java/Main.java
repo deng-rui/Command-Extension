@@ -70,12 +70,18 @@ public class Main extends Plugin{
 			Set<String> set;
 			set = Sensitive_Thesaurus(removeAll_EN(e.message));
 			if (0 < set.size())PlayerChatEvent_Sensitive_Thesaurus(e.player, set.iterator().next());
-			set = Sensitive_Thesaurus(removeAll_CH(e.message));
+			set = Sensitive_Thesaurus(removeAll_CN(e.message));
 			if (0 < set.size())PlayerChatEvent_Sensitive_Thesaurus(e.player, set.iterator().next());
 			//中英分检测
 		});
 
 		Events.on(EventType.PlayerJoin.class, e -> {
+			Set<String> set;
+			set = Sensitive_Thesaurus(removeAll_EN(e.player.name));
+			if (0 < set.size())Call.onKick(e.player.con, language.getinput("Sensitive.Thesaurus.join.kick",set.iterator().next()));
+			set = Sensitive_Thesaurus(removeAll_CN(e.player.name));
+			if (0 < set.size())Call.onKick(e.player.con, language.getinput("Sensitive.Thesaurus.join.kick",set.iterator().next()));
+			//中英分检测
 			Call.onInfoMessage(e.player.con,language.getinput("join.start",timee(),getGC_1()));
 			if (Vars.state.rules.pvp){
 				if("禁止".equalsIgnoreCase(getGC_1())){
@@ -111,7 +117,7 @@ public class Main extends Plugin{
 			Main();
 
 			//downLoadFromUrl("org.xerial","sqlite-jdbc","3.30.1","China",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
-			loadLib(Core.settings.getDataDirectory().child("mods/GA/Lib/"));
+			loadLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
 	}
 		//InitializationSQLite();
 		//addSQLite();

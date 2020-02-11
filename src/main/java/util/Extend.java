@@ -201,13 +201,13 @@ public class Extend{
 			Language language = new Language();
 			if (!getplayer_boolean(player.uuid)) {
 				setplayer(player.uuid, 1);
-				player.sendMessage(language.getinput("Sensitive.Thesaurus.info",String.valueOf(getplayer_int(player.uuid))));
+				player.sendMessage(language.getinput("Sensitive.Thesaurus.info",String.valueOf(getplayer_int(player.uuid)),text));
 			}else{
 				setplayer(player.uuid, getplayer_int(player.uuid)+1);
-				player.sendMessage(language.getinput("Sensitive.Thesaurus.info",String.valueOf(getplayer_int(player.uuid))));
+				player.sendMessage(language.getinput("Sensitive.Thesaurus.info",String.valueOf(getplayer_int(player.uuid)),text));
 			}
 			if (3 <= getplayer_int(player.uuid)) {
-				Call.onKick(player.con, language.getinput("Sensitive.Thesaurus.kick",text));
+				Call.onKick(player.con, language.getinput("Sensitive.Thesaurus.message.kick",text));
 				setplayer(player.uuid, 0);
 			}
 			//player.sendMessage(language.getinput("Sensitive_Thesaurus",player.name));
