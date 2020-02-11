@@ -240,7 +240,7 @@ public class HttpRequest {
 		return null;
 	}
 
-	public static void Url302(String url,String name,Fi filePath) throws Exception {
+	public static void Url302(String url,String name,Fi filePath){
 		try {
 			URL serverUrl = new URL(url);
 			HttpURLConnection conn = (HttpURLConnection) serverUrl.openConnection();
@@ -251,7 +251,6 @@ public class HttpRequest {
 			conn.addRequestProperty("User-Agent","Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.2.8) Firefox/3.6.8");
 			conn.connect();
 			String location = conn.getHeaderField("Location");
-			//System.out.println("跳转地址:" + location);
 			downUrl(location,name,filePath);
  
 		} catch (Exception e) {
@@ -262,11 +261,7 @@ public class HttpRequest {
 	public static void downUrl(String url,String name,Fi filePath){
 		File file=filePath.file();
 		 //判断文件夹是否存在
-		if (!file.exists())
-		{
-			//如果文件夹不存在，则创建新的的文件夹
-			file.mkdirs();
-		}
+		if (!file.exists())file.mkdirs();
 		FileOutputStream fileOut = null;
 		HttpURLConnection conn = null;
 		InputStream inputStream = null;
@@ -282,7 +277,7 @@ public class HttpRequest {
 			inputStream=conn.getInputStream();
 			BufferedInputStream bis = new BufferedInputStream(inputStream);
 			//写入到文件
-			fileOut = new FileOutputStream(filePath+"/"+name);
+			fileOut = new FileOutputStream(filePath+File.separator+name);
 			BufferedOutputStream bos = new BufferedOutputStream(fileOut);
 			byte[] buf = new byte[4096];
 			int length = bis.read(buf);
@@ -296,7 +291,6 @@ public class HttpRequest {
 		} catch (Exception e)
 		{
 			e.printStackTrace();
-			System.out.println("抛出异常！！");
 		}
 		 
 	}

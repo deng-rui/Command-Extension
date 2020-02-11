@@ -88,6 +88,9 @@ public class Main extends Plugin{
 			}
 		});
 
+		Events.on(EventType.UnitCreateEvent.class, e -> {
+		});
+
 		Events.on(GameOverEvent.class, e -> {
 			if (Vars.state.rules.pvp){
 				setGC();
@@ -107,7 +110,8 @@ public class Main extends Plugin{
 
 			Main();
 
-			downLoadFromUrl("org.xerial","sqlite-jdbc","3.30.1","China",Core.settings.getDataDirectory().child("mods/GA/Lib"));
+			//downLoadFromUrl("org.xerial","sqlite-jdbc","3.30.1","China",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
+			loadLib(Core.settings.getDataDirectory().child("mods/GA/Lib/"));
 	}
 		//InitializationSQLite();
 		//addSQLite();
