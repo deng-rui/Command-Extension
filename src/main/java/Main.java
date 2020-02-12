@@ -61,8 +61,13 @@ public class Main extends Plugin{
 //改进全局变量
 //VOTE
 	
-	@SuppressWarnings("unchecked")
-	public void Main() {
+	public Main() {
+
+		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists())Initialization();
+
+		loadLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
+		//加载
+
 		Events.on(EventType.PlayerChatEvent.class, e -> {
 			String result = PlayerChatEvent_translate(String.valueOf(e.message.charAt(0)),e.message);
 			if (null != result)Call.sendMessage("["+e.player.name+"]"+"[green] : [] "+result+"   -From Google Translator");
@@ -98,27 +103,21 @@ public class Main extends Plugin{
 		});
 
 		Events.on(GameOverEvent.class, e -> {
-			if (Vars.state.rules.pvp){
-				setGC();
-			}
+			if (Vars.state.rules.pvp)setGC();
 		});
 
-		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists()){
-			Initialization();
-		};
-	}
-
-	@Override
-	public void init() {
+		Events.on(ServerLoadEvent.class, e-> {
 			netServer.admins.addChatFilter((player, message) -> {
 				return netServer_addChatFilter_Sensitive_Thesaurus(player,message);
 			});
+		});
 
-			Main();
+		
 
-			//downLoadFromUrl("org.xerial","sqlite-jdbc","3.30.1","China",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
-			loadLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
+		
 	}
+
+		//downLoadFromUrl("org.xerial","sqlite-jdbc","3.30.1","China",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
 		//InitializationSQLite();
 		//addSQLite();
 		//getSQLite();
@@ -128,7 +127,6 @@ public class Main extends Plugin{
 		handler.register("gac","<ON/OFF>", "NOT", (arg) -> {
 				if("Y".equalsIgnoreCase(arg[0]))setGC_1("允许");
 				if ("N".equalsIgnoreCase(arg[0]))setGC_1("禁止");
-			//if("sandbox".equalsIgnoreCase(gamemodes)){
 		});
 
 	};
