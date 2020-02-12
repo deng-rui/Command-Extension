@@ -60,32 +60,31 @@ public class Main extends Plugin{
 	Language language = new Language();
 //改进全局变量
 //VOTE
-	
+	@SuppressWarnings("unchecked")
+	//:(
 	public Main() {
 
 		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists())Initialization();
 
-		loadLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
+		//importLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
 		//加载
 
 		Events.on(EventType.PlayerChatEvent.class, e -> {
 			String result = PlayerChatEvent_translate(String.valueOf(e.message.charAt(0)),e.message);
 			if (null != result)Call.sendMessage("["+e.player.name+"]"+"[green] : [] "+result+"   -From Google Translator");
 			//自动翻译
-			Set<String> set;
-			set = Sensitive_Thesaurus(removeAll_EN(e.message));
+			Set<String> set = Sensitive_Thesaurus(removeAll_EN(e.message));
 			if (0 < set.size())PlayerChatEvent_Sensitive_Thesaurus(e.player, set.iterator().next());
-			set = Sensitive_Thesaurus(removeAll_CN(e.message));
-			if (0 < set.size())PlayerChatEvent_Sensitive_Thesaurus(e.player, set.iterator().next());
+			Set<String> set1 = Sensitive_Thesaurus(removeAll_CN(e.message));
+			if (0 < set1.size())PlayerChatEvent_Sensitive_Thesaurus(e.player, set1.iterator().next());
 			//中英分检测
 		});
 
 		Events.on(EventType.PlayerJoin.class, e -> {
-			Set<String> set;
-			set = Sensitive_Thesaurus(removeAll_EN(e.player.name));
+			Set<String> set = Sensitive_Thesaurus(removeAll_EN(e.player.name));
 			if (0 < set.size())Call.onKick(e.player.con, language.getinput("Sensitive.Thesaurus.join.kick",set.iterator().next()));
-			set = Sensitive_Thesaurus(removeAll_CN(e.player.name));
-			if (0 < set.size())Call.onKick(e.player.con, language.getinput("Sensitive.Thesaurus.join.kick",set.iterator().next()));
+			Set<String> set1 = Sensitive_Thesaurus(removeAll_CN(e.player.name));
+			if (0 < set1.size())Call.onKick(e.player.con, language.getinput("Sensitive.Thesaurus.join.kick",set1.iterator().next()));
 			//中英分检测
 			Call.onInfoMessage(e.player.con,language.getinput("join.start",timee(),getGC_1()));
 			if (Vars.state.rules.pvp){
@@ -112,15 +111,15 @@ public class Main extends Plugin{
 			});
 		});
 
-		
+		addSQLite();
+		getSQLite();
 
 		
 	}
 
 		//downLoadFromUrl("org.xerial","sqlite-jdbc","3.30.1","China",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
 		//InitializationSQLite();
-		//addSQLite();
-		//getSQLite();
+		
 		
 	@Override
 	public void registerServerCommands(CommandHandler handler){
@@ -133,6 +132,7 @@ public class Main extends Plugin{
 
 	@Override
 	public void registerClientCommands(CommandHandler handler){
+		handler.removeCommand("vote");
 		handler.removeCommand("votekick");
 
 		handler.<Player>register("info",language.getinput("info"), (args, player) -> {

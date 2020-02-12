@@ -1,7 +1,10 @@
 package extension.tool;
 
+import arc.*;
 import arc.Core;
 import java.sql.*;
+
+import extension.tool.Librarydependency.*;
 
 public class SQLite {
 
@@ -131,8 +134,8 @@ public class SQLite {
 
 	public static Connection connectSQLite() {
 		try {
-			Class.forName("org.sqlite.JDBC");
-			Connection c = DriverManager.getConnection("jdbc:sqlite:"+Core.settings.getDataDirectory().child("mods/GA/TEST.db"));
+			Connection c = new Librarydependency().loadLib_SQL("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
+			//DriverManager.getConnection("jdbc:sqlite:"+Core.settings.getDataDirectory().child("mods/GA/TEST.db"))
 			return c;
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
