@@ -33,9 +33,9 @@ import mindustry.Vars;
 import static mindustry.Vars.*;
 //Mindustry-Static
 
+import extension.auxiliary.Language;
 import extension.util.translation.Googletranslate;
 import extension.util.translation.Baidutranslate;
-import extension.auxiliary.Language;
 //GA-Exted
 
 import static extension.auxiliary.Strings.*;
@@ -43,7 +43,7 @@ import static extension.tool.HttpRequest.doGet;
 import static extension.tool.HttpRequest.doCookie;
 import static extension.tool.Librarydependency.*;
 import static extension.tool.Json.*;
-import static extension.tool.SQLite.*;
+import static extension.tool.SQLite.player.*;
 import static extension.util.Extend.*;
 import static extension.util.Extend.ClientCommands.*;
 import static extension.util.Extend.Event.*;
@@ -53,7 +53,7 @@ import static extension.util.Translation_support.*;
 //Static
 
 
-public class Main extends Plugin{
+public class Main extends Plugin {
 
 	Googletranslate googletranslate = new Googletranslate();
 	Baidutranslate baidutranslate = new Baidutranslate();
@@ -65,6 +65,11 @@ public class Main extends Plugin{
 	public Main() {
 
 		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists())Initialization();
+		notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));//初始化SQL
+
+		InitializationSQLite();
+		addSQLite();
+		getSQLite();
 
 		//importLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
 		//加载
@@ -110,11 +115,6 @@ public class Main extends Plugin{
 				return netServer_addChatFilter_Sensitive_Thesaurus(player,message);
 			});
 		});
-
-		InitializationSQLite();
-		addSQLite();
-		getSQLite();
-
 		
 	}
 
@@ -132,7 +132,7 @@ public class Main extends Plugin{
 	};
 
 	@Override
-	public void registerClientCommands(CommandHandler handler){
+	public void registerClientCommands(CommandHandler handler) {
 		handler.removeCommand("vote");
 		handler.removeCommand("votekick");
 
@@ -167,7 +167,7 @@ public class Main extends Plugin{
 			if(!player.isAdmin){
 				player.sendMessage(language.getinput("admin.no"));
 			} else {
-				try{
+				try {
 					int x = Integer.parseInt(args[0])*8;
 					int y = Integer.parseInt(args[1])*8;
 					player.setNet((float)x, (float)y);
@@ -227,7 +227,7 @@ public class Main extends Plugin{
 			if(!player.isAdmin){
 				player.sendMessage("[green]Careful: [] You're not admin!");
 			} else {
-				try{
+				try {
 					Difficulty.valueOf(args[0]);
 					player.sendMessage(language.getinput("difficulty.success",args[0]));
 				}catch(IllegalArgumentException e){
@@ -271,7 +271,7 @@ public class Main extends Plugin{
 			player.sendMessage(language.getinput("tr.tips"));
 			player.sendMessage(language.getinput("tr.tips1"));
 			String text = args[0].replace('-',' ');	
-			try{
+			try {
 				Thread.currentThread().sleep(2500);
 				}catch(InterruptedException ie){
 					ie.printStackTrace();

@@ -56,11 +56,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 //Json
 
-public class Extend{
+public class Extend {
 
 	private static Language language = new Language();
 
-	public static class ClientCommands{
+	public static class ClientCommands {
 		//private HashSet<Player> votes = new HashSet<>();
 		private ArrayList<String> votes = new ArrayList<>();
 		private boolean enable = true;
@@ -124,18 +124,16 @@ public class Extend{
 			Gamemode preset = Gamemode.survival;
 			try{
 				preset = Gamemode.valueOf(gamemodes);
-				}catch(IllegalArgumentException e){
-					return null;
-				}	
+			}catch(IllegalArgumentException e){
+				return null;
+			}	
 			logic.reset();
 			world.loadMap(result,result.applyRules(preset));
 			state.rules = result.applyRules(preset);
 			logic.play();
 			try{
-				net.host(Core.settings.getInt("port"));
-			}catch(BindException e){
-				state.set(State.menu);
-			}catch(IOException e){
+				netServer.openServer();
+			}catch(Exception e){
 				state.set(State.menu);
 			}
 
@@ -164,7 +162,7 @@ public class Extend{
 
 	}
 
-	public static class Event{
+	public static class Event {
 
 		public static String PlayerChatEvent_translate(String check, String text) {
 			Googletranslate googletranslate = new Googletranslate();
@@ -205,7 +203,7 @@ public class Extend{
 
 	}
 
-	public static class Init{
+	public static class Init {
 		public static String netServer_addChatFilter_Sensitive_Thesaurus(Player player, String message) {
 			return replaceBadWord(message,2,"*");
 			//官方的我已放弃

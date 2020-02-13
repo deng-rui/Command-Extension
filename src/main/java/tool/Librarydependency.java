@@ -25,7 +25,7 @@ public class Librarydependency implements Driver {
 		String[] temp=str.split("\\.");
 		url = "/";
 		for (int i = 0; i < temp.length; i++) {
-			System.out.println(temp[i]);
+			//System.out.println(temp[i]);
 			url = url+temp[i]+"/";
 		}
 
@@ -50,13 +50,19 @@ public class Librarydependency implements Driver {
 		if(!list.contains(name+"_"+version))downLoadFromUrl(str,name,version,"China",savePath);
 	}
 
-	public static void notWork(Fi savePath) throws Exception {
-		Fi[] f = savePath.list();
-		System.out.println(f[0].name());
-		URLClassLoader classLoader = new URLClassLoader(new URL[] {f[0].file().toURI().toURL()});
-		Driver driver = (Driver) Class.forName("org.sqlite.JDBC", true, classLoader).newInstance();
-		DriverManager.registerDriver(new Librarydependency(driver));
-		//DriverManager.getConnection("jdbc:sqlite:"+Core.settings.getDataDirectory().child("mods/GA/TEST.db"));
+	public static void notWork(String name, String version, Fi savePath) {
+		Fi[] file = savePath.list();
+		for(int i=0;i<file.length;i++){
+			System.out.println("start sql jar");
+			if(!file[i].name().replace(".jar","").equals(name+"_"+version))return;
+		}
+		System.out.println(file[0].name());
+		try {
+			URLClassLoader classLoader = new URLClassLoader(new URL[] {file[0].file().toURI().toURL()});
+			Driver driver = (Driver) Class.forName("org.sqlite.JDBC", true, classLoader).newInstance();
+			DriverManager.registerDriver(new Librarydependency(driver));
+		} catch (Exception e){
+		}
 	}
 
 	public Connection connect(String u, Properties p) throws SQLException {

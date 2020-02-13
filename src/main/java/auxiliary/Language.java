@@ -67,7 +67,7 @@ public class Language {
 
 	public String getinputt(String input,Object[] params) {
 		JSONObject date = getData("mods/GA/setting.json");
-		try{
+		try {
 			String o = (String) date.get("languageO");
 			String t = (String) date.get("languageT");
 			if (params == null) {
