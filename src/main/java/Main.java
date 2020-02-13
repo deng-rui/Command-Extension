@@ -111,6 +111,7 @@ public class Main extends Plugin{
 			});
 		});
 
+		InitializationSQLite();
 		addSQLite();
 		getSQLite();
 
@@ -118,7 +119,7 @@ public class Main extends Plugin{
 	}
 
 		//downLoadFromUrl("org.xerial","sqlite-jdbc","3.30.1","China",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
-		//InitializationSQLite();
+		//;
 		
 		
 	@Override
@@ -250,13 +251,7 @@ public class Main extends Plugin{
 			if(!player.isAdmin){
 				player.sendMessage(language.getinput("admin.no"));
 			} else {
-				String result=host(args[0],args[1],"N");
-				if (result != "Y") {
-					player.sendMessage(language.getinput("host.mode",args[1]));
-				}else{
-					Call.sendMessage(language.getinput("host.re"));
-					host(args[0],args[1],"Y");
-				}
+				host(args[0],args[1],player);
 			}
 		});
 		//It can be used normally. :)

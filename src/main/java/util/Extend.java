@@ -14,7 +14,7 @@ import arc.Core;
 import arc.files.*;
 import arc.util.*;
 import arc.util.Timer;
-import arc.struct.Array;
+import arc.struct.*;
 //Arc
 
 import mindustry.*;
@@ -58,8 +58,7 @@ import com.alibaba.fastjson.JSONObject;
 
 public class Extend{
 
-	private static final char[] SPECIAL_CHARS = new char[]{
-    ' '};
+	private static Language language = new Language();
 
 	public static class ClientCommands{
 		//private HashSet<Player> votes = new HashSet<>();
@@ -68,8 +67,7 @@ public class Extend{
 
 		public static String status(String then) {
 			float fps = Math.round((int)60f / Time.delta());
-			float memory = Core.app.getJavaHeap() / 1024 / 1024;
-			
+			float memory = Core.app.getJavaHeap() / 1024 / 1024;		
 			int idb = 0;
 			int ipb = 0;
 
@@ -77,7 +75,6 @@ public class Extend{
 			for(PlayerInfo info : bans){
 				idb++;
 			}
-
 			Array<String> ipbans = netServer.admins.getBannedIPs();
 			for(String string : ipbans){
 				ipb++;
@@ -99,23 +96,18 @@ public class Extend{
 			}
 		}
 
-		public static String host(String mapp,String gamemodes,String wait) {
+		public static String host(String mapp, String gamemodes, Player player) {
 			String resultt = null;
 			if("sandbox".equalsIgnoreCase(gamemodes)){
 			}else if ("pvp".equalsIgnoreCase(gamemodes)){
 			}else if ("attack".equalsIgnoreCase(gamemodes)){
 			}else if ("survival".equalsIgnoreCase(gamemodes)){
 			}else{
-				resultt = "N";
-				//player.sendMessage(":"+gamemode+"!");
-				return resultt;
+				player.sendMessage(language.getinput("host.mode",gamemodes));
+				return null;
 			}
-			resultt = "Y";
-			//Call.sendMessage("[red]![]");
-			if (wait != "Y") {
-				return resultt;
-			}else{
-				/*
+			Call.sendMessage(language.getinput("host.re"));;
+			
 			try{
 				Thread.currentThread().sleep(5000);
 				}catch(InterruptedException ie){
@@ -145,7 +137,6 @@ public class Extend{
 				state.set(State.menu);
 			}catch(IOException e){
 				state.set(State.menu);
-			}*/
 			}
 
 			return null;
@@ -198,7 +189,6 @@ public class Extend{
 		}
 
 		public static void PlayerChatEvent_Sensitive_Thesaurus(Player player, String text) {
-			Language language = new Language();
 			if (!getplayer_boolean(player.uuid)) {
 				setplayer(player.uuid, 1);
 				player.sendMessage(language.getinput("Sensitive.Thesaurus.info",String.valueOf(getplayer_int(player.uuid)),text));
@@ -217,34 +207,8 @@ public class Extend{
 
 	public static class Init{
 		public static String netServer_addChatFilter_Sensitive_Thesaurus(Player player, String message) {
-			long resetTime = Config.messageRateLimit.num() * 1000;
-            if(Config.antiSpam.bool() && !player.isLocal && !player.isAdmin){
-                //prevent people from spamming messages quickly
-                if(resetTime > 0 && Time.timeSinceMillis(player.getInfo().lastMessageTime) < resetTime){
-                    //supress message
-                    player.sendMessage("[scarlet]You may only send messages every " + Config.messageRateLimit.num() + " seconds.");
-                    player.getInfo().messageInfractions ++;
-                    //kick player for spamming and prevent connection if they've done this several times
-                    if(player.getInfo().messageInfractions >= Config.messageSpamKick.num() && Config.messageSpamKick.num() != 0){
-                        player.con.kick("You have been kicked for spamming.", 1000 * 60 * 2);
-                    }
-                    player.getInfo().lastSentMessage = message;
-                    return null;
-                }else{
-                    player.getInfo().messageInfractions = 0;
-                }
-
-                //prevent players from sending the same message twice in the span of 50 seconds
-                if(message.equals(player.getInfo().lastSentMessage) && Time.timeSinceMillis(player.getInfo().lastMessageTime) < 1000 * 50){
-                    player.sendMessage("[scarlet]You may not send the same message twice.");
-                    return null;
-                }
-
-                player.getInfo().lastSentMessage = message;
-                player.getInfo().lastMessageTime = Time.millis();
-            }
-
 			return replaceBadWord(message,2,"*");
+			//官方的我已放弃
 		}
 	}
 }
