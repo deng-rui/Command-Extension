@@ -46,13 +46,5 @@ public class Json {
 		Core.settings.getDataDirectory().child(path).writeString(json);
 	}
 
-/*
-	public static void TEST(String a, String b,String path) {
-		JSONObject add = new JSONObject();
-		add.put(a, b);
-		//cookie 有效时间-未实现
-		//Baidu translation -TEST阶段
-		String json = add.toString();
-		Core.settings.getDataDirectory().child(path).writeString(json);
-*/
+
 }
