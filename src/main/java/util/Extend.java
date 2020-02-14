@@ -201,6 +201,10 @@ public class Extend {
 			//player.sendMessage(language.getinput("Sensitive_Thesaurus",player.name));
 		}
 
+		public static void PlayerChatEvent_Logins(Player player, String text) {
+			
+		}
+
 	}
 
 	public static class Init {

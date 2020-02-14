@@ -14,43 +14,45 @@ public class SQLite {
 				Statement stmt = c.createStatement();
 				System.out.println("Opened database successfully");
 				String sql ="CREATE TABLE TEST (" +
-							"UUID 			TEXT 	NOT NULL,"+
-							"NAME 			TEXT 	NOT NULL,"+
-							"IP 			TEXT 	NOT NULL,"+
-							"GMT 			TEXT 	NOT NULL,"+
-							"Country 		TEXT 	NOT NULL,"+
-							"Language 		TEXT 	NOT NULL,"+
-							//玩家普通信息
-							"Password 		TEXT 	NOT NULL,"+
-							"CSPRNG 		TEXT 	NOT NULL,"+
+							"UUID 			TEXT,"+
+							"NAME 			TEXT,"+
+							"IP 			TEXT,"+
+							"GMT 			TEXT,"+
+							"Country 		TEXT,"+
+							"Language 		TEXT,"+
+							"LastLogin 		TEXT,"+
+							//玩家普通信息7
+							"User 			TEXT,"+
+							"PasswordHash 	TEXT,"+
+							"CSPRNG 		TEXT,"+
 							//Cryptographically Secure Pseudo-Random Number Generator
-							//安全系列
-							"Kickcount		INT 	DEFAULT 0,"+
-							"Sensitive 		INT 	DEFAULT 0,"+
-							//被踢次数 敏感词总次数
-							"Translate 		BIT 	DEFAULT 0,"+
-							//翻译权限
-							"Level 			INT 	DEFAULT 0,"+
-							"Exp 			INT 	DEFAULT 0,"+
-							"Reqexp 		INT 	DEFAULT 0,"+
-							"Reqtotalexp 	INT 	DEFAULT 0,"+
-							//等级
-							"Playtime 		REAL 	DEFAULT 0,"+
-							//游戏时长
-							"Pvpwincount 	INT 	DEFAULT 0,"+
-							"Pvplosecount 	INT 	DEFAULT 0,"+
-							//胜利 输数
-							"Authority 		TEXT 	NOT NULL,"+
-							//权限
-							"Lastchat 		TEXT 	NOT NULL,"+
-							"Chatcount 		INT 	DEFAULT 0,"+
-							//最后聊天时间 聊天计数
-							"Deadcount		INT 	DEFAULT 0,"+
-							"Killcount 		INT 	DEFAULT 0,"+
-							"Joincount 		INT 	DEFAULT 0,"+
-							"Breakcount 	INT 	DEFAULT 0)"; 
-							//玩家死亡 击杀 加入 退出次数-4
-							//TEST阶段 仅在GA-PVP使用-24
+							//安全系列3
+							"Kickcount		INTEGER,"+
+							"Sensitive 		INTEGER,"+
+							//被踢次数 敏感词总次数2
+							"Translate 		BIT,"+
+							//翻译权限1
+							"Level 			INT,"+
+							"Exp 			INT,"+
+							"Reqexp 		INT,"+
+							"Reqtotalexp 	INT,"+
+							//等级4
+							"Playtime 		REAL,"+
+							//游戏时长1
+							"Pvpwincount 	INTEGER,"+
+							"Pvplosecount 	INTEGER,"+
+							//胜利 输数2
+							"Authority 		TEXT,"+
+							//权限1
+							"Lastchat 		TEXT,"+
+							"Chatcount 		INTEGER,"+
+							//最后聊天时间 聊天计数2
+							"Deadcount		INTEGER,"+
+							"Killcount 		INTEGER,"+
+							"Joincount 		INTEGER,"+
+							"Breakcount 	INTEGER)"; 
+							//玩家死亡 击杀 加入 退出次数4
+							//TEST阶段 仅在GA-PVP使用
 				stmt.executeUpdate(sql);
 				stmt.close();
 				c.close();
@@ -63,7 +65,7 @@ public class SQLite {
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
 				Statement stmt = c.createStatement();
-				String sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,Password,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
+				String sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
 							"VALUES ("+UUID+","+NAME+","+IP+","+GMT+","+Country+","+Language+",'','','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0')"; 
 				stmt.executeUpdate(sql);
 				stmt.close();
@@ -75,31 +77,51 @@ public class SQLite {
 
 		public static void addSQLite() {
 			try {
+				String sql;
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
 				Statement stmt = c.createStatement();
-				String sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,Password,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
-						  "VALUES ('ZNSDsdjdemDRtest==','Dr','1.1.1.1','GMT+8','ZH-CN','ZH-CN','','','','','','1','','','','','','','','','','','','','')"; 
+				System.out.println("Opened database successfully");
+				sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
+					  "VALUES ('ZNSDsdjdemDRtest==','Dr','1.1.1.1','GMT+8','ZH-CN','ZH-CN','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0')"; 
+				stmt.executeUpdate(sql);
+				System.out.println("1");
+				sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
+					 "VALUES ('ZNSDsdjdXemDRtest==','DXr','1.1.1.1','GMT+8','ZH-CN','ZH-CN','','','','','','','','','','','','','','','','','','','','','')"; 
+				stmt.executeUpdate(sql);
+				System.out.println("2");
+				sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
+					 "VALUES ('ZNSDsdjdemXXDRtest==','DXXr','1.1.1.1','GMT+8','ZH-CN','ZH-CN','','','','','','','','','','','','','','','','','','','','','')"; 
+				stmt.executeUpdate(sql);
+				sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
+					 "VALUES ('ZNSDsdjdXXXemDRtest==','DXXXr','1.1.1.1','GMT+8','ZH-CN','ZH-CN','','','','','','','','','','','','','','','','','','','','','')"; 
 				stmt.executeUpdate(sql);
 				stmt.close();
 				c.commit();
 				c.close();
 			} catch ( Exception e ) {
+				System.out.println(e);
 			}
 		}
 
-		public static void getSQLite() {
+		public static void getSQLite(String name) {
 			try {		
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
-				Statement stmt = c.createStatement();
-				ResultSet rs = stmt.executeQuery("SELECT * FROM TEST");
+				PreparedStatement stmt = c.prepareStatement("SELECT * FROM TEST WHERE NAME=?");
+            	stmt.setString(1,name);
+				ResultSet rs = stmt.executeQuery();
 				while ( rs.next() ) {
 					System.out.println( "UUID = " + rs.getString("UUID"));
 					System.out.println( "NAME = " + rs.getString("NAME"));
 					System.out.println( "IP = " + rs.getString("IP"));
 					System.out.println( "GMT = " + rs.getString("GMT"));
 					System.out.println( "Language = " + rs.getString("Language"));
+					System.out.println( "UUID = " + rs.getString("User"));
+					System.out.println( "NAME = " + rs.getString("Kickcount"));
+					System.out.println( "IP = " + rs.getString("Sensitive"));
+					System.out.println( "GMT = " + rs.getString("Reqexp"));
+					System.out.println( "Language = " + rs.getString("Reqexp"));
 					System.out.println();
 				}
 				rs.close();

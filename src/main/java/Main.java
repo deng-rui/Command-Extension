@@ -71,7 +71,7 @@ public class Main extends Plugin {
 		notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
 		InitializationSQLite();
 		addSQLite();
-		getSQLite();
+		getSQLite("Dr");
 
 		
 		//加载
@@ -93,7 +93,8 @@ public class Main extends Plugin {
 			Set<String> set1 = Sensitive_Thesaurus(removeAll_CN(e.player.name));
 			if (0 < set1.size())Call.onKick(e.player.con, language.getinput("Sensitive.Thesaurus.join.kick",set1.iterator().next()));
 			//中英分检测
-			Call.onInfoMessage(e.player.con,language.getinput("join.start",timee(),getGC_1()));
+			Call.onPlayerDeath(e.player);
+			//Call.onInfoMessage(e.player.con,language.getinput("join.start",timee(),getGC_1()));
 			if (Vars.state.rules.pvp){
 				if("禁止".equalsIgnoreCase(getGC_1())){
 					state.rules.playerDamageMultiplier = 0f;
