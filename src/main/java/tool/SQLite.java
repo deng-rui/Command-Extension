@@ -12,6 +12,7 @@ public class SQLite {
 			try {
 				Connection c = connectSQLite();
 				Statement stmt = c.createStatement();
+				System.out.println("Opened database successfully");
 				String sql ="CREATE TABLE TEST (" +
 							"UUID 			TEXT 	NOT NULL,"+
 							"NAME 			TEXT 	NOT NULL,"+
@@ -20,6 +21,10 @@ public class SQLite {
 							"Country 		TEXT 	NOT NULL,"+
 							"Language 		TEXT 	NOT NULL,"+
 							//玩家普通信息
+							"Password 		TEXT 	NOT NULL,"+
+							"CSPRNG 		TEXT 	NOT NULL,"+
+							//Cryptographically Secure Pseudo-Random Number Generator
+							//安全系列
 							"Kickcount		INT 	DEFAULT 0,"+
 							"Sensitive 		INT 	DEFAULT 0,"+
 							//被踢次数 敏感词总次数
@@ -58,8 +63,8 @@ public class SQLite {
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
 				Statement stmt = c.createStatement();
-				String sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
-							"VALUES ("+UUID+","+NAME+","+IP+","+GMT+","+Country+","+Language+",'0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0')"; 
+				String sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,Password,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
+							"VALUES ("+UUID+","+NAME+","+IP+","+GMT+","+Country+","+Language+",'','','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0')"; 
 				stmt.executeUpdate(sql);
 				stmt.close();
 				c.commit();
@@ -73,8 +78,8 @@ public class SQLite {
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
 				Statement stmt = c.createStatement();
-				String sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
-						  "VALUES ('ZNSDsdjdemDRtest==','Dr','1.1.1.1','GMT+8','ZH-CN','ZH-CN','','','','1','','','','','','','','','','','','','')"; 
+				String sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,Password,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
+						  "VALUES ('ZNSDsdjdemDRtest==','Dr','1.1.1.1','GMT+8','ZH-CN','ZH-CN','','','','','','1','','','','','','','','','','','','','')"; 
 				stmt.executeUpdate(sql);
 				stmt.close();
 				c.commit();
@@ -88,7 +93,7 @@ public class SQLite {
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
 				Statement stmt = c.createStatement();
-				ResultSet rs = stmt.executeQuery( "SELECT * FROM TEST;" );
+				ResultSet rs = stmt.executeQuery("SELECT * FROM TEST");
 				while ( rs.next() ) {
 					System.out.println( "UUID = " + rs.getString("UUID"));
 					System.out.println( "NAME = " + rs.getString("NAME"));

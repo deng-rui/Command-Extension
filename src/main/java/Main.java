@@ -44,6 +44,7 @@ import static extension.tool.HttpRequest.doCookie;
 import static extension.tool.Librarydependency.*;
 import static extension.tool.Json.*;
 import static extension.tool.SQLite.player.*;
+import static extension.tool.Password.*;
 import static extension.util.Extend.*;
 import static extension.util.Extend.ClientCommands.*;
 import static extension.util.Extend.Event.*;
@@ -65,13 +66,14 @@ public class Main extends Plugin {
 	public Main() {
 
 		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists())Initialization();
-		notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));//初始化SQL
-
+		//初始化SQL
+		importLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
+		notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
 		InitializationSQLite();
 		addSQLite();
 		getSQLite();
 
-		//importLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
+		
 		//加载
 
 		Events.on(EventType.PlayerChatEvent.class, e -> {
@@ -129,6 +131,13 @@ public class Main extends Plugin {
 				if ("N".equalsIgnoreCase(arg[0]))setGC_1("禁止");
 		});
 
+		handler.register("aaa","<1>", "NOT", (arg) -> {
+				aaa(arg[0]);
+		});
+
+		handler.register("aab","<1> <2> <3>", "NOT", (arg) -> {
+				aab(arg[0],arg[1],arg[2]);
+		});
 	};
 
 	@Override
