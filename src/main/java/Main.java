@@ -33,16 +33,18 @@ import mindustry.Vars;
 import static mindustry.Vars.*;
 //Mindustry-Static
 
-import extension.auxiliary.Language;
+
 import extension.util.translation.Googletranslate;
 import extension.util.translation.Baidutranslate;
 //GA-Exted
 
 import static extension.auxiliary.Strings.*;
+import static extension.auxiliary.Language.*;
 import static extension.tool.HttpRequest.doGet;
 import static extension.tool.HttpRequest.doCookie;
 import static extension.tool.Librarydependency.*;
 import static extension.tool.Json.*;
+import static extension.tool.SQLite.*;
 import static extension.tool.SQLite.player.*;
 import static extension.tool.Password.*;
 import static extension.util.Extend.*;
@@ -58,7 +60,6 @@ public class Main extends Plugin {
 
 	Googletranslate googletranslate = new Googletranslate();
 	Baidutranslate baidutranslate = new Baidutranslate();
-	Language language = new Language();
 //改进全局变量
 //VOTE
 	@SuppressWarnings("unchecked")
@@ -89,12 +90,14 @@ public class Main extends Plugin {
 
 		Events.on(EventType.PlayerJoin.class, e -> {
 			Set<String> set = Sensitive_Thesaurus(removeAll_EN(e.player.name));
-			if (0 < set.size())Call.onKick(e.player.con, language.getinput("Sensitive.Thesaurus.join.kick",set.iterator().next()));
+			if (0 < set.size())Call.onKick(e.player.con, getinput("Sensitive.Thesaurus.join.kick",set.iterator().next()));
 			Set<String> set1 = Sensitive_Thesaurus(removeAll_CN(e.player.name));
-			if (0 < set1.size())Call.onKick(e.player.con, language.getinput("Sensitive.Thesaurus.join.kick",set1.iterator().next()));
+			if (0 < set1.size())Call.onKick(e.player.con, getinput("Sensitive.Thesaurus.join.kick",set1.iterator().next()));
 			//中英分检测
-			Call.onPlayerDeath(e.player);
-			//Call.onInfoMessage(e.player.con,language.getinput("join.start",timee(),getGC_1()));
+			PlayerChatEvent_Logins(e.player);
+			//Logins
+			//官方接口全靠猜...
+			//Call.onInfoMessage(e.player.con,getinput("join.start",timee(),getGC_1()));
 			if (Vars.state.rules.pvp){
 				if("禁止".equalsIgnoreCase(getGC_1())){
 					state.rules.playerDamageMultiplier = 0f;
@@ -118,6 +121,21 @@ public class Main extends Plugin {
 			netServer.admins.addChatFilter((player, message) -> {
 				return replaceBadWord(message,2,"*");
 			});
+
+			netServer.assigner = ((player, players) -> {
+				if (Vars.state.rules.pvp) {
+					Teams.TeamData re = (Teams.TeamData)Vars.state.teams.getActive().min(data -> {
+						int count = 0;
+						for (final Player other : players)if (other.getTeam() == data.team && other != player)count++;
+						if (!data.hasCore())count = 100;
+						return (float)count;
+					});
+					return (null == re) ? null : re.team;
+				}
+				return Vars.state.rules.defaultTeam;
+			});
+			//linglan
+
 		});
 		
 	}
@@ -147,36 +165,34 @@ public class Main extends Plugin {
 		handler.removeCommand("vote");
 		handler.removeCommand("votekick");
 
-		handler.<Player>register("info",language.getinput("info"), (args, player) -> {
+		handler.<Player>register("info",getinput("info"), (args, player) -> {/*
 			String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
 			String Country = doGet("http://ip-api.com/line/"+ip+"?fields=country");
-			player.sendMessage(language.getinput("info.load"));
+			player.sendMessage(getinput("info.load"));
 			try{
 				Thread.currentThread().sleep(2000);
 				}catch(InterruptedException ie){
 					ie.printStackTrace();
 				}
-			player.sendMessage(language.getinput("info.name",player.name));
-			player.sendMessage(language.getinput("info.uuid",player.uuid));
-			player.sendMessage(language.getinput("info.equipment",String.valueOf(player.isMobile)));
-			player.sendMessage(language.getinput("info.ip",ip));
-			player.sendMessage(language.getinput("info.country",Country));
+			*/
+			Object[] Playerdate = {};
+			Call.onInfoMessage(e.player.con,getinput("join.start",Playerdate));
 		});
 
-		handler.<Player>register("status",language.getinput("status"), (args, player) -> {
+		handler.<Player>register("status",getinput("status"), (args, player) -> {
 			player.sendMessage("FPS:"+status("getfps")+"  Occupied memory:"+status("getmemory")+"MB");
-			player.sendMessage(language.getinput("status.number",String.valueOf(Vars.playerGroup.size())));
-			player.sendMessage(language.getinput("status.ban",status("getbancount")));
+			player.sendMessage(getinput("status.number",String.valueOf(Vars.playerGroup.size())));
+			player.sendMessage(getinput("status.ban",status("getbancount")));
 		});
 
 
-		handler.<Player>register("getpos",language.getinput("getpos"), (args, player) -> player.sendMessage(language.getinput("getpos.info",String.valueOf(Math.round(player.x/8)),String.valueOf(Math.round(player.y/8)))));
+		handler.<Player>register("getpos",getinput("getpos"), (args, player) -> player.sendMessage(getinput("getpos.info",String.valueOf(Math.round(player.x/8)),String.valueOf(Math.round(player.y/8)))));
 
-		handler.<Player>register("gc",language.getinput("gc"), (args, player) -> Call.onInfoMessage(player.con,language.getinput("gc.info")));
+		handler.<Player>register("gc",getinput("gc"), (args, player) -> Call.onInfoMessage(player.con,getinput("gc.info")));
 
-		handler.<Player>register("tpp","<player> <player>",language.getinput("tpp"), (args, player) -> {
+		handler.<Player>register("tpp","<player> <player>",getinput("tpp"), (args, player) -> {
 			if(!player.isAdmin){
-				player.sendMessage(language.getinput("admin.no"));
+				player.sendMessage(getinput("admin.no"));
 			} else {
 				try {
 					int x = Integer.parseInt(args[0])*8;
@@ -184,36 +200,36 @@ public class Main extends Plugin {
 					player.setNet((float)x, (float)y);
 					player.set((float)x, (float)y);
 				} catch (Exception e){
-				player.sendMessage(language.getinput("tpp.fail"));
+				player.sendMessage(getinput("tpp.fail"));
 				}
 			}
 		});
 
-		handler.<Player>register("tp","<player...>",language.getinput("tp"), (args, player) -> {
+		handler.<Player>register("tp","<player...>",getinput("tp"), (args, player) -> {
 			Player other = Vars.playerGroup.find(p->p.name.equalsIgnoreCase(args[0]));
 			if(!player.isAdmin){
-				player.sendMessage(language.getinput("admin.no"));
+				player.sendMessage(getinput("admin.no"));
 			} else {
 				if(other == null){
-					player.sendMessage(language.getinput("tp.fail"));
+					player.sendMessage(getinput("tp.fail"));
 					return;
 				}
 				player.setNet(other.x, other.y);
 			}
 		});
 
-		handler.<Player>register("suicide",language.getinput("suicide"), (args, player) -> {
+		handler.<Player>register("suicide",getinput("suicide"), (args, player) -> {
 				player.onPlayerDeath(player);
-				Call.sendMessage(language.getinput("suicide.tips",player.name));
+				Call.sendMessage(getinput("suicide.tips",player.name));
 		});
 
-		handler.<Player>register("team",language.getinput("team"), (args, player) ->{
+		handler.<Player>register("team",getinput("team"), (args, player) ->{
 			//change team
 			if(!player.isAdmin){
-				player.sendMessage(language.getinput("admin.no"));
+				player.sendMessage(getinput("admin.no"));
 				} else {
 				if (!Vars.state.rules.pvp){
-					player.sendMessage(language.getinput("team.fail"));
+					player.sendMessage(getinput("team.fail"));
 					return;
 				}
 				int index = player.getTeam().id+1;
@@ -234,23 +250,23 @@ public class Main extends Plugin {
 
 		});
 
-		handler.<Player>register("difficulty", "<difficulty>", language.getinput("difficulty"), (args, player) -> {
+		handler.<Player>register("difficulty", "<difficulty>", getinput("difficulty"), (args, player) -> {
 			if(!player.isAdmin){
 				player.sendMessage("[green]Careful: [] You're not admin!");
 			} else {
 				try {
 					Difficulty.valueOf(args[0]);
-					player.sendMessage(language.getinput("difficulty.success",args[0]));
+					player.sendMessage(getinput("difficulty.success",args[0]));
 				}catch(IllegalArgumentException e){
-					player.sendMessage(language.getinput("difficulty.fail",args[0]));
+					player.sendMessage(getinput("difficulty.fail",args[0]));
 				}
 			}
 		});
 
-		handler.<Player>register("gameover","",language.getinput("gameover"), (args, player) -> {
+		handler.<Player>register("gameover","",getinput("gameover"), (args, player) -> {
 			
 			if(!player.isAdmin){
-				player.sendMessage(language.getinput("admin.no"));
+				player.sendMessage(getinput("admin.no"));
 			} else {
 				Events.fire(new GameOverEvent(Team.crux));
 			}
@@ -258,29 +274,29 @@ public class Main extends Plugin {
 		});
 
 
-		handler.<Player>register("host","<mapname> [mode]",language.getinput("host"), (args, player) -> {
+		handler.<Player>register("host","<mapname> [mode]",getinput("host"), (args, player) -> {
 			if(!player.isAdmin){
-				player.sendMessage(language.getinput("admin.no"));
+				player.sendMessage(getinput("admin.no"));
 			} else {
 				host(args[0],args[1],player);
 			}
 		});
 		//It can be used normally. :)
 
-		handler.<Player>register("runwave",language.getinput("runwave"), (args, player) -> {
+		handler.<Player>register("runwave",getinput("runwave"), (args, player) -> {
 			if(!player.isAdmin){
-				player.sendMessage(language.getinput("admin.no"));
+				player.sendMessage(getinput("admin.no"));
 			} else {
 				logic.runWave();
 			}
 		});
 
-		handler.<Player>register("time",language.getinput("time"), (args, player) -> player.sendMessage(language.getinput("time.info",timee())));
+		handler.<Player>register("time",getinput("time"), (args, player) -> player.sendMessage(getinput("time.info",timee())));
 
-		handler.<Player>register("tr","<text> <Output-language>",language.getinput("tr"), (args, player) -> {
+		handler.<Player>register("tr","<text> <Output-language>",getinput("tr"), (args, player) -> {
 			//No spaces are allowed in the input language??
-			player.sendMessage(language.getinput("tr.tips"));
-			player.sendMessage(language.getinput("tr.tips1"));
+			player.sendMessage(getinput("tr.tips"));
+			player.sendMessage(getinput("tr.tips1"));
 			String text = args[0].replace('-',' ');	
 			try {
 				Thread.currentThread().sleep(2500);
@@ -307,34 +323,34 @@ public class Main extends Plugin {
 					vote(args[0]);
 					break;
 				default:
-					player.sendMessage(language.getinput("vote.err.no"));
+					player.sendMessage(getinput("vote.err.no"));
 					break;
 			}
 		});
 
-		handler.<Player>register("setting","<text> [text]",language.getinput("setting"), (args, player) -> {
+		handler.<Player>register("setting","<text> [text]",getinput("setting"), (args, player) -> {
 			if(!player.isAdmin){
-				player.sendMessage(language.getinput("admin.no"));
+				player.sendMessage(getinput("admin.no"));
 				return;
 			}
 			switch(args[0]) {
 				case "help":
-					player.sendMessage(language.getinput("setting.help"));
+					player.sendMessage(getinput("setting.help"));
 					break;
 				case "Automatic-translation":
 					JSONObject date = getData();
 					if (args.length == 1 && args[0].equals("on")) {
 						date.put("translateo", true);
 						Core.settings.getDataDirectory().child("mods/GA/setting.json").writeString((String.valueOf(date)));
-						player.sendMessage(language.getinput("setting.trr.on"));
+						player.sendMessage(getinput("setting.trr.on"));
 					}else{
 						date.put("translateo", false);
 						Core.settings.getDataDirectory().child("mods/GA/setting.json").writeString((String.valueOf(date)));
-						player.sendMessage(language.getinput("setting.trr.off"));
+						player.sendMessage(getinput("setting.trr.off"));
 					}
 					break;
 				case "language":
-					player.sendMessage(language.getinput("setting.language.info"));
+					player.sendMessage(getinput("setting.info"));
 					String result = setting_language(args[0],args[1]);
 					if(result = "Y")
 					break;
@@ -352,6 +368,6 @@ public class Main extends Plugin {
  *名称								使用算法	  			来源
  *UTF8Control.Java					UTF8Control  		https://answer-id.com/52120414
  *Googletranslate.Java				Googletranslate		https://github.com/PopsiCola/GoogleTranslate
- *Main.Java 						info 				https://github.com/Kieaer/Essentials
+ *Main.Java 						assigner 			Tencent qun(QQ qun)
  *Sensitive_Thesaurus.Java 			参考DFA算法 			http://blog.csdn.net/chenssy/article/details/26961957
 */

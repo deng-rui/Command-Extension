@@ -11,6 +11,7 @@ linglan512572354:https://github.com/linglan512572354
 Please pay attention to timeliness in the beginning of reconstruction of this project.
 This project is open and only based on individuals If there is any shortage, please send me an email or submit a question.
 Unfinished, plug-in borrows J-Vds and Kieaer partial algorithms.
+This project is a centralized project. If you need some modules, please wait for the division after the completion of the finished product or you can finish it by yourself.
 Published files have been compiled and you can compile and try to use them yourself. :)
 
 ## Warning!!!
