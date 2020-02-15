@@ -15,57 +15,55 @@ public class SQLite {
 			Connection c = connectSQLite();
 			Statement stmt = c.createStatement();
 			//sql = "CREATE TABLE Players (" +
-			sql = "CREATE TABLE TEST (" +
+			sql = "CREATE TABLE 	TEST (" +
 				  "UUID 			TEXT,"+
-				"NAME 			TEXT,"+
-				"IP 			TEXT,"+
-				"GMT 			TEXT,"+
-				"Country 		TEXT,"+
-				"Language 		TEXT,"+
-				"LastLogin 		TEXT,"+
-						//玩家普通信息7
-				"User 			TEXT,"+
-						"PasswordHash 	TEXT,"+
-						"CSPRNG 		TEXT,"+
-						//Cryptographically Secure Pseudo-Random Number Generator
-						//安全系列3
-						"Kickcount		INTEGER,"+
-						"Sensitive 		INTEGER,"+
-						//被踢次数 敏感词总次数2
-						"Translate 		BIT,"+
-						//翻译权限1
-						"Level 			INT,"+
-						"Exp 			INT,"+
-						"Reqexp 		INT,"+
-						"Reqtotalexp 	INT,"+
-						//等级4
-						"Playtime 		REAL,"+
-						//游戏时长1
-						"Pvpwincount 	INTEGER,"+
-						"Pvplosecount 	INTEGER,"+
-						//胜利 输数2
-						"Authority 		TEXT,"+
-						//权限1
-						"Lastchat 		TEXT,"+
-						"Chatcount 		INTEGER,"+
-						//最后聊天时间 聊天计数2
-						"Deadcount		INTEGER,"+
-						"Killcount 		INTEGER,"+
-						"Joincount 		INTEGER,"+
-						"Breakcount 	INTEGER)"; 
-						//玩家死亡 击杀 加入 退出次数4
-						//TEST阶段 仅在GA-PVP使用27
+				  "NAME 			TEXT,"+
+				  "IP 				TEXT,"+
+				  "GMT 				TEXT,"+
+				  "Country 			TEXT,"+
+				  "Language 		TEXT,"+
+				  "LastLogin 		TEXT,"+
+				  //玩家普通信息7
+				  "User 			TEXT,"+
+				  "PasswordHash 	TEXT,"+
+				  "CSPRNG 			TEXT,"+
+				  //Cryptographically Secure Pseudo-Random Number Generator
+				  //安全系列3
+				  "Kickcount		INTEGER,"+
+				  "Sensitive 		INTEGER,"+
+				  //被踢次数 敏感词总次数2
+				  "Translate 		BIT,"+
+				  //翻译权限1
+				  "Level 			INT,"+
+				  "Exp 				INT,"+
+				  "Reqexp 			INT,"+
+				  "Reqtotalexp 		INT,"+
+				  //等级4
+				  "Playtime 		REAL,"+
+				  //游戏时长1
+				  "Pvpwincount 		INTEGER,"+
+				  "Pvplosecount 	INTEGER,"+
+				  //胜利 输数2
+				  "Authority 		TEXT,"+
+				  //权限1
+				  "Lastchat 		TEXT,"+
+				  "Chatcount 		INTEGER,"+
+				  //最后聊天时间 聊天计数2
+				  "Deadcount		INTEGER,"+
+				  "Killcount 		INTEGER,"+
+				  "Joincount 		INTEGER,"+
+				  "Breakcount 	INTEGER)"; 
+				  //玩家死亡 击杀 加入 退出次数4
+				  //TEST阶段 仅在GA-PVP使用27
 			stmt.executeUpdate(sql);
 			sql = "CREATE TABLE Settings (" +
-						"UUID 			TEXT,"+
-						"NAME 			TEXT,"+
-						"IP 			TEXT,"+
-						"GMT 			TEXT,"+
-						"Country 		TEXT,"+
-						"Language 		TEXT,"+
-						"LastLogin 		TEXT,"+
-						//玩家普通信息7
-						//TEST阶段 仅在GA-PVP使用27
+				  "UUID 			TEXT,"+
+				  "NAME 			TEXT,"+
+				  "IP 				TEXT,"+
+				  "GMT 				TEXT,"+
+				  "Country 			TEXT,"+
+				  "Language 		TEXT,"+
+				  "LastLogin 		TEXT)";
 			stmt.executeUpdate(sql);
 			stmt.close();
 			c.close();

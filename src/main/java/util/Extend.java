@@ -42,11 +42,11 @@ import static mindustry.Vars.*;
 //Mindustry-Static
 
 import extension.util.translation.Googletranslate;
-import extension.auxiliary.Language;
 //GA-Exted
 
 import static extension.auxiliary.Booleans.*;
 import static extension.auxiliary.Strings.*;
+import static extension.auxiliary.Language.*;
 import static extension.auxiliary.Maps.*;
 import static extension.tool.Json.*;
 import static extension.util.Sensitive_Thesaurus.*;
@@ -57,8 +57,6 @@ import com.alibaba.fastjson.JSONObject;
 //Json
 
 public class Extend {
-
-	private static Language language = new Language();
 
 	public static class ClientCommands {
 		//private HashSet<Player> votes = new HashSet<>();
@@ -103,10 +101,10 @@ public class Extend {
 			}else if ("attack".equalsIgnoreCase(gamemodes)){
 			}else if ("survival".equalsIgnoreCase(gamemodes)){
 			}else{
-				player.sendMessage(language.getinput("host.mode",gamemodes));
+				player.sendMessage(getinput("host.mode",gamemodes));
 				return null;
 			}
-			Call.sendMessage(language.getinput("host.re"));;
+			Call.sendMessage(getinput("host.re"));;
 			
 			try{
 				Thread.currentThread().sleep(5000);
@@ -189,19 +187,19 @@ public class Extend {
 		public static void PlayerChatEvent_Sensitive_Thesaurus(Player player, String text) {
 			if (!getplayer_boolean(player.uuid)) {
 				setplayer(player.uuid, 1);
-				player.sendMessage(language.getinput("Sensitive.Thesaurus.info",String.valueOf(getplayer_int(player.uuid)),text));
+				player.sendMessage(getinput("Sensitive.Thesaurus.info",String.valueOf(getplayer_int(player.uuid)),text));
 			}else{
 				setplayer(player.uuid, getplayer_int(player.uuid)+1);
-				player.sendMessage(language.getinput("Sensitive.Thesaurus.info",String.valueOf(getplayer_int(player.uuid)),text));
+				player.sendMessage(getinput("Sensitive.Thesaurus.info",String.valueOf(getplayer_int(player.uuid)),text));
 			}
 			if (3 <= getplayer_int(player.uuid)) {
-				Call.onKick(player.con, language.getinput("Sensitive.Thesaurus.message.kick",text));
+				Call.onKick(player.con, getinput("Sensitive.Thesaurus.message.kick",text));
 				setplayer(player.uuid, 0);
 			}
-			//player.sendMessage(language.getinput("Sensitive_Thesaurus",player.name));
+			//player.sendMessage(getinput("Sensitive_Thesaurus",player.name));
 		}
 
-		public static void PlayerChatEvent_Logins(Player player, String text) {
+		public static void PlayerChatEvent_Logins(Player player) {
 			
 		}
 
