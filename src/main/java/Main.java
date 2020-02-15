@@ -107,6 +107,7 @@ public class Main extends Plugin {
 		});
 
 		Events.on(EventType.UnitCreateEvent.class, e -> {
+			//System.out.println("?????");
 		});
 
 		Events.on(GameOverEvent.class, e -> {
@@ -115,7 +116,7 @@ public class Main extends Plugin {
 
 		Events.on(ServerLoadEvent.class, e-> {
 			netServer.admins.addChatFilter((player, message) -> {
-				return netServer_addChatFilter_Sensitive_Thesaurus(player,message);
+				return replaceBadWord(message,2,"*");
 			});
 		});
 		
