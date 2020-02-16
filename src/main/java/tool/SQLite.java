@@ -15,7 +15,7 @@ public class SQLite {
 			Connection c = connectSQLite();
 			Statement stmt = c.createStatement();
 			//sql = "CREATE TABLE Players (" +
-			sql = "CREATE TABLE 	TEST (" +
+			sql = "CREATE TABLE TEST (" +
 				  "UUID 			TEXT,"+
 				  "NAME 			TEXT,"+
 				  "IP 				TEXT,"+

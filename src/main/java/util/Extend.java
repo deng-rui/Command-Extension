@@ -194,22 +194,21 @@ public class Extend {
 			}
 			if (3 <= getplayer_int(player.uuid)) {
 				Call.onKick(player.con, getinput("Sensitive.Thesaurus.message.kick",text));
-				setplayer(player.uuid, 0);
+				setplayer(player.uuid,0);
 			}
 			//player.sendMessage(getinput("Sensitive_Thesaurus",player.name));
 		}
 
-		public static void PlayerChatEvent_Logins(Player player) {
-			
+		public static void PlayerJoin_Logins(Player player) {
+			player.setTeam(Team.derelict);
+			Call.onPlayerDeath(player);
+			Call.onInfoMessage(player.con,getinput("join.start"));
 		}
 
 	}
 
-	public static class Init {
-		public static String netServer_addChatFilter_Sensitive_Thesaurus(Player player, String message) {
-			return replaceBadWord(message,2,"*");
-			//官方的我已放弃
-		}
+	public static class EX {
+	
 	}
 }
 

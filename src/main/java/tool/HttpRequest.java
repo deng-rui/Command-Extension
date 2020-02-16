@@ -6,7 +6,6 @@ import arc.files.Fi;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -52,7 +51,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 //apach.http
 
-import static extension.tool.Tool.isBlank;
+import static extension.tool.Tool.Blank;
 import static extension.tool.Json.*;
 //
 
@@ -175,7 +174,7 @@ public class HttpRequest {
 	}
  
 	public static ByteArrayOutputStream gZipContent(String sendData) throws IOException{
-		if (isBlank(sendData)) {
+		if (Blank(sendData)) {
 			return null;
 		}
  

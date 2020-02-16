@@ -31,8 +31,7 @@ import org.apache.http.util.EntityUtils;
 
 import static extension.util.Translation_support.*;
 import static extension.tool.HttpRequest.doPost;
-import static extension.tool.Tool.isBlank;
-import static extension.tool.Tool.isNotBlank;
+import static extension.tool.Tool.*;
 import static extension.tool.Json.*;
 
 
@@ -95,15 +94,15 @@ public class Baidutranslate {
 		}
 		String gtk = getkeys("https://fanyi.baidu.com/","gtk:'.*?'",Integer.parseInt("5"),Integer.parseInt("1"));
 		System.out.println(gtk);
-		if (isBlank(word))return null;
+		if (Blank(word))return null;
 		//String token = getkeys("https://fanyi.baidu.com/","token:'.*?'",Integer.parseInt("7"),Integer.parseInt("1"));
 		String token = "9ce13f0597499da92fec34778ef36d91";
 		System.out.println(token);
 		//本地获取token过旧，可能是我网络问题:(
-		if (isBlank(token))return null;
+		if (Blank(token))return null;
 		String sign = getTK(word, gtk);
 		System.out.println(sign);
-		if (isBlank(sign))return null;
+		if (Blank(sign))return null;
 		String paramMap = "from="+from+"&to="+to+"&query="+word+"&transtype=realtime"+"&simple_means_flag=3"+"&sign="+sign+"&token="+token;
 		System.out.println(paramMap);
 		String result = doPost("https://fanyi.baidu.com/v2transapi?from=auto&to="+to, paramMap);

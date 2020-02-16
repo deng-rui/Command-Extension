@@ -39,6 +39,7 @@ import extension.util.translation.Baidutranslate;
 //GA-Exted
 
 import static extension.auxiliary.Strings.*;
+import static extension.auxiliary.Maps.*;
 import static extension.auxiliary.Language.*;
 import static extension.tool.HttpRequest.doGet;
 import static extension.tool.HttpRequest.doCookie;
@@ -50,7 +51,7 @@ import static extension.tool.Password.*;
 import static extension.util.Extend.*;
 import static extension.util.Extend.ClientCommands.*;
 import static extension.util.Extend.Event.*;
-import static extension.util.Extend.Init.*;
+//import static extension.util.Extend.Init.*;
 import static extension.util.Sensitive_Thesaurus.*;
 import static extension.util.Translation_support.*;
 //Static
@@ -70,11 +71,10 @@ public class Main extends Plugin {
 		//初始化SQL
 		importLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
 		notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
-		InitializationSQLite();
-		addSQLite();
-		getSQLite("Dr");
+		// InitializationSQLite();
+		// addSQLite();
+		// getSQLite("Dr");
 
-		
 		//加载
 
 		Events.on(EventType.PlayerChatEvent.class, e -> {
@@ -94,7 +94,8 @@ public class Main extends Plugin {
 			Set<String> set1 = Sensitive_Thesaurus(removeAll_CN(e.player.name));
 			if (0 < set1.size())Call.onKick(e.player.con, getinput("Sensitive.Thesaurus.join.kick",set1.iterator().next()));
 			//中英分检测
-			PlayerChatEvent_Logins(e.player);
+			PlayerJoin_Logins(e.player);
+			setPlayerDate_Temp(e.player.uuid,"Playtime-start",String.valueOf(System.currentTimeMillis()));
 			//Logins
 			//官方接口全靠猜...
 			//Call.onInfoMessage(e.player.con,getinput("join.start",timee(),getGC_1()));
@@ -107,10 +108,6 @@ public class Main extends Plugin {
 					state.rules.playerHealthMultiplier = 1f;
 				}
 			}
-		});
-
-		Events.on(EventType.UnitCreateEvent.class, e -> {
-			//System.out.println("?????");
 		});
 
 		Events.on(GameOverEvent.class, e -> {
@@ -127,7 +124,7 @@ public class Main extends Plugin {
 					Teams.TeamData re = (Teams.TeamData)Vars.state.teams.getActive().min(data -> {
 						int count = 0;
 						for (final Player other : players)if (other.getTeam() == data.team && other != player)count++;
-						if (!data.hasCore())count = 100;
+						if (!data.hasCore())count = 256;
 						return (float)count;
 					});
 					return (null == re) ? null : re.team;
@@ -176,7 +173,7 @@ public class Main extends Plugin {
 				}
 			*/
 			Object[] Playerdate = {};
-			Call.onInfoMessage(e.player.con,getinput("join.start",Playerdate));
+			Call.onInfoMessage(player.con,getinput("join.start",Playerdate));
 		});
 
 		handler.<Player>register("status",getinput("status"), (args, player) -> {
