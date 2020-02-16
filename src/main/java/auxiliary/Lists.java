@@ -2,7 +2,7 @@ package extension.auxiliary;
 
 import java.util.*;
 
-public class AList {
+public class Lists {
 	private static List<String> Tourist = Collections.synchronizedList(new ArrayList<String>());
 
 	public static void addTourist(String uuid) {
