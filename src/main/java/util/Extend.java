@@ -191,8 +191,8 @@ public class Extend {
 				setPlayer_Sensitive_words(player.uuid, 1);
 				player.sendMessage(getinput("Sensitive.Thesaurus.info",String.valueOf(getPlayer_Sensitive_words_int(player.uuid)),text));
 			}else{
-				setPlayer_Sensitive_words(player.uuid, getplayer_int(player.uuid)+1);
-				player.sendMessage(getinput("Sensitive.Thesaurus.info",String.valueOf(Player_Sensitive_words_int(player.uuid)),text));
+				setPlayer_Sensitive_words(player.uuid, getPlayer_Sensitive_words_int(player.uuid)+1);
+				player.sendMessage(getinput("Sensitive.Thesaurus.info",String.valueOf(getPlayer_Sensitive_words_int(player.uuid)),text));
 			}
 			if (3 <= getPlayer_Sensitive_words_int(player.uuid)) {
 				Call.onKick(player.con, getinput("Sensitive.Thesaurus.message.kick",text));
@@ -205,8 +205,8 @@ public class Extend {
 			player.setTeam(Team.derelict);
 			Call.onPlayerDeath(player);
 			//Call.onInfoMessage();
-			setPlayer_power_Date_Temp(player.uuid,0);
-			Call.onInfoToast(eplayer.con,getinput("join.tourist"),40f)
+			setPlayer_power_Date(player.uuid,0);
+			Call.onInfoToast(player.con,getinput("join.tourist"),40f);
 
 		}
 

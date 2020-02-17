@@ -120,13 +120,13 @@ public class SQLite {
 			}
 		}
 
-		public static void getSQLite(String name) {
+		public static List getSQLite(String uuid) {
 			try {
 				List<String> Players = new ArrayList<String>();		
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
-				PreparedStatement stmt = c.prepareStatement("SELECT * FROM TEST WHERE NAME=?");
-            	stmt.setString(1,name);
+				PreparedStatement stmt = c.prepareStatement("SELECT * FROM TEST WHERE UUID=?");
+            	stmt.setString(1,uuid);
 				ResultSet rs = stmt.executeQuery();
 				while ( rs.next() ) {
 					Players.add(rs.getString("UUID"));
@@ -174,14 +174,15 @@ public class SQLite {
 					
 				}
 				for(int i=0;i<Players.size();i++){
-    System.out.println(Players.get(i));
-} 
+    				System.out.println(Players.get(i));
+				}
 				rs.close();
 				stmt.close();
 				c.close();
-				//return Players;
+				return Players;
 			} catch ( Exception e ) {
 			}
+			return null;
 		}
 
 		

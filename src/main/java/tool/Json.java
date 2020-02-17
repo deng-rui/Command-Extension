@@ -3,6 +3,7 @@ package extension.tool;
 import arc.Core;
 //Arc
 
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ public class Json {
 		date.put("translateo", false);
 		String json = JSONObject.toJSONString(date,SerializerFeature.PrettyFormat);
 		Core.settings.getDataDirectory().child("mods/GA/setting.json").writeString(json);
+		//即将弃用
 	}
 
 	public static JSONObject getData(String path){
@@ -57,9 +59,17 @@ public class Json {
 		*/
 		Map<String, List<String>> date = Collections.synchronizedMap(new HashMap<String, List<String>>());
 		List<String> a = Collections.synchronizedList(new ArrayList<String>());
-		List<String> b = Collections.synchronizedList(new ArrayList<String>());
-		date.put("0", a);
-
+		date.put("0", Arrays.asList("info", "config"));
+		date.put("1", a);
+		date.put("2", a);
+		date.put("3", a);
+		date.put("4", a);
+		date.put("5", a);
+		date.put("6", a);
+		date.put("7", a);
+		date.put("8", a);
+		date.put("9", a);
+		date.put("10",a);
 		String json = JSONObject.toJSONString(date,SerializerFeature.PrettyFormat);
 		Core.settings.getDataDirectory().child("mods/GA/TEST.json").writeString(json);
 	}
