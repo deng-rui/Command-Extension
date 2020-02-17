@@ -3,11 +3,19 @@ package extension.tool;
 import arc.Core;
 import arc.files.Fi;
 
-import java.io.*;
-import java.net.*;
-import java.sql.*;
-import java.util.*;
+
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.DriverPropertyInfo;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.util.ArrayList;
 import java.util.logging.Logger;
+import java.util.List;
+import java.util.Properties;
 
 import static extension.tool.HttpRequest.Url302;
 import static extension.tool.HttpRequest.downUrl;

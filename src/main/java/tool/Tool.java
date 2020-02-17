@@ -1,9 +1,5 @@
 package extension.tool;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
 public class Tool {
 	public static boolean Blank(String string) {
 		if (string == null || "".equals(string.trim())) {
