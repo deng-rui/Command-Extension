@@ -1,6 +1,8 @@
 package extension.auxiliary;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Lists {
 	private static List<String> Tourist = Collections.synchronizedList(new ArrayList<String>());

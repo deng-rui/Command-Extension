@@ -1,6 +1,5 @@
 package extension.auxiliary;
 
-
 public class Booleans {
 	private static boolean vote = true;
 //初始化

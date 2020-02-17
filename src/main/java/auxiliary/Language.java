@@ -1,9 +1,9 @@
 package extension.auxiliary;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.text.*;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Locale;
+import java.util.ResourceBundle;
 //Java
 
 import arc.Core;

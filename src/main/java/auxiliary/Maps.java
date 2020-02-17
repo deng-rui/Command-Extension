@@ -1,6 +1,8 @@
 package extension.auxiliary;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Maps {
 	private static Map<String, Integer> Player = Collections.synchronizedMap(new HashMap<String, Integer>());
