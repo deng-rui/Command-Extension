@@ -31,14 +31,11 @@ import static mindustry.Vars.logic;
 
 
 import extension.util.translation.Googletranslate;
-import extension.util.translation.Baidutranslate;
 //GA-Exted
 
 import static extension.auxiliary.Strings.*;
 import static extension.auxiliary.Maps.*;
 import static extension.auxiliary.Language.*;
-import static extension.tool.HttpRequest.doGet;
-import static extension.tool.HttpRequest.doCookie;
 import static extension.tool.Librarydependency.*;
 import static extension.tool.Json.*;
 import static extension.tool.SQLite.*;
@@ -56,7 +53,6 @@ import static extension.util.Translation_support.*;
 public class Main extends Plugin {
 
 	Googletranslate googletranslate = new Googletranslate();
-	Baidutranslate baidutranslate = new Baidutranslate();
 //改进全局变量
 //VOTE
 	@SuppressWarnings("unchecked")
@@ -146,11 +142,11 @@ public class Main extends Plugin {
 		});
 
 		handler.register("aaa","<1>", "NOT", (arg) -> {
-				aaa(arg[0]);
+			aaa(arg[0]);
 		});
 
 		handler.register("aab","<1> <2> <3>", "NOT", (arg) -> {
-				aab(arg[0],arg[1],arg[2]);
+			aab(arg[0],arg[1],arg[2]);
 		});
 	};
 
