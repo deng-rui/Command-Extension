@@ -1,28 +1,22 @@
 package extension;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.util.Set;
 //Java
 
-import arc.*;
-import arc.util.*;
-import arc.util.Timer;
-import arc.util.CommandHandler.*;
+import arc.Core;
+import arc.Events;
+import arc.util.CommandHandler;
 //Arc
 
-import mindustry.*;
-import mindustry.core.*;
-import mindustry.core.GameState.*;
-import mindustry.content.*;
-import mindustry.entities.*;
-import mindustry.entities.type.*;
-import mindustry.game.*;
+import mindustry.entities.type.Player;
+import mindustry.gen.Call;
 import mindustry.game.Team;
+import mindustry.game.Teams;
 import mindustry.game.Difficulty;
-import mindustry.game.EventType.*;
-import mindustry.gen.*;
-import mindustry.io.*;
+import mindustry.game.EventType.GameOverEvent;
+import mindustry.game.EventType.ServerLoadEvent;
+import mindustry.game.EventType.PlayerChatEvent;
+import mindustry.game.EventType.PlayerJoin;
 import mindustry.net.Administration.PlayerInfo ;
 import mindustry.net.Packets.KickReason;
 import mindustry.net.NetConnection;
@@ -30,7 +24,9 @@ import mindustry.plugin.Plugin;
 import mindustry.Vars;
 //Mindustry
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.state;
+import static mindustry.Vars.netServer;
+import static mindustry.Vars.logic;
 //Mindustry-Static
 
 
@@ -68,6 +64,7 @@ public class Main extends Plugin {
 	public Main() {
 
 		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists())Initialization();
+		Initia();
 		//初始化SQL
 		importLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
 		notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
@@ -77,7 +74,7 @@ public class Main extends Plugin {
 
 		//加载
 
-		Events.on(EventType.PlayerChatEvent.class, e -> {
+		Events.on(PlayerChatEvent.class, e -> {
 			String result = PlayerChatEvent_translate(String.valueOf(e.message.charAt(0)),e.message);
 			if (null != result)Call.sendMessage("["+e.player.name+"]"+"[green] : [] "+result+"   -From Google Translator");
 			//自动翻译
@@ -88,7 +85,7 @@ public class Main extends Plugin {
 			//中英分检测
 		});
 
-		Events.on(EventType.PlayerJoin.class, e -> {
+		Events.on(PlayerJoin.class, e -> {
 			Set<String> set = Sensitive_Thesaurus(removeAll_EN(e.player.name));
 			if (0 < set.size())Call.onKick(e.player.con, getinput("Sensitive.Thesaurus.join.kick",set.iterator().next()));
 			Set<String> set1 = Sensitive_Thesaurus(removeAll_CN(e.player.name));
