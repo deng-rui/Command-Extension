@@ -3,11 +3,15 @@ package extension.tool;
 import arc.Core;
 //Arc
 
-import java.util.Map;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 //Json
 //写的越久，BUG越多，伤痕越疼，脾气越差/-活得越久 故事越多 伤痕越疼，脾气越差
 
@@ -23,7 +27,7 @@ public class Json {
 		date.put("languageO", "zh");
 		date.put("languageT", "CN");
 		date.put("translateo", false);
-		String json = JSONObject.toJSONString(date);
+		String json = JSONObject.toJSONString(date,SerializerFeature.PrettyFormat);
 		Core.settings.getDataDirectory().child("mods/GA/setting.json").writeString(json);
 	}
 
@@ -42,8 +46,22 @@ public class Json {
 		date.put("TXtime", "0");
 		//cookie 有效时间-未实现
 		//Baidu translation -TEST阶段
-		String json = JSONObject.toJSONString(date);
+		String json = JSONObject.toJSONString(date,SerializerFeature.PrettyFormat);
 		Core.settings.getDataDirectory().child(path).writeString(json);
+	}
+
+	public static void Initia() {
+		/*
+		add.put("languageO", "en");
+		add.put("languageT", "US");
+		*/
+		Map<String, List<String>> date = Collections.synchronizedMap(new HashMap<String, List<String>>());
+		List<String> a = Collections.synchronizedList(new ArrayList<String>());
+		List<String> b = Collections.synchronizedList(new ArrayList<String>());
+		date.put("0", a);
+
+		String json = JSONObject.toJSONString(date,SerializerFeature.PrettyFormat);
+		Core.settings.getDataDirectory().child("mods/GA/TEST.json").writeString(json);
 	}
 
 
