@@ -29,16 +29,19 @@ import mindustry.io.*;
 import mindustry.maps.Map;
 import mindustry.maps.*;
 import mindustry.net.Administration.*;
-import mindustry.net.Administration.PlayerInfo;
 import mindustry.net.Packets.KickReason;
 import mindustry.net.NetConnection;
-import mindustry.net.Packets.KickReason ;
 import mindustry.plugin.*;
 import mindustry.type.*;
 import mindustry.Vars;
 //Mindustry
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.state;
+import static mindustry.Vars.netServer;
+import static mindustry.Vars.logic;
+import static mindustry.Vars.world;
+import static mindustry.Vars.net;
+import static mindustry.Vars.maps;
 //Mindustry-Static
 
 import extension.util.translation.Googletranslate;
@@ -52,7 +55,6 @@ import static extension.tool.Json.*;
 import static extension.util.Sensitive_Thesaurus.*;
 //Static
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 //Json
 
@@ -185,16 +187,16 @@ public class Extend {
 		}
 
 		public static void PlayerChatEvent_Sensitive_Thesaurus(Player player, String text) {
-			if (!getplayer_boolean(player.uuid)) {
-				setplayer(player.uuid, 1);
-				player.sendMessage(getinput("Sensitive.Thesaurus.info",String.valueOf(getplayer_int(player.uuid)),text));
+			if (!Player_Sensitive_words_boolean(player.uuid)) {
+				setPlayer_Sensitive_words(player.uuid, 1);
+				player.sendMessage(getinput("Sensitive.Thesaurus.info",String.valueOf(getPlayer_Sensitive_words_int(player.uuid)),text));
 			}else{
-				setplayer(player.uuid, getplayer_int(player.uuid)+1);
-				player.sendMessage(getinput("Sensitive.Thesaurus.info",String.valueOf(getplayer_int(player.uuid)),text));
+				setPlayer_Sensitive_words(player.uuid, getplayer_int(player.uuid)+1);
+				player.sendMessage(getinput("Sensitive.Thesaurus.info",String.valueOf(Player_Sensitive_words_int(player.uuid)),text));
 			}
-			if (3 <= getplayer_int(player.uuid)) {
+			if (3 <= getPlayer_Sensitive_words_int(player.uuid)) {
 				Call.onKick(player.con, getinput("Sensitive.Thesaurus.message.kick",text));
-				setplayer(player.uuid,0);
+				setPlayer_Sensitive_words(player.uuid,0);
 			}
 			//player.sendMessage(getinput("Sensitive_Thesaurus",player.name));
 		}
@@ -202,7 +204,10 @@ public class Extend {
 		public static void PlayerJoin_Logins(Player player) {
 			player.setTeam(Team.derelict);
 			Call.onPlayerDeath(player);
-			Call.onInfoMessage(player.con,getinput("join.start"));
+			//Call.onInfoMessage();
+			setPlayer_power_Date_Temp(player.uuid,0);
+			Call.onInfoToast(eplayer.con,getinput("join.tourist"),40f)
+
 		}
 
 	}
