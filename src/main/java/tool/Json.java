@@ -59,7 +59,7 @@ public class Json {
 		*/
 		Map<String, List<String>> date = Collections.synchronizedMap(new HashMap<String, List<String>>());
 		List<String> a = Collections.synchronizedList(new ArrayList<String>());
-		date.put("0", Arrays.asList("info", "config"));
+		date.put("0", Arrays.asList("login", "register"));
 		date.put("1", a);
 		date.put("2", a);
 		date.put("3", a);

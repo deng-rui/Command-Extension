@@ -166,7 +166,7 @@ public class Main extends Plugin {
 		handler.removeCommand("vote");
 		handler.removeCommand("votekick");
 
-		handler.<Player>register("login", "<id> <password>", "Login to account", (arg, player) -> {
+		handler.<Player>register("login", "<id> <password>", "Login to account", (args, player) -> {
 			if(!Authority_control(player.uuid,"login")) {
 				System.out.println("NO!");
 				player.sendMessage(getinput("authority.no"));
@@ -175,7 +175,7 @@ public class Main extends Plugin {
 			}
 		});
 
-		handler.<Player>register("register", "<new_id> <new_password> <password_repeat>", "Login to account", (arg, player) -> {
+		handler.<Player>register("register", "<new_id> <new_password> <password_repeat>", "Login to account", (args, player) -> {
 			if(!Authority_control(player.uuid,"register")) {
 				System.out.println("NO!");
 				player.sendMessage(getinput("authority.no"));
