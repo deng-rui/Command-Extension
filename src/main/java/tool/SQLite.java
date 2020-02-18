@@ -44,7 +44,7 @@ public class SQLite {
 				  "Pvpwincount 		INTEGER,"+
 				  "Pvplosecount 	INTEGER,"+
 				  //胜利 输数2
-				  "Authority 		TEXT,"+
+				  "Authority 		INTEGER,"+
 				  //权限1
 				  "Lastchat 		TEXT,"+
 				  "Chatcount 		INTEGER,"+
@@ -57,13 +57,7 @@ public class SQLite {
 				  //TEST阶段 仅在GA-PVP使用27
 			stmt.executeUpdate(sql);
 			sql = "CREATE TABLE Settings (" +
-				  "UUID 			TEXT,"+
-				  "NAME 			TEXT,"+
-				  "IP 				TEXT,"+
-				  "GMT 				TEXT,"+
-				  "Country 			TEXT,"+
-				  "Language 		TEXT,"+
-				  "LastLogin 		TEXT)";
+				  "Language 		TEXT)";
 			stmt.executeUpdate(sql);
 			stmt.close();
 			c.close();
@@ -76,7 +70,7 @@ public class SQLite {
 			try {
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
-				String sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) VALUES (?,?,?,?,?,?,'0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0')"; 
+				String sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) VALUES (?,?,?,?,?,?,'0','0','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','0','0','0','0')"; 
 				PreparedStatement stmt = c.prepareStatement(sql);
             	stmt.setString(1,UUID);
             	stmt.setString(2,NAME);

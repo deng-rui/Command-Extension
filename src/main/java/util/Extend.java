@@ -220,5 +220,9 @@ public class Extend {
 			}
 		}
 	}
+
+	public static class PlayerData {
+		
+	}
 }
 
