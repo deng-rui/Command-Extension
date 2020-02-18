@@ -78,7 +78,7 @@ public class Translation_support {
 			String result = doGet(url);
 			String text = removeAllBlank(result);
 			//TEST("TEST",text,"mods/A.json");
-			if (isNotBlank(result)) {
+			if (NotBlank(result)) {
 					String matchString = findMatchString(text, keys);
 					String tkk = matchString.substring(numbero, matchString.length() - numbert);
 					return tkk;

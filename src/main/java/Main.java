@@ -1,28 +1,22 @@
 package extension;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.util.Set;
 //Java
 
-import arc.*;
-import arc.util.*;
-import arc.util.Timer;
-import arc.util.CommandHandler.*;
+import arc.Core;
+import arc.Events;
+import arc.util.CommandHandler;
 //Arc
 
-import mindustry.*;
-import mindustry.core.*;
-import mindustry.core.GameState.*;
-import mindustry.content.*;
-import mindustry.entities.*;
-import mindustry.entities.type.*;
-import mindustry.game.*;
+import mindustry.entities.type.Player;
+import mindustry.gen.Call;
 import mindustry.game.Team;
+import mindustry.game.Teams;
 import mindustry.game.Difficulty;
-import mindustry.game.EventType.*;
-import mindustry.gen.*;
-import mindustry.io.*;
+import mindustry.game.EventType.GameOverEvent;
+import mindustry.game.EventType.ServerLoadEvent;
+import mindustry.game.EventType.PlayerChatEvent;
+import mindustry.game.EventType.PlayerJoin;
 import mindustry.net.Administration.PlayerInfo ;
 import mindustry.net.Packets.KickReason;
 import mindustry.net.NetConnection;
@@ -30,51 +24,64 @@ import mindustry.plugin.Plugin;
 import mindustry.Vars;
 //Mindustry
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.state;
+import static mindustry.Vars.netServer;
+import static mindustry.Vars.logic;
 //Mindustry-Static
 
-import extension.auxiliary.Language;
+
 import extension.util.translation.Googletranslate;
-import extension.util.translation.Baidutranslate;
 //GA-Exted
 
 import static extension.auxiliary.Strings.*;
-import static extension.tool.HttpRequest.doGet;
-import static extension.tool.HttpRequest.doCookie;
+import static extension.auxiliary.Maps.*;
+import static extension.auxiliary.Language.*;
 import static extension.tool.Librarydependency.*;
+import static extension.tool.Tool.*;
 import static extension.tool.Json.*;
+import static extension.tool.SQLite.*;
 import static extension.tool.SQLite.player.*;
-import static extension.util.Extend.*;
+import static extension.tool.Password.*;
+//import static extension.util.Extend.*;
 import static extension.util.Extend.ClientCommands.*;
 import static extension.util.Extend.Event.*;
-import static extension.util.Extend.Init.*;
+import static extension.util.Extend.Initialization.*;
 import static extension.util.Sensitive_Thesaurus.*;
 import static extension.util.Translation_support.*;
 //Static
-
+import java.util.Arrays;
+import java.util.List;
 
 public class Main extends Plugin {
 
 	Googletranslate googletranslate = new Googletranslate();
-	Baidutranslate baidutranslate = new Baidutranslate();
-	Language language = new Language();
-//改进全局变量
-//VOTE
+	//改进全局变量
+	//VOTE
+	/*
+	 MOD使用的物理地址 .jar/config/mods/GA
+	 Physical address used by mod .jar/config/mods/GA
+	 Note as CN + EN
+	*/
+
 	@SuppressWarnings("unchecked")
 	//:(
 	public Main() {
 
 		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists())Initialization();
-		notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));//初始化SQL
+		//Initia();
+		Player_Privilege_classification();
+		
+		//初始化SQL
+		importLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
+		notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
+		Authority_control("ZNSDsdjdemDRtest==","test");
+		// InitializationSQLite();
+		// addSQLite();
+		// getSQLite("Dr");
 
-		InitializationSQLite();
-		addSQLite();
-		getSQLite();
-
-		//importLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
 		//加载
 
-		Events.on(EventType.PlayerChatEvent.class, e -> {
+		Events.on(PlayerChatEvent.class, e -> {
 			String result = PlayerChatEvent_translate(String.valueOf(e.message.charAt(0)),e.message);
 			if (null != result)Call.sendMessage("["+e.player.name+"]"+"[green] : [] "+result+"   -From Google Translator");
 			//自动翻译
@@ -85,13 +92,17 @@ public class Main extends Plugin {
 			//中英分检测
 		});
 
-		Events.on(EventType.PlayerJoin.class, e -> {
+		Events.on(PlayerJoin.class, e -> {
 			Set<String> set = Sensitive_Thesaurus(removeAll_EN(e.player.name));
-			if (0 < set.size())Call.onKick(e.player.con, language.getinput("Sensitive.Thesaurus.join.kick",set.iterator().next()));
+			if (0 < set.size())Call.onKick(e.player.con, getinput("Sensitive.Thesaurus.join.kick",set.iterator().next()));
 			Set<String> set1 = Sensitive_Thesaurus(removeAll_CN(e.player.name));
-			if (0 < set1.size())Call.onKick(e.player.con, language.getinput("Sensitive.Thesaurus.join.kick",set1.iterator().next()));
+			if (0 < set1.size())Call.onKick(e.player.con, getinput("Sensitive.Thesaurus.join.kick",set1.iterator().next()));
 			//中英分检测
-			Call.onInfoMessage(e.player.con,language.getinput("join.start",timee(),getGC_1()));
+			PlayerJoin_Logins(e.player);
+			setPlayerDate_Temp(e.player.uuid,"Playtime-start",String.valueOf(System.currentTimeMillis()));
+			//Logins
+			//官方接口全靠猜...
+			//Call.onInfoMessage(e.player.con,getinput("join.start",timee(),getGC_1()));
 			if (Vars.state.rules.pvp){
 				if("禁止".equalsIgnoreCase(getGC_1())){
 					state.rules.playerDamageMultiplier = 0f;
@@ -103,17 +114,29 @@ public class Main extends Plugin {
 			}
 		});
 
-		Events.on(EventType.UnitCreateEvent.class, e -> {
-		});
-
 		Events.on(GameOverEvent.class, e -> {
 			if (Vars.state.rules.pvp)setGC();
 		});
 
 		Events.on(ServerLoadEvent.class, e-> {
 			netServer.admins.addChatFilter((player, message) -> {
-				return netServer_addChatFilter_Sensitive_Thesaurus(player,message);
+				return replaceBadWord(message,2,"*");
 			});
+
+			netServer.assigner = ((player, players) -> {
+				if (Vars.state.rules.pvp) {
+					Teams.TeamData re = (Teams.TeamData)Vars.state.teams.getActive().min(data -> {
+						int count = 0;
+						for (final Player other : players)if (other.getTeam() == data.team && other != player)count++;
+						if (!data.hasCore())count = 256;
+						return (float)count;
+					});
+					return (null == re) ? null : re.team;
+				}
+				return Vars.state.rules.defaultTeam;
+			});
+			//linglan
+
 		});
 		
 	}
@@ -129,6 +152,13 @@ public class Main extends Plugin {
 				if ("N".equalsIgnoreCase(arg[0]))setGC_1("禁止");
 		});
 
+		handler.register("aaa","<1>", "NOT", (arg) -> {
+			aaa(arg[0]);
+		});
+
+		handler.register("aab","<1> <2> <3>", "NOT", (arg) -> {
+			aab(arg[0],arg[1],arg[2]);
+		});
 	};
 
 	@Override
@@ -136,36 +166,70 @@ public class Main extends Plugin {
 		handler.removeCommand("vote");
 		handler.removeCommand("votekick");
 
-		handler.<Player>register("info",language.getinput("info"), (args, player) -> {
+		handler.<Player>register("login", "<id> <password>", "Login to account", (args, player) -> {
+			if(!Authority_control(player.uuid,"login")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
+				//
+			}
+		});
+
+		handler.<Player>register("register", "<new_id> <new_password> <password_repeat>", "Login to account", (args, player) -> {
+			if(!Authority_control(player.uuid,"register")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
+				//
+			}
+		});
+
+		handler.<Player>register("info",getinput("info"), (args, player) -> {/*
 			String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
 			String Country = doGet("http://ip-api.com/line/"+ip+"?fields=country");
-			player.sendMessage(language.getinput("info.load"));
+			player.sendMessage(getinput("info.load"));
 			try{
 				Thread.currentThread().sleep(2000);
 				}catch(InterruptedException ie){
 					ie.printStackTrace();
 				}
-			player.sendMessage(language.getinput("info.name",player.name));
-			player.sendMessage(language.getinput("info.uuid",player.uuid));
-			player.sendMessage(language.getinput("info.equipment",String.valueOf(player.isMobile)));
-			player.sendMessage(language.getinput("info.ip",ip));
-			player.sendMessage(language.getinput("info.country",Country));
+			*/
+			if(!Authority_control(player.uuid,"info")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
+				Object[] Playerdate = {};
+				Call.onInfoMessage(player.con,getinput("join.start",Playerdate));
+			}
 		});
 
-		handler.<Player>register("status",language.getinput("status"), (args, player) -> {
-			player.sendMessage("FPS:"+status("getfps")+"  Occupied memory:"+status("getmemory")+"MB");
-			player.sendMessage(language.getinput("status.number",String.valueOf(Vars.playerGroup.size())));
-			player.sendMessage(language.getinput("status.ban",status("getbancount")));
+		handler.<Player>register("status",getinput("status"), (args, player) -> {
+			if(!Authority_control(player.uuid,"status")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
+				player.sendMessage("FPS:"+status("getfps")+"  Occupied memory:"+status("getmemory")+"MB");
+				player.sendMessage(getinput("status.number",String.valueOf(Vars.playerGroup.size())));
+				player.sendMessage(getinput("status.ban",status("getbancount")));
+			}
 		});
 
 
-		handler.<Player>register("getpos",language.getinput("getpos"), (args, player) -> player.sendMessage(language.getinput("getpos.info",String.valueOf(Math.round(player.x/8)),String.valueOf(Math.round(player.y/8)))));
+		handler.<Player>register("getpos",getinput("getpos"), (args, player) -> {
+			if(!Authority_control(player.uuid,"getpos")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
+				player.sendMessage(getinput("getpos.info",String.valueOf(Math.round(player.x/8)),String.valueOf(Math.round(player.y/8))));
+			}
+		});
 
-		handler.<Player>register("gc",language.getinput("gc"), (args, player) -> Call.onInfoMessage(player.con,language.getinput("gc.info")));
+		handler.<Player>register("gc",getinput("gc"), (args, player) -> {
+			if(!Authority_control(player.uuid,"gc")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
+				Call.onInfoMessage(player.con,getinput("gc.info"));
+			}
+		});
 
-		handler.<Player>register("tpp","<player> <player>",language.getinput("tpp"), (args, player) -> {
-			if(!player.isAdmin){
-				player.sendMessage(language.getinput("admin.no"));
+		handler.<Player>register("tpp","<player> <player>",getinput("tpp"), (args, player) -> {
+			if(!Authority_control(player.uuid,"tpp")) {
+				player.sendMessage(getinput("authority.no"));
 			} else {
 				try {
 					int x = Integer.parseInt(args[0])*8;
@@ -173,36 +237,40 @@ public class Main extends Plugin {
 					player.setNet((float)x, (float)y);
 					player.set((float)x, (float)y);
 				} catch (Exception e){
-				player.sendMessage(language.getinput("tpp.fail"));
+					player.sendMessage(getinput("tpp.fail"));
 				}
 			}
 		});
 
-		handler.<Player>register("tp","<player...>",language.getinput("tp"), (args, player) -> {
-			Player other = Vars.playerGroup.find(p->p.name.equalsIgnoreCase(args[0]));
-			if(!player.isAdmin){
-				player.sendMessage(language.getinput("admin.no"));
+		handler.<Player>register("tp","<player...>",getinput("tp"), (args, player) -> {
+			if(!Authority_control(player.uuid,"tp")) {
+				player.sendMessage(getinput("authority.no"));
 			} else {
+				Player other = Vars.playerGroup.find(p->p.name.equalsIgnoreCase(args[0]));
 				if(other == null){
-					player.sendMessage(language.getinput("tp.fail"));
+					player.sendMessage(getinput("tp.fail"));
 					return;
 				}
 				player.setNet(other.x, other.y);
 			}
 		});
 
-		handler.<Player>register("suicide",language.getinput("suicide"), (args, player) -> {
+		handler.<Player>register("suicide",getinput("suicide"), (args, player) -> {
+			if(!Authority_control(player.uuid,"suicide")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
 				player.onPlayerDeath(player);
-				Call.sendMessage(language.getinput("suicide.tips",player.name));
+				Call.sendMessage(getinput("suicide.tips",player.name));
+			}
 		});
 
-		handler.<Player>register("team",language.getinput("team"), (args, player) ->{
+		handler.<Player>register("team",getinput("team"), (args, player) ->{
 			//change team
-			if(!player.isAdmin){
-				player.sendMessage(language.getinput("admin.no"));
-				} else {
+			if(!Authority_control(player.uuid,"team")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
 				if (!Vars.state.rules.pvp){
-					player.sendMessage(language.getinput("team.fail"));
+					player.sendMessage(getinput("team.fail"));
 					return;
 				}
 				int index = player.getTeam().id+1;
@@ -220,71 +288,71 @@ public class Main extends Plugin {
 				//kill player
 				Call.onPlayerDeath(player);
 			}
-
 		});
 
-		handler.<Player>register("difficulty", "<difficulty>", language.getinput("difficulty"), (args, player) -> {
-			if(!player.isAdmin){
-				player.sendMessage("[green]Careful: [] You're not admin!");
+		handler.<Player>register("difficulty", "<difficulty>", getinput("difficulty"), (args, player) -> {
+			if(!Authority_control(player.uuid,"difficulty")) {
+				player.sendMessage(getinput("authority.no"));
 			} else {
 				try {
 					Difficulty.valueOf(args[0]);
-					player.sendMessage(language.getinput("difficulty.success",args[0]));
+					player.sendMessage(getinput("difficulty.success",args[0]));
 				}catch(IllegalArgumentException e){
-					player.sendMessage(language.getinput("difficulty.fail",args[0]));
+					player.sendMessage(getinput("difficulty.fail",args[0]));
 				}
 			}
 		});
 
-		handler.<Player>register("gameover","",language.getinput("gameover"), (args, player) -> {
-			
-			if(!player.isAdmin){
-				player.sendMessage(language.getinput("admin.no"));
+		handler.<Player>register("gameover","",getinput("gameover"), (args, player) -> {
+			if(!Authority_control(player.uuid,"gameover")) {
+				player.sendMessage(getinput("authority.no"));
 			} else {
 				Events.fire(new GameOverEvent(Team.crux));
 			}
-
 		});
 
 
-		handler.<Player>register("host","<mapname> [mode]",language.getinput("host"), (args, player) -> {
-			if(!player.isAdmin){
-				player.sendMessage(language.getinput("admin.no"));
+		handler.<Player>register("host","<mapname> [mode]",getinput("host"), (args, player) -> {
+			if(!Authority_control(player.uuid,"host")) {
+				player.sendMessage(getinput("authority.no"));
 			} else {
 				host(args[0],args[1],player);
 			}
 		});
 		//It can be used normally. :)
 
-		handler.<Player>register("runwave",language.getinput("runwave"), (args, player) -> {
-			if(!player.isAdmin){
-				player.sendMessage(language.getinput("admin.no"));
+		handler.<Player>register("runwave",getinput("runwave"), (args, player) -> {
+			if(!Authority_control(player.uuid,"runwave")) {
+				player.sendMessage(getinput("authority.no"));
 			} else {
 				logic.runWave();
 			}
 		});
 
-		handler.<Player>register("time",language.getinput("time"), (args, player) -> player.sendMessage(language.getinput("time.info",timee())));
+		handler.<Player>register("time",getinput("time"), (args, player) -> player.sendMessage(getinput("time.info",timee())));
 
-		handler.<Player>register("tr","<text> <Output-language>",language.getinput("tr"), (args, player) -> {
-			//No spaces are allowed in the input language??
-			player.sendMessage(language.getinput("tr.tips"));
-			player.sendMessage(language.getinput("tr.tips1"));
-			String text = args[0].replace('-',' ');	
-			try {
-				Thread.currentThread().sleep(2500);
+		handler.<Player>register("tr","<text> <Output-language>",getinput("tr"), (args, player) -> {
+			if(!Authority_control(player.uuid,"tr")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
+				//No spaces are allowed in the input language??
+				player.sendMessage(getinput("tr.tips"));
+				player.sendMessage(getinput("tr.tips1"));
+				String text = args[0].replace('-',' ');	
+				try {
+					Thread.currentThread().sleep(2500);
 				}catch(InterruptedException ie){
 					ie.printStackTrace();
 				} //[Original-language],args[2]
-			try{
-				String translationm = googletranslate.translate(text,args[1]);
-				//String translationm = baidutranslate.translate(text,args[1]);
-				Call.sendMessage("["+player.name+"]"+"[green] : [] "+translationm+"   -From Google Translator");
+				try{
+					String translationm = googletranslate.translate(text,args[1]);
+					//String translationm = baidutranslate.translate(text,args[1]);
+					Call.sendMessage("["+player.name+"]"+"[green] : [] "+translationm+"   -From Google Translator");
 				}catch(Exception e){
 					return;
 				}
-			
-			});
+			}	
+		});
 /*
 		handler.<Player>register("vote", "<gameover/kick> [playername...]", "Vote", (args, player) -> {
 			switch(args[0]) {
@@ -296,34 +364,34 @@ public class Main extends Plugin {
 					vote(args[0]);
 					break;
 				default:
-					player.sendMessage(language.getinput("vote.err.no"));
+					player.sendMessage(getinput("vote.err.no"));
 					break;
 			}
 		});
 
-		handler.<Player>register("setting","<text> [text]",language.getinput("setting"), (args, player) -> {
+		handler.<Player>register("setting","<text> [text]",getinput("setting"), (args, player) -> {
 			if(!player.isAdmin){
-				player.sendMessage(language.getinput("admin.no"));
+				player.sendMessage(getinput("admin.no"));
 				return;
 			}
 			switch(args[0]) {
 				case "help":
-					player.sendMessage(language.getinput("setting.help"));
+					player.sendMessage(getinput("setting.help"));
 					break;
 				case "Automatic-translation":
 					JSONObject date = getData();
 					if (args.length == 1 && args[0].equals("on")) {
 						date.put("translateo", true);
 						Core.settings.getDataDirectory().child("mods/GA/setting.json").writeString((String.valueOf(date)));
-						player.sendMessage(language.getinput("setting.trr.on"));
+						player.sendMessage(getinput("setting.trr.on"));
 					}else{
 						date.put("translateo", false);
 						Core.settings.getDataDirectory().child("mods/GA/setting.json").writeString((String.valueOf(date)));
-						player.sendMessage(language.getinput("setting.trr.off"));
+						player.sendMessage(getinput("setting.trr.off"));
 					}
 					break;
 				case "language":
-					player.sendMessage(language.getinput("setting.language.info"));
+					player.sendMessage(getinput("setting.info"));
 					String result = setting_language(args[0],args[1]);
 					if(result = "Y")
 					break;
@@ -341,6 +409,6 @@ public class Main extends Plugin {
  *名称								使用算法	  			来源
  *UTF8Control.Java					UTF8Control  		https://answer-id.com/52120414
  *Googletranslate.Java				Googletranslate		https://github.com/PopsiCola/GoogleTranslate
- *Main.Java 						info 				https://github.com/Kieaer/Essentials
+ *Main.Java 						assigner 			Tencent qun(QQ qun)
  *Sensitive_Thesaurus.Java 			参考DFA算法 			http://blog.csdn.net/chenssy/article/details/26961957
 */

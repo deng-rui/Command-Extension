@@ -19,8 +19,7 @@ import java.util.regex.Pattern;
 
 import static extension.util.Translation_support.*;
 import static extension.tool.HttpRequest.doGet;
-import static extension.tool.Tool.isBlank;
-import static extension.tool.Tool.isNotBlank;
+import static extension.tool.Tool.*;
 
 
 public class Googletranslate {
@@ -79,11 +78,11 @@ public class Googletranslate {
 	}
 
 	public String translate(String word, String from, String to) throws Exception {
-		if (isBlank(word))return null;
+		if (Blank(word))return null;
 
 		String tkk = getkeys("https://translate.google.cn/","tkk:.*?',",Integer.parseInt("5"),Integer.parseInt("2"));
 
-		if (isBlank(tkk))return null;
+		if (Blank(tkk))return null;
 
 		String tk = getTK(word, tkk);
 
@@ -95,7 +94,7 @@ public class Googletranslate {
 
 		StringBuffer buffer = new StringBuffer("https://translate.google.cn/translate_a/single?client=t");
 
-		if (isBlank(from)) {
+		if (Blank(from)) {
 			from = "auto";
 		}
 
@@ -113,7 +112,7 @@ public class Googletranslate {
 			StringBuffer rBuffer = new StringBuffer();
 			for (int i = 0; i < rArray.size(); i++) {
 				String r = rArray.getJSONArray(i).getString(0);
-				if (isNotBlank(r)) {
+				if (NotBlank(r)) {
 					rBuffer.append(r);
 				}
 			}
