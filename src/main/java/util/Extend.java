@@ -29,36 +29,36 @@ import mindustry.io.*;
 import mindustry.maps.Map;
 import mindustry.maps.*;
 import mindustry.net.Administration.*;
-import mindustry.net.Administration.PlayerInfo;
 import mindustry.net.Packets.KickReason;
 import mindustry.net.NetConnection;
-import mindustry.net.Packets.KickReason ;
 import mindustry.plugin.*;
 import mindustry.type.*;
 import mindustry.Vars;
 //Mindustry
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.state;
+import static mindustry.Vars.netServer;
+import static mindustry.Vars.logic;
+import static mindustry.Vars.world;
+import static mindustry.Vars.net;
+import static mindustry.Vars.maps;
 //Mindustry-Static
 
 import extension.util.translation.Googletranslate;
-import extension.auxiliary.Language;
 //GA-Exted
 
 import static extension.auxiliary.Booleans.*;
 import static extension.auxiliary.Strings.*;
+import static extension.auxiliary.Language.*;
 import static extension.auxiliary.Maps.*;
 import static extension.tool.Json.*;
 import static extension.util.Sensitive_Thesaurus.*;
 //Static
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 //Json
 
 public class Extend {
-
-	private static Language language = new Language();
 
 	public static class ClientCommands {
 		//private HashSet<Player> votes = new HashSet<>();
@@ -103,10 +103,10 @@ public class Extend {
 			}else if ("attack".equalsIgnoreCase(gamemodes)){
 			}else if ("survival".equalsIgnoreCase(gamemodes)){
 			}else{
-				player.sendMessage(language.getinput("host.mode",gamemodes));
+				player.sendMessage(getinput("host.mode",gamemodes));
 				return null;
 			}
-			Call.sendMessage(language.getinput("host.re"));;
+			Call.sendMessage(getinput("host.re"));;
 			
 			try{
 				Thread.currentThread().sleep(5000);
@@ -187,27 +187,42 @@ public class Extend {
 		}
 
 		public static void PlayerChatEvent_Sensitive_Thesaurus(Player player, String text) {
-			if (!getplayer_boolean(player.uuid)) {
-				setplayer(player.uuid, 1);
-				player.sendMessage(language.getinput("Sensitive.Thesaurus.info",String.valueOf(getplayer_int(player.uuid)),text));
+			if (!Player_Sensitive_words_boolean(player.uuid)) {
+				setPlayer_Sensitive_words(player.uuid, 1);
+				player.sendMessage(getinput("Sensitive.Thesaurus.info",String.valueOf(getPlayer_Sensitive_words_int(player.uuid)),text));
 			}else{
-				setplayer(player.uuid, getplayer_int(player.uuid)+1);
-				player.sendMessage(language.getinput("Sensitive.Thesaurus.info",String.valueOf(getplayer_int(player.uuid)),text));
+				setPlayer_Sensitive_words(player.uuid, getPlayer_Sensitive_words_int(player.uuid)+1);
+				player.sendMessage(getinput("Sensitive.Thesaurus.info",String.valueOf(getPlayer_Sensitive_words_int(player.uuid)),text));
 			}
-			if (3 <= getplayer_int(player.uuid)) {
-				Call.onKick(player.con, language.getinput("Sensitive.Thesaurus.message.kick",text));
-				setplayer(player.uuid, 0);
+			if (3 <= getPlayer_Sensitive_words_int(player.uuid)) {
+				Call.onKick(player.con, getinput("Sensitive.Thesaurus.message.kick",text));
+				setPlayer_Sensitive_words(player.uuid,0);
 			}
-			//player.sendMessage(language.getinput("Sensitive_Thesaurus",player.name));
+			//player.sendMessage(getinput("Sensitive_Thesaurus",player.name));
+		}
+
+		public static void PlayerJoin_Logins(Player player) {
+			player.setTeam(Team.derelict);
+			Call.onPlayerDeath(player);
+			//Call.onInfoMessage();
+			setPlayer_power_Date(player.uuid,0);
+			Call.onInfoToast(player.con,getinput("join.tourist"),40f);
+
 		}
 
 	}
 
-	public static class Init {
-		public static String netServer_addChatFilter_Sensitive_Thesaurus(Player player, String message) {
-			return replaceBadWord(message,2,"*");
-			//官方的我已放弃
+	public static class Initialization {
+		public static void Player_Privilege_classification() {
+			JSONObject date = getData("mods/GA/Authority.json");
+			for (int i = 0; i < 11; i++) {
+				setPower_Date(i,(List)date.get(i));
+			}
 		}
+	}
+
+	public static class PlayerData {
+		
 	}
 }
 

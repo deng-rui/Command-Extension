@@ -1,6 +1,5 @@
 package extension.auxiliary;
 
-
 public class Strings {
 	private static String GC_1 = "禁止";
 
