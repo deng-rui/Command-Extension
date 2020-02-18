@@ -1,6 +1,7 @@
 package extension.tool;
 
 import arc.Core;
+import arc.files.Fi;
 
 import java.io.*;
 import java.net.*;
@@ -105,61 +106,61 @@ public class HttpRequest {
 		return responseContent;
 	}
 
-    public static String doPost(String url, String param) {
-        OutputStreamWriter out = null;
-        BufferedReader in = null;
-        String result = "";
-        JSONObject date = getData("mods/GA/cache/Cookie.json");
+	public static String doPost(String url, String param) {
+		OutputStreamWriter out = null;
+		BufferedReader in = null;
+		String result = "";
+		JSONObject date = getData("mods/GA/cache/Cookie.json");
 		String BAIDUID = (String) date.get("BAIDUID");
-        try {
-            URL realUrl = new URL(url);
-            HttpURLConnection conn = null;
-            conn = (HttpURLConnection) realUrl.openConnection();
-            // 打开和URL之间的连接
-            // 发送POST请求必须设置如下两行
-            conn.setDoOutput(true);
-            conn.setDoInput(true);
-            conn.setRequestMethod("POST");    // POST方法
-            // 设置通用的请求属性
-            //conn.setRequestProperty("accept", "*/*");
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            conn.setRequestProperty("Cookie", "BAIDUID="+BAIDUID);
-            System.out.println(">>>>>>BAIDUID:"+BAIDUID);
-            //conn.setRequestProperty("connection", "Keep-Alive");
-            //conn.setRequestProperty("user-agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36");
-            conn.connect();
-            // 获取URLConnection对象对应的输出流
-            out = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
-            // 发送请求参数
-            out.write(param);
-            // flush输出流的缓冲
-            out.flush();
-            // 定义BufferedReader输入流来读取URL的响应
-            in = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream()));
-            String line;
-            while ((line = in.readLine()) != null) {
-                result += line;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //使用finally块来关闭输出流、输入流
-        finally{
-            try{
-                if(out!=null){
-                    out.close();
-                }
-                if(in!=null){
-                    in.close();
-                }
-            }
-            catch(IOException ex){
-                ex.printStackTrace();
-            }
-        }
-        return result;
-    }
+		try {
+			URL realUrl = new URL(url);
+			HttpURLConnection conn = null;
+			conn = (HttpURLConnection) realUrl.openConnection();
+			// 打开和URL之间的连接
+			// 发送POST请求必须设置如下两行
+			conn.setDoOutput(true);
+			conn.setDoInput(true);
+			conn.setRequestMethod("POST");    // POST方法
+			// 设置通用的请求属性
+			//conn.setRequestProperty("accept", "*/*");
+			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			conn.setRequestProperty("Cookie", "BAIDUID="+BAIDUID);
+			System.out.println(">>>>>>BAIDUID:"+BAIDUID);
+			//conn.setRequestProperty("connection", "Keep-Alive");
+			//conn.setRequestProperty("user-agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36");
+			conn.connect();
+			// 获取URLConnection对象对应的输出流
+			out = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+			// 发送请求参数
+			out.write(param);
+			// flush输出流的缓冲
+			out.flush();
+			// 定义BufferedReader输入流来读取URL的响应
+			in = new BufferedReader(
+					new InputStreamReader(conn.getInputStream()));
+			String line;
+			while ((line = in.readLine()) != null) {
+				result += line;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//使用finally块来关闭输出流、输入流
+		finally{
+			try{
+				if(out!=null){
+					out.close();
+				}
+				if(in!=null){
+					in.close();
+				}
+			}
+			catch(IOException ex){
+				ex.printStackTrace();
+			}
+		}
+		return result;
+	}
 
 	public static String unGZipContent(HttpEntity entity,String encoding) throws IOException {
 		String responseContent = "";
@@ -234,54 +235,64 @@ public class HttpRequest {
 				httpClient.close();
 			}
 		}  catch (IOException e) {
-       	e.printStackTrace();
-     	}
-     	return null;
+		e.printStackTrace();
+		}
+		return null;
 	}
 
-  public static String getPageSource(String Url) {
+	public static void Url302(String url,String name,Fi filePath){
+		try {
+			URL serverUrl = new URL(url);
+			HttpURLConnection conn = (HttpURLConnection) serverUrl.openConnection();
+			conn.setRequestMethod("GET");
+			// 必须设置false，否则会自动redirect到Location的地址
+			conn.setInstanceFollowRedirects(false);
+			conn.addRequestProperty("Accept-Charset", "UTF-8;");
+			conn.addRequestProperty("User-Agent","Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.2.8) Firefox/3.6.8");
+			conn.connect();
+			String location = conn.getHeaderField("Location");
+			downUrl(location,name,filePath);
  
-    StringBuffer sb = new StringBuffer();
-    try {
-      //构建一URL对象
-      URL url = new URL(Url);
-      //使用openStream得到一输入流并由此构造一个BufferedReader对象
-      BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), "UTF8"));
-      String line;
-      //读取www资源
-      while ((line = in.readLine()) != null)
-      {
-        sb.append(line);
-      }
-      in.close();
-    }
-    catch (Exception ex)
-    {
-      System.err.println(ex);
-    }
-    /*
-    final String regEx_script = "<script[^>]*?>[\\s\\S]*?<\\/script>"; // 定义script的正则表达式
-    final String regEx_style = "<style[^>]*?>[\\s\\S]*?<\\/style>"; // 定义style的正则表达式
-    final String regEx_html = "<[^>]+>"; // 定义HTML标签的正则表达式
-    final String regEx_space = "\\s*|\t|\r|\n";//定义空格回车换行符
-    String htmlStr = sb.toString();//获取未处理过的源码
-    Pattern p_script = Pattern.compile(regEx_script, Pattern.CASE_INSENSITIVE);
-    Matcher m_script = p_script.matcher(htmlStr);
-    htmlStr = m_script.replaceAll(""); // 过滤script标签
-    Pattern p_style = Pattern.compile(regEx_style, Pattern.CASE_INSENSITIVE);
-    Matcher m_style = p_style.matcher(htmlStr);
-    htmlStr = m_style.replaceAll(""); // 过滤style标签
-    Pattern p_html = Pattern.compile(regEx_html, Pattern.CASE_INSENSITIVE);
-    Matcher m_html = p_html.matcher(htmlStr);
-    htmlStr = m_html.replaceAll(""); // 过滤html标签
-    Pattern p_space = Pattern.compile(regEx_space, Pattern.CASE_INSENSITIVE);
-    Matcher m_space = p_space.matcher(htmlStr);
-    htmlStr = m_space.replaceAll(""); // 过滤空格回车标签
-    htmlStr = htmlStr.trim(); // 返回文本字符串
-    htmlStr = htmlStr.replaceAll(" ", "");
-    htmlStr = htmlStr.substring(0, htmlStr.indexOf("。")+1);
-    */
-    String htmlStr = sb.toString();
-    return htmlStr;
-  }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void downUrl(String url,String name,Fi filePath){
+		File file=filePath.file();
+		 //判断文件夹是否存在
+		if (!file.exists())file.mkdirs();
+		FileOutputStream fileOut = null;
+		HttpURLConnection conn = null;
+		InputStream inputStream = null;
+		try{
+			// 建立链接
+			URL httpUrl=new URL(url);
+			conn=(HttpURLConnection) httpUrl.openConnection();
+			//以Post方式提交表单，默认get方式
+			conn.setDoInput(true);  
+			conn.setDoOutput(true);
+			conn.setUseCaches(false);
+			conn.connect();
+			inputStream=conn.getInputStream();
+			BufferedInputStream bis = new BufferedInputStream(inputStream);
+			//写入到文件
+			fileOut = new FileOutputStream(filePath+File.separator+name);
+			BufferedOutputStream bos = new BufferedOutputStream(fileOut);
+			byte[] buf = new byte[4096];
+			int length = bis.read(buf);
+			while(length != -1){
+				bos.write(buf, 0, length);
+				length = bis.read(buf);
+			}
+			bos.close();
+			bis.close();
+			conn.disconnect();
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		 
+	}
+
 }

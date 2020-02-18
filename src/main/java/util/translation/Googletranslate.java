@@ -79,14 +79,11 @@ public class Googletranslate {
 	}
 
 	public String translate(String word, String from, String to) throws Exception {
-		if (isBlank(word)) {
-			return null;
-		}
+		if (isBlank(word))return null;
 
 		String tkk = getkeys("https://translate.google.cn/","tkk:.*?',",Integer.parseInt("5"),Integer.parseInt("2"));
 
-		if (isBlank(tkk)) {
-		}
+		if (isBlank(tkk))return null;
 
 		String tk = getTK(word, tkk);
 

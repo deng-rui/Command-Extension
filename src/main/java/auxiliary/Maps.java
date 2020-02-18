@@ -2,7 +2,6 @@ package extension.auxiliary;
 
 import java.util.*;
 
-//@SuppressWarnings("unchecked")
 public class Maps {
 	private static Map<String, Integer> player = Collections.synchronizedMap(new HashMap<String, Integer>());
 	//Safety! Inefficient :(

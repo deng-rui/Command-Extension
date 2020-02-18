@@ -33,16 +33,17 @@ import mindustry.Vars;
 import static mindustry.Vars.*;
 //Mindustry-Static
 
+import extension.auxiliary.Language;
 import extension.util.translation.Googletranslate;
 import extension.util.translation.Baidutranslate;
-import extension.auxiliary.Language;
 //GA-Exted
 
 import static extension.auxiliary.Strings.*;
 import static extension.tool.HttpRequest.doGet;
 import static extension.tool.HttpRequest.doCookie;
+import static extension.tool.Librarydependency.*;
 import static extension.tool.Json.*;
-import static extension.tool.SQLite.*;
+import static extension.tool.SQLite.player.*;
 import static extension.util.Extend.*;
 import static extension.util.Extend.ClientCommands.*;
 import static extension.util.Extend.Event.*;
@@ -52,29 +53,44 @@ import static extension.util.Translation_support.*;
 //Static
 
 
-public class Main extends Plugin{
+public class Main extends Plugin {
 
 	Googletranslate googletranslate = new Googletranslate();
 	Baidutranslate baidutranslate = new Baidutranslate();
 	Language language = new Language();
 //改进全局变量
 //VOTE
-	
 	@SuppressWarnings("unchecked")
-	public void Main(){
+	//:(
+	public Main() {
+
+		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists())Initialization();
+		notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));//初始化SQL
+
+		InitializationSQLite();
+		addSQLite();
+		getSQLite();
+
+		//importLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
+		//加载
+
 		Events.on(EventType.PlayerChatEvent.class, e -> {
 			String result = PlayerChatEvent_translate(String.valueOf(e.message.charAt(0)),e.message);
 			if (null != result)Call.sendMessage("["+e.player.name+"]"+"[green] : [] "+result+"   -From Google Translator");
 			//自动翻译
-			Set<String> set;
-			set = Sensitive_Thesaurus(removeAll_EN(e.message));
+			Set<String> set = Sensitive_Thesaurus(removeAll_EN(e.message));
 			if (0 < set.size())PlayerChatEvent_Sensitive_Thesaurus(e.player, set.iterator().next());
-			set = Sensitive_Thesaurus(removeAll_CH(e.message));
-			if (0 < set.size())PlayerChatEvent_Sensitive_Thesaurus(e.player, set.iterator().next());
+			Set<String> set1 = Sensitive_Thesaurus(removeAll_CN(e.message));
+			if (0 < set1.size())PlayerChatEvent_Sensitive_Thesaurus(e.player, set1.iterator().next());
 			//中英分检测
 		});
 
 		Events.on(EventType.PlayerJoin.class, e -> {
+			Set<String> set = Sensitive_Thesaurus(removeAll_EN(e.player.name));
+			if (0 < set.size())Call.onKick(e.player.con, language.getinput("Sensitive.Thesaurus.join.kick",set.iterator().next()));
+			Set<String> set1 = Sensitive_Thesaurus(removeAll_CN(e.player.name));
+			if (0 < set1.size())Call.onKick(e.player.con, language.getinput("Sensitive.Thesaurus.join.kick",set1.iterator().next()));
+			//中英分检测
 			Call.onInfoMessage(e.player.con,language.getinput("join.start",timee(),getGC_1()));
 			if (Vars.state.rules.pvp){
 				if("禁止".equalsIgnoreCase(getGC_1())){
@@ -87,58 +103,37 @@ public class Main extends Plugin{
 			}
 		});
 
-		Events.on(GameOverEvent.class, e -> {
-			if (Vars.state.rules.pvp){
-				setGC();
-			}
+		Events.on(EventType.UnitCreateEvent.class, e -> {
 		});
 
-		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists()){
-			Initialization();
-		};
-	}
+		Events.on(GameOverEvent.class, e -> {
+			if (Vars.state.rules.pvp)setGC();
+		});
 
-	@Override
-	public void init() {
+		Events.on(ServerLoadEvent.class, e-> {
 			netServer.admins.addChatFilter((player, message) -> {
 				return netServer_addChatFilter_Sensitive_Thesaurus(player,message);
 			});
-
-			Main();
+		});
+		
 	}
-		//InitializationSQLite();
-		//addSQLite();
-		//getSQLite();
 
-		//language.language();	
-
-//Debugging part
-/*
-
-try{
-	A a = new A();
-	doCookie("https://fanyi.baidu.com/");
-	a.getCookie("https://fanyi.baidu.com/");
-	
-	//System.out.println(">>>>>>ter:"+baidutranslate.translate("engilsh","zh"));
-	}catch(Exception ie){
-}
-//很遗憾，我尝试获取cookie，可cookie均是过期：（
-*/
-	
+		//downLoadFromUrl("org.xerial","sqlite-jdbc","3.30.1","China",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
+		//;
+		
 		
 	@Override
 	public void registerServerCommands(CommandHandler handler){
 		handler.register("gac","<ON/OFF>", "NOT", (arg) -> {
 				if("Y".equalsIgnoreCase(arg[0]))setGC_1("允许");
 				if ("N".equalsIgnoreCase(arg[0]))setGC_1("禁止");
-			//if("sandbox".equalsIgnoreCase(gamemodes)){
 		});
 
 	};
 
 	@Override
-	public void registerClientCommands(CommandHandler handler){
+	public void registerClientCommands(CommandHandler handler) {
+		handler.removeCommand("vote");
 		handler.removeCommand("votekick");
 
 		handler.<Player>register("info",language.getinput("info"), (args, player) -> {
@@ -172,7 +167,7 @@ try{
 			if(!player.isAdmin){
 				player.sendMessage(language.getinput("admin.no"));
 			} else {
-				try{
+				try {
 					int x = Integer.parseInt(args[0])*8;
 					int y = Integer.parseInt(args[1])*8;
 					player.setNet((float)x, (float)y);
@@ -232,7 +227,7 @@ try{
 			if(!player.isAdmin){
 				player.sendMessage("[green]Careful: [] You're not admin!");
 			} else {
-				try{
+				try {
 					Difficulty.valueOf(args[0]);
 					player.sendMessage(language.getinput("difficulty.success",args[0]));
 				}catch(IllegalArgumentException e){
@@ -256,13 +251,7 @@ try{
 			if(!player.isAdmin){
 				player.sendMessage(language.getinput("admin.no"));
 			} else {
-				String result=host(args[0],args[1],"N");
-				if (result != "Y") {
-					player.sendMessage(language.getinput("host.mode",args[1]));
-				}else{
-					Call.sendMessage(language.getinput("host.re"));
-					host(args[0],args[1],"Y");
-				}
+				host(args[0],args[1],player);
 			}
 		});
 		//It can be used normally. :)
@@ -282,7 +271,7 @@ try{
 			player.sendMessage(language.getinput("tr.tips"));
 			player.sendMessage(language.getinput("tr.tips1"));
 			String text = args[0].replace('-',' ');	
-			try{
+			try {
 				Thread.currentThread().sleep(2500);
 				}catch(InterruptedException ie){
 					ie.printStackTrace();
