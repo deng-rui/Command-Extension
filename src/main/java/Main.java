@@ -37,33 +37,44 @@ import static extension.auxiliary.Strings.*;
 import static extension.auxiliary.Maps.*;
 import static extension.auxiliary.Language.*;
 import static extension.tool.Librarydependency.*;
+import static extension.tool.Tool.*;
 import static extension.tool.Json.*;
 import static extension.tool.SQLite.*;
 import static extension.tool.SQLite.player.*;
 import static extension.tool.Password.*;
-import static extension.util.Extend.*;
+//import static extension.util.Extend.*;
 import static extension.util.Extend.ClientCommands.*;
 import static extension.util.Extend.Event.*;
-//import static extension.util.Extend.Init.*;
+import static extension.util.Extend.Initialization.*;
 import static extension.util.Sensitive_Thesaurus.*;
 import static extension.util.Translation_support.*;
 //Static
-
+import java.util.Arrays;
+import java.util.List;
 
 public class Main extends Plugin {
 
 	Googletranslate googletranslate = new Googletranslate();
-//改进全局变量
-//VOTE
+	//改进全局变量
+	//VOTE
+	/*
+	 MOD使用的物理地址 .jar/config/mods/GA
+	 Physical address used by mod .jar/config/mods/GA
+	 Note as CN + EN
+	*/
+
 	@SuppressWarnings("unchecked")
 	//:(
 	public Main() {
 
 		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists())Initialization();
-		Initia();
+		//Initia();
+		Player_Privilege_classification();
+		
 		//初始化SQL
 		importLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
 		notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
+		Authority_control("ZNSDsdjdemDRtest==","test");
 		// InitializationSQLite();
 		// addSQLite();
 		// getSQLite("Dr");
@@ -155,6 +166,24 @@ public class Main extends Plugin {
 		handler.removeCommand("vote");
 		handler.removeCommand("votekick");
 
+		handler.<Player>register("login", "<id> <password>", "Login to account", (arg, player) -> {
+			if(!Authority_control(player.uuid,"login")) {
+				System.out.println("NO!");
+				player.sendMessage(getinput("authority.no"));
+			} else {
+				//
+			}
+		});
+
+		handler.<Player>register("register", "<new_id> <new_password> <password_repeat>", "Login to account", (arg, player) -> {
+			if(!Authority_control(player.uuid,"register")) {
+				System.out.println("NO!");
+				player.sendMessage(getinput("authority.no"));
+			} else {
+				//
+			}
+		});
+
 		handler.<Player>register("info",getinput("info"), (args, player) -> {/*
 			String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
 			String Country = doGet("http://ip-api.com/line/"+ip+"?fields=country");
@@ -165,24 +194,44 @@ public class Main extends Plugin {
 					ie.printStackTrace();
 				}
 			*/
-			Object[] Playerdate = {};
-			Call.onInfoMessage(player.con,getinput("join.start",Playerdate));
+			if(!Authority_control(player.uuid,"info")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
+				Object[] Playerdate = {};
+				Call.onInfoMessage(player.con,getinput("join.start",Playerdate));
+			}
 		});
 
 		handler.<Player>register("status",getinput("status"), (args, player) -> {
-			player.sendMessage("FPS:"+status("getfps")+"  Occupied memory:"+status("getmemory")+"MB");
-			player.sendMessage(getinput("status.number",String.valueOf(Vars.playerGroup.size())));
-			player.sendMessage(getinput("status.ban",status("getbancount")));
+			if(!Authority_control(player.uuid,"status")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
+				player.sendMessage("FPS:"+status("getfps")+"  Occupied memory:"+status("getmemory")+"MB");
+				player.sendMessage(getinput("status.number",String.valueOf(Vars.playerGroup.size())));
+				player.sendMessage(getinput("status.ban",status("getbancount")));
+			}
 		});
 
 
-		handler.<Player>register("getpos",getinput("getpos"), (args, player) -> player.sendMessage(getinput("getpos.info",String.valueOf(Math.round(player.x/8)),String.valueOf(Math.round(player.y/8)))));
+		handler.<Player>register("getpos",getinput("getpos"), (args, player) -> {
+			if(!Authority_control(player.uuid,"getpos")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
+				player.sendMessage(getinput("getpos.info",String.valueOf(Math.round(player.x/8)),String.valueOf(Math.round(player.y/8))));
+			}
+		});
 
-		handler.<Player>register("gc",getinput("gc"), (args, player) -> Call.onInfoMessage(player.con,getinput("gc.info")));
+		handler.<Player>register("gc",getinput("gc"), (args, player) -> {
+			if(!Authority_control(player.uuid,"gc")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
+				Call.onInfoMessage(player.con,getinput("gc.info"));
+			}
+		});
 
 		handler.<Player>register("tpp","<player> <player>",getinput("tpp"), (args, player) -> {
-			if(!player.isAdmin){
-				player.sendMessage(getinput("admin.no"));
+			if(!Authority_control(player.uuid,"tpp")) {
+				player.sendMessage(getinput("authority.no"));
 			} else {
 				try {
 					int x = Integer.parseInt(args[0])*8;
@@ -190,16 +239,16 @@ public class Main extends Plugin {
 					player.setNet((float)x, (float)y);
 					player.set((float)x, (float)y);
 				} catch (Exception e){
-				player.sendMessage(getinput("tpp.fail"));
+					player.sendMessage(getinput("tpp.fail"));
 				}
 			}
 		});
 
 		handler.<Player>register("tp","<player...>",getinput("tp"), (args, player) -> {
-			Player other = Vars.playerGroup.find(p->p.name.equalsIgnoreCase(args[0]));
-			if(!player.isAdmin){
-				player.sendMessage(getinput("admin.no"));
+			if(!Authority_control(player.uuid,"tp")) {
+				player.sendMessage(getinput("authority.no"));
 			} else {
+				Player other = Vars.playerGroup.find(p->p.name.equalsIgnoreCase(args[0]));
 				if(other == null){
 					player.sendMessage(getinput("tp.fail"));
 					return;
@@ -209,15 +258,19 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("suicide",getinput("suicide"), (args, player) -> {
+			if(!Authority_control(player.uuid,"suicide")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
 				player.onPlayerDeath(player);
 				Call.sendMessage(getinput("suicide.tips",player.name));
+			}
 		});
 
 		handler.<Player>register("team",getinput("team"), (args, player) ->{
 			//change team
-			if(!player.isAdmin){
-				player.sendMessage(getinput("admin.no"));
-				} else {
+			if(!Authority_control(player.uuid,"team")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
 				if (!Vars.state.rules.pvp){
 					player.sendMessage(getinput("team.fail"));
 					return;
@@ -237,12 +290,11 @@ public class Main extends Plugin {
 				//kill player
 				Call.onPlayerDeath(player);
 			}
-
 		});
 
 		handler.<Player>register("difficulty", "<difficulty>", getinput("difficulty"), (args, player) -> {
-			if(!player.isAdmin){
-				player.sendMessage("[green]Careful: [] You're not admin!");
+			if(!Authority_control(player.uuid,"difficulty")) {
+				player.sendMessage(getinput("authority.no"));
 			} else {
 				try {
 					Difficulty.valueOf(args[0]);
@@ -254,19 +306,17 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("gameover","",getinput("gameover"), (args, player) -> {
-			
-			if(!player.isAdmin){
-				player.sendMessage(getinput("admin.no"));
+			if(!Authority_control(player.uuid,"gameover")) {
+				player.sendMessage(getinput("authority.no"));
 			} else {
 				Events.fire(new GameOverEvent(Team.crux));
 			}
-
 		});
 
 
 		handler.<Player>register("host","<mapname> [mode]",getinput("host"), (args, player) -> {
-			if(!player.isAdmin){
-				player.sendMessage(getinput("admin.no"));
+			if(!Authority_control(player.uuid,"host")) {
+				player.sendMessage(getinput("authority.no"));
 			} else {
 				host(args[0],args[1],player);
 			}
@@ -274,8 +324,8 @@ public class Main extends Plugin {
 		//It can be used normally. :)
 
 		handler.<Player>register("runwave",getinput("runwave"), (args, player) -> {
-			if(!player.isAdmin){
-				player.sendMessage(getinput("admin.no"));
+			if(!Authority_control(player.uuid,"runwave")) {
+				player.sendMessage(getinput("authority.no"));
 			} else {
 				logic.runWave();
 			}
@@ -284,24 +334,27 @@ public class Main extends Plugin {
 		handler.<Player>register("time",getinput("time"), (args, player) -> player.sendMessage(getinput("time.info",timee())));
 
 		handler.<Player>register("tr","<text> <Output-language>",getinput("tr"), (args, player) -> {
-			//No spaces are allowed in the input language??
-			player.sendMessage(getinput("tr.tips"));
-			player.sendMessage(getinput("tr.tips1"));
-			String text = args[0].replace('-',' ');	
-			try {
-				Thread.currentThread().sleep(2500);
+			if(!Authority_control(player.uuid,"tr")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
+				//No spaces are allowed in the input language??
+				player.sendMessage(getinput("tr.tips"));
+				player.sendMessage(getinput("tr.tips1"));
+				String text = args[0].replace('-',' ');	
+				try {
+					Thread.currentThread().sleep(2500);
 				}catch(InterruptedException ie){
 					ie.printStackTrace();
 				} //[Original-language],args[2]
-			try{
-				String translationm = googletranslate.translate(text,args[1]);
-				//String translationm = baidutranslate.translate(text,args[1]);
-				Call.sendMessage("["+player.name+"]"+"[green] : [] "+translationm+"   -From Google Translator");
+				try{
+					String translationm = googletranslate.translate(text,args[1]);
+					//String translationm = baidutranslate.translate(text,args[1]);
+					Call.sendMessage("["+player.name+"]"+"[green] : [] "+translationm+"   -From Google Translator");
 				}catch(Exception e){
 					return;
 				}
-			
-			});
+			}	
+		});
 /*
 		handler.<Player>register("vote", "<gameover/kick> [playername...]", "Vote", (args, player) -> {
 			switch(args[0]) {

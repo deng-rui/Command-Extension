@@ -173,9 +173,10 @@ public class SQLite {
 
 					
 				}
+				/*
 				for(int i=0;i<Players.size();i++){
     				System.out.println(Players.get(i));
-				}
+				}*/
 				rs.close();
 				stmt.close();
 				c.close();

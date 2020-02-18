@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class Lists {
+	/*
 	private static List<String> Tourist = Collections.synchronizedList(new ArrayList<String>());
 
 	public static void addTourist(String uuid) {
@@ -27,5 +28,6 @@ public class Lists {
 		return Tourist.contains(uuid);
 	}
 	//是否存在
-
+	*/
+	//disuse/弃用
 }

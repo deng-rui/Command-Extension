@@ -212,8 +212,13 @@ public class Extend {
 
 	}
 
-	public static class EX {
-	
+	public static class Initialization {
+		public static void Player_Privilege_classification() {
+			JSONObject date = getData("mods/GA/Authority.json");
+			for (int i = 0; i < 11; i++) {
+				setPower_Date(i,(List)date.get(i));
+			}
+		}
 	}
 }
 

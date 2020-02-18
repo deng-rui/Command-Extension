@@ -25,8 +25,8 @@ public class Maps {
 		return Player_power_Date.get(uuid);
 	}
 
-	public static List getPower_Date(String uuid) {
-		return Power_Date.get(uuid);
+	public static List getPower_Date(int id) {
+		return Power_Date.get(id);
 	}
 	//读取
 
@@ -42,8 +42,8 @@ public class Maps {
 		Player_power_Date.put(uuid, i);
 	}
 
-	public static void setPower_Date(int i, List list) {
-		Power_Date.put(i, list);
+	public static void setPower_Date(int id, List list) {
+		Power_Date.put(id, list);
 	}
 	//设置
 
@@ -57,6 +57,10 @@ public class Maps {
 
 	public static boolean Player_power_Date_boolean(String uuid) {
 		return Player_power_Date.containsKey(uuid);
+	}
+
+	public static boolean Power_Date_boolean(int id) {
+		return Power_Date.containsKey(id);
 	}
 	//是否存在
 
