@@ -20,7 +20,7 @@ public class DateUtil {
 	}
  
 	public static String getLocalTimeFromUTC(long GMT, int fot){
-		String[] ft=new String[]{"yyyy-MM-dd'T'HH:mm:ss'Z'","yyyy-MM-dd HH:mm:ss","dd-MM-yyyy HH:mm:ss","MM-dd-yyyy HH:mm:ss"};
+		String[] ft=new String[]{"yyyy-MM-dd HH:mm:ss","yyyy-MM-dd'T'HH:mm:ss'Z'","dd-MM-yyyy HH:mm:ss","MM-dd-yyyy HH:mm:ss"};
 		long UTC = getUTCTimeStr();
 		System.out.println(UTC);
 		UTC = UTC + GMT;
