@@ -52,7 +52,7 @@ public class Json {
 		Core.settings.getDataDirectory().child(path).writeString(json);
 	}
 
-	public static void Initia() {
+	public static void Initialize_permissions() {
 		/*
 		add.put("languageO", "en");
 		add.put("languageT", "US");
@@ -71,7 +71,7 @@ public class Json {
 		date.put("9", a);
 		date.put("10",a);
 		String json = JSONObject.toJSONString(date,SerializerFeature.PrettyFormat);
-		Core.settings.getDataDirectory().child("mods/GA/TEST.json").writeString(json);
+		Core.settings.getDataDirectory().child("mods/GA/Authority.json").writeString(json);
 	}
 
 

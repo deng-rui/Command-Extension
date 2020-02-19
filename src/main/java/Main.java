@@ -36,6 +36,7 @@ import extension.util.translation.Googletranslate;
 import static extension.auxiliary.Strings.*;
 import static extension.auxiliary.Maps.*;
 import static extension.auxiliary.Language.*;
+import static extension.tool.DateUtil.*;
 import static extension.tool.Librarydependency.*;
 import static extension.tool.Tool.*;
 import static extension.tool.Json.*;
@@ -49,8 +50,7 @@ import static extension.util.Extend.Initialization.*;
 import static extension.util.Sensitive_Thesaurus.*;
 import static extension.util.Translation_support.*;
 //Static
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Main extends Plugin {
 
@@ -64,21 +64,18 @@ public class Main extends Plugin {
 	*/
 
 	@SuppressWarnings("unchecked")
-	//:(
 	public Main() {
 
 		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists())Initialization();
-		//Initia();
+		if(!Core.settings.getDataDirectory().child("mods/GA/Authority.json").exists())Initialize_permissions();
 		Player_Privilege_classification();
-		
-		//初始化SQL
-		importLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
-		notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
-		Authority_control("ZNSDsdjdemDRtest==","test");
-		// InitializationSQLite();
-		// addSQLite();
-		// getSQLite("Dr");
 
+		importLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
+		//初始化SQL
+		notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
+		//InitializationSQLite();
+		//addSQLite();
+		//getSQLite("Dr");
 		//加载
 
 		Events.on(PlayerChatEvent.class, e -> {
@@ -152,10 +149,6 @@ public class Main extends Plugin {
 				if ("N".equalsIgnoreCase(arg[0]))setGC_1("禁止");
 		});
 
-		handler.register("aaa","<1>", "NOT", (arg) -> {
-			aaa(arg[0]);
-		});
-
 		handler.register("aab","<1> <2> <3>", "NOT", (arg) -> {
 			aab(arg[0],arg[1],arg[2]);
 		});
@@ -170,7 +163,7 @@ public class Main extends Plugin {
 			if(!Authority_control(player.uuid,"login")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
-				//
+				//if()
 			}
 		});
 
@@ -178,7 +171,7 @@ public class Main extends Plugin {
 			if(!Authority_control(player.uuid,"register")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
-				//
+				register(player,args[0],args[1],args[2]);
 			}
 		});
 

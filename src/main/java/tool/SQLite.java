@@ -16,17 +16,18 @@ public class SQLite {
 			Statement stmt = c.createStatement();
 			//sql = "CREATE TABLE Players (" +
 			sql = "CREATE TABLE TEST (" +
-				  "UUID 			TEXT,"+
-				  "NAME 			TEXT,"+
-				  "IP 				TEXT,"+
-				  "GMT 				TEXT,"+
-				  "Country 			TEXT,"+
-				  "Language 		TEXT,"+
-				  "LastLogin 		TEXT,"+
+				  "UUID 			TEXT,"+//
+				  "NAME 			TEXT,"+//
+				  "IP 				TEXT,"+//
+				  "GMT 				TEXT,"+//
+				  "Country 			TEXT,"+//
+				  "Time_format 		TEXT,"+
+				  "Language 		TEXT,"+//
+				  "LastLogin 		TEXT,"+//
 				  //玩家普通信息7
-				  "User 			TEXT,"+
-				  "PasswordHash 	TEXT,"+
-				  "CSPRNG 			TEXT,"+
+				  "User 			TEXT,"+//
+				  "PasswordHash 	TEXT,"+//
+				  "CSPRNG 			TEXT,"+//
 				  //Cryptographically Secure Pseudo-Random Number Generator
 				  //安全系列3
 				  "Kickcount		INTEGER,"+
@@ -44,7 +45,7 @@ public class SQLite {
 				  "Pvpwincount 		INTEGER,"+
 				  "Pvplosecount 	INTEGER,"+
 				  //胜利 输数2
-				  "Authority 		INTEGER,"+
+				  "Authority 		INTEGER,"+//
 				  //权限1
 				  "Lastchat 		TEXT,"+
 				  "Chatcount 		INTEGER,"+
@@ -66,23 +67,23 @@ public class SQLite {
 	}
 
 	public static class player {
-		public static void InitializationPlayersSQLite(String UUID, String NAME, String IP, String GMT, String Country, String Language, String LastLogin, String User, String PasswordHash, String CSPRNG) {
+		public static void InitializationPlayersSQLite(String UUID, String NAME, String IP, String GMT, String Country, String Time_format, String Language, String LastLogin, String User, String PasswordHash, String CSPRNG) {
 			try {
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
-				String sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) VALUES (?,?,?,?,?,?,?,?,?,?,'0','0','0','0','0','0','0','0','0','0','1','0','0','0','0','0','0')"; 
+				String sql = "INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Time_format,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) VALUES (?,?,?,?,?,?,'0',?,?,?,?,'0','0','0','0','0','0','0','0','0','0','1','0','0','0','0','0','0')";
 				PreparedStatement stmt = c.prepareStatement(sql);
-            	stmt.setString(1,UUID);
-            	stmt.setString(2,NAME);
-            	stmt.setString(3,IP);
-            	stmt.setString(4,GMT);
-            	stmt.setString(5,Country);
-            	stmt.setString(6,Language);
-            	stmt.setString(7,LastLogin);
-            	stmt.setString(8,User);
-            	stmt.setString(9,PasswordHash);
-            	stmt.setString(10,CSPRNG);
-            	stmt.execute();
+				stmt.setString(1,UUID);
+				stmt.setString(2,NAME);
+				stmt.setString(3,IP);
+				stmt.setString(4,GMT);
+				stmt.setString(5,Country);
+				stmt.setString(6,Language);
+				stmt.setString(7,LastLogin);
+				stmt.setString(8,User);
+				stmt.setString(9,PasswordHash);
+				stmt.setString(10,CSPRNG);
+				stmt.execute();
 				stmt.close();
 				c.commit();
 				c.close();
@@ -124,7 +125,7 @@ public class SQLite {
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
 				PreparedStatement stmt = c.prepareStatement("SELECT * FROM TEST WHERE UUID=?");
-            	stmt.setString(1,uuid);
+				stmt.setString(1,uuid);
 				ResultSet rs = stmt.executeQuery();
 				while ( rs.next() ) {
 					Players.add(rs.getString("UUID"));
@@ -171,7 +172,7 @@ public class SQLite {
 				}
 				/*
 				for(int i=0;i<Players.size();i++){
-    				System.out.println(Players.get(i));
+					System.out.println(Players.get(i));
 				}*/
 				rs.close();
 				stmt.close();
@@ -184,21 +185,21 @@ public class SQLite {
 
 		public static boolean getSQLite_User(String user) {
 			try {
-				String temp;	
+				String temp;
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
-				PreparedStatement stmt = c.prepareStatement("SELECT * FROM TEST WHERE User=?");
-            	stmt.setString(1,user);
+				PreparedStatement stmt = c.prepareStatement("SELECT * FROM syscolumns where id=object_id('TEST') and User=?");
+				stmt.setString(1,user);
 				ResultSet rs = stmt.executeQuery();
 				temp = rs.getString("User");
 				rs.close();
 				stmt.close();
 				c.close();
 				return false;		
+				//用户名存在 避免冲突
 			} catch ( Exception e ) {
 			}
-			return true;
-			//用户名存在 避免冲突
+			return false;
 		}
 
 		

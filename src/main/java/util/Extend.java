@@ -51,7 +51,12 @@ import static extension.auxiliary.Booleans.*;
 import static extension.auxiliary.Strings.*;
 import static extension.auxiliary.Language.*;
 import static extension.auxiliary.Maps.*;
+import static extension.tool.HttpRequest.doGet;
+import static extension.tool.Tool.Language_determination;
+import static extension.tool.SQLite.*;
+import static extension.tool.SQLite.player.*;
 import static extension.tool.Json.*;
+import static extension.tool.Password.*;
 import static extension.util.Sensitive_Thesaurus.*;
 //Static
 
@@ -64,6 +69,38 @@ public class Extend {
 		//private HashSet<Player> votes = new HashSet<>();
 		private ArrayList<String> votes = new ArrayList<>();
 		private boolean enable = true;
+
+		public static void login() {
+			
+		}
+
+		public static void register(Player player, String newusr, String newpw, String renewpw) {
+			String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
+			long GMT;
+			if(!newpw.equals(renewpw)) {
+				player.sendMessage(getinput("register.pawno"));
+				return;
+			}
+			if(!(boolean)getSQLite_User(newusr)) {
+				player.sendMessage(getinput("register.usrno"));
+				return;
+			}
+			try {	
+				java.util.Map<String, Object> Passwd_date = (java.util.Map<String, Object>)newPasswd(newpw);
+				if(!(boolean)Passwd_date.get("resualt"))return;
+				JSONObject date = JSONObject.parseObject(doGet("http://ip-api.com/json/"+ip+"?fields=country,timezone"));
+				GMT = TimeZone.getTimeZone((String)date.get("timezone")).getRawOffset();
+				InitializationPlayersSQLite(player.uuid,player.name,ip,String.valueOf(GMT),(String)date.get("country"),Language_determination((String)date.get("country")),getLocalTimeFromUTC(GMT),newusr,(String)Passwd_date.get("passwordHash"),(String)Passwd_date.get("salt"));
+			}catch(Exception e){
+			}
+			if (Vars.state.rules.pvp){
+				player.setTeam(netServer.assignTeam(player, playerGroup.all()));
+			} else {
+				player.setTeam(Team.sharded);
+			}
+			Call.onPlayerDeath(player);
+			Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(GMT)),30f);
+		}
 
 		public static String status(String then) {
 			float fps = Math.round((int)60f / Time.delta());
@@ -206,8 +243,7 @@ public class Extend {
 			Call.onPlayerDeath(player);
 			//Call.onInfoMessage();
 			setPlayer_power_Date(player.uuid,0);
-			Call.onInfoToast(player.con,getinput("join.tourist"),40f);
-
+			Call.onInfoToast(player.con,getinput("join.tourist",String.valueOf(TimeZone.getTimeZone((String)doGet("http://ip-api.com/line/"+Vars.netServer.admins.getInfo(player.uuid).lastIP+"?fields=timezone"))).getRawOffset()),30f);
 		}
 
 	}
