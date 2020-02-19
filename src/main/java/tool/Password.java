@@ -42,39 +42,32 @@ public class Password {
 	}
 	//验证密码
 
-	public static void savePasswordDemo(String passwordHash, String salt) {
-		System.out.println("passwordHash : "+passwordHash);
-		System.out.println("salt : "+salt);
-	}
-	//密码Hash 和 salt 同时存储
-
-	public static void aaa(String a) {
-		//原始密码
-		//生成随机盐
+	public static Map<String, Object> newPasswd(String pw) {
+		Map<String, Object> Password = new HashMap<String, Object>();
 		try {
-		String salt = genRandomSalt();
-		//经过加盐后的密码摘要
-		String passwordHash = genPasswordHash(a, salt);
-		//同时储存密码hash和盐
-		savePasswordDemo(passwordHash, salt);
-		//验证密码
-		boolean resualt = verify(a, passwordHash, salt);
-		System.out.println(resualt);
+			String salt = genRandomSalt();
+			String passwordHash = genPasswordHash(pw, salt);
+			//经过加盐后的密码摘要
+			Password.put("passwordHash",passwordHash);
+			Password.put("salt",salt);
+			//同时储存密码hash和盐
+			boolean resualt = verify(pw, passwordHash, salt);
+			Password.put("resualt",resualt);
+			//验证密码
+			System.out.println(resualt);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return Password;
 	}
 
 	public static void aab(String a,String b,String c) {
-		//原始密码
-		//生成随机盐
 		try {
 		String salt = genRandomSalt();
 		//经过加盐后的密码摘要
 		String passwordHash = genPasswordHash(a, salt);
 		//同时储存密码hash和盐
-		savePasswordDemo(b, c);
-		//验证密码
+		//密码Hash 和 salt 同时存储
 		boolean resualt = verify(a, b, c);
 		System.out.println(resualt);
 		} catch (Exception e) {
