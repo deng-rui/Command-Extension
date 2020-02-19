@@ -66,11 +66,11 @@ public class SQLite {
 	}
 
 	public static class player {
-		public static void InitializationPlayersSQLite(String UUID,String NAME,String IP,String GMT,String Country,String Language) {
+		public static void InitializationPlayersSQLite(String UUID, String NAME, String IP, String GMT, String Country, String Language, String LastLogin, String User, String PasswordHash, String CSPRNG) {
 			try {
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
-				String sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) VALUES (?,?,?,?,?,?,'0','0','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','0','0','0','0')"; 
+				String sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) VALUES (?,?,?,?,?,?,?,?,?,?,'0','0','0','0','0','0','0','0','0','0','1','0','0','0','0','0','0')"; 
 				PreparedStatement stmt = c.prepareStatement(sql);
             	stmt.setString(1,UUID);
             	stmt.setString(2,NAME);
@@ -78,6 +78,10 @@ public class SQLite {
             	stmt.setString(4,GMT);
             	stmt.setString(5,Country);
             	stmt.setString(6,Language);
+            	stmt.setString(7,LastLogin);
+            	stmt.setString(8,User);
+            	stmt.setString(9,PasswordHash);
+            	stmt.setString(10,CSPRNG);
             	stmt.execute();
 				stmt.close();
 				c.commit();
@@ -164,8 +168,6 @@ public class SQLite {
 					Players.add(rs.getString("Killcount"));
 					Players.add(rs.getString("Joincount"));
 					Players.add(rs.getString("Breakcount"));
-
-					
 				}
 				/*
 				for(int i=0;i<Players.size();i++){
@@ -178,6 +180,25 @@ public class SQLite {
 			} catch ( Exception e ) {
 			}
 			return null;
+		}
+
+		public static boolean getSQLite_User(String user) {
+			try {
+				String temp;	
+				Connection c = connectSQLite();
+				c.setAutoCommit(false);
+				PreparedStatement stmt = c.prepareStatement("SELECT * FROM TEST WHERE User=?");
+            	stmt.setString(1,user);
+				ResultSet rs = stmt.executeQuery();
+				temp = rs.getString("User");
+				rs.close();
+				stmt.close();
+				c.close();
+				return false;		
+			} catch ( Exception e ) {
+			}
+			return true;
+			//用户名存在 避免冲突
 		}
 
 		
