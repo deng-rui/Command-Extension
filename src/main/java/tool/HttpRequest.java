@@ -20,20 +20,20 @@ public class HttpRequest {
 	private static final String USER_AGENT = "Mozilla/5.0";
 
 	public static String doGet(String url) throws Exception {
-		URL conn = new URL(url);
-		HttpURLConnection con = (HttpURLConnection) conn.openConnection();
-		con.setRequestMethod("GET");
-		con.setRequestProperty("User-Agent", USER_AGENT);
-		int responseCode = con.getResponseCode();
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
-		}
-		in.close();
-		return response.toString();
+			URL conn = new URL(url);
+			HttpURLConnection con = (HttpURLConnection) conn.openConnection();
+			con.setRequestMethod("GET");
+			con.addRequestProperty("Accept-Charset", "UTF-8;");
+			con.setRequestProperty("User-Agent", USER_AGENT);
+			int responseCode = con.getResponseCode();
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+			return response.toString();
 	}
 
 
