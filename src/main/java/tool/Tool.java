@@ -41,7 +41,7 @@ public class Tool {
 	//算法写的烂 bug满天飞
 	//没啥好办法:(
 
-	public static int SQL_(String string) {
+	public static int SQL_type(String string) {
 		switch(string){
 			case "UUID" :return 0;
 			case "NAME" :return 1;

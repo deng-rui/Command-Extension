@@ -17,6 +17,7 @@ import mindustry.game.EventType.GameOverEvent;
 import mindustry.game.EventType.ServerLoadEvent;
 import mindustry.game.EventType.PlayerChatEvent;
 import mindustry.game.EventType.PlayerJoin;
+import mindustry.game.EventType.PlayerLeave;
 import mindustry.net.Administration.PlayerInfo ;
 import mindustry.net.Packets.KickReason;
 import mindustry.net.NetConnection;
@@ -27,6 +28,7 @@ import mindustry.Vars;
 import static mindustry.Vars.state;
 import static mindustry.Vars.netServer;
 import static mindustry.Vars.logic;
+import static mindustry.Vars.playerGroup;
 //Mindustry-Static
 
 
@@ -36,6 +38,7 @@ import extension.util.translation.Googletranslate;
 import static extension.auxiliary.Strings.*;
 import static extension.auxiliary.Maps.*;
 import static extension.auxiliary.Language.*;
+import static extension.auxiliary.Lists.*;
 import static extension.tool.Librarydependency.*;
 import static extension.tool.Tool.*;
 import static extension.tool.Json.*;
@@ -72,7 +75,7 @@ public class Main extends Plugin {
 
 		Player_Privilege_classification();
 		
-		InitializationSQLite();
+		//InitializationSQLite();
 
 		Events.on(PlayerChatEvent.class, e -> {
 			String result = PlayerChatEvent_translate(String.valueOf(e.message.charAt(0)),e.message);
@@ -92,7 +95,7 @@ public class Main extends Plugin {
 			if (0 < set1.size())Call.onKick(e.player.con, getinput("Sensitive.Thesaurus.join.kick",set1.iterator().next()));
 			//中英分检测
 			PlayerJoin_Logins(e.player);
-			setPlayerDate_Temp(e.player.uuid,"Playtime-start",String.valueOf(System.currentTimeMillis()));
+			setPlayer_Data_Temp(e.player.uuid,"Playtime-start",String.valueOf(System.currentTimeMillis()));
 			//Logins
 			if (Vars.state.rules.pvp){
 				if("禁止".equalsIgnoreCase(getGC_1())){
@@ -105,8 +108,34 @@ public class Main extends Plugin {
 			}
 		});
 
+		Events.on(PlayerLeave.class, e -> {
+			removePlayer_Data_Temp(e.player.uuid,"Playtime-start");
+		});
+
 		Events.on(GameOverEvent.class, e -> {
 			if (Vars.state.rules.pvp)setGC();
+			if (state.rules.pvp) {
+				int index = 5;
+				for (int a = 0; a < 5; a++) {
+					if (state.teams.get(Team.all()[index]).cores.isEmpty()) {
+						index--;
+					}
+				}
+				if (index == 1) {
+					for (int i = 0; i < playerGroup.size(); i++) {
+						Player player = playerGroup.all().get(i);
+						if (player.getTeam().name.equals(e.winner.name)) {
+							List<String> Pvpwincount = (List)getPlayer_Data_SQL_Temp(player.uuid);
+							System.out.println(player.uuid);
+							if(getPlayer_power_Data(player.uuid)>0)setPlayer_Data_SQL_Temp(player.uuid,updatePlayerData_SQL_Temp(Pvpwincount,SQL_type("Pvpwincount"),String.valueOf(Integer.parseInt(Pvpwincount.get(SQL_type("Pvpwincount")))+1)));
+						} else {
+							List<String> Pvpwincount = (List)getPlayer_Data_SQL_Temp(player.uuid);
+							System.out.println(player.uuid);
+							if(getPlayer_power_Data(player.uuid)>0)setPlayer_Data_SQL_Temp(player.uuid,updatePlayerData_SQL_Temp(Pvpwincount,SQL_type("Pvplosecount"),String.valueOf(Integer.parseInt(Pvpwincount.get(SQL_type("Pvplosecount")))+1)));
+						}
+					}
+				}
+			}
 		});
 
 		Events.on(ServerLoadEvent.class, e-> {
@@ -139,8 +168,8 @@ public class Main extends Plugin {
 				if ("N".equalsIgnoreCase(arg[0]))setGC_1("禁止");
 		});
 
-		handler.register("aab","<1> <2> <3>", "NOT", (arg) -> {
-			aab(arg[0],arg[1],arg[2]);
+		handler.register("aab","<1>", "NOT", (arg) -> {
+			System.out.println(getPlayer_Data_SQL_Temp(arg[0]));
 		});
 	};
 

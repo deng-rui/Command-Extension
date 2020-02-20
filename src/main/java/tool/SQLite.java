@@ -21,10 +21,10 @@ public class SQLite {
 				  "IP 				TEXT,"+//
 				  "GMT 				TEXT,"+//
 				  "Country 			TEXT,"+//
-				  "Time_format 		TEXT,"+
+				  "Time_format 		TEXT,"+//
 				  "Language 		TEXT,"+//
 				  "LastLogin 		TEXT,"+//
-				  //玩家普通信息7
+				  //玩家普通信息8
 				  "User 			TEXT,"+//
 				  "PasswordHash 	TEXT,"+//
 				  "CSPRNG 			TEXT,"+//
@@ -42,8 +42,8 @@ public class SQLite {
 				  //等级4
 				  "Playtime 		REAL,"+
 				  //游戏时长1
-				  "Pvpwincount 		INTEGER,"+
-				  "Pvplosecount 	INTEGER,"+
+				  "Pvpwincount 		INTEGER,"+//
+				  "Pvplosecount 	INTEGER,"+//
 				  //胜利 输数2
 				  "Authority 		INTEGER,"+//
 				  //权限1
@@ -133,6 +133,8 @@ public class SQLite {
 					Players.add(rs.getString("IP"));
 					Players.add(rs.getString("GMT"));
 					Players.add(rs.getString("Language"));
+					Players.add(rs.getString("Country"));
+					Players.add(rs.getString("Time_format"));
 					Players.add(rs.getString("LastLogin"));
 					Players.add(rs.getString("User"));
 					Players.add(rs.getString("PasswordHash"));
