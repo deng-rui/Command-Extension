@@ -56,7 +56,6 @@ public class Main extends Plugin {
 
 	Googletranslate googletranslate = new Googletranslate();
 	//改进全局变量
-	//VOTE
 	/*
 	 MOD使用的物理地址 .jar/config/mods/GA
 	 Physical address used by mod .jar/config/mods/GA
@@ -73,9 +72,6 @@ public class Main extends Plugin {
 		importLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
 		//初始化SQL
 		notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
-		//InitializationSQLite();
-		//addSQLite();
-		//getSQLite("Dr");
 		//加载
 
 		Events.on(PlayerChatEvent.class, e -> {
@@ -98,8 +94,6 @@ public class Main extends Plugin {
 			PlayerJoin_Logins(e.player);
 			setPlayerDate_Temp(e.player.uuid,"Playtime-start",String.valueOf(System.currentTimeMillis()));
 			//Logins
-			//官方接口全靠猜...
-			//Call.onInfoMessage(e.player.con,getinput("join.start",timee(),getGC_1()));
 			if (Vars.state.rules.pvp){
 				if("禁止".equalsIgnoreCase(getGC_1())){
 					state.rules.playerDamageMultiplier = 0f;
@@ -137,10 +131,6 @@ public class Main extends Plugin {
 		});
 		
 	}
-
-		//downLoadFromUrl("org.xerial","sqlite-jdbc","3.30.1","China",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
-		//;
-		
 		
 	@Override
 	public void registerServerCommands(CommandHandler handler){
@@ -175,16 +165,7 @@ public class Main extends Plugin {
 			}
 		});
 
-		handler.<Player>register("info",getinput("info"), (args, player) -> {/*
-			String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
-			String Country = doGet("http://ip-api.com/line/"+ip+"?fields=country");
-			player.sendMessage(getinput("info.load"));
-			try{
-				Thread.currentThread().sleep(2000);
-				}catch(InterruptedException ie){
-					ie.printStackTrace();
-				}
-			*/
+		handler.<Player>register("info",getinput("info"), (args, player) -> {
 			if(!Authority_control(player.uuid,"info")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
@@ -258,7 +239,6 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("team",getinput("team"), (args, player) ->{
-			//change team
 			if(!Authority_control(player.uuid,"team")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
@@ -278,7 +258,6 @@ public class Main extends Plugin {
 					}
 					index++;
 				}
-				//kill player
 				Call.onPlayerDeath(player);
 			}
 		});
@@ -336,10 +315,9 @@ public class Main extends Plugin {
 					Thread.currentThread().sleep(2500);
 				}catch(InterruptedException ie){
 					ie.printStackTrace();
-				} //[Original-language],args[2]
+				} 
 				try{
 					String translationm = googletranslate.translate(text,args[1]);
-					//String translationm = baidutranslate.translate(text,args[1]);
 					Call.sendMessage("["+player.name+"]"+"[green] : [] "+translationm+"   -From Google Translator");
 				}catch(Exception e){
 					return;

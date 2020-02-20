@@ -8,10 +8,15 @@ import java.util.List;
 
 public class Maps {
 	private static Map<String, Integer> Player_Sensitive_words = Collections.synchronizedMap(new HashMap<String, Integer>());
+	//违纪数
 	private static Map<String, String> PlayerDate_Temp = Collections.synchronizedMap(new HashMap<String, String>());
+	//玩家进入时缓存时间 /未login 无法查询数据库
 	private static Map<String, List> PlayerDate_SQL_Temp = Collections.synchronizedMap(new HashMap<String, List>());
+	//玩家数据temp 读取-修改-写入
 	private static Map<String, Integer> Player_power_Date = Collections.synchronizedMap(new HashMap<String, Integer>());
+	//玩家权限
 	private static Map<Integer, List> Power_Date = Collections.synchronizedMap(new HashMap<Integer, List>());
+	//权限内容
 	//Safety! Inefficient :(
 
 	public static int getPlayer_Sensitive_words_int(String key) {
