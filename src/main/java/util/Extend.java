@@ -42,6 +42,7 @@ import static mindustry.Vars.logic;
 import static mindustry.Vars.world;
 import static mindustry.Vars.net;
 import static mindustry.Vars.maps;
+import static mindustry.Vars.playerGroup;
 //Mindustry-Static
 
 import extension.util.translation.Googletranslate;
@@ -51,6 +52,7 @@ import static extension.auxiliary.Booleans.*;
 import static extension.auxiliary.Strings.*;
 import static extension.auxiliary.Language.*;
 import static extension.auxiliary.Maps.*;
+import static extension.tool.DateUtil.*;
 import static extension.tool.HttpRequest.doGet;
 import static extension.tool.Tool.Language_determination;
 import static extension.tool.SQLite.*;
@@ -75,8 +77,8 @@ public class Extend {
 		}
 
 		public static void register(Player player, String newusr, String newpw, String renewpw) {
-			String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
-			long GMT;
+			//String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
+			String ip = "111.180.135.42";
 			if(!newpw.equals(renewpw)) {
 				player.sendMessage(getinput("register.pawno"));
 				return;
@@ -85,21 +87,20 @@ public class Extend {
 				player.sendMessage(getinput("register.usrno"));
 				return;
 			}
-			try {	
-				java.util.Map<String, Object> Passwd_date = (java.util.Map<String, Object>)newPasswd(newpw);
-				if(!(boolean)Passwd_date.get("resualt"))return;
-				JSONObject date = JSONObject.parseObject(doGet("http://ip-api.com/json/"+ip+"?fields=country,timezone"));
-				GMT = TimeZone.getTimeZone((String)date.get("timezone")).getRawOffset();
-				InitializationPlayersSQLite(player.uuid,player.name,ip,String.valueOf(GMT),(String)date.get("country"),Language_determination((String)date.get("country")),getLocalTimeFromUTC(GMT),newusr,(String)Passwd_date.get("passwordHash"),(String)Passwd_date.get("salt"));
-			}catch(Exception e){
-			}
+			java.util.Map<String, Object> Passwd_date = (java.util.Map<String, Object>)newPasswd(newpw);
+			if(!(boolean)Passwd_date.get("resualt"))return;
+			JSONObject date = JSONObject.parseObject(doGet("http://ip-api.com/json/"+ip+"?fields=country,timezone"));
+			long GMT = TimeZone.getTimeZone((String)date.get("timezone")).getRawOffset();
+			InitializationPlayersSQLite(player.uuid,player.name,ip,String.valueOf(GMT),(String)date.get("country"),Language_determination((String)date.get("country")),getLocalTimeFromUTC(GMT,0),newusr,(String)Passwd_date.get("passwordHash"),(String)Passwd_date.get("salt"));
 			if (Vars.state.rules.pvp){
 				player.setTeam(netServer.assignTeam(player, playerGroup.all()));
 			} else {
 				player.setTeam(Team.sharded);
 			}
 			Call.onPlayerDeath(player);
-			Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(GMT)),30f);
+			setPlayer_power_Data(player.uuid,1);
+			setPlayer_Data_SQL_Temp(player.uuid,(List)getSQLite(player.uuid));
+			Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(GMT,0)),30f);
 		}
 
 		public static String status(String then) {
@@ -242,8 +243,12 @@ public class Extend {
 			player.setTeam(Team.derelict);
 			Call.onPlayerDeath(player);
 			//Call.onInfoMessage();
-			setPlayer_power_Date(player.uuid,0);
-			Call.onInfoToast(player.con,getinput("join.tourist",String.valueOf(TimeZone.getTimeZone((String)doGet("http://ip-api.com/line/"+Vars.netServer.admins.getInfo(player.uuid).lastIP+"?fields=timezone"))).getRawOffset()),30f);
+			setPlayer_power_Data(player.uuid,0);
+			Call.onInfoToast(player.con,getinput("join.tourist",String.valueOf(TimeZone.getTimeZone((String)doGet("http://ip-api.com/line/"+Vars.netServer.admins.getInfo(player.uuid).lastIP+"?fields=timezone")).getRawOffset())),20f);
+		}
+
+		public static void GameOverEvent_PVP_Data() {
+			//
 		}
 
 	}
@@ -252,7 +257,7 @@ public class Extend {
 		public static void Player_Privilege_classification() {
 			JSONObject date = getData("mods/GA/Authority.json");
 			for (int i = 0; i < 11; i++) {
-				setPower_Date(i,(List)date.get(i));
+				setPower_Data(i,(List)date.get(i));
 			}
 		}
 	}
