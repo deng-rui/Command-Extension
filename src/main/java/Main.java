@@ -36,7 +36,6 @@ import extension.util.translation.Googletranslate;
 import static extension.auxiliary.Strings.*;
 import static extension.auxiliary.Maps.*;
 import static extension.auxiliary.Language.*;
-import static extension.tool.DateUtil.*;
 import static extension.tool.Librarydependency.*;
 import static extension.tool.Tool.*;
 import static extension.tool.Json.*;
@@ -65,14 +64,15 @@ public class Main extends Plugin {
 	@SuppressWarnings("unchecked")
 	public Main() {
 
+		importLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
+		notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
+		//初始化SQL
 		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists())Initialization();
 		if(!Core.settings.getDataDirectory().child("mods/GA/Authority.json").exists())Initialize_permissions();
-		Player_Privilege_classification();
 
-		importLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
-		//初始化SQL
-		notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
-		//加载
+		Player_Privilege_classification();
+		
+		InitializationSQLite();
 
 		Events.on(PlayerChatEvent.class, e -> {
 			String result = PlayerChatEvent_translate(String.valueOf(e.message.charAt(0)),e.message);

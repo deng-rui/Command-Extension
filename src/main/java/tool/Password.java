@@ -54,7 +54,6 @@ public class Password {
 			boolean resualt = verify(pw, passwordHash, salt);
 			Password.put("resualt",resualt);
 			//验证密码
-			System.out.println(resualt);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

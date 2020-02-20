@@ -19,7 +19,8 @@ public class HttpRequest {
 
 	private static final String USER_AGENT = "Mozilla/5.0";
 
-	public static String doGet(String url) throws Exception {
+	public static String doGet(String url) {
+		try {
 			URL conn = new URL(url);
 			HttpURLConnection con = (HttpURLConnection) conn.openConnection();
 			con.setRequestMethod("GET");
@@ -34,6 +35,10 @@ public class HttpRequest {
 			}
 			in.close();
 			return response.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 

@@ -67,7 +67,7 @@ public class SQLite {
 	}
 
 	public static class player {
-		public static void InitializationPlayersSQLite(String UUID, String NAME, String IP, String GMT, String Country, String Time_format, String Language, String LastLogin, String User, String PasswordHash, String CSPRNG) {
+		public static void InitializationPlayersSQLite(String UUID, String NAME, String IP, String GMT, String Country, String Language, String LastLogin, String User, String PasswordHash, String CSPRNG) {
 			try {
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
@@ -184,22 +184,30 @@ public class SQLite {
 		}
 
 		public static boolean getSQLite_User(String user) {
+			boolean result = true;
 			try {
 				String temp;
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
-				PreparedStatement stmt = c.prepareStatement("SELECT * FROM syscolumns where id=object_id('TEST') and User=?");
+				System.out.println(1);
+				PreparedStatement stmt = c.prepareStatement("select COUNT(*) from TEST where User=?");
 				stmt.setString(1,user);
+				System.out.println(2);
 				ResultSet rs = stmt.executeQuery();
-				temp = rs.getString("User");
+				System.out.println(3);
+				rs.next();
+				System.out.println(4);
+				if(rs.getInt(1)>0)result = false;
+
+            System.out.println(result);
 				rs.close();
 				stmt.close();
-				c.close();
-				return false;		
+				c.close();		
 				//用户名存在 避免冲突
 			} catch ( Exception e ) {
+				System.out.println(e);
 			}
-			return false;
+			return result;
 		}
 
 		
