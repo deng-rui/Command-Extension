@@ -189,17 +189,11 @@ public class SQLite {
 				String temp;
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
-				System.out.println(1);
 				PreparedStatement stmt = c.prepareStatement("select COUNT(*) from TEST where User=?");
 				stmt.setString(1,user);
-				System.out.println(2);
 				ResultSet rs = stmt.executeQuery();
-				System.out.println(3);
 				rs.next();
-				System.out.println(4);
 				if(rs.getInt(1)>0)result = false;
-
-            System.out.println(result);
 				rs.close();
 				stmt.close();
 				c.close();		
