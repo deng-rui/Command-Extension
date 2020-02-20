@@ -12,13 +12,13 @@ public class Lists {
 	//}
 	//
 
-	public static List updatePlayerDate_SQL_Temp(List list, String old, String nw) {
+	public static List updatePlayerDate_SQL_Temp(List list, int old, String nw) {
 		List<String> tempList = new ArrayList<String>(list.size()+1);  
 		for(int i=0;i<list.size();i++){  
-			if(!list.get(i).equals(old)){  
-				tempList.add((String)list.get(i));  
-			} else {
+			if(Integer.valueOf(old).equals(i)) {  
 				tempList.add(nw);
+			} else {
+				tempList.add((String)list.get(i));  
 			}
 		}  
 		return tempList;  
