@@ -262,6 +262,11 @@ public class Extend {
 		}
 
 		public static void PlayerJoin_Logins(Player player) {
+			try {
+				Thread.currentThread().sleep(2500);
+			}catch(InterruptedException ie){
+				ie.printStackTrace();
+			} 
 			player.setTeam(Team.derelict);
 			Call.onPlayerDeath(player);
 			//Call.onInfoMessage();
@@ -284,8 +289,6 @@ public class Extend {
 		}
 	}
 
-	public static class PlayerData {
-		
-	}
+	
 }
 

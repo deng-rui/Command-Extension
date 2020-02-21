@@ -18,6 +18,7 @@ import mindustry.game.EventType.ServerLoadEvent;
 import mindustry.game.EventType.PlayerChatEvent;
 import mindustry.game.EventType.PlayerJoin;
 import mindustry.game.EventType.PlayerLeave;
+import mindustry.game.EventType.UnitDestroyEvent;
 import mindustry.net.Administration.PlayerInfo ;
 import mindustry.net.Packets.KickReason;
 import mindustry.net.NetConnection;
@@ -72,10 +73,11 @@ public class Main extends Plugin {
 		//初始化SQL
 		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists())Initialization();
 		if(!Core.settings.getDataDirectory().child("mods/GA/Authority.json").exists())Initialize_permissions();
+		if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists())InitializationSQLite();
 
 		Player_Privilege_classification();
 		
-		//InitializationSQLite();
+		//
 
 		Events.on(PlayerChatEvent.class, e -> {
 			String result = PlayerChatEvent_translate(String.valueOf(e.message.charAt(0)),e.message);

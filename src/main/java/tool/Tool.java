@@ -17,18 +17,12 @@ public class Tool {
 
 	public static String Language_determination(String string) {
 		switch(string){
-			case "China":
-			return "zh_CN";
-			case "Hong Kong":
-			return "zh_HK";
-			case "Macao":
-			return "zh_MO";
-			case "Taiwan":
-			return "zh_TW";
-			case "Russia":
-			return "ru-RU";
-			default :
-			return "en_US";
+			case "China" :return "zh_CN";
+			case "Hong Kong" :return "zh_HK";
+			case "Macao" :return "zh_MO";
+			case "Taiwan" :return "zh_TW";
+			case "Russia" :return "ru-RU";
+			default :return "en_US";
 			//I didn't find a better way....
 			}
 	}
@@ -66,11 +60,10 @@ public class Tool {
 			case "Pvplosecount" :return 20;
 			case "Authority" :return 21;
 			case "Lastchat" :return 22;
-			case "Chatcount" :return 23;
-			case "Deadcount" :return 24;
-			case "Killcount" :return 25;
-			case "Joincount" :return 26;
-			case "Breakcount" :return 27;
+			case "Deadcount" :return 23;
+			case "Killcount" :return 24;
+			case "Joincount" :return 25;
+			case "Breakcount" :return 26;
 			//I didn't find a better way....
 		}
 		return 100;

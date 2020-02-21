@@ -17,7 +17,7 @@ public class SQLite {
 			Connection c = connectSQLite();
 			Statement stmt = c.createStatement();
 			//sql = "CREATE TABLE Players (" +
-			sql = "CREATE TABLE TEST (" +
+			sql = "CREATE TABLE Player (" +
 				  "UUID 			TEXT,"+//
 				  "NAME 			TEXT,"+//
 				  "IP 				TEXT,"+//
@@ -50,7 +50,6 @@ public class SQLite {
 				  "Authority 		INTEGER,"+//
 				  //权限1
 				  "Lastchat 		TEXT,"+
-				  "Chatcount 		INTEGER,"+
 				  //最后聊天时间 聊天计数2
 				  "Deadcount		INTEGER,"+
 				  "Killcount 		INTEGER,"+
@@ -73,7 +72,7 @@ public class SQLite {
 			try {
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
-				String sql = "INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Time_format,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) VALUES (?,?,?,?,?,'0',?,?,?,?,?,'0','0','0','0','0','0','0','0','0','0','1','0','0','0','0','0','0')";
+				String sql = "INSERT INTO Player (UUID,NAME,IP,GMT,Country,Time_format,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Deadcount,Killcount,Joincount,Breakcount) VALUES (?,?,?,?,?,'0',?,?,?,?,?,'0','0','0','0','0','0','0','0','0','0','1','0','0','0','0','0')";
 				PreparedStatement stmt = c.prepareStatement(sql);
 				stmt.setString(1,UUID);
 				stmt.setString(2,NAME);
@@ -125,8 +124,8 @@ public class SQLite {
 			try {
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
-				String sql=sql = "UPDATE TEST SET UUID=?,NAME=?,IP=?,GMT=?,Country=?,Time_format=?,Language=?,LastLogin=?,User=?,PasswordHash=?,CSPRNG=?,Kickcount=?,Sensitive=?,Translate=?,Level=?,Exp=?,Reqexp=?,Reqtotalexp=?,Playtime=?,Pvpwincount=?,Pvplosecount=?,Authority=?,Lastchat=?,Chatcount=?,Deadcount=?,Killcount=?,Joincount=?,Breakcount=? WHERE UUID=?";
-				if(uu)sql="UPDATE TEST SET UUID=?,NAME=?,IP=?,GMT=?,Country=?,Time_format=?,Language=?,LastLogin=?,User=?,PasswordHash=?,CSPRNG=?,Kickcount=?,Sensitive=?,Translate=?,Level=?,Exp=?,Reqexp=?,Reqtotalexp=?,Playtime=?,Pvpwincount=?,Pvplosecount=?,Authority=?,Lastchat=?,Chatcount=?,Deadcount=?,Killcount=?,Joincount=?,Breakcount=? WHERE User=?";
+				String sql=sql = "UPDATE Player SET UUID=?,NAME=?,IP=?,GMT=?,Country=?,Time_format=?,Language=?,LastLogin=?,User=?,PasswordHash=?,CSPRNG=?,Kickcount=?,Sensitive=?,Translate=?,Level=?,Exp=?,Reqexp=?,Reqtotalexp=?,Playtime=?,Pvpwincount=?,Pvplosecount=?,Authority=?,Lastchat=?,Deadcount=?,Killcount=?,Joincount=?,Breakcount=? WHERE UUID=?";
+				if(uu)sql="UPDATE Player SET UUID=?,NAME=?,IP=?,GMT=?,Country=?,Time_format=?,Language=?,LastLogin=?,User=?,PasswordHash=?,CSPRNG=?,Kickcount=?,Sensitive=?,Translate=?,Level=?,Exp=?,Reqexp=?,Reqtotalexp=?,Playtime=?,Pvpwincount=?,Pvplosecount=?,Authority=?,Lastchat=?,Deadcount=?,Killcount=?,Joincount=?,Breakcount=? WHERE User=?";
 				PreparedStatement stmt = c.prepareStatement(sql);
 				stmt.setString(1,(String)data.get(SQL_type("UUID")));
 				stmt.setString(2,(String)data.get(SQL_type("NAME")));
@@ -151,12 +150,11 @@ public class SQLite {
 				stmt.setString(21,(String)data.get(SQL_type("Pvplosecount")));
 				stmt.setString(22,(String)data.get(SQL_type("Authority")));
 				stmt.setString(23,(String)data.get(SQL_type("Lastchat")));
-				stmt.setString(24,(String)data.get(SQL_type("Chatcount")));
-				stmt.setString(25,(String)data.get(SQL_type("Deadcount")));
-				stmt.setString(26,(String)data.get(SQL_type("Killcount")));
-				stmt.setString(27,(String)data.get(SQL_type("Joincount")));
-				stmt.setString(28,(String)data.get(SQL_type("Breakcount")));
-				stmt.setString(29,uoru);
+				stmt.setString(24,(String)data.get(SQL_type("Deadcount")));
+				stmt.setString(25,(String)data.get(SQL_type("Killcount")));
+				stmt.setString(26,(String)data.get(SQL_type("Joincount")));
+				stmt.setString(27,(String)data.get(SQL_type("Breakcount")));
+				stmt.setString(28,uoru);
 				stmt.execute();
 				stmt.close();
 				c.commit();
@@ -170,7 +168,7 @@ public class SQLite {
 				List<String> Players = new ArrayList<String>();		
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
-				PreparedStatement stmt = c.prepareStatement("SELECT * FROM TEST WHERE UUID=?");
+				PreparedStatement stmt = c.prepareStatement("SELECT * FROM Player WHERE UUID=?");
 				stmt.setString(1,uuid);
 				ResultSet rs = stmt.executeQuery();
 				while ( rs.next() ) {
@@ -212,7 +210,6 @@ public class SQLite {
 					//Players.add(rs.getInt("Killcount"));
 					//Players.add(rs.getInt("Joincount"));
 					//Players.add(rs.getInt("Breakcount"));
-					Players.add(rs.getString("Chatcount"));
 					Players.add(rs.getString("Deadcount"));
 					Players.add(rs.getString("Killcount"));
 					Players.add(rs.getString("Joincount"));
@@ -236,7 +233,7 @@ public class SQLite {
 				List<String> Players = new ArrayList<String>();		
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
-				PreparedStatement stmt = c.prepareStatement("SELECT * FROM TEST WHERE User=?");
+				PreparedStatement stmt = c.prepareStatement("SELECT * FROM Player WHERE User=?");
 				stmt.setString(1,user);
 				ResultSet rs = stmt.executeQuery();
 				while ( rs.next() ) {
@@ -278,7 +275,6 @@ public class SQLite {
 					//Players.add(rs.getInt("Killcount"));
 					//Players.add(rs.getInt("Joincount"));
 					//Players.add(rs.getInt("Breakcount"));
-					Players.add(rs.getString("Chatcount"));
 					Players.add(rs.getString("Deadcount"));
 					Players.add(rs.getString("Killcount"));
 					Players.add(rs.getString("Joincount"));
@@ -303,7 +299,7 @@ public class SQLite {
 				String temp;
 				Connection c = connectSQLite();
 				c.setAutoCommit(false);
-				PreparedStatement stmt = c.prepareStatement("select COUNT(*) from TEST where User=?");
+				PreparedStatement stmt = c.prepareStatement("select COUNT(*) from Player where User=?");
 				stmt.setString(1,user);
 				ResultSet rs = stmt.executeQuery();
 				rs.next();
@@ -327,7 +323,7 @@ public class SQLite {
 
 	public static Connection connectSQLite() {
 			try {
-				Connection c = DriverManager.getConnection("jdbc:sqlite:"+Core.settings.getDataDirectory().child("mods/GA/TEST.db"));
+				Connection c = DriverManager.getConnection("jdbc:sqlite:"+Core.settings.getDataDirectory().child("mods/GA/Data.db"));
 				return c;
 			} catch ( Exception e ) {
 			}
