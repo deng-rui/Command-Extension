@@ -1,5 +1,6 @@
 package extension;
 
+import java.util.List;
 import java.util.Set;
 //Java
 
@@ -53,7 +54,8 @@ import static extension.util.Extend.Initialization.*;
 import static extension.util.Sensitive_Thesaurus.*;
 import static extension.util.Translation_support.*;
 //Static
-import java.util.*;
+import mindustry.content.UnitTypes;
+import mindustry.entities.type.BaseUnit;
 
 public class Main extends Plugin {
 
@@ -200,6 +202,7 @@ public class Main extends Plugin {
 			if(!Authority_control(player.uuid,"info")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
+				List data=getSQLite_UUID(player.uuid);
 				Object[] Playerdate = {};
 				Call.onInfoMessage(player.con,getinput("join.start",Playerdate));
 			}
@@ -354,6 +357,10 @@ public class Main extends Plugin {
 					return;
 				}
 			}	
+		});
+
+		handler.<Player>register("ac","test", (args, player) -> {
+			
 		});
 /*
 		handler.<Player>register("vote", "<gameover/kick> [playername...]", "Vote", (args, player) -> {
