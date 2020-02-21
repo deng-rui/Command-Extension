@@ -98,7 +98,7 @@ public class Main extends Plugin {
 			setPlayer_Data_Temp(e.player.uuid,"Playtime-start",String.valueOf(System.currentTimeMillis()));
 			//Logins
 			if (Vars.state.rules.pvp){
-				if("禁止".equalsIgnoreCase(getGC_1())){
+				if("N".equalsIgnoreCase(getGC_1())){
 					state.rules.playerDamageMultiplier = 0f;
 					state.rules.playerHealthMultiplier = 0.5f;
 				}else{
@@ -127,11 +127,11 @@ public class Main extends Plugin {
 						if (player.getTeam().name.equals(e.winner.name)) {
 							List<String> Pvpwincount = (List)getPlayer_Data_SQL_Temp(player.uuid);
 							System.out.println(player.uuid);
-							if(getPlayer_power_Data(player.uuid)>0)setPlayer_Data_SQL_Temp(player.uuid,updatePlayerData_SQL_Temp(Pvpwincount,SQL_type("Pvpwincount"),String.valueOf(Integer.parseInt(Pvpwincount.get(SQL_type("Pvpwincount")))+1)));
+							if(getPlayer_power_Data(player.uuid)>0)setPlayer_Data_SQL_Temp(player.uuid,updatePlayerData(Pvpwincount,SQL_type("Pvpwincount"),String.valueOf(Integer.parseInt(Pvpwincount.get(SQL_type("Pvpwincount")))+1)));
 						} else {
 							List<String> Pvpwincount = (List)getPlayer_Data_SQL_Temp(player.uuid);
 							System.out.println(player.uuid);
-							if(getPlayer_power_Data(player.uuid)>0)setPlayer_Data_SQL_Temp(player.uuid,updatePlayerData_SQL_Temp(Pvpwincount,SQL_type("Pvplosecount"),String.valueOf(Integer.parseInt(Pvpwincount.get(SQL_type("Pvplosecount")))+1)));
+							if(getPlayer_power_Data(player.uuid)>0)setPlayer_Data_SQL_Temp(player.uuid,updatePlayerData(Pvpwincount,SQL_type("Pvplosecount"),String.valueOf(Integer.parseInt(Pvpwincount.get(SQL_type("Pvplosecount")))+1)));
 						}
 					}
 				}
@@ -164,8 +164,8 @@ public class Main extends Plugin {
 	@Override
 	public void registerServerCommands(CommandHandler handler){
 		handler.register("gac","<ON/OFF>", "NOT", (arg) -> {
-				if("Y".equalsIgnoreCase(arg[0]))setGC_1("允许");
-				if ("N".equalsIgnoreCase(arg[0]))setGC_1("禁止");
+				if("Y".equalsIgnoreCase(arg[0]))setGC_1("Y");
+				if ("N".equalsIgnoreCase(arg[0]))setGC_1("N");
 		});
 
 		handler.register("aab","<1>", "NOT", (arg) -> {
@@ -182,7 +182,7 @@ public class Main extends Plugin {
 			if(!Authority_control(player.uuid,"login")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
-				//if()
+				login(player,args[0],args[1]);
 			}
 		});
 

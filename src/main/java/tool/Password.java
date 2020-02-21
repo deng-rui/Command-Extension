@@ -20,11 +20,16 @@ public class Password {
 	private static final int SALT_BIT_SIZE = 64;
 	//盐长度RFC2898
 
-	public static String genPasswordHash(String password, String salt) throws Exception {
-		PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), Base64.decodeBase64(salt), ITERATIONS, HASH_BIT_SIZE);
-		SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
-		byte[] hash = skf.generateSecret(spec).getEncoded();
-		return Base64.encodeBase64String(hash);
+	public static String genPasswordHash(String password, String salt) {
+		try {		
+			PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), Base64.decodeBase64(salt), ITERATIONS, HASH_BIT_SIZE);
+			SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
+			byte[] hash = skf.generateSecret(spec).getEncoded();
+			return Base64.encodeBase64String(hash);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return genPasswordHash(password,salt);
 	}
 	//密码摘要
 	
@@ -36,7 +41,7 @@ public class Password {
 	}
 	//生成随机盐
 	
-	public static boolean verify(String password, String passHash, String salt) throws Exception {
+	public static boolean Passwdverify(String password, String passHash, String salt) {
 		String hash = genPasswordHash(password, salt);
 		return hash.equals(passHash);
 	}
@@ -44,34 +49,16 @@ public class Password {
 
 	public static Map<String, Object> newPasswd(String pw) {
 		Map<String, Object> Password = new HashMap<String, Object>();
-		try {
-			String salt = genRandomSalt();
-			String passwordHash = genPasswordHash(pw, salt);
-			//经过加盐后的密码摘要
-			Password.put("passwordHash",passwordHash);
-			Password.put("salt",salt);
-			//同时储存密码hash和盐
-			boolean resualt = verify(pw, passwordHash, salt);
-			Password.put("resualt",resualt);
-			//验证密码
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return Password;
-	}
-
-	public static void aab(String a,String b,String c) {
-		try {
 		String salt = genRandomSalt();
+		String passwordHash = genPasswordHash(pw, salt);
 		//经过加盐后的密码摘要
-		String passwordHash = genPasswordHash(a, salt);
+		Password.put("passwordHash",passwordHash);
+		Password.put("salt",salt);
 		//同时储存密码hash和盐
-		//密码Hash 和 salt 同时存储
-		boolean resualt = verify(a, b, c);
-		System.out.println(resualt);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		boolean resualt = Passwdverify(pw, passwordHash, salt);
+		Password.put("resualt",resualt);
+		//验证密码
+		return Password;
 	}
 
 }

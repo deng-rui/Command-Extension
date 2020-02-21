@@ -51,6 +51,7 @@ import extension.util.translation.Googletranslate;
 import static extension.auxiliary.Booleans.*;
 import static extension.auxiliary.Strings.*;
 import static extension.auxiliary.Language.*;
+import static extension.auxiliary.Lists.*;
 import static extension.auxiliary.Maps.*;
 import static extension.tool.DateUtil.*;
 import static extension.tool.HttpRequest.doGet;
@@ -60,6 +61,8 @@ import static extension.tool.SQLite.player.*;
 import static extension.tool.Json.*;
 import static extension.tool.Password.*;
 import static extension.util.Sensitive_Thesaurus.*;
+import static extension.tool.Tool.SQL_type;
+import static extension.tool.Tool.Language_determination;
 //Static
 
 import com.alibaba.fastjson.JSONObject;
@@ -72,19 +75,41 @@ public class Extend {
 		private ArrayList<String> votes = new ArrayList<>();
 		private boolean enable = true;
 
-		public static void login() {
-			
+		public static void login(Player player, String usr, String pw) {
+			if((boolean)isSQLite_User(usr)) {
+				player.sendMessage(getinput("login.usrno"));
+				return;
+			}
+			List data = getSQLite_USER(usr);
+			if(!(boolean)Passwdverify(pw,(String)data.get(SQL_type("PasswordHash")),(String)data.get(SQL_type("CSPRNG")))) {
+				player.sendMessage(getinput("login.pwno"));
+				return;
+			}
+			if(!data.get(SQL_type("UUID")).equals(player.uuid)) {
+				savePlayer_Data(updatePlayerData(data,SQL_type("UUID"),player.uuid),true,usr);
+				player.sendMessage(getinput("uuid.update"));
+			}
+			data = getSQLite_USER(usr);
+			if (Vars.state.rules.pvp){
+				player.setTeam(netServer.assignTeam(player, playerGroup.all()));
+			} else {
+				player.setTeam(Team.sharded);
+			}
+			Call.onPlayerDeath(player);
+			setPlayer_power_Data(player.uuid,Integer.parseInt((String)data.get(SQL_type("Authority"))));
+			setPlayer_Data_SQL_Temp(player.uuid,data);
+			Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(Long.valueOf((String)data.get(SQL_type("GMT"))),Integer.parseInt((String)data.get(SQL_type("Time_format"))))),30f);
 		}
 
 		public static void register(Player player, String newusr, String newpw, String renewpw) {
-			//String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
-			String ip = "111.180.135.42";
+			String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
+			//String ip = "1.1.1.1";TEST
 			if(!newpw.equals(renewpw)) {
 				player.sendMessage(getinput("register.pawno"));
 				return;
 			}
-			if(!(boolean)getSQLite_User(newusr)) {
-				player.sendMessage(getinput("register.usrno"));
+			if(!(boolean)isSQLite_User(newusr)) {
+				player.sendMessage(getinput("register.usrerr"));
 				return;
 			}
 			java.util.Map<String, Object> Passwd_date = (java.util.Map<String, Object>)newPasswd(newpw);
@@ -99,7 +124,7 @@ public class Extend {
 			}
 			Call.onPlayerDeath(player);
 			setPlayer_power_Data(player.uuid,1);
-			setPlayer_Data_SQL_Temp(player.uuid,(List)getSQLite(player.uuid));
+			setPlayer_Data_SQL_Temp(player.uuid,(List)getSQLite_UUID(player.uuid));
 			Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(GMT,0)),30f);
 		}
 
@@ -120,14 +145,11 @@ public class Extend {
 			int bancount = idb + ipb;
 			switch(then){
 			case "getfps":
-			Float floatee = new Float(fps);
-			return floatee.toString();
+			return String.valueOf(fps);
 			case "getmemory":
-			Float floatee1 = new Float(memory);
-			return floatee1.toString();
+			return String.valueOf(memory);
 			case "getbancount":
-			Float floatee2 = new Float(bancount);
-			return floatee2.toString();
+			return String.valueOf(bancount);
 			default :
 			return null;
 			//Laziness,Avoid opening more if

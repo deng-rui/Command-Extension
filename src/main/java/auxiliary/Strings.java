@@ -1,7 +1,7 @@
 package extension.auxiliary;
 
 public class Strings {
-	private static String GC_1 = "禁止";
+	private static String GC_1 = "N";
 
 	public static String getGC_1() {
 		return GC_1;
@@ -13,6 +13,6 @@ public class Strings {
 	}
 
 	public static void setGC() {
-		Strings.GC_1 = "禁止";
+		Strings.GC_1 = "N";
 	}
 }
