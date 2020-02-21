@@ -5,45 +5,46 @@ version '1.0'
 sourceCompatibility = 1.8
 
 repositories{
-    maven{ url "http://maven.aliyun.com/nexus/content/groups/public/"}
-    jcenter()
-    mavenCentral()
-    maven{ url 'https://jitpack.io' }
+	maven{ url "http://maven.aliyun.com/nexus/content/groups/public/"}
+	jcenter()
+	mavenCentral()
+	maven{ url 'https://jitpack.io' }
 }
 
 ext{
-    //the build number that this plugin is made for
-    mindustryVersion = 'v104'
+	//the build number that this plugin is made for
+	mindustryVersion = 'v104'
 }
 
 dependencies{
-    compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-    compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
-    //Mindustry
-    //compile fileTree(dir:'libs',include:['*.jar'])
-    //compile 'org.jsoup:jsoup:1.12.1'
-    //compile group: 'org.json', name: 'json', version: '20190722'
-    //implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.30.1'
-    //compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.11'
-    implementation group: 'com.alibaba', name: 'fastjson', version: '1.2.62'
-    implementation group: 'commons-codec', name: 'commons-codec', version: '1.14'
-    //compile 'org.xerial:sqlite-jdbc:3.28.0'
-    //compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.2'
-    implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
-    //compile group: 'net.sourceforge.htmlunit', name: 'htmlunit', version: '2.36.0'
+	compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+	compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
+	//Mindustry
+	//compile fileTree(dir:'libs',include:['*.jar'])
+	//compile 'org.jsoup:jsoup:1.12.1'
+	//compile group: 'org.json', name: 'json', version: '20190722'
+	//implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.30.1'
+	//compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.11'
+	implementation group: 'com.alibaba', name: 'fastjson', version: '1.2.62'
+	implementation group: 'commons-codec', name: 'commons-codec', version: '1.14'
+	//compile 'org.xerial:sqlite-jdbc:3.28.0'
+	//compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.2'
+	implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+	//compile group: 'net.sourceforge.htmlunit', name: 'htmlunit', version: '2.36.0'
 
 
 }
 
 jar{
-    version = null
-    from{
-        configurations.runtimeClasspath.collect{it.isDirectory() ? it : zipTree(it)}
-    }
+	version = null
+	from{
+		configurations.runtimeClasspath.collect{it.isDirectory() ? it : zipTree(it)}
+	}
 }
 
 tasks.withType(JavaCompile) {  
-    options.encoding = "UTF-8"  
-    options.compilerArgs << "-Xlint:unchecked" << "-Werror"
-    //options.compilerArgs << "-Xdiags:verbose" << "-Werror"
+	options.encoding = "UTF-8"  
+	options.compilerArgs << "-Xlint:unchecked" << "-Werror"
+	options.compilerArgs << "-Xdiags:verbose" << "-Werror"
+	options.compilerArgs << "-Xlint:deprecation" << "-Werror"
 }

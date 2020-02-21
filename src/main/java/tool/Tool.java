@@ -1,7 +1,7 @@
 package extension.tool;
 
 import static extension.auxiliary.Maps.*;
-import static extension.tool.SQLite.player.getSQLite;
+import static extension.tool.SQLite.player.getSQLite_UUID;
 
 public class Tool {
 	public static boolean Blank(String string) {
@@ -34,7 +34,7 @@ public class Tool {
 	}
 	
 	public static boolean Authority_control(String uuid, String a) {
-		if(!Player_power_Data_boolean(uuid))setPlayer_power_Data(uuid,Integer.valueOf(String.valueOf(getSQLite(uuid).get(19))).intValue());
+		if(!Player_power_Data_boolean(uuid))setPlayer_power_Data(uuid,Integer.valueOf(String.valueOf(getSQLite_UUID(uuid).get(SQL_type("Authority")))).intValue());
 		if(!Power_Data_boolean(getPlayer_power_Data(uuid)))return false;
 		return (boolean)getPower_Data(getPlayer_power_Data(uuid)).contains(a);
 	}
@@ -52,6 +52,8 @@ public class Tool {
 			case "Language" :return 6;
 			case "LastLogin" :return 7;
 			case "User" :return 8;
+			case "PasswordHash" :return 9;
+			case "CSPRNG" :return 10;
 			case "Kickcount" :return 11;
 			case "Sensitive" :return 12;
 			case "Translate" :return 13;
