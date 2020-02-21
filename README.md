@@ -1,7 +1,7 @@
 ## Language
 
-[跳转中文](https://github.com/deng-rui/Command-Extension/blob/master/README-zh_CN.md)
-[TO EN](https://github.com/deng-rui/Command-Extension/blob/master/README.md)
+[跳转中文](https://github.com/deng-rui/Command-Extension/blob/master/README-zh_CN.md)  
+[TO EN](https://github.com/deng-rui/Command-Extension/blob/master/README.md)  
 
 
 ## Acknowledgement
