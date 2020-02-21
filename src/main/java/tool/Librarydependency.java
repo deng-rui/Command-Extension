@@ -67,7 +67,7 @@ public class Librarydependency implements Driver {
 		System.out.println(file[0].name());
 		try {
 			URLClassLoader classLoader = new URLClassLoader(new URL[] {file[0].file().toURI().toURL()});
-			Driver driver = (Driver) Class.forName("org.sqlite.JDBC", true, classLoader).newInstance();
+			Driver driver = (Driver) Class.forName("org.sqlite.JDBC", true, classLoader).getDeclaredConstructor().newInstance();
 			DriverManager.registerDriver(new Librarydependency(driver));
 		} catch (Exception e){
 		}
