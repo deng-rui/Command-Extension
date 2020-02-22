@@ -37,21 +37,12 @@ import extension.util.Extend.*;
 import extension.util.translation.Googletranslate;
 //GA-Exted
 
-import static extension.auxiliary.Strings.*;
-import static extension.auxiliary.Maps.*;
-import static extension.auxiliary.Language.*;
-import static extension.auxiliary.Lists.*;
-import static extension.tool.Librarydependency.*;
-import static extension.tool.Tool.*;
-import static extension.tool.Json.*;
-import static extension.tool.SQLite.*;
-import static extension.tool.SQLite.player.*;
-import static extension.tool.Password.*;
-import static extension.util.Extend.ClientCommands.*;
-import static extension.util.Extend.Event.*;
-import static extension.util.Extend.Initialization.*;
-import static extension.util.Sensitive_Thesaurus.*;
-import static extension.util.Translation_support.*;
+import static extension.data.Json.Maps.*;
+import static extension.data.Json.String.*;
+import static extension.data.Json.List.*;
+import static extension.data.Json.Boolean.*;
+import static extension.util.LocaleUtil.getinput;
+import static extension.data.db.SQLite.Authority_control;
 //Static
 import mindustry.content.UnitTypes;
 import mindustry.entities.type.BaseUnit;
