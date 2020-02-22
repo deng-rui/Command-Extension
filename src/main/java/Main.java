@@ -33,7 +33,7 @@ import static mindustry.Vars.logic;
 import static mindustry.Vars.playerGroup;
 //Mindustry-Static
 
-
+import extension.util.Extend.*;
 import extension.util.translation.Googletranslate;
 //GA-Exted
 
@@ -47,7 +47,6 @@ import static extension.tool.Json.*;
 import static extension.tool.SQLite.*;
 import static extension.tool.SQLite.player.*;
 import static extension.tool.Password.*;
-//import static extension.util.Extend.*;
 import static extension.util.Extend.ClientCommands.*;
 import static extension.util.Extend.Event.*;
 import static extension.util.Extend.Initialization.*;
@@ -78,7 +77,7 @@ public class Main extends Plugin {
 		if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists())InitializationSQLite();
 
 		Player_Privilege_classification();
-		
+		new Vote("FUCK");
 		//
 
 		Events.on(PlayerChatEvent.class, e -> {

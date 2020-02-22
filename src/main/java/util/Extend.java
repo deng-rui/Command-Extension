@@ -8,6 +8,12 @@ import java.util.*;
 import java.lang.Math;
 import java.lang.reflect.Method;
 //Java
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
+//
 
 import arc.*;
 import arc.Core;
@@ -69,11 +75,13 @@ import com.alibaba.fastjson.JSONObject;
 //Json
 
 public class Extend {
+	
+	public static boolean sted=true;
 
 	public static class ClientCommands {
 		//private HashSet<Player> votes = new HashSet<>();
-		private ArrayList<String> votes = new ArrayList<>();
-		private boolean enable = true;
+		//private ArrayList<String> votes = new ArrayList<>();
+		
 
 		public static void login(Player player, String usr, String pw) {
 			if((boolean)isSQLite_User(usr)) {
@@ -286,6 +294,69 @@ public class Extend {
 			for (int i = 0; i < 11; i++) {
 				setPower_Data(i,(List)date.get(i));
 			}
+		}
+	}
+
+	public static class Vote {
+		private static Player player;
+		private static String type;
+		private static String mapname;
+		private static int require;
+		
+
+		public Vote(Player player, String type, String mapname){
+			this.player = player;
+			this.type = type;
+			this.mapname = mapname;
+			start();
+		}
+
+		public Vote(String mapname){
+			start();
+		}
+
+		void start(){
+			ScheduledExecutorService service=Executors.newScheduledThreadPool(2);//两条线程
+			if(!sted) {
+				return;
+			}
+			if(playerGroup.size() == 1){
+				//player.sendMessage();
+			} else if(playerGroup.size() <= 3){
+				require = 2;
+			} else {
+				require = (int) Math.ceil((double) playerGroup.size() / 2);
+			}
+
+		
+		
+		Runnable Countdown=new Runnable() {
+			@Override
+			public void run() {
+				System.out.println("10S/R");
+				System.out.println(getLocalTimeFromUTC((long)Long.valueOf(0),0));
+			}
+		};
+		//倒计时 10S/r
+		ScheduledFuture Count_down=service.scheduleAtFixedRate(Countdown,10,10,TimeUnit.SECONDS);
+
+		service.schedule(new Runnable() {
+			@Override
+			public void run() {
+				Count_down.cancel(true);
+				end();
+				System.out.println("STOP");
+				System.out.println(getLocalTimeFromUTC((long)Long.valueOf(0),0));
+				service.shutdown();
+			}
+		},65,TimeUnit.SECONDS);
+
+		sted = false;
+
+		}
+
+		void end() {
+			sted = false;
 		}
 	}
 
