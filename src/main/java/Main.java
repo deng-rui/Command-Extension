@@ -33,23 +33,34 @@ import static mindustry.Vars.logic;
 import static mindustry.Vars.playerGroup;
 //Mindustry-Static
 
-import extension.util.Extend.*;
-import extension.util.translation.Googletranslate;
+import extension.core.Vote;
+import extension.util.GoogletranslateApi;
 //GA-Exted
 
-import static extension.data.Json.Maps.*;
-import static extension.data.Json.String.*;
-import static extension.data.Json.List.*;
-import static extension.data.Json.Boolean.*;
+import static extension.core.ClientCommands.*;
+import static extension.core.Event.*;
+import static extension.data.global.Maps.*;
+import static extension.data.global.Strings.*;
+import static extension.data.global.Lists.*;
+import static extension.data.global.Boolean.*;
+import static extension.data.json.Json.Initialization;
+import static extension.data.json.Json.Initialize_permissions;
 import static extension.util.LocaleUtil.getinput;
 import static extension.data.db.SQLite.Authority_control;
+import static extension.data.db.SQLite.Player_Privilege_classification;
+import static extension.data.db.Player.getSQLite_UUID;
+import static extension.util.BadWordUtil.*;
+import static extension.data.db.SQLite.SQL_type;
+import static extension.data.db.SQLite.InitializationSQLite;
+import static extension.util.String_filteringUtil.*;
+import static extension.util.LibrarydependencyUtil.*;
 //Static
 import mindustry.content.UnitTypes;
 import mindustry.entities.type.BaseUnit;
 
 public class Main extends Plugin {
 
-	Googletranslate googletranslate = new Googletranslate();
+	GoogletranslateApi googletranslateApi = new GoogletranslateApi();
 	//改进全局变量
 	/*
 	 MOD使用的物理地址 .jar/config/mods/GA
@@ -75,17 +86,17 @@ public class Main extends Plugin {
 			String result = PlayerChatEvent_translate(String.valueOf(e.message.charAt(0)),e.message);
 			if (null != result)Call.sendMessage("["+e.player.name+"]"+"[green] : [] "+result+"   -From Google Translator");
 			//自动翻译
-			Set<String> set = Sensitive_Thesaurus(removeAll_EN(e.message));
+			Set<String> set = BadWordUtil(removeAll_EN(e.message));
 			if (0 < set.size())PlayerChatEvent_Sensitive_Thesaurus(e.player, set.iterator().next());
-			Set<String> set1 = Sensitive_Thesaurus(removeAll_CN(e.message));
+			Set<String> set1 = BadWordUtil(removeAll_CN(e.message));
 			if (0 < set1.size())PlayerChatEvent_Sensitive_Thesaurus(e.player, set1.iterator().next());
 			//中英分检测
 		});
 
 		Events.on(PlayerJoin.class, e -> {
-			Set<String> set = Sensitive_Thesaurus(removeAll_EN(e.player.name));
+			Set<String> set = BadWordUtil(removeAll_EN(e.player.name));
 			if (0 < set.size())Call.onKick(e.player.con, getinput("Sensitive.Thesaurus.join.kick",set.iterator().next()));
-			Set<String> set1 = Sensitive_Thesaurus(removeAll_CN(e.player.name));
+			Set<String> set1 = BadWordUtil(removeAll_CN(e.player.name));
 			if (0 < set1.size())Call.onKick(e.player.con, getinput("Sensitive.Thesaurus.join.kick",set1.iterator().next()));
 			//中英分检测
 			PlayerJoin_Logins(e.player);
@@ -341,7 +352,7 @@ public class Main extends Plugin {
 					ie.printStackTrace();
 				} 
 				try{
-					String translationm = googletranslate.translate(text,args[1]);
+					String translationm = googletranslateApi.translate(text,args[1]);
 					Call.sendMessage("["+player.name+"]"+"[green] : [] "+translationm+"   -From Google Translator");
 				}catch(Exception e){
 					return;
