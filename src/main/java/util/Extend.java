@@ -349,7 +349,7 @@ public class Extend {
 				System.out.println(getLocalTimeFromUTC((long)Long.valueOf(0),0));
 				service.shutdown();
 			}
-		},65,TimeUnit.SECONDS);
+		},55,TimeUnit.SECONDS);
 
 		sted = false;
 
