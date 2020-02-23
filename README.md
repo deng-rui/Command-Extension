@@ -21,10 +21,10 @@ By default, Google Translator should not set the source time to 0, otherwise it 
 
 ## build configuration
 
-| configure     | CPU                               | RAM   | Hard disk | Java      | Gradle    |
-|:---           |:---                               |:---   |:---       |:---       |:---       |
-| Current use   | BCM2711                           | 4G    | 500G HHD  | Java 11   | 6.2       |
-| Recommended   | Intel I3-6100+                    | 4G    | 500G HHD  | Java 8+   | 6.2       |
+| configure     | CPU             | RAM   | Hard disk | Java      | Gradle    |
+|:---           |:---             |:---   |:---       |:---       |:---       |
+| Current use   | BCM2711         | 4G    | 500G HHD  | Java 11   | 6.2       |
+| Recommended   | Intel I3-6100+  | 4G    | 500G HHD  | Java 8+   | 6.2       |
 
 ## Client commands
 
@@ -67,9 +67,9 @@ config
         │   Data.db         //Player Data
         │   setting.json    //Setting
         └───Lib             //Plug in uses jar external directory
-           └───resources    //Plug in using resource external directory   \*
-           └───bundles      //Language file                               \*
-           └───other        //Block word file                             \*
+           └───resources    //Plug in using resource external directory   *
+           └───bundles      //Language file                               *
+           └───other        //Block word file                             *
 ```
 
 ### Installing

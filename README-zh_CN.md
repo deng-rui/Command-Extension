@@ -22,10 +22,10 @@ linglan512572354:https://github.com/linglan512572354
 
 ## 构建配置
 
-| 配置        | CPU                               | RAM   | Hard disk | Java      | Gradle    |
-|:---       |:---                               |:---   |:---       |:---       |:---       |
-| 当前配置  | BCM2711                           | 4G    | 500G HHD  | Java 11   | 6.2       |
-| 建议配置  | Intel I3-6100+                    | 4G    | 500G HHD  | Java 8+   | 6.2       |
+| 配置 		| CPU             | RAM   | Hard disk | Java      | Gradle    |
+|:--- 		|:---             |:---   |:---       |:---       |:---       |
+| 当前配置 	| BCM2711         | 4G    | 500G HHD  | Java 11   | 6.2       |
+| 建议配置 	| Intel I3-6100+  | 4G    | 500G HHD  | Java 8+   | 6.2       |
 
 ## 命令列表
 
@@ -68,9 +68,9 @@ config
         │   Data.db         //玩家数据
         │   setting.json    //设置
         └───Lib             //插件使用jar-外置目录
-        └───resources       //插件使用资源外置目录   \*
-           └───bundles      //语言文件              \*
-           └───other        //屏蔽词文件            \*
+        └───resources       //插件使用资源外置目录   *
+           └───bundles      //语言文件              *
+           └───other        //屏蔽词文件            *
 ```
 
 ### 如何安装
