@@ -1,4 +1,4 @@
-package extension.util;
+package extension.dependent;
 
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -22,12 +22,12 @@ import static extension.net.HttpRequest.Url302;
 import static extension.net.HttpRequest.downUrl;
 //Static
 
-public class LibrarydependencyUtil implements Driver {
+public class Librarydependency implements Driver {
 
 	private static String url;
 	private static Driver driver;
 
-	LibrarydependencyUtil(Driver d) {
+	Librarydependency(Driver d) {
 		this.driver = d;
 	}
 
@@ -70,7 +70,7 @@ public class LibrarydependencyUtil implements Driver {
 		try {
 			URLClassLoader classLoader = new URLClassLoader(new URL[] {file[0].file().toURI().toURL()});
 			Driver driver = (Driver) Class.forName("org.sqlite.JDBC", true, classLoader).getDeclaredConstructor().newInstance();
-			DriverManager.registerDriver(new LibrarydependencyUtil(driver));
+			DriverManager.registerDriver(new Librarydependency(driver));
 		} catch (Exception e){
 		}
 	}

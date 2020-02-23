@@ -51,9 +51,10 @@ import static extension.data.global.Strings.*;
 import static extension.data.json.Json.Initialization;
 import static extension.data.json.Json.Initialize_permissions;
 import static extension.util.BadWordUtil.*;
-import static extension.util.LibrarydependencyUtil.*;
+import static extension.dependent.Librarydependency.*;
 import static extension.util.LocaleUtil.getinput;
 import static extension.util.String_filteringUtil.*;
+import static extension.util.GetRealLocalIP.getRealIP;
 //Static
 import mindustry.content.UnitTypes;
 import mindustry.entities.type.BaseUnit;
@@ -79,6 +80,7 @@ public class Main extends Plugin {
 		if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists())InitializationSQLite();
 
 		Player_Privilege_classification();
+		System.out.println(getRealIP());
 		new Vote("FUCK");
 		//
 
@@ -418,7 +420,7 @@ public class Main extends Plugin {
  *本项目使用算法
  *名称								使用算法	  			来源
  *UTF8Control.Java					UTF8Control  		https://answer-id.com/52120414
- *Googletranslate.Java				Googletranslate		https://github.com/PopsiCola/GoogleTranslate
+ *GoogletranslateApi.Java			Googletranslate		https://github.com/PopsiCola/GoogleTranslate
  *Main.Java 						assigner 			Tencent qun(QQ qun)
- *Sensitive_Thesaurus.Java 			参考DFA算法 			http://blog.csdn.net/chenssy/article/details/26961957
+ *BadWordUtil.Java 					参考DFA算法 			http://blog.csdn.net/chenssy/article/details/26961957
 */

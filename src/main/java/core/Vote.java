@@ -5,6 +5,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
+import java.util.List;
+import java.util.ArrayList;
 //Java
 
 import mindustry.entities.type.Player;
@@ -20,6 +22,7 @@ public class Vote {
 	private static int require;
 	private static int reciprocal;
 	public static boolean sted=true;
+	static List<String> list = new ArrayList<String>();
 
 	public Vote(Player player, String type, String mapname){
 		this.player = player;
@@ -61,6 +64,8 @@ public class Vote {
 			public void run() {
 				Count_down.cancel(true);
 				end();
+				sted = true;
+
 				service.shutdown();
 			}
 		},50,TimeUnit.SECONDS);
@@ -71,7 +76,8 @@ public class Vote {
 	}
 
 	void end() {
-		sted = true;
+		if (list.size() >= require) {
 
+		}
 	}
 }

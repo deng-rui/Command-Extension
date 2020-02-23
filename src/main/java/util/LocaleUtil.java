@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 import arc.Core;
 //Arc
 
-import extension.util.UTF8Control;
+import extension.dependent.UTF8Control;
 
 import static extension.data.json.Json.getData;
 //GA-Exted
