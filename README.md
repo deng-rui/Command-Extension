@@ -78,5 +78,5 @@ Simply place the output jar from the step above in your server's `config/mods` d
 List your currently installed plugins by running the `mods` command.
 
 ### NOT TAB
-(unfortunately, in order to maintain stability, the server is temporarily closed)
+(unfortunately, in order to maintain stability, the server is temporarily closed)  
 If necessary, you can try to change the localization parameters yourself  
