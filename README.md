@@ -56,6 +56,8 @@ By default, Google Translator should not set the source time to 0, otherwise it 
 
 ### Directories and files used by plug-ins
 
+The marks \* are all subsequent added directories and files
+
 ```
 config
 └───mods
@@ -64,6 +66,9 @@ config
         │   Data.db         //Player Data
         │   setting.json    //Setting
         └───Lib             //Plug in uses jar external directory
+           └───resources    //Plug in using resource external directory   \*
+           └───bundles      //Language file                               \*
+           └───other        //Block word file                             \*
 ```
 
 ### Installing

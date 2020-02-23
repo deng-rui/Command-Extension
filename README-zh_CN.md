@@ -1,4 +1,4 @@
-## Language
+## 语言
 
 [跳转中文](https://github.com/deng-rui/Command-Extension/blob/master/README-zh_CN.md)  
 [TO EN](https://github.com/deng-rui/Command-Extension/blob/master/README.md)  
@@ -54,8 +54,11 @@ linglan512572354:https://github.com/linglan512572354
     - [ ] Google翻译
     - [ ] 语言过滤
     - [ ] Vote
+- [ ] 资源文件外置 便于动态刷新
 
 ### 插件使用的目录及文件
+
+标记 \* 均为后续加入目录及文件
 
 ```
 config
@@ -65,6 +68,9 @@ config
         │   Data.db         //玩家数据
         │   setting.json    //设置
         └───Lib             //插件使用jar-外置目录
+        └───resources       //插件使用资源外置目录   \*
+           └───bundles      //语言文件              \*
+           └───other        //屏蔽词文件            \*
 ```
 
 ### 如何安装
@@ -73,5 +79,5 @@ config
 通过运行“mods”命令列出当前安装的插件。
 
 ### 个人广告:)
-(很遗憾，为了维持稳定性 服务器暂时不对外开放)
+(很遗憾，为了维持稳定性 服务器暂时不对外开放)  
 如有必要，您可以自己尝试更改本地化参数
