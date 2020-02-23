@@ -21,38 +21,50 @@ By default, Google Translator should not set the source time to 0, otherwise it 
 
 ## build configuration
 
-| configure 	| CPU 								| RAM	| Hard disk | Java 		| Gradle 	|
-|:---			|:---								|:--- 	|:--- 		|:--- 		|:--- 		|
-| Current use 	| BCM2711							| 4G  	| 500G HHD  | Java 11 	| 6.2 		|
-| Recommended 	| Intel I3-6100+					| 4G  	| 500G HHD  | Java 8+ 	| 6.2 		|
+| configure     | CPU                               | RAM   | Hard disk | Java      | Gradle    |
+|:---           |:---                               |:---   |:---       |:---       |:---       |
+| Current use   | BCM2711                           | 4G    | 500G HHD  | Java 11   | 6.2       |
+| Recommended   | Intel I3-6100+                    | 4G    | 500G HHD  | Java 8+   | 6.2       |
 
 ## Client commands
 
-| Command 		| Parameter 							| Description 											|
-|:---			|:---									|:--- 													|
-| info 			| 										| info me  												|
-| status		| 										| View server status									|
-| getpos 		| 										| View the current coordinates 							|
-| tp 			|&lt;player name&gt; 					| Teleport to other players 							|
-| tpp 			|&lt;XYZ&gt; 							| Transfer to specified coordinates 					|
-| suicide 		| 										| Kill yourself. 										|
-| getpos 		| 										| Get your current position info 						|
-| team 			| 										| Replacement team.										|
-| difficulty 	|&lt;mode&gt; 							| Set server difficulty 								|
-| gameover 		| 										| KEnd the game 										|
-| host 			|&lt;mapsname&gt; [gamemode] 			| Start a new game 										|
-| runwave 		| 										| Runwave												|
-| time 			| 										| View the current time of the server 					|
-| tr 			| 										| Google translation(Use - instead of spaces in text) 	|
+| Command       | Parameter                             | Description                                           |
+|:---           |:---                                   |:---                                                   |
+| info          |                                       | info me                                               |
+| status        |                                       | View server status                                    |
+| getpos        |                                       | View the current coordinates                          |
+| tp            |&lt;player name&gt;                    | Teleport to other players                             |
+| tpp           |&lt;XYZ&gt;                            | Transfer to specified coordinates                     |
+| suicide       |                                       | Kill yourself.                                        |
+| getpos        |                                       | Get your current position info                        |
+| team          |                                       | Replacement team.                                     |
+| difficulty    |&lt;mode&gt;                           | Set server difficulty                                 |
+| gameover      |                                       | KEnd the game                                         |
+| host          |&lt;mapsname&gt; [gamemode]            | Start a new game                                      |
+| runwave       |                                       | Runwave                                               |
+| time          |                                       | View the current time of the server                   |
+| tr            |                                       | Google translation(Use - instead of spaces in text)   |
 
 ### Current progress
 
 - [ ] Baidu translation support
 - [ ] Vote
 - [ ] plug in segmentation
-	- [ ] Google translation
-	- [ ] language filtering
-	- [ ] Vote
+    - [ ] Google translation
+    - [ ] language filtering
+    - [ ] Vote
+
+### Directories and files used by plug-ins
+
+```
+config
+└───mods
+    └───GA                  //Plug in uses home directory
+        │   Authority.json  //Authority Data
+        │   Data.db         //Player Data
+        │   setting.json    //Setting
+        └───Lib             //Plug in uses jar external directory
+```
 
 ### Installing
 

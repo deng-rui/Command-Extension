@@ -22,38 +22,50 @@ linglan512572354:https://github.com/linglan512572354
 
 ## 构建配置
 
-| 配置 		| CPU 								| RAM	| Hard disk | Java 		| Gradle 	|
-|:---		|:---								|:--- 	|:--- 		|:--- 		|:--- 		|
-| 当前配置 	| BCM2711							| 4G  	| 500G HHD  | Java 11 	| 6.2 		|
-| 建议配置 	| Intel I3-6100+					| 4G  	| 500G HHD  | Java 8+ 	| 6.2 		|
+| 配置        | CPU                               | RAM   | Hard disk | Java      | Gradle    |
+|:---       |:---                               |:---   |:---       |:---       |:---       |
+| 当前配置  | BCM2711                           | 4G    | 500G HHD  | Java 11   | 6.2       |
+| 建议配置  | Intel I3-6100+                    | 4G    | 500G HHD  | Java 8+   | 6.2       |
 
 ## 命令列表
 
-| Command 		| Parameter 							| Description 											|
-|:---			|:---									|:--- 													|
-| info 			| 										| info me  												|
-| status		| 										| View server status									|
-| getpos 		| 										| View the current coordinates 							|
-| tp 			|&lt;player name&gt; 					| Teleport to other players 							|
-| tpp 			|&lt;XYZ&gt; 							| Transfer to specified coordinates 					|
-| suicide 		| 										| Kill yourself. 										|
-| getpos 		| 										| Get your current position info 						|
-| team 			| 										| Replacement team.										|
-| difficulty 	|&lt;mode&gt; 							| Set server difficulty 								|
-| gameover 		| 										| KEnd the game 										|
-| host 			|&lt;mapsname&gt; [gamemode] 			| Start a new game 										|
-| runwave 		| 										| Runwave												|
-| time 			| 										| View the current time of the server 					|
-| tr 			| 										| Google translation(Use - instead of spaces in text) 	|
+| Command       | Parameter                             | Description                                           |
+|:---           |:---                                   |:---                                                   |
+| info          |                                       | info me                                               |
+| status        |                                       | View server status                                    |
+| getpos        |                                       | View the current coordinates                          |
+| tp            |&lt;player name&gt;                    | Teleport to other players                             |
+| tpp           |&lt;XYZ&gt;                            | Transfer to specified coordinates                     |
+| suicide       |                                       | Kill yourself.                                        |
+| getpos        |                                       | Get your current position info                        |
+| team          |                                       | Replacement team.                                     |
+| difficulty    |&lt;mode&gt;                           | Set server difficulty                                 |
+| gameover      |                                       | KEnd the game                                         |
+| host          |&lt;mapsname&gt; [gamemode]            | Start a new game                                      |
+| runwave       |                                       | Runwave                                               |
+| time          |                                       | View the current time of the server                   |
+| tr            |                                       | Google translation(Use - instead of spaces in text)   |
 
 ### 当前进度
 
 - [ ] Baidu翻译支持
 - [ ] Vote
 - [ ] 插件分割
-	- [ ] Google翻译
-	- [ ] 语言过滤
-	- [ ] Vote
+    - [ ] Google翻译
+    - [ ] 语言过滤
+    - [ ] Vote
+
+### 插件使用的目录及文件
+
+```
+config
+└───mods
+    └───GA                  //插件使用主目录
+        │   Authority.json  //权限配置
+        │   Data.db         //玩家数据
+        │   setting.json    //设置
+        └───Lib             //插件使用jar-外置目录
+```
 
 ### 如何安装
 
