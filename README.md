@@ -53,6 +53,7 @@ By default, Google Translator should not set the source time to 0, otherwise it 
     - [ ] Google translation
     - [ ] language filtering
     - [ ] Vote
+- [ ] External resource file for dynamic refresh
 
 ### Directories and files used by plug-ins
 
