@@ -54,7 +54,6 @@ import static extension.util.BadWordUtil.*;
 import static extension.dependent.Librarydependency.*;
 import static extension.util.LocaleUtil.getinput;
 import static extension.util.String_filteringUtil.*;
-import static extension.util.GetRealLocalIP.getRealIP;
 //Static
 import mindustry.content.UnitTypes;
 import mindustry.entities.type.BaseUnit;
@@ -80,7 +79,6 @@ public class Main extends Plugin {
 		if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists())InitializationSQLite();
 
 		Player_Privilege_classification();
-		System.out.println(getRealIP());
 		new Vote("FUCK");
 		//
 
