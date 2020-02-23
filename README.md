@@ -45,6 +45,14 @@ By default, Google Translator should not set the source time to 0, otherwise it 
 | time 			| 										| View the current time of the server 					|
 | tr 			| 										| Google translation(Use - instead of spaces in text) 	|
 
+### Current progress
+
+- [ ] Baidu translation support
+- [ ] Vote
+- [ ] plug in segmentation
+	- [ ] Google translation
+	- [ ] language filtering
+	- [ ] Vote
 
 ### Installing
 

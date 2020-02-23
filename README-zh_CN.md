@@ -46,6 +46,14 @@ linglan512572354:https://github.com/linglan512572354
 | time 			| 										| View the current time of the server 					|
 | tr 			| 										| Google translation(Use - instead of spaces in text) 	|
 
+### 当前进度
+
+- [ ] Baidu翻译支持
+- [ ] Vote
+- [ ] 插件分割
+	- [ ] Google翻译
+	- [ ] 语言过滤
+	- [ ] Vote
 
 ### 如何安装
 
