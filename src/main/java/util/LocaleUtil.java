@@ -1,5 +1,7 @@
 package extension.util;
 
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Locale;
@@ -38,8 +40,9 @@ public class LocaleUtil {
 	public static String language(String o,String t,String input,Object[] params) throws Exception {
 		
 		Locale locale = new Locale(o,t);
-		ResourceBundle bundle = ResourceBundle.getBundle("GA", locale, new UTF8Control());
-		//UTF-8 害死人.jpg
+		URLClassLoader file = new URLClassLoader(new URL[] {Core.settings.getDataDirectory().child("mods/GA/resources/bundles/").file().toURI().toURL()});
+		ResourceBundle bundle = ResourceBundle.getBundle("GA", locale, file, new UTF8Control());
+		//UTF-8 害死人.jpg 外置资源
 		if(input !=null){
 			if(params == null){
 				String result = bundle.getString(input);
