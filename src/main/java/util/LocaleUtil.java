@@ -1,14 +1,14 @@
 package extension.util;
 
-import java.net.URL;
-import java.net.URLClassLoader;
+//import java.net.URL;
+//import java.net.URLClassLoader;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 //Java
 
-import arc.Core;
+//import arc.Core;
 //Arc
 
 import extension.dependent.UTF8Control;
@@ -40,8 +40,9 @@ public class LocaleUtil {
 	public static String language(String o,String t,String input,Object[] params) throws Exception {
 		
 		Locale locale = new Locale(o,t);
-		URLClassLoader file = new URLClassLoader(new URL[] {Core.settings.getDataDirectory().child("mods/GA/resources/bundles/").file().toURI().toURL()});
-		ResourceBundle bundle = ResourceBundle.getBundle("GA", locale, file, new UTF8Control());
+		//URLClassLoader file = new URLClassLoader(new URL[] {Core.settings.getDataDirectory().child("mods/GA/resources/bundles/").file().toURI().toURL()});
+		//ResourceBundle bundle = ResourceBundle.getBundle("GA", locale, file, new UTF8Control());
+		ResourceBundle bundle = ResourceBundle.getBundle("GA-resources/bundles/GA", locale, new UTF8Control());
 		//UTF-8 害死人.jpg 外置资源
 		if(input !=null){
 			if(params == null){
@@ -79,7 +80,7 @@ public class LocaleUtil {
 			case "Russia" :return "ru-RU";
 			default :return "en_US";
 			//I didn't find a better way....
-			}
+		}
 	}
 
 }

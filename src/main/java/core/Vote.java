@@ -18,16 +18,22 @@ import static mindustry.Vars.playerGroup;
 public class Vote {
 	private static Player player;
 	private static String type;
-	private static String mapname;
+	private static String name;
 	private static int require;
 	private static int reciprocal;
 	public static boolean sted=true;
 	static List<String> list = new ArrayList<String>();
 
-	public Vote(Player player, String type, String mapname){
+	public Vote(Player player, String type, String name){
 		this.player = player;
 		this.type = type;
-		this.mapname = mapname;
+		this.name = name;
+		start();
+	}
+
+	public Vote(Player player, String type){
+		this.player = player;
+		this.type = type;
 		start();
 	}
 
@@ -77,7 +83,30 @@ public class Vote {
 
 	void end() {
 		if (list.size() >= require) {
+			switch(type){
+				case "kick" :
+					kick();
+					break;
+				case "host" :
+					host();
+					break;
+				case "skipwave" :
+					skipwave();
+					break;
+				default :
+					defaulta();
+					return;
 
+			}
 		}
+	}
+
+	void kick() {
+	}
+	void host() {
+	}
+	void skipwave() {
+	}
+	void defaulta() {
 	}
 }
