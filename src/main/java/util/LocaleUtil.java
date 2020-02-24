@@ -38,7 +38,7 @@ public class LocaleUtil {
 	public static String language(String o,String t,String input,Object[] params) throws Exception {
 		
 		Locale locale = new Locale(o,t);
-		ResourceBundle bundle = ResourceBundle.getBundle("GA-resources/bundles/GA", locale, new UTF8Control());
+		ResourceBundle bundle = ResourceBundle.getBundle("GA", locale, new UTF8Control());
 		//UTF-8 害死人.jpg
 		if(input !=null){
 			if(params == null){
