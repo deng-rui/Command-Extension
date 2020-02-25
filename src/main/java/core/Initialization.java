@@ -9,7 +9,7 @@ import static extension.dependent.Librarydependency.notWork;
 //Static
 
 public class Initialization {
-	public Start_Initialization() {
+	public static Start_Initialization() {
 		importLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
 		notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
 		//初始化SQL
