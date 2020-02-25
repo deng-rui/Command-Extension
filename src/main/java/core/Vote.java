@@ -102,6 +102,13 @@ public class Vote {
 	}
 
 	void kick() {
+		Player target = playerGroup.find(p -> p.name.equals(arg[0]));
+		if(target != null){
+			Call.sendMessage(getinput("vote.kick.done",target.name));
+			target.con.kick(KickReason.kick);
+			return;
+		}
+		Call.sendMessage(getinput("vote.kick.err",target.name));
 	}
 	void host() {
 	}

@@ -42,7 +42,7 @@ public class LocaleUtil {
 		Locale locale = new Locale(o,t);
 		//URLClassLoader file = new URLClassLoader(new URL[] {Core.settings.getDataDirectory().child("mods/GA/resources/bundles/").file().toURI().toURL()});
 		//ResourceBundle bundle = ResourceBundle.getBundle("GA", locale, file, new UTF8Control());
-		ResourceBundle bundle = ResourceBundle.getBundle("GA-resources/bundles/GA", locale, new UTF8Control());
+		ResourceBundle bundle = ResourceBundle.getBundle("bundles/GA", locale, new UTF8Control());
 		//UTF-8 害死人.jpg 外置资源
 		if(input !=null){
 			if(params == null){

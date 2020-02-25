@@ -39,9 +39,9 @@ import extension.util.GoogletranslateApi;
 
 import static extension.core.ClientCommands.*;
 import static extension.core.Event.*;
+import static extension.core.Initialization.Start_Initialization;
 import static extension.data.db.SQLite.Authority_control;
 import static extension.data.db.SQLite.InitializationSQLite;
-import static extension.data.db.SQLite.Player_Privilege_classification;
 import static extension.data.db.SQLite.SQL_type;
 import static extension.data.db.Player.getSQLite_UUID;
 import static extension.data.global.Booleans.*;
@@ -51,7 +51,6 @@ import static extension.data.global.Strings.*;
 import static extension.data.json.Json.Initialization;
 import static extension.data.json.Json.Initialize_permissions;
 import static extension.util.BadWordUtil.*;
-import static extension.dependent.Librarydependency.*;
 import static extension.util.LocaleUtil.getinput;
 import static extension.util.String_filteringUtil.*;
 //Static
@@ -71,16 +70,8 @@ public class Main extends Plugin {
 	@SuppressWarnings("unchecked")
 	public Main() {
 
-		importLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
-		notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
-		//初始化SQL
-		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists())Initialization();
-		if(!Core.settings.getDataDirectory().child("mods/GA/Authority.json").exists())Initialize_permissions();
-		if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists())InitializationSQLite();
-
-		Player_Privilege_classification();
-		new Vote("FUCK");
-		//
+		Start_Initialization();
+		//初始化
 
 		Events.on(PlayerChatEvent.class, e -> {
 			String result = PlayerChatEvent_translate(String.valueOf(e.message.charAt(0)),e.message);
