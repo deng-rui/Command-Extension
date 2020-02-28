@@ -12,7 +12,7 @@ import java.util.Set;
 //Java
 
 public class BadWordUtil {
-	public static String filePath = "/GA-resources/other/Sensitive_Thesaurus.txt";
+	public static String filePath = "/other/Sensitive_Thesaurus.txt";
 	public static Set<String> words;
 	public static Map<String,String> wordMap;
 	public static int minMatchTYpe = 1;      //最小匹配规则

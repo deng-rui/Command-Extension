@@ -9,11 +9,15 @@ import java.util.List;
 import java.util.ArrayList;
 //Java
 
+import mindustry.gen.Call;
 import mindustry.entities.type.Player;
 //Mindustry
 
 import static mindustry.Vars.playerGroup;
 //Mindustry-Static
+
+import static extension.util.LocaleUtil.getinput;
+//Static
 
 public class Vote {
 	private static Player player;
@@ -102,10 +106,10 @@ public class Vote {
 	}
 
 	void kick() {
-		Player target = playerGroup.find(p -> p.name.equals(arg[0]));
+		Player target = playerGroup.find(p -> p.name.equals(name));
 		if(target != null){
 			Call.sendMessage(getinput("vote.kick.done",target.name));
-			target.con.kick(KickReason.kick);
+			//target.con.kick(KickReason.kick);
 			return;
 		}
 		Call.sendMessage(getinput("vote.kick.err",target.name));

@@ -41,15 +41,12 @@ import static extension.core.ClientCommands.*;
 import static extension.core.Event.*;
 import static extension.core.Initialization.Start_Initialization;
 import static extension.data.db.SQLite.Authority_control;
-import static extension.data.db.SQLite.InitializationSQLite;
 import static extension.data.db.SQLite.SQL_type;
 import static extension.data.db.Player.getSQLite_UUID;
 import static extension.data.global.Booleans.*;
 import static extension.data.global.Lists.*;
 import static extension.data.global.Maps.*;
 import static extension.data.global.Strings.*;
-import static extension.data.json.Json.Initialization;
-import static extension.data.json.Json.Initialize_permissions;
 import static extension.util.BadWordUtil.*;
 import static extension.util.LocaleUtil.getinput;
 import static extension.util.String_filteringUtil.*;
@@ -195,8 +192,7 @@ public class Main extends Plugin {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				List data=getSQLite_UUID(player.uuid);
-				Object[] Playerdate = {};
-				Call.onInfoMessage(player.con,getinput("join.start",Playerdate));
+				//Call.onInfoMessage(player.con,getinput("join.start",Playerdate));
 			}
 		});
 

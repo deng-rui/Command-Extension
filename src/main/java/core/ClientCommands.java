@@ -89,7 +89,8 @@ public class ClientCommands {
 	}
 
 	public static void register(Player player, String newusr, String newpw, String renewpw) {
-		String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
+		//String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
+		String ip = "1.1.1.1";
 		if(!newpw.equals(renewpw)) {
 			player.sendMessage(getinput("register.pawno"));
 			return;

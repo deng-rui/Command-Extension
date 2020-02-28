@@ -72,7 +72,7 @@ public class Event {
 		Call.onPlayerDeath(player);
 		//Call.onInfoMessage();
 		setPlayer_power_Data(player.uuid,0);
-		Call.onInfoToast(player.con,getinput("join.tourist",String.valueOf(TimeZone.getTimeZone((String)doGet("http://ip-api.com/line/"+Vars.netServer.admins.getInfo(player.uuid).lastIP+"?fields=timezone")).getRawOffset())),20f);
+		//Call.onInfoToast(player.con,getinput("join.tourist",String.valueOf(TimeZone.getTimeZone((String)doGet("http://ip-api.com/line/"+Vars.netServer.admins.getInfo(player.uuid).lastIP+"?fields=timezone")).getRawOffset())),20f);
 	}
 
 	public static void GameOverEvent_PVP_Data() {

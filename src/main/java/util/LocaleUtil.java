@@ -22,21 +22,6 @@ import com.alibaba.fastjson.JSONObject;
  
 public class LocaleUtil {
 
-	public static String getinput(String input) {
-		return getinputt(input,null);
-	}
-	public static String getinput(String input,String p0) {
-		Object[] params = {p0};
-		return getinputt(input,params);
-	}
-	public static String getinput(String input,Object[] p) {
-		return getinputt(input,p);
-	}
-	public static String getinput(String input,String p0,String p1) {
-		Object[] params = {p0,p1};
-		return getinputt(input,params);
-	}
-
 	public static String language(String o,String t,String input,Object[] params) throws Exception {
 		
 		Locale locale = new Locale(o,t);
@@ -56,15 +41,19 @@ public class LocaleUtil {
 		return null;
 	}
 
-	public static String getinputt(String input,Object[] params) {
+	public static String getinput(String input,String... params) {
 		JSONObject date = getData("mods/GA/setting.json");
 		try {
 			String o = (String) date.get("languageO");
 			String t = (String) date.get("languageT");
 			if (params == null) {
-   				return language(o,t,input,null);
-  			}
-			return language(o,t,input,params);
+				return language(o,t,input,null);
+			}
+			Object[] ps = new Object[params.length];
+			for(int i=0;i<params.length;i++) {
+				ps[i] = params[i];
+			}
+			return language(o,t,input,ps);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

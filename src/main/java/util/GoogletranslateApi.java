@@ -27,7 +27,7 @@ import com.alibaba.fastjson.JSONArray;
 
 public class GoogletranslateApi {
 
-	private static final String PATH = "/GA-resources/tk/Google.js";
+	private static final String PATH = "/tk/Google.js";
 	public String url;
 	public void setUrl(String url) {
 		this.url = url;
