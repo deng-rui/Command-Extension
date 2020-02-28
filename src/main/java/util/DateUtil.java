@@ -25,9 +25,7 @@ public class DateUtil {
 		long UTC = getUTCTimeStr();
 		UTC = UTC + GMT;
 		SimpleDateFormat sdf=new SimpleDateFormat(ft[fot]);
-		long date_temp = Long.valueOf(UTC/1000);
-		System.out.println("?");
-		System.out.println(sdf.format(new Date(date_temp * 1000L)));   
+		long date_temp = Long.valueOf(UTC/1000); 
 		return sdf.format(new Date(date_temp * 1000L));
 	}
 }
