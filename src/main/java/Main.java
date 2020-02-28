@@ -168,6 +168,7 @@ public class Main extends Plugin {
 
 	@Override
 	public void registerClientCommands(CommandHandler handler) {
+		handler.removeCommand("help");
 		handler.removeCommand("vote");
 		handler.removeCommand("votekick");
 
