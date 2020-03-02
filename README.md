@@ -21,10 +21,10 @@ By default, Google Translator should not set the source time to 0, otherwise it 
 
 ## build configuration
 
-| configure     | CPU             | RAM   | Hard disk | Java      | Gradle    |
-|:---           |:---             |:---   |:---       |:---       |:---       |
-| Current use   | BCM2711         | 4G    | 500G HHD  | Java 11   | 6.2       |
-| Recommended   | Intel I3-6100+  | 4G    | 500G HHD  | Java 8+   | 6.2       |
+| configure     | CPU             | RAM   | System        | Hard disk | Java      | Gradle    |
+|:---           |:---             |:---   |:---           |:---       |:---       |:---       |
+| Current use   | BCM2711         | 4G    | ubuntu 19.10  | 500G HHD  | Java 11   | 6.2       |
+| Recommended   | Intel I3-6100+  | 4G    | ubuntu 16.04+ | 500G HHD  | Java 8+   | 6.2       |
 
 ## Client commands
 
