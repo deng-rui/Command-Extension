@@ -37,7 +37,7 @@ public class GoogletranslateApi {
 
 	private static ScriptEngine engine = null;
 
-	private static {
+	static {
 		ScriptEngineManager maneger = new ScriptEngineManager();
 		engine = maneger.getEngineByName("javascript");
 		FileInputStream fileInputStream = null;

@@ -17,7 +17,7 @@ public class BadWordUtil {
 	public static Map<String,String> wordMap;
 	public static int minMatchTYpe = 1;      //最小匹配规则
 	public static int maxMatchType = 2;      //最大匹配规则
-	private static{
+	static{
 		BadWordUtil.words = readTxtByLine(filePath);
 		addBadWordToHashMap(BadWordUtil.words);
 	}

@@ -9,11 +9,16 @@ import java.util.List;
 import java.util.ArrayList;
 //Java
 
+import mindustry.net.Packets.KickReason;
 import mindustry.gen.Call;
 import mindustry.entities.type.Player;
+import mindustry.game.Gamemode;
 //Mindustry
 
+import static mindustry.Vars.logic;
+import static mindustry.Vars.maps;
 import static mindustry.Vars.playerGroup;
+import static mindustry.Vars.world;
 //Mindustry-Static
 
 import static extension.util.LocaleUtil.getinput;
@@ -26,7 +31,7 @@ public class Vote {
 	private static int require;
 	private static int reciprocal;
 	public static boolean sted=true;
-	static List<String> list = new ArrayList<String>();
+	static List<String> playerlist = new ArrayList<String>();
 
 	public Vote(Player player, String type, String name){
 		this.player = player;
@@ -41,24 +46,23 @@ public class Vote {
 		start();
 	}
 
-	public Vote(String mapname){
+	public Vote(){
 		start();
 	}
 
-	void start(){
+	private void start(){
 		ScheduledExecutorService service=Executors.newScheduledThreadPool(2);//两条线程
 		if(!sted) {
 			return;
 		}
 		if(playerGroup.size() == 1){
 			//player.sendMessage();
+			require = 1;
 		} else if(playerGroup.size() <= 3){
 			require = 2;
 		} else {
 			require = (int) Math.ceil((double) playerGroup.size() / 2);
 		}
-
-		
 		
 		Runnable Countdown=new Runnable() {
 			@Override
@@ -78,15 +82,15 @@ public class Vote {
 
 				service.shutdown();
 			}
-		},50,TimeUnit.SECONDS);
+		},58,TimeUnit.SECONDS);
 
 		reciprocal=6;
 		sted = false;
 
 	}
 
-	void end() {
-		if (list.size() >= require) {
+	private void end() {
+		if (playerlist.size() >= require) {
 			switch(type){
 				case "kick" :
 					kick();
@@ -102,22 +106,37 @@ public class Vote {
 					return;
 
 			}
+		} else {
+			Call.sendMessage(getinput("vote.done.no",name));
 		}
 	}
 
-	void kick() {
+	private void kick() {
 		Player target = playerGroup.find(p -> p.name.equals(name));
 		if(target != null){
-			Call.sendMessage(getinput("vote.kick.done",target.name));
-			//target.con.kick(KickReason.kick);
+			Call.sendMessage(getinput("vote.kick.done",name));
+			target.con.kick(KickReason.kick);
 			return;
 		}
 		Call.sendMessage(getinput("vote.kick.err",target.name));
 	}
-	void host() {
+	private void host() {/*
+		Map result = maps.all().find(map -> map.name().equalsIgnoreCase(mapp.replace('_', ' ')) || map.name().equalsIgnoreCase(mapp));
+		Gamemode preset = Gamemode.survival;
+		try{
+			preset = Gamemode.valueOf(gamemodes);
+		}catch(IllegalArgumentException e){
+			return;
+		}
+		logic.reset();
+		world.loadMap(result,result.applyRules(preset));*/
 	}
-	void skipwave() {
+	private void skipwave() {
+		for (int i = 0; i < 10; i++) {
+			logic.runWave();
+		}
 	}
-	void defaulta() {
+	private void defaulta() {
+		Call.sendMessage(getinput("vote.end.err",type));
 	}
 }
