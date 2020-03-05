@@ -27,14 +27,6 @@ import com.alibaba.fastjson.JSONArray;
 
 public class GoogletranslateApi {
 
-	private static final String PATH = "/tk/Google.js";
-	public String url;
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-//isBlank isNotBlank extractByStartAndEnd findMatchString findFristGroup removeAllBlank trim
-
 	private static ScriptEngine engine = null;
 
 	static {
@@ -44,7 +36,7 @@ public class GoogletranslateApi {
 		Reader scriptReader = null;
 
 		try {
-			scriptReader = new InputStreamReader(GoogletranslateApi.class.getResourceAsStream(PATH), "utf-8");
+			scriptReader = new InputStreamReader(GoogletranslateApi.class.getResourceAsStream("/tk/Google.js"), "utf-8");
 			engine.eval(scriptReader);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -114,10 +106,10 @@ public class GoogletranslateApi {
 		buffer.append("&hl=zh-CN&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&ie=UTF-8&oe=UTF-8&source=btn&kc=0");
 		buffer.append("&tk=" + tk);
 		buffer.append("&q=" + word);
-		setUrl(buffer.toString());
+		String url = buffer.toString();
 
 		try {
-			String result = doGet(this.url);
+			String result = doGet(url);
 			JSONArray array = (JSONArray) JSONArray.parse(result);
 			JSONArray rArray = array.getJSONArray(0);
 			StringBuffer rBuffer = new StringBuffer();
