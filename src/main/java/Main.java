@@ -161,7 +161,7 @@ public class Main extends Plugin {
 			//linglan
 
 			Follow_up_Initialization();
-
+			//部分加载需要服务器加载完毕 例如maps
 		});
 		
 	}
@@ -387,23 +387,32 @@ public class Main extends Plugin {
 			}	
 		});
 
-		handler.<Player>register("maps", "[page]", getinput("maps"), (args, player) -> {
-			List<String> MapsList = (List<String>)getMaps_List();
-			int page = args.length > 0 ? Integer.parseInt(args[0]) : 1;
-			int pages = Mathf.ceil((float)MapsList.size() / 6);
-			page --;
-			if(page >= pages || page < 0){
-				System.out.println("[scarlet]'page' must be a number between[orange] 1[] and[orange] " + pages + "[scarlet].");
-				return;
+		handler.<Player>register("maps", "[page] [mode]", getinput("maps"), (args, player) -> {
+			if(!Authority_control(player.uuid,"maps")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
+				List<String> MapsList = (List<String>)getMaps_List();
+				int page = args.length > 0 ? Integer.parseInt(args[0]) : 1;
+				int pages = Mathf.ceil((float)MapsList.size() / 6);
+				page --;
+				if(page >= pages || page < 0){
+					player.sendMessage(getinput("maps.page.err",pages));
+					return;
+				}
+				if(args.length == 2) {
+					player.sendMessage(getinput("maps.page",(page+1),pages));
+					for(int i = 6 * page; i < Math.min(6 * (page + 1), MapsList.size()); i++){
+						String [] data = MapsList.get(i).split("\\s+");
+						if(data[3].equalsIgnoreCase(args[1]))player.sendMessage(getinput("maps.mode.info",String.valueOf(i),data[0],data[1]));
+					}
+					return;
+				}
+				player.sendMessage(getinput("maps.page",(page+1),pages));
+				for(int i = 6 * page; i < Math.min(6 * (page + 1), MapsList.size()); i++){
+					String [] data = MapsList.get(i).split("\\s+");
+					player.sendMessage(getinput("maps.info",String.valueOf(i),data[0],data[1],data[2]));
+				}
 			}
-			System.out.println("[orange]-- Commands Page[lightgray] "+(page+1)+"[gray]/[lightgray]"+pages+"[orange] --\n\n");
-
-			for(int i = 6 * page; i < Math.min(6 * (page + 1), MapsList.size()); i++){
-				String [] data = MapsList.get(i).split("\\s+");
-				System.out.println(data[0]+","+data[1]+","+data[2]);
-
-			}
-			
 		});
 /*
 		handler.<Player>register("vote", "<gameover/kick> [playername...]", "Vote", (args, player) -> {
