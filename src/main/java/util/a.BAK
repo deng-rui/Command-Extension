@@ -1,0 +1,19 @@
+   public void loadRecourseFromJarByFolder(String folderPath) throws IOException {
+        URL url = getClass().getResource(folderPath);
+        URLConnection urlConnection = url.openConnection();
+        if(urlConnection instanceof JarURLConnection){
+            copyJarResources((JarURLConnection)urlConnection);
+        }
+    }
+
+    private void copyJarResources(JarURLConnection jarURLConnection) throws IOException{
+        JarFile jarFile = jarURLConnection.getJarFile();
+        Enumeration<JarEntry> entrys = jarFile.entries();
+        while(entrys.hasMoreElements()){
+            JarEntry entry = entrys.nextElement();
+            if (entry.getName().startsWith(jarURLConnection.getEntryName()) && !entry.getName().endsWith("/")) {
+                loadRecourseFromJar("/"+entry.getName());
+            }
+        }
+        jarFile.close();
+    }

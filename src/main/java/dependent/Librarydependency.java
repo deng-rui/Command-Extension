@@ -51,7 +51,6 @@ public class Librarydependency implements Driver {
 	}
 
 	public static void importLib(String str, String name, String version, Fi savePath) {
-		String[] information;
 		Fi[] file = savePath.list();
 		List<String> list = new ArrayList<String>();
 		for(int i=0;i<file.length;i++){

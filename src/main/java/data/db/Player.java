@@ -241,7 +241,7 @@ public class Player {
 			String temp;
 			Connection c = connectSQLite();
 			c.setAutoCommit(false);
-			PreparedStatement stmt = c.prepareStatement("select COUNT(*) from Player where User=?");
+			PreparedStatement stmt = c.prepareStatement("SELECT COUNT(*) FROM Player where User=?");
 			stmt.setString(1,user);
 			ResultSet rs = stmt.executeQuery();
 			rs.next();

@@ -35,9 +35,9 @@ public class GoogletranslateApi {
 
 //isBlank isNotBlank extractByStartAndEnd findMatchString findFristGroup removeAllBlank trim
 
-	static ScriptEngine engine = null;
+	private static ScriptEngine engine = null;
 
-	static {
+	private static {
 		ScriptEngineManager maneger = new ScriptEngineManager();
 		engine = maneger.getEngineByName("javascript");
 		FileInputStream fileInputStream = null;
@@ -66,7 +66,7 @@ public class GoogletranslateApi {
 		}
 	}
 
-	public static String getTK(String word, String tkk) {
+	private static String getTK(String word, String tkk) {
 		String result = null;
 
 		try {
@@ -80,6 +80,14 @@ public class GoogletranslateApi {
 		return result;
 	}
 
+	/**
+	 * 谷歌翻译：
+	 * @param word 待翻译文本
+	 * @param from 原语言 默认auto
+	 * @param to   目标语言
+	 * @return，如果存在，则返回翻译后语言，不存在返回null
+	 * @version 1.0
+	 */
 	public String translate(String word, String from, String to) throws Exception {
 		if (Blank(word))return null;
 

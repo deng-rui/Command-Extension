@@ -17,11 +17,11 @@ public class BadWordUtil {
 	public static Map<String,String> wordMap;
 	public static int minMatchTYpe = 1;      //最小匹配规则
 	public static int maxMatchType = 2;      //最大匹配规则
-	static{
+	private static{
 		BadWordUtil.words = readTxtByLine(filePath);
 		addBadWordToHashMap(BadWordUtil.words);
 	}
-	 public static Set<String> readTxtByLine(String path){  
+	private static Set<String> readTxtByLine(String path){  
 		Set<String> keyWordSet = new HashSet<String>();
 		BufferedReader reader=null;  
 		String temp=null;  

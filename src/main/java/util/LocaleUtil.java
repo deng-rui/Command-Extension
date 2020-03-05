@@ -38,7 +38,8 @@ public class LocaleUtil {
 				return result;
 			}
 		}
-		return null;
+		return input+" : Text blank";
+		//防止null使游戏崩溃 CALL..
 	}
 
 	public static String getinput(String input,String... params) {
@@ -66,7 +67,7 @@ public class LocaleUtil {
 			case "Hong Kong" :return "zh_HK";
 			case "Macao" :return "zh_MO";
 			case "Taiwan" :return "zh_TW";
-			case "Russia" :return "ru-RU";
+			case "Russia" :return "ru_RU";
 			default :return "en_US";
 			//I didn't find a better way....
 		}

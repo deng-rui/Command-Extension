@@ -9,7 +9,7 @@ import java.text.ParseException;
 
 
 public class DateUtil {
-	public static long getUTCTimeStr() {
+	private static long getUTCTimeStr() {
 		Calendar cal = Calendar.getInstance(); 
 		//2、取得时间偏移量：  
 		final int zoneOffset = cal.get(Calendar.ZONE_OFFSET); 

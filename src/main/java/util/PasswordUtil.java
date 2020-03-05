@@ -23,7 +23,7 @@ public class PasswordUtil {
 	private static final int SALT_BIT_SIZE = 64;
 	//盐长度RFC2898
 
-	public static String genPasswordHash(String password, String salt) {
+	private static String genPasswordHash(String password, String salt) {
 		try {		
 			PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), Base64.decodeBase64(salt), ITERATIONS, HASH_BIT_SIZE);
 			SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
@@ -36,7 +36,7 @@ public class PasswordUtil {
 	}
 	//密码摘要
 	
-	public static String genRandomSalt() {
+	private static String genRandomSalt() {
 		byte[] salt = new byte[SALT_BIT_SIZE];
 		SecureRandom rand = new SecureRandom();
 		rand.nextBytes(salt);
