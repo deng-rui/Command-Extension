@@ -5,12 +5,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class Lists {
-	//private static List<String> PlayerDate_SQL_Temp = Collections.synchronizedList(new ArrayList<String>());
+	private static List<String> Maps_List;
 
-	//public static void addPlayerDate_SQL_Temp(List list) {
-	//	PlayerDate_SQL_Temp = list;
-	//}
-	//
+	public static void addMaps_List(String i) {
+		Maps_List.add(i);
+	}
+	//加入
 
 	public static List updatePlayerData(List list, int old, String nw) {
 		List<String> tempList = new ArrayList<String>(list.size()+1);  
@@ -24,19 +24,24 @@ public class Lists {
 		return tempList;  
 	}
 
-	/*
-	public static List updatePlayerDate_SQL_Temp() {
-		return PlayerDate_SQL_Temp
+	public static List removeList(List list, String old) {
+		List<String> tempList = new ArrayList<String>(list.size());  
+		for(int i=0;i<list.size();i++){
+			if(!old.equals(i)) {  
+				tempList.add((String)list.get(i));
+			}
+		}  
+		return tempList;  
 	}
+	//删除
 
-	public static String updatePlayerDate_SQL_Temp(int i) {
-		return PlayerDate_SQL_Temp.get(i);
+	public static List<String> getMaps_List() {
+		return Maps_List;
 	}
-	
+	//获取
 
-	public static boolean getplayer_boolean(String uuid) {
-		return Tourist.contains(uuid);
+	public static void EmptyMaps_List() {
+		Maps_List = Collections.synchronizedList(new ArrayList<String>());
 	}
-	//是否存在
-	*/
+	//清空
 }

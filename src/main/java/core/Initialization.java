@@ -3,18 +3,33 @@ package extension.core;
 import arc.Core;
 //Arc
 
+import mindustry.maps.Map;
+import mindustry.maps.Maps.*;
+//Mindustry
+
+import static mindustry.Vars.maps;
+//Mindustry-Static
+
 import static extension.data.db.SQLite.Player_Privilege_classification;
 import static extension.data.db.SQLite.InitializationSQLite;
+import static extension.data.global.Lists.addMaps_List;
+import static extension.data.global.Lists.EmptyMaps_List;
+import static extension.data.global.Lists.getMaps_List;
 import static extension.data.json.Json.Initialization;
 import static extension.data.json.Json.Initialize_permissions;
 import static extension.dependent.Librarydependency.importLib;
 import static extension.dependent.Librarydependency.notWork;
 //Static
 
+import static arc.util.Log.*;
+
 public class Initialization {
-	public static void Initialization() {
+	public static void Start_Initialization() {
 		SQL();
 		Json();
+	}
+
+	public static void Follow_up_Initialization() {
 		MapList();
 	}
 
@@ -30,7 +45,29 @@ public class Initialization {
 		Player_Privilege_classification();
 	}
 
-	private static void MapList() {
-		
+	public static void MapList() {
+		EmptyMaps_List();
+		if(!maps.all().isEmpty()){
+			for(Map map : maps.all()){
+				if(map.custom) {
+					switch(String.valueOf(map.file.name().charAt(0))){
+						case "P" :
+						case "p" :
+							addMaps_List(map.name()+" "+map.width+"x"+map.height+" pvp");
+							break;
+						case "S" :
+						case "s" :
+							addMaps_List(map.name()+" "+map.width+"x"+map.height+" survival");
+							break;
+						case "A" :
+						case "a" :
+							addMaps_List(map.name()+" "+map.width+"x"+map.height+" attack");
+							break;
+					}			
+				}
+			}
+		} else {
+			addMaps_List("The map is empty");
+		}
 	}
 }

@@ -2,10 +2,12 @@ package extension;
 
 import java.util.List;
 import java.util.Set;
+import java.lang.Math;
 //Java
 
 import arc.Core;
 import arc.Events;
+import arc.math.Mathf;
 import arc.util.CommandHandler;
 //Arc
 
@@ -41,12 +43,15 @@ import extension.util.GoogletranslateApi;
 
 import static extension.core.ClientCommandsx.*;
 import static extension.core.Event.*;
-import static extension.core.Initialization.Initialization;
+import static extension.core.Initialization.MapList;
+import static extension.core.Initialization.Start_Initialization;
+import static extension.core.Initialization.Follow_up_Initialization;
 import static extension.data.db.SQLite.Authority_control;
 import static extension.data.db.SQLite.SQL_type;
 import static extension.data.db.Player.getSQLite_UUID;
 import static extension.data.global.Booleans.*;
 import static extension.data.global.Lists.*;
+import static extension.data.global.Lists.getMaps_List;
 import static extension.data.global.Maps.*;
 import static extension.data.global.Strings.*;
 import static extension.util.BadWordUtil.*;
@@ -72,7 +77,7 @@ public class Main extends Plugin {
 	@SuppressWarnings("unchecked")
 	public Main() {
 
-		Initialization();
+		Start_Initialization();
 		//初始化
 
 		Events.on(PlayerChatEvent.class, e -> {
@@ -155,6 +160,8 @@ public class Main extends Plugin {
 			});
 			//linglan
 
+			Follow_up_Initialization();
+
 		});
 		
 	}
@@ -168,19 +175,17 @@ public class Main extends Plugin {
 				if ("N".equalsIgnoreCase(arg[0]))setGC_1("N");
 		});
 
-		handler.register("aab","<1>", "NOT", (arg) -> {
-			System.out.println(getPlayer_Data_SQL_Temp(arg[0]));
-		});
-
 		handler.register("reloadmaps", "NOT", (arg) -> {
 			int beforeMaps = maps.all().size;
-            maps.reload();
-            if(maps.all().size > beforeMaps){
-                info("&lc{0}&ly new map(s) found and reloaded.", maps.all().size - beforeMaps);
-            }else{
-                info("&lyMaps reloaded.");
-            }
+			maps.reload();
+			if(maps.all().size > beforeMaps){
+				info("&lc{0}&ly new map(s) found and reloaded.", maps.all().size - beforeMaps);
+			}else{
+				info("&lyMaps reloaded.");
+			}
+			MapList();
 		});
+
 	};
 
 	@Override
@@ -192,25 +197,25 @@ public class Main extends Plugin {
 		/*
 		handler.<Player>register("help", "[page]", "Displays this command list !", (args, player) -> {
 			if(args.length > 0 && !Strings.canParseInt(args[0])){
-                player.sendMessage("[scarlet]'page' must be a number.");
-                return;
-            }
-            int commandsPerPage = 6;
-            int page = args.length > 0 ? Strings.parseInt(args[0]) : 1;
-            int pages = Mathf.ceil((float)clientCommands.getCommandList().size / commandsPerPage);
-            page --;
-            if(page >= pages || page < 0){
-                player.sendMessage("[scarlet]'page' must be a number between[orange] 1[] and[orange] " + pages + "[scarlet].");
-                return;
-            }
-            StringBuilder result = new StringBuilder();
-            result.append(Strings.format("[orange]-- Commands Page[lightgray] {0}[gray]/[lightgray]{1}[orange] --\n\n", (page+1), pages));
+				player.sendMessage("[scarlet]'page' must be a number.");
+				return;
+			}
+			int commandsPerPage = 6;
+			int page = args.length > 0 ? Strings.parseInt(args[0]) : 1;
+			int pages = Mathf.ceil((float)clientCommands.getCommandList().size / commandsPerPage);
+			page --;
+			if(page >= pages || page < 0){
+				player.sendMessage("[scarlet]'page' must be a number between[orange] 1[] and[orange] " + pages + "[scarlet].");
+				return;
+			}
+			StringBuilder result = new StringBuilder();
+			result.append(Strings.format("[orange]-- Commands Page[lightgray] {0}[gray]/[lightgray]{1}[orange] --\n\n", (page+1), pages));
 
-            for(int i = commandsPerPage * page; i < Math.min(commandsPerPage * (page + 1), clientCommands.getCommandList().size); i++){
-                Command command = clientCommands.getCommandList().get(i);
-                result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(command.description).append("\n");
-            }
-            player.sendMessage(result.toString());
+			for(int i = commandsPerPage * page; i < Math.min(commandsPerPage * (page + 1), clientCommands.getCommandList().size); i++){
+				Command command = clientCommands.getCommandList().get(i);
+				result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(command.description).append("\n");
+			}
+			player.sendMessage(result.toString());
 		});
 		*/
 
@@ -382,7 +387,22 @@ public class Main extends Plugin {
 			}	
 		});
 
-		handler.<Player>register("ac","test", (args, player) -> {
+		handler.<Player>register("maps", "[page]", getinput("maps"), (args, player) -> {
+			List<String> MapsList = (List<String>)getMaps_List();
+			int page = args.length > 0 ? Integer.parseInt(args[0]) : 1;
+			int pages = Mathf.ceil((float)MapsList.size() / 6);
+			page --;
+			if(page >= pages || page < 0){
+				System.out.println("[scarlet]'page' must be a number between[orange] 1[] and[orange] " + pages + "[scarlet].");
+				return;
+			}
+			System.out.println("[orange]-- Commands Page[lightgray] "+(page+1)+"[gray]/[lightgray]"+pages+"[orange] --\n\n");
+
+			for(int i = 6 * page; i < Math.min(6 * (page + 1), MapsList.size()); i++){
+				String [] data = MapsList.get(i).split("\\s+");
+				System.out.println(data[0]+","+data[1]+","+data[2]);
+
+			}
 			
 		});
 /*
