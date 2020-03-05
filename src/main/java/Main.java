@@ -27,9 +27,11 @@ import mindustry.plugin.Plugin;
 import mindustry.Vars;
 //Mindustry
 
+import static arc.util.Log.*;
 import static mindustry.Vars.state;
 import static mindustry.Vars.netServer;
 import static mindustry.Vars.logic;
+import static mindustry.Vars.maps;
 import static mindustry.Vars.playerGroup;
 //Mindustry-Static
 
@@ -37,9 +39,9 @@ import extension.core.Vote;
 import extension.util.GoogletranslateApi;
 //GA-Exted
 
-import static extension.core.ClientCommands.*;
+import static extension.core.ClientCommandsx.*;
 import static extension.core.Event.*;
-import static extension.core.Initialization.Start_Initialization;
+import static extension.core.Initialization.Initialization;
 import static extension.data.db.SQLite.Authority_control;
 import static extension.data.db.SQLite.SQL_type;
 import static extension.data.db.Player.getSQLite_UUID;
@@ -67,7 +69,7 @@ public class Main extends Plugin {
 	@SuppressWarnings("unchecked")
 	public Main() {
 
-		Start_Initialization();
+		Initialization();
 		//初始化
 
 		Events.on(PlayerChatEvent.class, e -> {
@@ -156,6 +158,8 @@ public class Main extends Plugin {
 		
 	@Override
 	public void registerServerCommands(CommandHandler handler){
+		handler.removeCommand("reloadmaps");
+
 		handler.register("gac","<ON/OFF>", "NOT", (arg) -> {
 				if("Y".equalsIgnoreCase(arg[0]))setGC_1("Y");
 				if ("N".equalsIgnoreCase(arg[0]))setGC_1("N");
@@ -164,13 +168,48 @@ public class Main extends Plugin {
 		handler.register("aab","<1>", "NOT", (arg) -> {
 			System.out.println(getPlayer_Data_SQL_Temp(arg[0]));
 		});
+
+		handler.register("reloadmaps", "NOT", (arg) -> {
+			int beforeMaps = maps.all().size;
+            maps.reload();
+            if(maps.all().size > beforeMaps){
+                info("&lc{0}&ly new map(s) found and reloaded.", maps.all().size - beforeMaps);
+            }else{
+                info("&lyMaps reloaded.");
+            }
+		});
 	};
 
 	@Override
 	public void registerClientCommands(CommandHandler handler) {
-		handler.removeCommand("help");
+		//handler.removeCommand("help");
 		handler.removeCommand("vote");
 		handler.removeCommand("votekick");
+
+		/*
+		handler.<Player>register("help", "[page]", "Displays this command list !", (args, player) -> {
+			if(args.length > 0 && !Strings.canParseInt(args[0])){
+                player.sendMessage("[scarlet]'page' must be a number.");
+                return;
+            }
+            int commandsPerPage = 6;
+            int page = args.length > 0 ? Strings.parseInt(args[0]) : 1;
+            int pages = Mathf.ceil((float)clientCommands.getCommandList().size / commandsPerPage);
+            page --;
+            if(page >= pages || page < 0){
+                player.sendMessage("[scarlet]'page' must be a number between[orange] 1[] and[orange] " + pages + "[scarlet].");
+                return;
+            }
+            StringBuilder result = new StringBuilder();
+            result.append(Strings.format("[orange]-- Commands Page[lightgray] {0}[gray]/[lightgray]{1}[orange] --\n\n", (page+1), pages));
+
+            for(int i = commandsPerPage * page; i < Math.min(commandsPerPage * (page + 1), clientCommands.getCommandList().size); i++){
+                Command command = clientCommands.getCommandList().get(i);
+                result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(command.description).append("\n");
+            }
+            player.sendMessage(result.toString());
+		});
+		*/
 
 		handler.<Player>register("login", "<id> <password>", "Login to account", (args, player) -> {
 			if(!Authority_control(player.uuid,"login")) {

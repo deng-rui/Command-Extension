@@ -12,15 +12,25 @@ import static extension.dependent.Librarydependency.notWork;
 //Static
 
 public class Initialization {
-	public static void Start_Initialization() {
+	public static void Initialization() {
+		SQL();
+		Json();
+		MapList();
+	}
+
+	private static void SQL() {
 		importLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
 		notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
-		//初始化SQL
+		if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists())InitializationSQLite();
+	}
+
+	private static void Json() {
 		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists())Initialization();
 		if(!Core.settings.getDataDirectory().child("mods/GA/Authority.json").exists())Initialize_permissions();
-		if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists())InitializationSQLite();
-		//文件....
 		Player_Privilege_classification();
+	}
 
+	private static void MapList() {
+		
 	}
 }
