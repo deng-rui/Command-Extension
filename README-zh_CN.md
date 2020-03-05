@@ -50,6 +50,9 @@ linglan512572354:https://github.com/linglan512572354
 
 - [ ] Baidu翻译支持
 - [ ] Vote
+    - [x] 地图模式识别(WZY)
+- [ ] 动态难度
+- [ ] PVP前期限制
 - [ ] 插件分割
     - [ ] Google翻译
     - [ ] 语言过滤

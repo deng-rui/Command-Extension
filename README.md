@@ -49,6 +49,9 @@ By default, Google Translator should not set the source time to 0, otherwise it 
 
 - [ ] Baidu translation support
 - [ ] Vote
+    - [x] Map pattern recognition(WZY)
+- [ ] Dynamic difficulty
+- [ ] PVP pre limit
 - [ ] plug in segmentation
     - [ ] Google translation
     - [ ] language filtering
