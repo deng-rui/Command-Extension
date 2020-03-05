@@ -65,6 +65,9 @@ public class Main extends Plugin {
 	 Physical address used by mod .jar/config/mods/GA
 	 Note as CN + EN
 	*/
+	//Map模式
+	//动态难度
+	//PVP限制
 
 	@SuppressWarnings("unchecked")
 	public Main() {
@@ -252,14 +255,6 @@ public class Main extends Plugin {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				player.sendMessage(getinput("getpos.info",String.valueOf(Math.round(player.x/8)),String.valueOf(Math.round(player.y/8))));
-			}
-		});
-
-		handler.<Player>register("gc",getinput("gc"), (args, player) -> {
-			if(!Authority_control(player.uuid,"gc")) {
-				player.sendMessage(getinput("authority.no"));
-			} else {
-				Call.onInfoMessage(player.con,getinput("gc.info"));
 			}
 		});
 
