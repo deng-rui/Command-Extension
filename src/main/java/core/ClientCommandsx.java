@@ -60,7 +60,7 @@ import static extension.util.PasswordUtil.Passwdverify;
 import com.alibaba.fastjson.JSONObject;
 //Json
 
-public class ClientCommands {
+public class ClientCommandsx {
 
 	public static void login(Player player, String usr, String pw) {
 		if((boolean)isSQLite_User(usr)) {
