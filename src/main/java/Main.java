@@ -392,8 +392,10 @@ public class Main extends Plugin {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				List<String> MapsList = (List<String>)getMaps_List();
+				int Maximum = 6;
+				//6为list最大承载 可自行改
 				int page = args.length > 0 ? Integer.parseInt(args[0]) : 1;
-				int pages = Mathf.ceil((float)MapsList.size() / 6);
+				int pages = Mathf.ceil((float)MapsList.size() / Maximum);
 				page --;
 				if(page >= pages || page < 0){
 					player.sendMessage(getinput("maps.page.err",pages));
@@ -401,14 +403,14 @@ public class Main extends Plugin {
 				}
 				if(args.length == 2) {
 					player.sendMessage(getinput("maps.page",(page+1),pages));
-					for(int i = 6 * page; i < Math.min(6 * (page + 1), MapsList.size()); i++){
+					for(int i = Maximum * page; i < Math.min(Maximum * (page + 1), MapsList.size()); i++){
 						String [] data = MapsList.get(i).split("\\s+");
 						if(data[3].equalsIgnoreCase(args[1]))player.sendMessage(getinput("maps.mode.info",String.valueOf(i),data[0],data[1]));
 					}
 					return;
 				}
 				player.sendMessage(getinput("maps.page",(page+1),pages));
-				for(int i = 6 * page; i < Math.min(6 * (page + 1), MapsList.size()); i++){
+				for(int i = Maximum * page; i < Math.min(Maximum * (page + 1), MapsList.size()); i++){
 					String [] data = MapsList.get(i).split("\\s+");
 					player.sendMessage(getinput("maps.info",String.valueOf(i),data[0],data[1],data[2]));
 				}
