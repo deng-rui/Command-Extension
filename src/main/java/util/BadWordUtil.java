@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 //Java
 
+//DFA? Bloom Filter?
 public class BadWordUtil {
 	public static String filePath = "/other/Sensitive_Thesaurus.txt";
 	public static Set<String> words;
