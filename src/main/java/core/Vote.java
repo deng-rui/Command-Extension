@@ -13,15 +13,21 @@ import mindustry.net.Packets.KickReason;
 import mindustry.gen.Call;
 import mindustry.entities.type.Player;
 import mindustry.game.Gamemode;
+import mindustry.maps.Map;
+import mindustry.maps.Maps.*;
 //Mindustry
 
 import static mindustry.Vars.logic;
 import static mindustry.Vars.maps;
 import static mindustry.Vars.playerGroup;
 import static mindustry.Vars.world;
+import static mindustry.Vars.netServer;
+import static mindustry.Vars.state;
 //Mindustry-Static
 
+import static extension.data.global.Lists.getMaps_List;
 import static extension.util.LocaleUtil.getinput;
+import static extension.util.DateUtil.getLocalTimeFromUTC;
 //Static
 
 public class Vote {
@@ -30,7 +36,10 @@ public class Vote {
 	private static String name;
 	private static int require;
 	private static int reciprocal;
-	public static boolean sted=true;
+	private static boolean sted=true;
+	private static ScheduledFuture Vote_time;
+	private static ScheduledFuture Count_down;
+	private static ScheduledExecutorService service;
 	static List<String> playerlist = new ArrayList<String>();
 
 	public Vote(Player player, String type, String name){
@@ -47,14 +56,18 @@ public class Vote {
 	}
 
 	public Vote(){
-		start();
+		if (playerlist.size() >= require) {
+			Count_down.cancel(true);
+			end();
+		}
 	}
 
 	private void start(){
-		ScheduledExecutorService service=Executors.newScheduledThreadPool(2);//两条线程
 		if(!sted) {
+			player.sendMessage("NO START");
 			return;
 		}
+
 		if(playerGroup.size() == 1){
 			//player.sendMessage();
 			require = 1;
@@ -63,26 +76,30 @@ public class Vote {
 		} else {
 			require = (int) Math.ceil((double) playerGroup.size() / 2);
 		}
-		
+
+		service=Executors.newScheduledThreadPool(2);//两条线程
+
 		Runnable Countdown=new Runnable() {
 			@Override
 			public void run() {
 				reciprocal--;
+				System.out.println(getLocalTimeFromUTC(0,0));
 			}
 		};
 		//倒计时 10S/r
-		ScheduledFuture Count_down=service.scheduleAtFixedRate(Countdown,10,10,TimeUnit.SECONDS);
+		Count_down=service.scheduleAtFixedRate(Countdown,10,10,TimeUnit.SECONDS);
 
-		service.schedule(new Runnable() {
+		Runnable Votetime=new Runnable() {
 			@Override
 			public void run() {
+				System.out.println("S?");
 				Count_down.cancel(true);
-				end();
 				sted = true;
-
-				service.shutdown();
+				end();
 			}
-		},58,TimeUnit.SECONDS);
+		};
+
+		Vote_time=service.schedule(Votetime,11,TimeUnit.SECONDS);
 
 		reciprocal=6;
 		sted = false;
@@ -90,6 +107,12 @@ public class Vote {
 	}
 
 	private void end() {
+		Vote_time.cancel(true);
+		service.shutdown();
+		service=null;
+		Count_down=null;
+		Vote_time=null;
+		//清空
 		if (playerlist.size() >= require) {
 			switch(type){
 				case "kick" :
@@ -120,16 +143,22 @@ public class Vote {
 		}
 		Call.sendMessage(getinput("vote.kick.err",target.name));
 	}
-	private void host() {/*
-		Map result = maps.all().find(map -> map.name().equalsIgnoreCase(mapp.replace('_', ' ')) || map.name().equalsIgnoreCase(mapp));
-		Gamemode preset = Gamemode.survival;
+	private void host() {
+		List<String> MapsList = (List<String>)getMaps_List();
+		String [] data = MapsList.get(Integer.parseInt(name)).split("\\s+");
+		Map result = maps.all().find(map -> map.name().equalsIgnoreCase(data[0].replace('_', ' ')) || map.name().equalsIgnoreCase(data[0]));
+		Gamemode preset;
 		try{
-			preset = Gamemode.valueOf(gamemodes);
+			preset = Gamemode.valueOf(data[2]);
 		}catch(IllegalArgumentException e){
+			player.sendMessage(getinput("vote.host.mode.err",data[2]));
 			return;
 		}
+		netServer.kickAll(KickReason.gameover);
 		logic.reset();
-		world.loadMap(result,result.applyRules(preset));*/
+		world.loadMap(result,result.applyRules(preset));
+		state.rules = result.applyRules(preset);
+		logic.play();
 	}
 	private void skipwave() {
 		for (int i = 0; i < 10; i++) {

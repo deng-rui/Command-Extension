@@ -53,15 +53,15 @@ public class Initialization {
 					switch(String.valueOf(map.file.name().charAt(0))){
 						case "P" :
 						case "p" :
-							addMaps_List(map.name()+" "+map.width+"x"+map.height+" pvp"+" P");
+							addMaps_List(map.name().replace(' ', '_')+" "+map.width+"x"+map.height+" pvp"+" P");
 							break;
 						case "S" :
 						case "s" :
-							addMaps_List(map.name()+" "+map.width+"x"+map.height+" survival"+" S");
+							addMaps_List(map.name().replace(' ', '_')+" "+map.width+"x"+map.height+" survival"+" S");
 							break;
 						case "A" :
 						case "a" :
-							addMaps_List(map.name()+" "+map.width+"x"+map.height+" attack"+" A");
+							addMaps_List(map.name().replace(' ', '_')+" "+map.width+"x"+map.height+" attack"+" A");
 							break;
 					}			
 				}

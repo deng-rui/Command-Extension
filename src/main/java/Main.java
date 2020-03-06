@@ -414,22 +414,29 @@ public class Main extends Plugin {
 				}
 			}
 		});
-/*
-		handler.<Player>register("vote", "<gameover/kick> [playername...]", "Vote", (args, player) -> {
-			switch(args[0]) {
-				case "kick":
-				Player other = Vars.playerGroup.find(p -> p.name.equalsIgnoreCase(args[1]));
-					vote(args[0]);
-					break;
-				case "gameover": 
-					vote(args[0]);
-					break;
-				default:
-					player.sendMessage(getinput("vote.err.no"));
-					break;
-			}
-		});
 
+		handler.<Player>register("vote", "<gameover/kick/skipwave/host> [name/number]", getinput("vote"), (args, player) -> {
+				switch(args[0]) {
+					case "gameover":
+					case "skipwave":
+						new Vote(player,args[0]);
+						break;
+					case "kick":
+						new Vote(player,args[0],args[1]);
+						break;
+					case "host":
+						if (getMaps_List().size() >= Integer.parseInt(args[1])) {
+							new Vote(player,args[0],args[1]);
+							return;
+						}
+						player.sendMessage(getinput("vote.host.maps.err",args[1]));
+						break;
+					default:
+						player.sendMessage(getinput("vote.errr",args[0]));
+						break;
+				}
+		});
+/*
 		handler.<Player>register("setting","<text> [text]",getinput("setting"), (args, player) -> {
 			if(!player.isAdmin){
 				player.sendMessage(getinput("admin.no"));

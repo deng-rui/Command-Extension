@@ -70,7 +70,7 @@ config
         │   Data.db         //Player Data
         │   setting.json    //Setting
         └───Lib             //Plug in uses jar external directory
-           └───resources    //Plug in using resource external directory   *
+        └───resources       //Plug in using resource external directory   *
            └───bundles      //Language file                               *
            └───other        //Block word file                             *
 ```
