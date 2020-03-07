@@ -19,11 +19,14 @@ import mindustry.maps.Maps.*;
 
 import static mindustry.Vars.logic;
 import static mindustry.Vars.maps;
+import static mindustry.Vars.netServer;
 import static mindustry.Vars.playerGroup;
 import static mindustry.Vars.world;
-import static mindustry.Vars.netServer;
 import static mindustry.Vars.state;
 //Mindustry-Static
+
+import extension.util.LogUtil;
+//GA-Exted
 
 import static extension.data.global.Lists.getMaps_List;
 import static extension.util.LocaleUtil.getinput;
@@ -40,7 +43,7 @@ public class Vote {
 	private static ScheduledFuture Vote_time;
 	private static ScheduledFuture Count_down;
 	private static ScheduledExecutorService service;
-	static List<String> playerlist = new ArrayList<String>();
+	public static List<String> playerlist = new ArrayList<String>();
 
 	public Vote(Player player, String type, String name){
 		this.player = player;
@@ -143,6 +146,7 @@ public class Vote {
 		}
 		Call.sendMessage(getinput("vote.kick.err",target.name));
 	}
+
 	private void host() {
 		List<String> MapsList = (List<String>)getMaps_List();
 		String [] data = MapsList.get(Integer.parseInt(name)).split("\\s+");
@@ -150,21 +154,23 @@ public class Vote {
 		Gamemode preset;
 		try{
 			preset = Gamemode.valueOf(data[2]);
+			netServer.kickAll(KickReason.gameover);
+			logic.reset();
+			world.loadMap(result,result.applyRules(preset));
+			state.rules = result.applyRules(preset);
+			logic.play();
 		}catch(IllegalArgumentException e){
 			player.sendMessage(getinput("vote.host.mode.err",data[2]));
 			return;
 		}
-		netServer.kickAll(KickReason.gameover);
-		logic.reset();
-		world.loadMap(result,result.applyRules(preset));
-		state.rules = result.applyRules(preset);
-		logic.play();
 	}
+
 	private void skipwave() {
 		for (int i = 0; i < 10; i++) {
 			logic.runWave();
 		}
 	}
+
 	private void defaulta() {
 		Call.sendMessage(getinput("vote.end.err",type));
 	}
