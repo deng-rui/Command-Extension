@@ -21,7 +21,7 @@ public class DateUtil {
 	}
  
 	public static String getLocalTimeFromUTC(long GMT, int fot){
-		String[] ft=new String[]{"yyyy-MM-dd HH:mm:ss","yyyy-MM-dd'T'HH:mm:ss'Z'","dd-MM-yyyy HH:mm:ss","MM-dd-yyyy HH:mm:ss"};
+		String[] ft=new String[]{"yyyy-MM-dd HH:mm:ss","yyyy-MM-dd'T'HH:mm:ss'Z'","dd-MM-yyyy HH:mm:ss","MM-dd-yyyy HH:mm:ss","yyyy-MM-dd"};
 		long UTC = getUTCTimeStr();
 		UTC = UTC + GMT;
 		SimpleDateFormat sdf=new SimpleDateFormat(ft[fot]);
