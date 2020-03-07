@@ -49,7 +49,7 @@ linglan512572354:https://github.com/linglan512572354
 ### 当前进度
 
 - [ ] Baidu翻译支持
-- [ ] Vote
+- [x] Vote
     - [x] 地图模式识别(WZY)
 - [ ] 动态难度
 - [ ] PVP前期限制
@@ -58,6 +58,9 @@ linglan512572354:https://github.com/linglan512572354
     - [ ] 语言过滤
     - [ ] Vote
 - [ ] 资源文件外置 便于动态刷新
+- [ ] 多语言支持
+    - [x] 玩家
+    - [ ] 命令
 
 ### 插件使用的目录及文件
 
@@ -69,11 +72,12 @@ config
     └───GA                  //插件使用主目录
         │   Authority.json  //权限配置
         │   Data.db         //玩家数据
-        │   setting.json    //设置
+        │   Setting.json    //设置
         └───Lib             //插件使用jar-外置目录
         └───resources       //插件使用资源外置目录   *
            └───bundles      //语言文件              *
            └───other        //屏蔽词文件            *
+        └───Log             //插件使用log目录       *
 ```
 
 ### 如何安装
@@ -84,3 +88,7 @@ config
 ### 个人广告:)
 (很遗憾，为了维持稳定性 服务器暂时不对外开放)  
 如有必要，您可以自己尝试更改本地化参数
+
+### 许可证
+The Unlicense
+:) 

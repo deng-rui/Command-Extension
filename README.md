@@ -48,7 +48,7 @@ By default, Google Translator should not set the source time to 0, otherwise it 
 ### Current progress
 
 - [ ] Baidu translation support
-- [ ] Vote
+- [x] Vote
     - [x] Map pattern recognition(WZY)
 - [ ] Dynamic difficulty
 - [ ] PVP pre limit
@@ -57,6 +57,9 @@ By default, Google Translator should not set the source time to 0, otherwise it 
     - [ ] language filtering
     - [ ] Vote
 - [ ] External resource file for dynamic refresh
+- [ ] Internationalization
+    - [x] Player
+    - [ ] Help
 
 ### Directories and files used by plug-ins
 
@@ -68,11 +71,12 @@ config
     └───GA                  //Plug in uses home directory
         │   Authority.json  //Authority Data
         │   Data.db         //Player Data
-        │   setting.json    //Setting
+        │   Setting.json    //Setting
         └───Lib             //Plug in uses jar external directory
         └───resources       //Plug in using resource external directory   *
            └───bundles      //Language file                               *
            └───other        //Block word file                             *
+        └───Log             //Plug in log (within ten days)               *
 ```
 
 ### Installing
@@ -83,3 +87,8 @@ List your currently installed plugins by running the `mods` command.
 ### NOT TAB
 (unfortunately, in order to maintain stability, the server is temporarily closed)  
 If necessary, you can try to change the localization parameters yourself  
+
+
+###Licenses
+The Unlicense
+:) 
