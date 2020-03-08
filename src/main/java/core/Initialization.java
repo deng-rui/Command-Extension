@@ -1,5 +1,10 @@
 package extension.core;
 
+import java.io.*;
+import java.util.List;
+import java.util.Arrays;
+//Java
+
 import arc.Core;
 //Arc
 
@@ -9,6 +14,10 @@ import mindustry.maps.Maps.*;
 
 import static mindustry.Vars.maps;
 //Mindustry-Static
+
+import extension.util.LogUtil;
+import extension.util.FileUtil;
+//GA-Exted
 
 import static extension.data.db.SQLite.Player_Privilege_classification;
 import static extension.data.db.SQLite.InitializationSQLite;
@@ -23,6 +32,7 @@ import static extension.dependent.Librarydependency.notWork;
 
 public class Initialization {
 	public static void Start_Initialization() {
+		Data();
 		SQL();
 		Json();
 	}
@@ -41,6 +51,19 @@ public class Initialization {
 		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists())Initialization();
 		if(!Core.settings.getDataDirectory().child("mods/GA/Authority.json").exists())Initialize_permissions();
 		Player_Privilege_classification();
+	}
+
+	private static void Data() {
+		try {
+		List file = (List)FileUtil.readfile(true,new InputStreamReader(Initialization.class.getResourceAsStream("/other/FileList.txt"), "UTF-8"));
+		for(int i=0;i<file.size();i++){
+			LogUtil.info((String)file.get(i));
+			String a = String.valueOf(FileUtil.readfile(false,new InputStreamReader(Initialization.class.getResourceAsStream((String)file.get(i)), "UTF-8")));
+			FileUtil.File("resources"+(String)file.get(i)).writefile(a,false);
+		}
+		}catch(UnsupportedEncodingException e){
+			LogUtil.error(e);
+		}  
 	}
 
 	public static void MapList() {
