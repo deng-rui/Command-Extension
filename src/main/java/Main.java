@@ -29,7 +29,7 @@ import mindustry.plugin.Plugin;
 import mindustry.Vars;
 //Mindustry
 
-import static arc.util.Log.*;
+import static arc.util.Log.info;
 import static mindustry.Vars.state;
 import static mindustry.Vars.netServer;
 import static mindustry.Vars.logic;
@@ -38,6 +38,7 @@ import static mindustry.Vars.playerGroup;
 //Mindustry-Static
 
 import extension.core.Vote;
+import extension.util.LogUtil;
 import extension.util.GoogletranslateApi;
 //GA-Exted
 
@@ -58,25 +59,18 @@ import static extension.util.BadWordUtil.*;
 import static extension.util.LocaleUtil.getinput;
 import static extension.util.String_filteringUtil.*;
 //Static
-import mindustry.content.UnitTypes;
-import mindustry.entities.type.BaseUnit;
 
 public class Main extends Plugin {
 
 	GoogletranslateApi googletranslateApi = new GoogletranslateApi();
-	//改进全局变量
-	/*
-	 MOD使用的物理地址 .jar/config/mods/GA
-	 Physical address used by mod .jar/config/mods/GA
-	 Note as CN + EN
-	*/
-	//Map模式
 	//动态难度
 	//PVP限制
 
 	@SuppressWarnings("unchecked")
 	public Main() {
 
+		LogUtil.Int("INFO");
+		//Log
 		Start_Initialization();
 		//初始化
 
@@ -89,6 +83,16 @@ public class Main extends Plugin {
 			Set<String> set1 = BadWordUtil(removeAll_CN(e.message));
 			if (0 < set1.size())PlayerChatEvent_Sensitive_Thesaurus(e.player, set1.iterator().next());
 			//中英分检测
+			List<String> Pvpwincount = (List)getPlayer_Data_SQL_Temp(e.player.uuid);
+			if(getPlayer_power_Data(e.player.uuid)>0) {
+				if(!String.valueOf(e.message).equalsIgnoreCase("y"))return;
+				if (Vote.playerlist.contains(e.player.uuid)) {
+					e.player.sendMessage("vote y");
+				} else {
+					Vote.playerlist.add(e.player.uuid);
+					new Vote();	
+				}
+			}
 		});
 
 		Events.on(PlayerJoin.class, e -> {
