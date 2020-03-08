@@ -21,8 +21,6 @@ import static extension.dependent.Librarydependency.importLib;
 import static extension.dependent.Librarydependency.notWork;
 //Static
 
-import static arc.util.Log.*;
-
 public class Initialization {
 	public static void Start_Initialization() {
 		SQL();

@@ -4,14 +4,13 @@ import java.util.TimeZone;
 //Java
 
 import mindustry.game.Team;
-//Mindustry
-
 import mindustry.entities.type.Player;
 import mindustry.gen.Call;
 import mindustry.Vars;
 //Mindustry
 
 import extension.util.GoogletranslateApi;
+import extension.util.LogUtil;
 //GA-Exted
 
 import static extension.data.global.Maps.*;
@@ -30,17 +29,15 @@ public class Event {
 		if(!check.equals("/")) {
 			boolean valid = text.matches("\\w+");
 			JSONObject date = getData("mods/GA/setting.json");
+			// 检查是否启用翻译
 			boolean translateo = (boolean) date.get("translateo");
-			// check if enable translate
 			if (!valid && translateo) {
 				try{
 					Thread.currentThread().sleep(2000);
 					String translationa = googletranslateApi.translate(text,"en");
 					return translationa;
-				}catch(InterruptedException ie){
-					ie.printStackTrace();
-				}catch(Exception ie){
-					return null;
+				}catch(Exception e){
+					LogUtil.warn(e);
 				}
 			}
 		}
@@ -65,13 +62,14 @@ public class Event {
 	public static void PlayerJoin_Logins(Player player) {
 		try {
 			Thread.currentThread().sleep(2500);
-		}catch(InterruptedException ie){
-			ie.printStackTrace();
+		}catch(InterruptedException e){
+			LogUtil.debug("Login-Thread",e);
 		} 
 		player.setTeam(Team.derelict);
 		Call.onPlayerDeath(player);
-		//Call.onInfoMessage();
+		Call.onInfoMessage("HI");
 		setPlayer_power_Data(player.uuid,0);
+		Call.onInfoToast(player.con,"TEST",20f);
 		//Call.onInfoToast(player.con,getinput("join.tourist",String.valueOf(TimeZone.getTimeZone((String)doGet("http://ip-api.com/line/"+Vars.netServer.admins.getInfo(player.uuid).lastIP+"?fields=timezone")).getRawOffset())),20f);
 	}
 

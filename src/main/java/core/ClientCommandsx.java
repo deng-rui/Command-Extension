@@ -1,6 +1,8 @@
 package extension.core;
 
 import java.lang.Math;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -68,10 +70,16 @@ public class ClientCommandsx {
 			return;
 		}
 		List data = getSQLite_USER(usr);
+		try {
 			if(!(boolean)Passwdverify(pw,(String)data.get(SQL_type("PasswordHash")),(String)data.get(SQL_type("CSPRNG")))) {
 			player.sendMessage(getinput("login.pwno"));
-		return;
+			return;
+			}
+		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+			player.sendMessage(getinput("passwd.err"));
+			return;
 		}
+		
 		if(!data.get(SQL_type("UUID")).equals(player.uuid)) {
 			savePlayer_Data(updatePlayerData(data,SQL_type("UUID"),player.uuid),true,usr);
 			player.sendMessage(getinput("uuid.update"));
@@ -99,20 +107,25 @@ public class ClientCommandsx {
 			player.sendMessage(getinput("register.usrerr"));
 			return;
 		}
-		java.util.Map<String, Object> Passwd_date = (java.util.Map<String, Object>)newPasswd(newpw);
-		if(!(boolean)Passwd_date.get("resualt"))return;
-		JSONObject date = JSONObject.parseObject(doGet("http://ip-api.com/json/"+ip+"?fields=country,timezone"));
-		long GMT = TimeZone.getTimeZone((String)date.get("timezone")).getRawOffset();
-		InitializationPlayersSQLite(player.uuid,player.name,ip,String.valueOf(GMT),(String)date.get("country"),Language_determination((String)date.get("country")),getLocalTimeFromUTC(GMT,0),newusr,(String)Passwd_date.get("passwordHash"),(String)Passwd_date.get("salt"));
-		if (Vars.state.rules.pvp){
-			player.setTeam(netServer.assignTeam(player, playerGroup.all()));
-		} else {
-			player.setTeam(Team.sharded);
+		try {
+			java.util.Map<String, Object> Passwd_date = (java.util.Map<String, Object>)newPasswd(newpw);
+			if(!(boolean)Passwd_date.get("resualt"))return;
+			JSONObject date = JSONObject.parseObject(doGet("http://ip-api.com/json/"+ip+"?fields=country,timezone"));
+			long GMT = TimeZone.getTimeZone((String)date.get("timezone")).getRawOffset();
+			InitializationPlayersSQLite(player.uuid,player.name,ip,String.valueOf(GMT),(String)date.get("country"),Language_determination((String)date.get("country")),getLocalTimeFromUTC(GMT,0),newusr,(String)Passwd_date.get("passwordHash"),(String)Passwd_date.get("salt"));
+			if (Vars.state.rules.pvp){
+				player.setTeam(netServer.assignTeam(player, playerGroup.all()));
+			} else {
+				player.setTeam(Team.sharded);
+			}
+			Call.onPlayerDeath(player);
+			setPlayer_power_Data(player.uuid,1);
+			setPlayer_Data_SQL_Temp(player.uuid,(List)getSQLite_UUID(player.uuid));
+			Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(GMT,0)),30f);
+		} catch (Exception e) {
+			player.sendMessage(getinput("passwd.err"));
+			return;
 		}
-		Call.onPlayerDeath(player);
-		setPlayer_power_Data(player.uuid,1);
-		setPlayer_Data_SQL_Temp(player.uuid,(List)getSQLite_UUID(player.uuid));
-		Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(GMT,0)),30f);
 	}
 
 	public static String status(String then) {
@@ -164,8 +177,6 @@ public class ClientCommandsx {
 		state.set(State.menu);
 		net.closeServer();
 
-		//
-		//stop games
 		Map result = maps.all().find(map -> map.name().equalsIgnoreCase(mapp.replace('_', ' ')) || map.name().equalsIgnoreCase(mapp));
 		Gamemode preset = Gamemode.survival;
 		try{

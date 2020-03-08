@@ -38,10 +38,11 @@ public class ExtractUtil {
 	public static String getkeys(String url,String keys,int numbero,int numbert) throws Exception {
 		try {
 			String result = doGet(url);
+			// 去除返回数据空格
 			String text = removeAllBlank(result);
-			//TEST("TEST",text,"mods/A.json");
 			if (NotBlank(result)) {
 					String matchString = findMatchString(text, keys);
+					// 提取目标
 					String tkk = matchString.substring(numbero, matchString.length() - numbert);
 					return tkk;
 			}

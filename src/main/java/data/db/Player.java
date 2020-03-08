@@ -1,13 +1,18 @@
 package extension.data.db;
 
 import java.util.*;
+import java.sql.*;
+//Java
 
 import arc.*;
 import arc.Core;
+//Arc
 
-import java.sql.*;
+import extension.util.LogUtil;
+//GA-Exted
 
 import static extension.data.db.SQLite.SQL_type;
+//Static
 
 public class Player {
 	public static void InitializationPlayersSQLite(String UUID, String NAME, String IP, String GMT, String Country, String Language, String LastLogin, String User, String PasswordHash, String CSPRNG) {
@@ -30,7 +35,8 @@ public class Player {
 			stmt.close();
 			c.commit();
 			c.close();
-		} catch ( Exception e ) {
+		} catch (Exception e ) {
+			LogUtil.fatal(e);
 		}
 	}
 
@@ -57,8 +63,8 @@ public class Player {
 			stmt.close();
 			c.commit();
 			c.close();
-		} catch ( Exception e ) {
-			System.out.println(e);
+		} catch (Exception e ) {
+			LogUtil.error(e);
 		}
 	}
 
@@ -101,7 +107,8 @@ public class Player {
 			stmt.close();
 			c.commit();
 			c.close();
-		} catch ( Exception e ) {
+		} catch (Exception e ) {
+			LogUtil.error(e);
 		}
 	}
 
@@ -166,8 +173,9 @@ public class Player {
 			c.close();
 			return Players;
 		} catch ( Exception e ) {
+			LogUtil.error(e);
 		}
-	return null;
+		return null;
 	}
 
 	public static List getSQLite_USER(String user) {
@@ -231,6 +239,7 @@ public class Player {
 			c.close();
 			return Players;
 		} catch ( Exception e ) {
+			LogUtil.error(e);
 		}
 		return null;
 	}
@@ -256,13 +265,8 @@ public class Player {
 		return result;
 	}
 
-	public static Connection connectSQLite() {
-		try {
-			Connection c = DriverManager.getConnection("jdbc:sqlite:"+Core.settings.getDataDirectory().child("mods/GA/Data.db"));
-			return c;
-		} catch ( Exception e ) {
-		}
-		return null;
+	public static Connection connectSQLite() throws Exception {
+		return (Connection)DriverManager.getConnection("jdbc:sqlite:"+Core.settings.getDataDirectory().child("mods/GA/Data.db"));
 	}
 
 }

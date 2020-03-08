@@ -70,7 +70,6 @@ public class Vote {
 			player.sendMessage("NO START");
 			return;
 		}
-
 		if(playerGroup.size() == 1){
 			//player.sendMessage();
 			require = 1;
@@ -79,9 +78,7 @@ public class Vote {
 		} else {
 			require = (int) Math.ceil((double) playerGroup.size() / 2);
 		}
-
-		service=Executors.newScheduledThreadPool(2);//两条线程
-
+		service=Executors.newScheduledThreadPool(2);
 		Runnable Countdown=new Runnable() {
 			@Override
 			public void run() {
@@ -91,7 +88,6 @@ public class Vote {
 		};
 		//倒计时 10S/r
 		Count_down=service.scheduleAtFixedRate(Countdown,10,10,TimeUnit.SECONDS);
-
 		Runnable Votetime=new Runnable() {
 			@Override
 			public void run() {
@@ -101,9 +97,8 @@ public class Vote {
 				end();
 			}
 		};
-
-		Vote_time=service.schedule(Votetime,11,TimeUnit.SECONDS);
-
+		//倒计时58s 便于停止
+		Vote_time=service.schedule(Votetime,58,TimeUnit.SECONDS);
 		reciprocal=6;
 		sted = false;
 
@@ -112,10 +107,11 @@ public class Vote {
 	private void end() {
 		Vote_time.cancel(true);
 		service.shutdown();
+		//释放内存-
 		service=null;
 		Count_down=null;
 		Vote_time=null;
-		//清空
+		//-
 		if (playerlist.size() >= require) {
 			switch(type){
 				case "kick" :

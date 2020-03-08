@@ -30,8 +30,8 @@ public class LocaleUtil {
 		Locale locale = new Locale(o,t);
 		//URLClassLoader file = new URLClassLoader(new URL[] {Core.settings.getDataDirectory().child("mods/GA/resources/bundles/").file().toURI().toURL()});
 		//ResourceBundle bundle = ResourceBundle.getBundle("GA", locale, file, new UTF8Control());
+		//UTF-8 外置资源
 		ResourceBundle bundle = ResourceBundle.getBundle("bundles/GA", locale, new UTF8Control());
-		//UTF-8 害死人.jpg 外置资源
 		try {
 			if(input !=null){
 				if(params == null){
@@ -42,11 +42,13 @@ public class LocaleUtil {
 					return result;
 				}
 			}
+		//防止使游戏崩溃 CALL..
 		} catch (MissingResourceException e) {
 			LogUtil.error(e);
+			
 		}
 		return input+" : Key is invalid.";
-		//防止null使游戏崩溃 CALL..
+		
 	}
 
 	public static String getinput(String input,Object... params) {

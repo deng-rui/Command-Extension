@@ -7,6 +7,9 @@ import java.sql.*;
 import arc.Core;
 //Arc
 
+import extension.util.LogUtil;
+//GA-Exted
+
 import static extension.data.db.Player.getSQLite_UUID;
 import static extension.data.global.Maps.getPlayer_power_Data;
 import static extension.data.global.Maps.getPower_Data;
@@ -18,7 +21,7 @@ import static extension.data.json.Json.getData;
 //Static
 
 import com.alibaba.fastjson.JSONObject;
-//Java
+//Json
 
 public class SQLite {
 
@@ -74,7 +77,9 @@ public class SQLite {
 			stmt.executeUpdate(sql);
 			stmt.close();
 			c.close();
-		} catch ( Exception e ) {
+			LogUtil.info("WSQL");
+		} catch (Exception e ) {
+			LogUtil.fatal("Create SQL",e);
 		}
 	}
 
@@ -131,13 +136,8 @@ public class SQLite {
 		}
 	}
 
-	public static Connection connectSQLite() {
-		try {
-			Connection c = DriverManager.getConnection("jdbc:sqlite:"+Core.settings.getDataDirectory().child("mods/GA/Data.db"));
-			return c;
-		} catch ( Exception e ) {
-		}
-		return null;
+	public static Connection connectSQLite() throws Exception {
+		return (Connection)DriverManager.getConnection("jdbc:sqlite:"+Core.settings.getDataDirectory().child("mods/GA/Data.db"));
 	}
 
 }

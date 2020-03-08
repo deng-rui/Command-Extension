@@ -2,7 +2,7 @@ package extension.data.global;
 
 public class Booleans {
 	private static boolean vote = true;
-//初始化
+
 	public static boolean getvote() {
 		return vote;
 	}

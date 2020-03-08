@@ -18,6 +18,9 @@ import arc.Core;
 import arc.files.Fi;
 //Arc
 
+import extension.util.LogUtil;
+//GA-Exted
+
 import static extension.net.HttpRequest.Url302;
 import static extension.net.HttpRequest.downUrl;
 //Static
@@ -35,18 +38,18 @@ public class Librarydependency implements Driver {
 		String[] temp=str.split("\\.");
 		url = "/";
 		for (int i = 0; i < temp.length; i++) {
-			//System.out.println(temp[i]);
 			url = url+temp[i]+"/";
 		}
 
 		if("China".equalsIgnoreCase(country)) {
 			url = "https://maven.aliyun.com/nexus/content/groups/public"+url+name+"/"+version+"/"+name+"-"+version+".jar";
+			// 解决aliyun 302跳转
 			Url302(url,name+"_"+version+".jar",savePath);
-			//ali 302刺激 CN
+			LogUtil.info("CN-ALI");
 		}else{
 			url = "https://repo1.maven.org/maven2"+url+name+"/"+version+"/"+name+"-"+version+".jar";
 			downUrl(url,name+"_"+version+".jar",savePath);
-			//maven NO CN	
+			LogUtil.info("NO CN-MAVEN");
 		}
 	}
 
@@ -62,15 +65,17 @@ public class Librarydependency implements Driver {
 	public static void notWork(String name, String version, Fi savePath) {
 		Fi[] file = savePath.list();
 		for(int i=0;i<file.length;i++){
-			System.out.println("start sql jar");
 			if(!file[i].name().replace(".jar","").equals(name+"_"+version))return;
 		}
-		System.out.println(file[0].name());
+		LogUtil.info("START import SQL");
 		try {
 			URLClassLoader classLoader = new URLClassLoader(new URL[] {file[0].file().toURI().toURL()});
 			Driver driver = (Driver) Class.forName("org.sqlite.JDBC", true, classLoader).getDeclaredConstructor().newInstance();
+			// 加壳
 			DriverManager.registerDriver(new Librarydependency(driver));
+			LogUtil.info("SQL import Done");
 		} catch (Exception e){
+			LogUtil.error("import SQL",e);
 		}
 	}
 

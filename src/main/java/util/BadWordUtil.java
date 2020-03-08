@@ -16,8 +16,8 @@ public class BadWordUtil {
 	public static String filePath = "/other/Sensitive_Thesaurus.txt";
 	public static Set<String> words;
 	public static Map<String,String> wordMap;
-	public static int minMatchTYpe = 1;      //最小匹配规则
-	public static int maxMatchType = 2;      //最大匹配规则
+	public static int minMatchTYpe = 1;//最小匹配规则
+	public static int maxMatchType = 2;//最大匹配规则
 	static{
 		BadWordUtil.words = readTxtByLine(filePath);
 		addBadWordToHashMap(BadWordUtil.words);
