@@ -13,11 +13,9 @@ linglan512572354:https://github.com/linglan512572354
 
 ## 前言
 
-请注意本项目阶段性的时效性  
-这个项目是开放的，如果有任何短缺，请给我发电子邮件或提交一个问题  
+这个项目是开放的，如果有任何问题，请给我发电子邮件或提交一个问题  
 这个项目是一个集中的项目。如果您需要一些模块，请在成品完成后等待分割，或者您可以自己完成  
-默认情况下，Google Translator不应将源时间设置为0，否则将禁止通过ip访问Google的API  
-提交的mast默认已通过编译，您可以自行编译并尝试使用它们，请不要用于生产环境:)  
+默认情况下，Google Translator不应将源时间设置为0，否则谷歌将拉黑您的ip于1-7天  
 需要生产环境请下载发布的文件  
 
 ## 构建配置
@@ -27,24 +25,32 @@ linglan512572354:https://github.com/linglan512572354
 | 当前配置 	| BCM2711         | 4G 		| Ubuntu 19.10 	| 500G HHD 	| Java 11   | 6.2       |
 | 建议配置 	| Intel I3-6100+  | 4G 		| ubuntu 16.04+ | 500G HHD 	| Java 8+   | 6.2       |
 
-## 命令列表
+## 服务器命令列表
 
-| Command       | Parameter                             | Description                                           |
-|:---           |:---                                   |:---                                                   |
-| info          |                                       | info me                                               |
-| status        |                                       | View server status                                    |
-| getpos        |                                       | View the current coordinates                          |
-| tp            |&lt;player name&gt;                    | Teleport to other players                             |
-| tpp           |&lt;XYZ&gt;                            | Transfer to specified coordinates                     |
-| suicide       |                                       | Kill yourself.                                        |
-| getpos        |                                       | Get your current position info                        |
-| team          |                                       | Replacement team.                                     |
-| difficulty    |&lt;mode&gt;                           | Set server difficulty                                 |
-| gameover      |                                       | KEnd the game                                         |
-| host          |&lt;mapsname&gt; [gamemode]            | Start a new game                                      |
-| runwave       |                                       | Runwave                                               |
-| time          |                                       | View the current time of the server                   |
-| tr            |                                       | Google translation(Use - instead of spaces in text)   |
+| 命令 					 | 参数 												 | 信息 									 |
+|:--- 					 |:--- 												 |:--- 									 |
+| reloadmaps(覆盖) 		 | 													 | 重载地图(便于重新读取模式) 				 |
+
+## 游戏命令列表
+
+| 命令 			| 参数 												 | 信息 										 |
+|:---           |:--- 												 |:--- 										 |
+| info          | 													 | 查看我的信息 								 |
+| status        | 													 | 查看服务器当前状态 						 |
+| getpos        | 													 | 查看当前的坐标 							 |
+| tp            |&lt;玩家名称&gt; 									 | TP到指定人身边 							 |
+| tpp           |&lt;XYZ坐标&gt; 									 | TP到指定坐标 								 |
+| suicide       | 													 | 自杀 										 |
+| team          | 													 | 更换队伍 									 |
+| difficulty    |&lt;难度&gt; 										 | 设置难度 									 |
+| gameover      | 													 | 结束游戏 									 |
+| host          |&lt;地图名&gt; [游戏模式] 							 | 更换地图 									 |
+| runwave       | 													 | 下一波 									 |
+| time          | 													 | 查看服务器当前时间(UTC 后续将动态玩家时间) 	 |
+| tr            | 													 | 谷歌翻译! 请使用-代替文本的空格 			 |
+| maps          |[页码] [指定查看模式-游戏模式-简写] 					 | 查看服务器当前地图 						 |
+| vote          |[gameover/kick/skipwave/host] [玩家名/地图序号] 		 | 投票 										 |
+
 
 ### 当前进度
 
@@ -73,11 +79,11 @@ config
         │   Authority.json  //权限配置
         │   Data.db         //玩家数据
         │   Setting.json    //设置
-        └───Lib             //插件使用jar-外置目录
+        └───lib             //插件使用jar-外置目录
         └───resources       //插件使用资源外置目录   *
            └───bundles      //语言文件              *
            └───other        //屏蔽词文件            *
-        └───Log             //插件使用log目录       *
+        └───log             //插件使用log目录       *
 ```
 
 ### 如何安装
@@ -90,5 +96,5 @@ config
 如有必要，您可以自己尝试更改本地化参数
 
 ### 许可证
-The Unlicense
+The Unlicense-公共领域
 :) 

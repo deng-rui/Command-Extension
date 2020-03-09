@@ -13,11 +13,10 @@ linglan512572354:https://github.com/linglan512572354
 
 ## Premise
 
-Please pay attention to timeliness in the beginning of reconstruction of this project.
-This project is open and only based on individuals If there is any shortage, please send me an email or submit a question.
-This project is a centralized project. If you need some modules, please wait for the division after the completion of the finished product or you can finish it by yourself.
-Published files have been compiled and you can compile and try to use them yourself. :)
-By default, Google Translator should not set the source time to 0, otherwise it will be forbidden to access Google's API by ip.
+This project is open. If you have any questions, please email me or submit a question  
+This project is a centralized project. If you need some modules, please wait for the segmentation after the finished product is completed, or you can complete it yourself  
+By default, Google translator should not set the source time to 0, otherwise Google will blackmail your IP in 1-7 days  
+Production environment is required. Please download the published file  
 
 ## build configuration
 
@@ -26,24 +25,34 @@ By default, Google Translator should not set the source time to 0, otherwise it 
 | Current use   | BCM2711         | 4G    | ubuntu 19.10  | 500G HHD  | Java 11   | 6.2       |
 | Recommended   | Intel I3-6100+  | 4G    | ubuntu 16.04+ | 500G HHD  | Java 8+   | 6.2       |
 
-## Client commands
+## Server commands
 
-| Command       | Parameter                             | Description                                           |
-|:---           |:---                                   |:---                                                   |
-| info          |                                       | info me                                               |
-| status        |                                       | View server status                                    |
-| getpos        |                                       | View the current coordinates                          |
-| tp            |&lt;player name&gt;                    | Teleport to other players                             |
-| tpp           |&lt;XYZ&gt;                            | Transfer to specified coordinates                     |
-| suicide       |                                       | Kill yourself.                                        |
-| getpos        |                                       | Get your current position info                        |
-| team          |                                       | Replacement team.                                     |
-| difficulty    |&lt;mode&gt;                           | Set server difficulty                                 |
-| gameover      |                                       | KEnd the game                                         |
-| host          |&lt;mapsname&gt; [gamemode]            | Start a new game                                      |
-| runwave       |                                       | Runwave                                               |
-| time          |                                       | View the current time of the server                   |
-| tr            |                                       | Google translation(Use - instead of spaces in text)   |
+| Command               | Parameter                                          | Description                                           |
+|:---                   |:---                                                |:---                                                   |
+| reloadmaps(replace)   |                                                    | Reload the map (easy to re-read the mode)             |
+
+## Game command
+
+| Command       | Parameter                                          | Description                                           |
+|:---           |:---                                                |:---                                                   |
+| info          |                                                    | info me                                               |
+| status        |                                                    | View server status                                    |
+| getpos        |                                                    | View the current coordinates                          |
+| tp            |&lt;player name&gt;                                 | Teleport to other players                             |
+| tpp           |&lt;XYZ&gt;                                         | Transfer to specified coordinates                     |
+| suicide       |                                                    | Kill yourself.                                        |
+| team          |                                                    | Replacement team.                                     |
+| difficulty    |&lt;mode&gt;                                        | Set server difficulty                                 |
+| gameover      |                                                    | KEnd the game                                         |
+| host          |&lt;mapsname&gt; [gamemode]                         | Start a new game                                      |
+| runwave       |                                                    | Runwave                                               |
+| time          |                                                    | View the current time of the server                   |
+| tr            |                                                    | Google translation(Use - instead of spaces in text)   |
+| maps          |[page] [mode(1)]                                    | View the map currently available to the server        |
+| vote          |&lt;gameover/kick/skipwave/host&gt; [name/number]   | VOTE                                                  |
+
+Notes:
+1: You need to view the schema abbreviation of the map for the specified schema
 
 ### Current progress
 
@@ -72,11 +81,11 @@ config
         │   Authority.json  //Authority Data
         │   Data.db         //Player Data
         │   Setting.json    //Setting
-        └───Lib             //Plug in uses jar external directory
+        └───lib             //Plug in uses jar external directory
         └───resources       //Plug in using resource external directory   *
            └───bundles      //Language file                               *
            └───other        //Block word file                             *
-        └───Log             //Plug in log (within ten days)               *
+        └───log             //Plug in log (within ten days)               *
 ```
 
 ### Installing
