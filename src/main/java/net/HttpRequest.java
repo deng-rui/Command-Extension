@@ -15,6 +15,8 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import extension.data.global.Config;
+import extension.util.file.FileUtil;
 import extension.util.LogUtil;
 //GA-Exted
 
@@ -40,7 +42,7 @@ public class HttpRequest {
 	}
 
 
-	public static void Url302(String url,String name,Fi filePath){
+	public static void Url302(String url,String file){
 		try {
 			URL serverUrl = new URL(url);
 			HttpURLConnection conn = (HttpURLConnection) serverUrl.openConnection();
@@ -51,20 +53,20 @@ public class HttpRequest {
 			conn.addRequestProperty("User-Agent","Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.2.8) Firefox/3.6.8");
 			conn.connect();
 			String location = conn.getHeaderField("Location");
-			LogUtil.info("URL-302",location);
-			downUrl(location,name,filePath);
+			LogUtil.debug("URL-302",location);
+			downUrl(location,file);
 		} catch (Exception e) {
 			LogUtil.warn("Url302",e);
 		}
 	}
 
-	public static void downUrl(String url,String name,Fi filePath){
-		File file=filePath.file();
-		if (!file.exists())file.mkdirs();
+	public static void downUrl(String url,String file){
 		FileOutputStream fileOut = null;
 		HttpURLConnection conn = null;
 		InputStream inputStream = null;
 		try{
+			File filepath=new File(file).getParentFile();
+			if (!filepath.exists())filepath.mkdirs();
 			URL httpUrl=new URL(url);
 			conn=(HttpURLConnection) httpUrl.openConnection();
 			conn.setDoInput(true);  
@@ -73,7 +75,7 @@ public class HttpRequest {
 			conn.connect();
 			inputStream=conn.getInputStream();
 			BufferedInputStream bis = new BufferedInputStream(inputStream);
-			fileOut = new FileOutputStream(filePath+File.separator+name);
+			fileOut = new FileOutputStream(file);
 			BufferedOutputStream bos = new BufferedOutputStream(fileOut);
 			byte[] buf = new byte[4096];
 			int length = bis.read(buf);
@@ -84,6 +86,7 @@ public class HttpRequest {
 			bos.close();
 			bis.close();
 			conn.disconnect();
+			LogUtil.debug("URL-Down-End");
 		} catch (Exception e) {
 			LogUtil.error("downUrl",e);
 		}

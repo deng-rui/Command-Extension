@@ -13,7 +13,7 @@ public class Maps {
 	// 玩家进入时缓存时间 /未login 无法查询数据库
 	private static Map<String, String> Player_Data_Temp = Collections.synchronizedMap(new HashMap<String, String>());
 	// 玩家数据temp 读取-修改-写入
-	private static Map<String, List> Player_Data_SQL_Temp = Collections.synchronizedMap(new HashMap<String, List>());
+	private static Map<String, List<String>> Player_Data_SQL_Temp = Collections.synchronizedMap(new HashMap<String, List<String>>());
 	// 玩家权限
 	private static Map<String, Integer> Player_power_Data = Collections.synchronizedMap(new HashMap<String, Integer>());
 	// 权限内容
@@ -35,7 +35,7 @@ public class Maps {
 		return Power_Data.get(id);
 	}
 
-	public static List getPlayer_Data_SQL_Temp(String uuid) {
+	public static List<String> getPlayer_Data_SQL_Temp(String uuid) {
 		return Player_Data_SQL_Temp.get(uuid);
 	}
 	//读取
@@ -56,7 +56,7 @@ public class Maps {
 		Power_Data.put(id, list);
 	}
 
-	public static void setPlayer_Data_SQL_Temp(String uuid, List list) {
+	public static void setPlayer_Data_SQL_Temp(String uuid, List<String> list) {
 		Player_Data_SQL_Temp.put(uuid, list);
 	}
 	//设置

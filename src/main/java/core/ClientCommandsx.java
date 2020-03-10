@@ -43,14 +43,16 @@ import static mindustry.Vars.state;
 import static mindustry.Vars.world;
 //Mindustry-Static
 
+import extension.data.global.Lists;
+import extension.data.global.Maps;
+//
+
 import static extension.data.db.Player.getSQLite_USER;
 import static extension.data.db.Player.getSQLite_UUID;
 import static extension.data.db.Player.InitializationPlayersSQLite;
 import static extension.data.db.Player.isSQLite_User;
 import static extension.data.db.Player.savePlayer_Data;
 import static extension.data.db.SQLite.SQL_type;
-import static extension.data.global.Lists.updatePlayerData;
-import static extension.data.global.Maps.*;
 import static extension.net.HttpRequest.doGet;
 import static extension.util.DateUtil.getLocalTimeFromUTC;
 import static extension.util.LocaleUtil.getinput;
@@ -69,7 +71,7 @@ public class ClientCommandsx {
 			player.sendMessage(getinput("login.usrno"));
 			return;
 		}
-		List data = getSQLite_USER(usr);
+		List<String> data = getSQLite_USER(usr);
 		try {
 			if(!(boolean)Passwdverify(pw,(String)data.get(SQL_type("PasswordHash")),(String)data.get(SQL_type("CSPRNG")))) {
 			player.sendMessage(getinput("login.pwno"));
@@ -81,7 +83,7 @@ public class ClientCommandsx {
 		}
 		
 		if(!data.get(SQL_type("UUID")).equals(player.uuid)) {
-			savePlayer_Data(updatePlayerData(data,SQL_type("UUID"),player.uuid),true,usr);
+			savePlayer_Data(Lists.updatePlayerData(data,SQL_type("UUID"),player.uuid),true,usr);
 			player.sendMessage(getinput("uuid.update"));
 		}
 		data = getSQLite_USER(usr);
@@ -91,8 +93,8 @@ public class ClientCommandsx {
 			player.setTeam(Team.sharded);
 		}
 		Call.onPlayerDeath(player);
-		setPlayer_power_Data(player.uuid,Integer.parseInt((String)data.get(SQL_type("Authority"))));
-		setPlayer_Data_SQL_Temp(player.uuid,data);
+		Maps.setPlayer_power_Data(player.uuid,Integer.parseInt((String)data.get(SQL_type("Authority"))));
+		Maps.setPlayer_Data_SQL_Temp(player.uuid,data);
 		Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(Long.valueOf((String)data.get(SQL_type("GMT"))),Integer.parseInt((String)data.get(SQL_type("Time_format"))))),30f);
 	}
 
@@ -119,8 +121,8 @@ public class ClientCommandsx {
 				player.setTeam(Team.sharded);
 			}
 			Call.onPlayerDeath(player);
-			setPlayer_power_Data(player.uuid,1);
-			setPlayer_Data_SQL_Temp(player.uuid,(List)getSQLite_UUID(player.uuid));
+			Maps.setPlayer_power_Data(player.uuid,1);
+			Maps.setPlayer_Data_SQL_Temp(player.uuid,(List<String>)getSQLite_UUID(player.uuid));
 			Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(GMT,0)),30f);
 		} catch (Exception e) {
 			player.sendMessage(getinput("passwd.err"));

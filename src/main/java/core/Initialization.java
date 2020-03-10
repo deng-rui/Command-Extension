@@ -15,8 +15,9 @@ import mindustry.maps.Maps.*;
 import static mindustry.Vars.maps;
 //Mindustry-Static
 
+import extension.data.global.Config;
 import extension.util.LogUtil;
-import extension.util.FileUtil;
+import extension.util.file.FileUtil;
 //GA-Exted
 
 import static extension.data.db.SQLite.Player_Privilege_classification;
@@ -27,7 +28,6 @@ import static extension.data.global.Lists.getMaps_List;
 import static extension.data.json.Json.Initialization;
 import static extension.data.json.Json.Initialize_permissions;
 import static extension.dependent.Librarydependency.importLib;
-import static extension.dependent.Librarydependency.notWork;
 //Static
 
 public class Initialization {
@@ -42,8 +42,8 @@ public class Initialization {
 	}
 
 	private static void SQL() {
-		importLib("org.xerial","sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
-		notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
+		importLib("org.xerial","sqlite-jdbc","3.30.1",Config.Plugin_Lib_Path);
+		//notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
 		if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists())InitializationSQLite();
 	}
 
@@ -55,14 +55,18 @@ public class Initialization {
 
 	private static void Data() {
 		try {
-		List file = (List)FileUtil.readfile(true,new InputStreamReader(Initialization.class.getResourceAsStream("/other/FileList.txt"), "UTF-8"));
-		for(int i=0;i<file.size();i++){
-			LogUtil.info((String)file.get(i));
-			String a = String.valueOf(FileUtil.readfile(false,new InputStreamReader(Initialization.class.getResourceAsStream((String)file.get(i)), "UTF-8")));
-			FileUtil.File("resources"+(String)file.get(i)).writefile(a,false);
-		}
+			List file = (List)FileUtil.readfile(true,new InputStreamReader(Initialization.class.getResourceAsStream("/other/FileList.txt"), "UTF-8"));
+			for(int i=0;i<file.size();i++){
+				//LogUtil.info((String)file.get(i));
+				if(!FileUtil.File(Config.Plugin_Resources_Path+(String)file.get(i)).exists()) {
+					//IPR必须加上/
+					String a = (String)FileUtil.readfile(false,new InputStreamReader(Initialization.class.getResourceAsStream((String)file.get(i)), "UTF-8"));
+					FileUtil.writefile(a,false);
+					LogUtil.info("Defect : Start creating write external resource File",Config.Plugin_Resources_Path+(String)file.get(i));
+				}
+			}
 		}catch(UnsupportedEncodingException e){
-			LogUtil.error(e);
+			LogUtil.fatal("File write error",e);
 		}  
 	}
 

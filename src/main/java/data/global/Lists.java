@@ -22,7 +22,7 @@ public class Lists {
 	}
 	//清空
 
-	public static List updatePlayerData(List list, int old, String nw) {
+	public static List<String> updatePlayerData(List<String> list, int old, String nw) {
 		List<String> tempList = new ArrayList<String>(list.size()+1);  
 		for(int i=0;i<list.size();i++){
 			if(Integer.valueOf(old).equals(i)) {  

@@ -39,7 +39,11 @@ import static mindustry.Vars.playerGroup;
 
 import extension.core.Vote;
 import extension.util.LogUtil;
-import extension.util.GoogletranslateApi;
+import extension.util.file.FileUtil;
+import extension.util.translation.Google;
+import extension.data.global.Lists;
+import extension.data.global.Maps;
+import extension.data.global.Strings;
 //GA-Exted
 
 import static extension.core.ClientCommandsx.*;
@@ -50,11 +54,6 @@ import static extension.core.Initialization.Follow_up_Initialization;
 import static extension.data.db.SQLite.Authority_control;
 import static extension.data.db.SQLite.SQL_type;
 import static extension.data.db.Player.getSQLite_UUID;
-import static extension.data.global.Booleans.*;
-import static extension.data.global.Lists.*;
-import static extension.data.global.Lists.getMaps_List;
-import static extension.data.global.Maps.*;
-import static extension.data.global.Strings.*;
 import static extension.util.BadWordUtil.*;
 import static extension.util.LocaleUtil.getinput;
 import static extension.util.String_filteringUtil.*;
@@ -62,29 +61,33 @@ import static extension.util.String_filteringUtil.*;
 
 public class Main extends Plugin {
 
-	GoogletranslateApi googletranslateApi = new GoogletranslateApi();
+	Google googletranslation = new Google();
 	//动态难度
 	//PVP限制
 
-	@SuppressWarnings("unchecked")
+	//@SuppressWarnings("unchecked")
 	public Main() {
 
-		LogUtil.Int("INFO");
 		//Log
-		Start_Initialization();
+		LogUtil.Int("ALL");
+		
 		//初始化
+		Start_Initialization();
 
+		//发言时
 		Events.on(PlayerChatEvent.class, e -> {
 			String result = PlayerChatEvent_translate(String.valueOf(e.message.charAt(0)),e.message);
 			if (null != result)Call.sendMessage("["+e.player.name+"]"+"[green] : [] "+result+"   -From Google Translator");
 			//自动翻译
-			Set<String> set = BadWordUtil(removeAll_EN(e.message));
-			if (0 < set.size())PlayerChatEvent_Sensitive_Thesaurus(e.player, set.iterator().next());
-			Set<String> set1 = BadWordUtil(removeAll_CN(e.message));
-			if (0 < set1.size())PlayerChatEvent_Sensitive_Thesaurus(e.player, set1.iterator().next());
+			Set<String> set = (Set<String>)BadWordUtil(removeAll_EN(e.message));
+			if (0 < set.size())
+				PlayerChatEvent_Sensitive_Thesaurus(e.player, set.iterator().next());
+			Set<String> set1 = (Set<String>)BadWordUtil(removeAll_CN(e.message));
+			if (0 < set1.size())
+				PlayerChatEvent_Sensitive_Thesaurus(e.player, set1.iterator().next());
 			//中英分检测
-			List<String> Pvpwincount = (List)getPlayer_Data_SQL_Temp(e.player.uuid);
-			if(getPlayer_power_Data(e.player.uuid)>0) {
+			List<String> Pvpwincount = (List<String>)Maps.getPlayer_Data_SQL_Temp(e.player.uuid);
+			if(Maps.getPlayer_power_Data(e.player.uuid)>0) {
 				if(!String.valueOf(e.message).equalsIgnoreCase("y"))return;
 				if (Vote.playerlist.contains(e.player.uuid)) {
 					e.player.sendMessage("vote y");
@@ -95,32 +98,26 @@ public class Main extends Plugin {
 			}
 		});
 
+		//加入服务器时
 		Events.on(PlayerJoin.class, e -> {
-			Set<String> set = BadWordUtil(removeAll_EN(e.player.name));
-			if (0 < set.size())Call.onKick(e.player.con, getinput("Sensitive.Thesaurus.join.kick",set.iterator().next()));
-			Set<String> set1 = BadWordUtil(removeAll_CN(e.player.name));
-			if (0 < set1.size())Call.onKick(e.player.con, getinput("Sensitive.Thesaurus.join.kick",set1.iterator().next()));
+			Set<String> set = (Set<String>)BadWordUtil(removeAll_EN(e.player.name));
+			if (0 < set.size())
+				Call.onKick(e.player.con, getinput("Sensitive.Thesaurus.join.kick",set.iterator().next()));
+			Set<String> set1 = (Set<String>)BadWordUtil(removeAll_CN(e.player.name));
+			if (0 < set1.size())
+				Call.onKick(e.player.con, getinput("Sensitive.Thesaurus.join.kick",set1.iterator().next()));
 			//中英分检测
 			PlayerJoin_Logins(e.player);
-			setPlayer_Data_Temp(e.player.uuid,"Playtime-start",String.valueOf(System.currentTimeMillis()));
-			//Logins
-			if (Vars.state.rules.pvp){
-				if("N".equalsIgnoreCase(getGC_1())){
-					state.rules.playerDamageMultiplier = 0f;
-					state.rules.playerHealthMultiplier = 0.5f;
-				}else{
-					state.rules.playerDamageMultiplier = 0.33f;
-					state.rules.playerHealthMultiplier = 1f;
-				}
-			}
+			Maps.setPlayer_Data_Temp(e.player.uuid,"Playtime-start",String.valueOf(System.currentTimeMillis()));
 		});
 
+		//退出时
 		Events.on(PlayerLeave.class, e -> {
-			removePlayer_Data_Temp(e.player.uuid,"Playtime-start");
+			Maps.removePlayer_Data_Temp(e.player.uuid,"Playtime-start");
 		});
 
+		//Gameover
 		Events.on(GameOverEvent.class, e -> {
-			if (Vars.state.rules.pvp)setGC();
 			if (state.rules.pvp) {
 				int index = 5;
 				for (int a = 0; a < 5; a++) {
@@ -132,19 +129,22 @@ public class Main extends Plugin {
 					for (int i = 0; i < playerGroup.size(); i++) {
 						Player player = playerGroup.all().get(i);
 						if (player.getTeam().name.equals(e.winner.name)) {
-							List<String> Pvpwincount = (List)getPlayer_Data_SQL_Temp(player.uuid);
+							List<String> Pvpwincount = (List<String>)Maps.getPlayer_Data_SQL_Temp(player.uuid);
 							System.out.println(player.uuid);
-							if(getPlayer_power_Data(player.uuid)>0)setPlayer_Data_SQL_Temp(player.uuid,updatePlayerData(Pvpwincount,SQL_type("Pvpwincount"),String.valueOf(Integer.parseInt(Pvpwincount.get(SQL_type("Pvpwincount")))+1)));
+							if(Maps.getPlayer_power_Data(player.uuid)>0)
+								Maps.setPlayer_Data_SQL_Temp(player.uuid,Lists.updatePlayerData(Pvpwincount,SQL_type("Pvpwincount"),String.valueOf(Integer.parseInt(Pvpwincount.get(SQL_type("Pvpwincount")))+1)));
 						} else {
-							List<String> Pvpwincount = (List)getPlayer_Data_SQL_Temp(player.uuid);
+							List<String> Pvpwincount = (List<String>)Maps.getPlayer_Data_SQL_Temp(player.uuid);
 							System.out.println(player.uuid);
-							if(getPlayer_power_Data(player.uuid)>0)setPlayer_Data_SQL_Temp(player.uuid,updatePlayerData(Pvpwincount,SQL_type("Pvplosecount"),String.valueOf(Integer.parseInt(Pvpwincount.get(SQL_type("Pvplosecount")))+1)));
+							if(Maps.getPlayer_power_Data(player.uuid)>0)
+								Maps.setPlayer_Data_SQL_Temp(player.uuid,Lists.updatePlayerData(Pvpwincount,SQL_type("Pvplosecount"),String.valueOf(Integer.parseInt(Pvpwincount.get(SQL_type("Pvplosecount")))+1)));
 						}
 					}
 				}
 			}
 		});
 
+		//服务器加载完成时
 		Events.on(ServerLoadEvent.class, e-> {
 			netServer.admins.addChatFilter((player, message) -> {
 				return replaceBadWord(message,2,"*");
@@ -173,11 +173,6 @@ public class Main extends Plugin {
 	@Override
 	public void registerServerCommands(CommandHandler handler){
 		handler.removeCommand("reloadmaps");
-
-		handler.register("gac","<ON/OFF>", "NOT", (arg) -> {
-				if("Y".equalsIgnoreCase(arg[0]))setGC_1("Y");
-				if ("N".equalsIgnoreCase(arg[0]))setGC_1("N");
-		});
 
 		handler.register("reloadmaps", "NOT", (arg) -> {
 			int beforeMaps = maps.all().size;
@@ -357,7 +352,6 @@ public class Main extends Plugin {
 				host(args[0],args[1],player);
 			}
 		});
-		//It can be used normally. :)
 
 		handler.<Player>register("runwave",getinput("runwave"), (args, player) -> {
 			if(!Authority_control(player.uuid,"runwave")) {
@@ -383,7 +377,7 @@ public class Main extends Plugin {
 					ie.printStackTrace();
 				} 
 				try{
-					String translationm = googletranslateApi.translate(text,args[1]);
+					String translationm = googletranslation.translate(text,args[1]);
 					Call.sendMessage("["+player.name+"]"+"[green] : [] "+translationm+"   -From Google Translator");
 				}catch(Exception e){
 					return;
@@ -395,7 +389,7 @@ public class Main extends Plugin {
 			if(!Authority_control(player.uuid,"maps")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
-				List<String> MapsList = (List<String>)getMaps_List();
+				List<String> MapsList = (List<String>)Lists.getMaps_List();
 				int Maximum = 6;
 				//6为list最大承载 可自行改
 				int page = args.length > 0 ? Integer.parseInt(args[0]) : 1;
@@ -431,7 +425,7 @@ public class Main extends Plugin {
 						new Vote(player,args[0],args[1]);
 						break;
 					case "host":
-						if (getMaps_List().size() >= Integer.parseInt(args[1])) {
+						if (Lists.getMaps_List().size() >= Integer.parseInt(args[1])) {
 							new Vote(player,args[0],args[1]);
 							return;
 						}

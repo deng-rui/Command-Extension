@@ -9,85 +9,127 @@ import java.io.StringWriter;
 import static extension.util.DateUtil.getLocalTimeFromUTC;
 //Static
 
+/**
+ * Log Util
+ * @version 1.0 
+ * @date 2020年3月8日星期日 3:54  
+ * 练手轮子? :P 
+ */
 public class LogUtil {
+	private static int LOG_GRADE = 5;
+	//默认 WARN
 
-	private static final String TOP_BORDER     = "╔═══════════════════════════════════════════════════════════════════════════════════════════════════";
-	private static final String LEFT_BORDER    = "║ ";
-	private static final String BOTTOM_BORDER  = "╚═══════════════════════════════════════════════════════════════════════════════════════════════════";
-	private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+	private enum Logg {
+		OFF(8),FATAL(7),ERROR(6),WARN(5),INFO(4),DEBUG(3),TRACE(2),ALL(1);
+		private int num;
+		private Logg(int num) {
+			this.num=num;
+		}
+		private int getLogg() {
+			return num;
+		}
+	}
 
+	public static void Int(String log) {
+		LogUtil.LOG_GRADE=Logg.valueOf(log).getLogg();
+	}
+
+	/**
+	 * Log：
+	 * @param tag 标题 默认警告级
+	 * @param e Exception
+	 */
 	public static void fatal(Exception e) {
 		log(7,"FATAL",e);
 	}
-	public static void fatal(String tag, Exception e) {
+	public static void fatal(Object tag, Exception e) {
 		log(7,tag,e);
 	}
 
 	public static void error(Exception e) {
 		log(6,"ERROR",e);
 	}
-	public static void error(String tag, Exception e) {
+	public static void error(Object tag, Exception e) {
 		log(6,tag,e);
 	}
 
 	public static void warn(Exception e) {
 		log(5,"WARN",e);
 	}
-	public static void warn(String tag, Exception e) {
+	public static void warn(Object tag, Exception e) {
 		log(5,tag,e);
 	}
 
 	public static void info(Exception e) {
 		log(4,"INFO",e);
 	}
-	public static void info(String tag, Exception e) {
+	public static void info(Object tag, Exception e) {
 		log(4,tag,e);
+	}
+	public static void info(Object e) {
+		logs(4,"INFO",e);
+	}
+	public static void info(Object tag, Object e) {
+		logs(4,tag,e);
 	}
 
 	public static void debug(Exception e) {
 		log(3,"DEBUG",e);
 	}
-	public static void debug(String tag, Exception e) {
+	public static void debug(Object tag, Exception e) {
 		log(3,tag,e);
+	}
+	public static void debug(Object e) {
+		logs(3,"DEBUG",e);
+	}
+	public static void debug(Object tag, Object e) {
+		logs(3,tag,e);
 	}
 
 	public static void tarce(Exception e) {
 		log(2,"TARCE",e);
 	}
-	public static void tarce(String tag, Exception e) {
+	public static void tarce(Object tag, Exception e) {
 		log(2,tag,e);
 	}
 
 	public static void all(Exception e) {
 		log(1,"ALL",e);
 	}
-	public static void all(String tag, Exception e) {
+	public static void all(Object tag, Exception e) {
 		log(1,tag,e);
 	}
 
-	private static void log(int i, String tag, Exception e) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(TOP_BORDER)
-			.append(LINE_SEPARATOR);
-		sb.append(LEFT_BORDER)
-			.append(getLocalTimeFromUTC(0,0))
-			.append(LINE_SEPARATOR);
-		sb.append(LEFT_BORDER)
-			.append(tag)
-			.append(": ")
-			.append(LINE_SEPARATOR);
+	/**
+	 * WLog：
+	 * @param i 警告级
+	 * @param tag 标题 默认警告级
+	 * @param e Exception
+	 *i>=设置级 即写入文件
+	 */
+	private static void log(int i, Object tag, Exception e) {
 		StringWriter stringWriter = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(stringWriter);
 		e.printStackTrace(printWriter);
-		StringBuffer error = stringWriter.getBuffer();
+		logs(i,tag,stringWriter.getBuffer());
+	}
+
+	private static void logs(int i, Object tag, Object e) {
+		if(LOG_GRADE>i)return;
+		String LINE_SEPARATOR = System.getProperty("line.separator");
+		StringBuilder sb = new StringBuilder();
+		StringBuffer error = new StringBuffer(e.toString());
 		String[] lines = error.toString().split(LINE_SEPARATOR);
-			for (Object line : lines) {
-				sb.append(LEFT_BORDER)
-					.append(line)
-					.append(LINE_SEPARATOR);
-			}
-		sb.append(BOTTOM_BORDER)
+		sb.append(getLocalTimeFromUTC(0,0))
+			.append(" UTC")
+			.append(LINE_SEPARATOR)
+			.append(tag)
+			.append(": ")
 			.append(LINE_SEPARATOR);
+		for (Object line : lines) {
+			sb.append(line)
+				.append(LINE_SEPARATOR);
+		}
 		System.out.println(sb);
 	}
 }

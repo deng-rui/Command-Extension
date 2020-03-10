@@ -7,8 +7,11 @@ import java.sql.*;
 import arc.Core;
 //Arc
 
+import extension.data.global.Config;
+import extension.util.file.FileUtil;
 import extension.util.LogUtil;
 //GA-Exted
+
 
 import static extension.data.db.Player.getSQLite_UUID;
 import static extension.data.global.Maps.getPlayer_power_Data;
@@ -137,7 +140,7 @@ public class SQLite {
 	}
 
 	public static Connection connectSQLite() throws Exception {
-		return (Connection)DriverManager.getConnection("jdbc:sqlite:"+Core.settings.getDataDirectory().child("mods/GA/Data.db"));
+		return (Connection)DriverManager.getConnection("jdbc:sqlite:"+FileUtil.File(Config.Plugin_Data_Path).getPath("Data.db"));
 	}
 
 }
