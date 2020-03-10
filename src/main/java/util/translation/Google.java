@@ -1,4 +1,4 @@
-package extension.util;
+package extension.util.translation;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -28,7 +28,7 @@ import static extension.util.RegularUtil.NotBlank;
 import com.alibaba.fastjson.JSONArray;
 //Json
 
-public class GoogletranslateApi {
+public class Google {
 
 	private static ScriptEngine engine = null;
 
@@ -39,7 +39,7 @@ public class GoogletranslateApi {
 		Reader scriptReader = null;
 
 		try {
-			scriptReader = new InputStreamReader(GoogletranslateApi.class.getResourceAsStream("/tk/Google.js"), "utf-8");
+			scriptReader = new InputStreamReader(Google.class.getResourceAsStream("/tk/Google.js"), "utf-8");
 			engine.eval(scriptReader);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -107,6 +107,7 @@ public class GoogletranslateApi {
 			String r = rArray.getJSONArray(i).getString(0);
 			if (NotBlank(r)) {
 				rBuffer.append(r);
+				LogUtil.info(r);
 			}
 		}
 		return rBuffer.toString();

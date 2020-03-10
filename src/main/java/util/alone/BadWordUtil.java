@@ -181,7 +181,7 @@ public class BadWordUtil {
 	}
 	
 	
-	public static Set BadWordUtil(String text) {
+	public static Set<String> BadWordUtil(String text) {
 		Set<String> s = BadWordUtil.words;
 		Map<String,String> map = BadWordUtil.wordMap;
 		long beginTime = System.currentTimeMillis();
