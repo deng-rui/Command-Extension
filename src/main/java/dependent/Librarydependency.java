@@ -1,5 +1,6 @@
 package extension.dependent;
 
+import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Connection;
@@ -14,10 +15,7 @@ import java.util.List;
 import java.util.Properties;
 //Java
 
-import arc.Core;
-import arc.files.Fi;
-//Arc
-
+import extension.util.file.FileUtil;
 import extension.util.LogUtil;
 //GA-Exted
 
@@ -34,42 +32,43 @@ public class Librarydependency implements Driver {
 		this.driver = d;
 	}
 
-	public static void downLoadFromUrl(String str, String name, String version, String country, Fi savePath) {
+	private static void downLoadFromUrl(String str, String name, String version, String country, String savePath) {
 		String[] temp=str.split("\\.");
 		url = "/";
 		for (int i = 0; i < temp.length; i++) {
 			url = url+temp[i]+"/";
 		}
-
 		if("China".equalsIgnoreCase(country)) {
 			url = "https://maven.aliyun.com/nexus/content/groups/public"+url+name+"/"+version+"/"+name+"-"+version+".jar";
 			// 解决aliyun 302跳转
-			Url302(url,name+"_"+version+".jar",savePath);
-			LogUtil.info("CN-ALI");
+			Url302(url,savePath);
+			LogUtil.debug("CN-ALI");
 		}else{
 			url = "https://repo1.maven.org/maven2"+url+name+"/"+version+"/"+name+"-"+version+".jar";
-			downUrl(url,name+"_"+version+".jar",savePath);
-			LogUtil.info("NO CN-MAVEN");
+			downUrl(url,savePath);
+			LogUtil.debug("NO CN-MAVEN");
 		}
 	}
 
-	public static void importLib(String str, String name, String version, Fi savePath) {
-		Fi[] file = savePath.list();
-		List<String> list = new ArrayList<String>();
-		for(int i=0;i<file.length;i++){
-			list.add(file[i].name().replace(".jar",""));
+	public static void importLib(String str, String name, String version, String savePath) {
+		File filepath=new File(FileUtil.File(savePath).getPath());
+		if (!filepath.exists())filepath.mkdirs();
+		List<File> FilePathList = FileUtil.File(savePath).getFileList();
+		
+		for(int i=0;i<FilePathList.size();i++){
+			if((name+"_"+version).equals(FilePathList.get(i).getName().replace(".jar",""))) {
+				notWork(name,version,savePath);
+				return;
+			}
 		}
-		if(!list.contains(name+"_"+version))downLoadFromUrl(str,name,version,"China",savePath);
+		downLoadFromUrl(str,name,version,"China",FileUtil.File(savePath).getPath(name+"_"+version+".jar"));
+		notWork(name,version,savePath);
 	}
 
-	public static void notWork(String name, String version, Fi savePath) {
-		Fi[] file = savePath.list();
-		for(int i=0;i<file.length;i++){
-			if(!file[i].name().replace(".jar","").equals(name+"_"+version))return;
-		}
+	private static void notWork(String name, String version, String savePath) {
 		LogUtil.info("START import SQL");
 		try {
-			URLClassLoader classLoader = new URLClassLoader(new URL[] {file[0].file().toURI().toURL()});
+			URLClassLoader classLoader = new URLClassLoader(new URL[] {new File(FileUtil.File(savePath).getPath(name+"_"+version+".jar")).toURI().toURL()});
 			Driver driver = (Driver) Class.forName("org.sqlite.JDBC", true, classLoader).getDeclaredConstructor().newInstance();
 			// 加壳
 			DriverManager.registerDriver(new Librarydependency(driver));
