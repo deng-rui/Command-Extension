@@ -1,4 +1,4 @@
-package extension.util;
+package extension.util.alone;
 
 import java.io.*;
 import java.net.*;
@@ -17,7 +17,7 @@ import org.apache.commons.codec.binary.Base64;
 
 public class PasswordUtil {
 	/**
-	 * 密码哈希：<br>
+	 * 密码哈希：
 	 * @param passwd
 	 * @param salt
 	 * @return，返回哈希
@@ -31,7 +31,7 @@ public class PasswordUtil {
 	}
 
 	/**
-	 * 盐：<br>
+	 * 盐：
 	 * @param 
 	 * @return 返回盐
 	 * SALT_BIT_SIZE=64: 盐长度RFC2898
@@ -51,13 +51,13 @@ public class PasswordUtil {
 	public static Map<String, Object> newPasswd(String pw) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		Map<String, Object> Password = new HashMap<String, Object>();
 		String salt = genRandomSalt();
-		//经过加盐后的密码摘要
+		// 经过加盐后的密码摘要
 		String passwordHash = genPasswordHash(pw, salt);
-		//同时储存密码hash和盐
+		// 同时储存密码hash和盐
 		Password.put("passwordHash",passwordHash);
 		Password.put("salt",salt);
 		boolean resualt = Passwdverify(pw, passwordHash, salt);
-		//验证密码
+		// 验证密码
 		Password.put("resualt",resualt);
 		
 		return Password;
