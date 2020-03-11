@@ -26,17 +26,6 @@ public class FileUtil {
 		this.filepath = filepath;
 	}
 
-	public static void main(String[] args) {
-	// 	//System.out.println(FileUtil.File("resources/bundles").getFileList());
-		try {
-	System.out.println(FileUtil.File("resources/bundles/GA_zh").getFileList());
-	// 	//String a = String.valueOf(FileUtil.File("resources/bundles/GA_zh_CN.properties").readfile(true));
-	//;
-	} catch (Exception e) {	
-		
-		}
-	}
-
 	public synchronized static FileUtil File(String tofile) {
 		File file;
 		String filepath;

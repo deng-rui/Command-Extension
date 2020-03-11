@@ -63,7 +63,7 @@ linglan512572354:https://github.com/linglan512572354
     - [ ] Google翻译
     - [ ] 语言过滤
     - [ ] Vote
-- [ ] 资源文件外置 便于动态刷新
+- [x] 资源文件外置 便于动态刷新
 - [ ] 多语言支持
     - [x] 玩家
     - [ ] 命令
@@ -80,9 +80,9 @@ config
         │   Data.db         //玩家数据
         │   Setting.json    //设置
         └───lib             //插件使用jar-外置目录
-        └───resources       //插件使用资源外置目录   *
-           └───bundles      //语言文件              *
-           └───other        //屏蔽词文件            *
+        └───resources       //插件使用资源外置目录   
+           └───bundles      //语言文件              
+           └───other        //其他文件            
         └───log             //插件使用log目录       *
 ```
 

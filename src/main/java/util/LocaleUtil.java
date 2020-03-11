@@ -1,7 +1,8 @@
 package extension.util;
 
-//import java.net.URL;
-//import java.net.URLClassLoader;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Locale;
@@ -12,7 +13,11 @@ import java.util.MissingResourceException;
 //import arc.Core;
 //Arc
 
+import extension.data.global.Config;
 import extension.dependent.UTF8Control;
+import extension.util.file.FileUtil;
+import extension.util.LogUtil;
+//GA-Exted
 
 import static extension.data.json.Json.getData;
 //GA-Exted
@@ -28,10 +33,10 @@ public class LocaleUtil {
 	public static String language(String o,String t,String input,Object[] params) throws Exception {
 		
 		Locale locale = new Locale(o,t);
-		//URLClassLoader file = new URLClassLoader(new URL[] {Core.settings.getDataDirectory().child("mods/GA/resources/bundles/").file().toURI().toURL()});
-		//ResourceBundle bundle = ResourceBundle.getBundle("GA", locale, file, new UTF8Control());
+		URLClassLoader file = new URLClassLoader(new URL[] {new File(FileUtil.File(Config.Plugin_Resources_bundles_Path).getPath()).toURI().toURL()});
+		ResourceBundle bundle = ResourceBundle.getBundle("GA", locale, file, new UTF8Control());
 		//UTF-8 外置资源
-		ResourceBundle bundle = ResourceBundle.getBundle("bundles/GA", locale, new UTF8Control());
+		//ResourceBundle bundle = ResourceBundle.getBundle("bundles/GA", locale, new UTF8Control());
 		try {
 			if(input !=null){
 				if(params == null){

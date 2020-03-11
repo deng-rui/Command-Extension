@@ -49,8 +49,6 @@ public class Bing {
 		String PostResult = doPost(urll,post.toString());
 		JSONArray array = (JSONArray) JSONArray.parse(PostResult);
 		JSONArray arrayy = (JSONArray) JSONArray.parse(array.getJSONObject(0).getString("translations"));
-		//JSONArray arrayy = rArray.getJSONArray();
-		//System.out.println(arrayy);
         for (int i = 0; i < arrayy.size(); i++) {
             JSONObject re = arrayy.getJSONObject(i);
             String r = re.getString("text");

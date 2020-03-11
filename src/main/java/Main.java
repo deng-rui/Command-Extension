@@ -55,7 +55,7 @@ import static extension.core.Initialization.Follow_up_Initialization;
 import static extension.data.db.SQLite.Authority_control;
 import static extension.data.db.SQLite.SQL_type;
 import static extension.data.db.Player.getSQLite_UUID;
-import static extension.util.BadWordUtil.*;
+import static extension.util.alone.BadWordUtil.*;
 import static extension.util.LocaleUtil.getinput;
 import static extension.util.String_filteringUtil.*;
 //Static
@@ -73,7 +73,7 @@ public class Main extends Plugin {
 		LogUtil.Set("ALL");
 
 		try{
-					System.out.println(new Bing().translate("fuck world","zh-Hans"));
+					//System.out.println(new Bing().translate("fuck world","zh-Hans"));
 				}catch(Exception e){
 					LogUtil.warn(e);
 				}
@@ -181,7 +181,13 @@ public class Main extends Plugin {
 	public void registerServerCommands(CommandHandler handler){
 		handler.removeCommand("reloadmaps");
 
-		handler.register("reloadmaps", "NOT", (arg) -> {
+		handler.register("testinfo","<GA>" ,"GA TEST", (arg) -> {
+			info("{0}", getinput(arg[0]));
+
+		});
+
+
+		handler.register("reloadmaps", getinput("info"), (arg) -> {
 			int beforeMaps = maps.all().size;
 			maps.reload();
 			if(maps.all().size > beforeMaps){

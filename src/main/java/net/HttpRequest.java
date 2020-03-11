@@ -28,6 +28,7 @@ public class HttpRequest {
 		HttpURLConnection con = (HttpURLConnection) conn.openConnection();
 		con.setRequestMethod("GET");
 		con.addRequestProperty("Accept-Charset", "UTF-8;");
+		con.setRequestProperty("referer", "unsafe-url");
 		con.setRequestProperty("User-Agent", USER_AGENT);
 		int responseCode = con.getResponseCode();
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));

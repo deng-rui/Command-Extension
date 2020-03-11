@@ -65,7 +65,7 @@ Notes:
     - [ ] Google translation
     - [ ] language filtering
     - [ ] Vote
-- [ ] External resource file for dynamic refresh
+- [x] External resource file for dynamic refresh
 - [ ] Internationalization
     - [x] Player
     - [ ] Help
@@ -82,9 +82,9 @@ config
         │   Data.db         //Player Data
         │   Setting.json    //Setting
         └───lib             //Plug in uses jar external directory
-        └───resources       //Plug in using resource external directory   *
-           └───bundles      //Language file                               *
-           └───other        //Block word file                             *
+        └───resources       //Plug in using resource external directory   
+           └───bundles      //Language file                               
+           └───other        //Other file                             
         └───log             //Plug in log (within ten days)               *
 ```
 

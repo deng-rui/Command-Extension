@@ -6,4 +6,3 @@
 /bundles/GA_zh_MO.properties
 /bundles/GA_zh_TW.properties
 /other/Sensitive_Thesaurus.txt
-/tk/Google.js

@@ -57,8 +57,8 @@ import static extension.net.HttpRequest.doGet;
 import static extension.util.DateUtil.getLocalTimeFromUTC;
 import static extension.util.LocaleUtil.getinput;
 import static extension.util.LocaleUtil.Language_determination;
-import static extension.util.PasswordUtil.newPasswd;
-import static extension.util.PasswordUtil.Passwdverify;
+import static extension.util.alone.PasswordUtil.newPasswd;
+import static extension.util.alone.PasswordUtil.Passwdverify;
 //Static
 
 import com.alibaba.fastjson.JSONObject;
