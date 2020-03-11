@@ -17,19 +17,18 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 
 public class Json {
 
-	@SuppressWarnings("unchecked")
 	public static void Initialization() {
 		/*
 		add.put("languageO", "en");
 		add.put("languageT", "US");
 		*/
-		Map date = Collections.synchronizedMap(new HashMap());
+		Map<String,Object> date = Collections.synchronizedMap(new HashMap<String,Object>());
 		date.put("languageO", "zh");
 		date.put("languageT", "CN");
 		date.put("translateo", false);
+		date.put("Server_Country_CN", false);
 		String json = JSONObject.toJSONString(date,SerializerFeature.PrettyFormat);
 		Core.settings.getDataDirectory().child("mods/GA/setting.json").writeString(json);
-		//即将弃用
 	}
 
 	public static JSONObject getData(String path){
@@ -38,24 +37,7 @@ public class Json {
 		return object;
 	}
 
-	public static void InitializationCookie(String path) {
-		Map<String, String> date = Collections.synchronizedMap(new HashMap<String, String>());
-		date.put("BAIDUID", "");
-		date.put("BDtime", "0");
-		date.put("qtv", "");
-		date.put("qtk", "");
-		date.put("TXtime", "0");
-		//cookie 有效时间-未实现
-		//Baidu translation -TEST阶段
-		String json = JSONObject.toJSONString(date,SerializerFeature.PrettyFormat);
-		Core.settings.getDataDirectory().child(path).writeString(json);
-	}
-
 	public static void Initialize_permissions() {
-		/*
-		add.put("languageO", "en");
-		add.put("languageT", "US");
-		*/
 		Map<String, List<String>> date = Collections.synchronizedMap(new HashMap<String, List<String>>());
 		List<String> a = Collections.synchronizedList(new ArrayList<String>());
 		date.put("0", Arrays.asList("login", "register"));

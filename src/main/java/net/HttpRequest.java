@@ -1,8 +1,5 @@
 package extension.net;
 
-import arc.Core;
-import arc.files.Fi;
-
 import java.io.BufferedOutputStream;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -10,6 +7,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.URLConnection;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -22,7 +21,7 @@ import extension.util.LogUtil;
 
 public class HttpRequest {
 
-	private static final String USER_AGENT = "Mozilla/5.0";
+	private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36";
 
 	public static String doGet(String url) throws Exception {
 		URL conn = new URL(url);
@@ -41,6 +40,37 @@ public class HttpRequest {
 		return response.toString();
 	}
 
+	public static String doPost(String url, String param){
+		String result = "";
+		try{
+			URL realUrl = new URL(url);
+			//打开和URL之间的连接
+			URLConnection conn =  realUrl.openConnection();
+			//设置通用的请求属性
+			conn.setRequestProperty("accept", "*/*");
+			conn.setRequestProperty("connection", "Keep-Alive");
+			conn.setRequestProperty("User-Agent",USER_AGENT);
+			//发送POST请求必须设置如下两行
+			conn.setDoOutput(true);
+			conn.setDoInput(true);
+			//获取URLConnection对象对应的输出流
+			PrintWriter out = new PrintWriter(conn.getOutputStream());
+			//发送请求参数
+			out.print(param);
+			//flush输出流的缓冲
+			out.flush();
+			// 定义 BufferedReader输入流来读取URL的响应
+			BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
+			String line;
+			while ((line = in.readLine()) != null) {
+				result += "\n" + line;
+			}
+		} catch (Exception e) {
+			System.out.println("发送POST请求出现异常" + e);
+			e.printStackTrace();
+		}
+		return result;
+	}
 
 	public static void Url302(String url,String file){
 		try {
@@ -50,7 +80,7 @@ public class HttpRequest {
 			// 必须设置false，否则会自动redirect到Location的地址
 			conn.setInstanceFollowRedirects(false);
 			conn.addRequestProperty("Accept-Charset", "UTF-8;");
-			conn.addRequestProperty("User-Agent","Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.2.8) Firefox/3.6.8");
+			conn.addRequestProperty("User-Agent",USER_AGENT);
 			conn.connect();
 			String location = conn.getHeaderField("Location");
 			LogUtil.debug("URL-302",location);

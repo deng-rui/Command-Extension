@@ -35,7 +35,6 @@ public class Bing {
 		if (Blank(word))return null;
 		StringBuffer result = new StringBuffer();
 		String IG = getkeys("https://www.bing.com/translator","IG:.*?,",4,2);
-		System.out.println(IG);
 		// 我遇上假Bing了????
 		word = URLEncoder.encode(word, "UTF-8");
 		StringBuffer url = new StringBuffer("https://www.bing.com/ttranslatev3?isVertical=1");
@@ -47,8 +46,6 @@ public class Bing {
 		post.append("&text=" + word);
 		post.append("&to=" + to);
 		String urll = url.toString();
-		System.out.println(urll);
-		System.out.println(post.toString());
 		String PostResult = doPost(urll,post.toString());
 		JSONArray array = (JSONArray) JSONArray.parse(PostResult);
 		JSONArray arrayy = (JSONArray) JSONArray.parse(array.getJSONObject(0).getString("translations"));

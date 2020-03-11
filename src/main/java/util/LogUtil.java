@@ -30,7 +30,7 @@ public class LogUtil {
 		}
 	}
 
-	public static void Int(String log) {
+	public static void Set(String log) {
 		LogUtil.LOG_GRADE=Logg.valueOf(log).getLogg();
 	}
 

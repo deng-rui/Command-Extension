@@ -8,12 +8,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URLEncoder;
-import java.net.Proxy;
-import java.net.URI;
-import java.util.Map;
-import java.net.InetSocketAddress;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 //Java
 
 import extension.util.LogUtil;
@@ -85,7 +79,7 @@ public class Google {
 	 */
 	public String translate(String word, String from, String to) throws Exception {
 		if (Blank(word))return null;
-		String tkk = getkeys("https://translate.google.cn/","tkk:.*?',",Integer.parseInt("5"),Integer.parseInt("2"));
+		String tkk = getkeys("https://translate.google.cn/","tkk:.*?',",5,2);
 		if (Blank(tkk))return null;
 		String tk = getTK(word, tkk);
 		word = URLEncoder.encode(word, "UTF-8");
@@ -107,7 +101,6 @@ public class Google {
 			String r = rArray.getJSONArray(i).getString(0);
 			if (NotBlank(r)) {
 				rBuffer.append(r);
-				LogUtil.info(r);
 			}
 		}
 		return rBuffer.toString();

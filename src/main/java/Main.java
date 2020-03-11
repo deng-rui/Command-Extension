@@ -40,6 +40,7 @@ import static mindustry.Vars.playerGroup;
 import extension.core.Vote;
 import extension.util.LogUtil;
 import extension.util.file.FileUtil;
+import extension.util.translation.Bing;
 import extension.util.translation.Google;
 import extension.data.global.Lists;
 import extension.data.global.Maps;
@@ -69,7 +70,13 @@ public class Main extends Plugin {
 	public Main() {
 
 		//Log
-		LogUtil.Int("ALL");
+		LogUtil.Set("ALL");
+
+		try{
+					System.out.println(new Bing().translate("fuck world","zh-Hans"));
+				}catch(Exception e){
+					LogUtil.warn(e);
+				}
 		
 		//初始化
 		Start_Initialization();
