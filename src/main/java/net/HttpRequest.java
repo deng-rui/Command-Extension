@@ -28,7 +28,8 @@ public class HttpRequest {
 		HttpURLConnection con = (HttpURLConnection) conn.openConnection();
 		con.setRequestMethod("GET");
 		con.addRequestProperty("Accept-Charset", "UTF-8;");
-		con.setRequestProperty("referer", "unsafe-url");
+		con.setRequestProperty("Referrer", "no-referrer-when-downgrade");
+		con.setRequestProperty("Cookie", "BAIDUID=E47AE4863271BA9C773A003574C11001:FG=1");
 		con.setRequestProperty("User-Agent", USER_AGENT);
 		int responseCode = con.getResponseCode();
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
