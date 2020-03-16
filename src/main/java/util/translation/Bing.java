@@ -13,8 +13,8 @@ import extension.util.LogUtil;
 import static extension.net.HttpRequest.doGet;
 import static extension.net.HttpRequest.doPost;
 import static extension.util.ExtractUtil.getkeys;
-import static extension.util.RegularUtil.Blank;
-import static extension.util.RegularUtil.NotBlank;
+import static extension.util.IsBlankUtil.Blank;
+import static extension.util.IsBlankUtil.NotBlank;
 //Static
 
 import com.alibaba.fastjson.JSONObject;

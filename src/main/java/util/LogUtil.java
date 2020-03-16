@@ -52,12 +52,24 @@ public class LogUtil {
 	public static void error(Object tag, Exception e) {
 		log(6,tag,e);
 	}
+	public static void error(Object e) {
+		logs(4,"ERROR",e);
+	}
+	public static void error(Object tag, Object e) {
+		logs(4,tag,e);
+	}
 
 	public static void warn(Exception e) {
 		log(5,"WARN",e);
 	}
 	public static void warn(Object tag, Exception e) {
 		log(5,tag,e);
+	}
+	public static void warn(Object e) {
+		logs(4,"WARN",e);
+	}
+	public static void warn(Object tag, Object e) {
+		logs(4,tag,e);
 	}
 
 	public static void info(Exception e) {
@@ -91,13 +103,6 @@ public class LogUtil {
 	}
 	public static void tarce(Object tag, Exception e) {
 		log(2,tag,e);
-	}
-
-	public static void all(Exception e) {
-		log(1,"ALL",e);
-	}
-	public static void all(Object tag, Exception e) {
-		log(1,tag,e);
 	}
 
 	/**

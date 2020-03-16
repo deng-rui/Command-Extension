@@ -1,11 +1,9 @@
 package extension.util;
 
-public class RegularUtil {
+public class IsBlankUtil {
 	
 	public static boolean Blank(String string) {
-		if (string == null || "".equals(string.trim())) {
-			return true;
-		}
+		if (string == null || "".equals(string.trim())) return true;
 		return false;
 	}
 

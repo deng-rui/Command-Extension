@@ -7,7 +7,6 @@ import java.text.SimpleDateFormat;
 import java.text.ParseException;
 //Java
 
-
 public class DateUtil {
 	private static long getUTCTimeStr() {
 		// 获取JDK当前时间
@@ -27,14 +26,23 @@ public class DateUtil {
 	 * @return 格式化后GMT时间
 	 */
 
+	public static String getLocalTimeFromUTC(long GMT){
+		return getLocalTimeFromUTC(GMT,0,false);
+	}
+
 	public static String getLocalTimeFromUTC(long GMT, int fot){
-		String[] ft=new String[]{"yyyy-MM-dd HH:mm:ss","yyyy-MM-dd'T'HH:mm:ss'Z'","dd-MM-yyyy HH:mm:ss","MM-dd-yyyy HH:mm:ss","yyyy-MM-dd"};
+		return getLocalTimeFromUTC(GMT,fot,true);
+	}
+
+	public static String getLocalTimeFromUTC(long GMT, int fot, boolean slf){
+		String[] ft=new String[]{"yyyy-MM-dd","yyyy-MM-dd HH:mm:ss","yyyy-MM-dd'T'HH:mm:ss'Z'","dd-MM-yyyy HH:mm:ss","MM-dd-yyyy HH:mm:ss"};
 		long UTC = getUTCTimeStr();
 		// UTC时间加上偏移量 即取得目标时间
 		UTC = UTC + GMT;
-		SimpleDateFormat sdf=new SimpleDateFormat(ft[fot]);
-		// 毫秒-时间戳
-		long date_temp = Long.valueOf(UTC/1000); 
-		return sdf.format(new Date(date_temp * 1000L));
+		if (slf) {
+			SimpleDateFormat sdf=new SimpleDateFormat(ft[fot]);
+			return sdf.format(new Date(Long.valueOf(UTC/1000) * 1000L));
+		}
+		return String.valueOf(Long.valueOf(UTC));
 	}
 }

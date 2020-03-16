@@ -38,8 +38,8 @@ public class LocaleUtil {
 		//UTF-8 外置资源
 		//ResourceBundle bundle = ResourceBundle.getBundle("bundles/GA", locale, new UTF8Control());
 		try {
-			if(input !=null){
-				if(params == null){
+			if (input !=null){
+				if (params == null){
 					String result = bundle.getString(input);
 					return result;
 				}else{
@@ -65,7 +65,7 @@ public class LocaleUtil {
 				return language(o,t,input,null);
 			}
 			Object[] ps = new Object[params.length];
-			for(int i=0;i<params.length;i++) {
+			for (int i=0;i<params.length;i++) {
 				ps[i] = params[i];
 			}
 			return language(o,t,input,ps);
