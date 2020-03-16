@@ -21,7 +21,7 @@ public class Player {
 		try {
 			Connection c = connectSQLite();
 			c.setAutoCommit(false);
-			String sql = "INSERT INTO Player (UUID,NAME,IP,GMT,Country,Time_format,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Deadcount,Killcount,Joincount,Breakcount) VALUES (?,?,?,?,?,'0',?,?,?,?,?,'0','0','0','0','0','0','0','0','0','0','1','0','0','0','0','0')";
+			String sql = "INSERT INTO Player (UUID,NAME,IP,GMT,Country,Time_format,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Deadcount,Killcount,Joincount,Breakcount) VALUES (?,?,?,?,?,'1',?,?,?,?,?,'0','0','0','0','0','0','0','0','0','0','1','0','0','0','0','0')";
 			PreparedStatement stmt = c.prepareStatement(sql);
 			stmt.setString(1,UUID);
 			stmt.setString(2,NAME);

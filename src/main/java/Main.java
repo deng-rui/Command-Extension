@@ -95,14 +95,16 @@ public class Main extends Plugin {
 			//中英分检测
 			List<String> Pvpwincount = (List<String>)Maps.getPlayer_Data_SQL_Temp(e.player.uuid);
 			if(Maps.getPlayer_power_Data(e.player.uuid)>0) {
-				if(!String.valueOf(e.message).equalsIgnoreCase("y"))return;
-				if (Vote.playerlist.contains(e.player.uuid)) {
-					e.player.sendMessage("vote y");
-				} else {
-					Vote.playerlist.add(e.player.uuid);
-					new Vote();	
+				if(String.valueOf(e.message).equalsIgnoreCase("y") && !Vote.sted) {
+					if (Vote.playerlist.contains(e.player.uuid)) {
+						e.player.sendMessage("vote y");
+					} else {
+						Vote.playerlist.add(e.player.uuid);
+						new Vote();	
+					}
 				}
 			}
+			//金字塔！
 		});
 
 		//加入服务器时
@@ -232,7 +234,7 @@ public class Main extends Plugin {
 		*/
 
 		handler.<Player>register("login", "<id> <password>", "Login to account", (args, player) -> {
-			if(!Authority_control(player.uuid,"login")) {
+			if (!Authority_control(player.uuid,"login")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				login(player,args[0],args[1]);
@@ -240,7 +242,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("register", "<new_id> <new_password> <password_repeat>", "Login to account", (args, player) -> {
-			if(!Authority_control(player.uuid,"register")) {
+			if (!Authority_control(player.uuid,"register")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				register(player,args[0],args[1],args[2]);
@@ -248,7 +250,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("info",getinput("info"), (args, player) -> {
-			if(!Authority_control(player.uuid,"info")) {
+			if (!Authority_control(player.uuid,"info")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				List data=getSQLite_UUID(player.uuid);
@@ -257,7 +259,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("status",getinput("status"), (args, player) -> {
-			if(!Authority_control(player.uuid,"status")) {
+			if (!Authority_control(player.uuid,"status")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				player.sendMessage("FPS:"+status("getfps")+"  Occupied memory:"+status("getmemory")+"MB");
@@ -268,7 +270,7 @@ public class Main extends Plugin {
 
 
 		handler.<Player>register("getpos",getinput("getpos"), (args, player) -> {
-			if(!Authority_control(player.uuid,"getpos")) {
+			if (!Authority_control(player.uuid,"getpos")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				player.sendMessage(getinput("getpos.info",String.valueOf(Math.round(player.x/8)),String.valueOf(Math.round(player.y/8))));
@@ -276,7 +278,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("tpp","<player> <player>",getinput("tpp"), (args, player) -> {
-			if(!Authority_control(player.uuid,"tpp")) {
+			if (!Authority_control(player.uuid,"tpp")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				try {
@@ -291,7 +293,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("tp","<player...>",getinput("tp"), (args, player) -> {
-			if(!Authority_control(player.uuid,"tp")) {
+			if (!Authority_control(player.uuid,"tp")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				Player other = Vars.playerGroup.find(p->p.name.equalsIgnoreCase(args[0]));
@@ -304,7 +306,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("suicide",getinput("suicide"), (args, player) -> {
-			if(!Authority_control(player.uuid,"suicide")) {
+			if (!Authority_control(player.uuid,"suicide")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				player.onPlayerDeath(player);
@@ -313,7 +315,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("team",getinput("team"), (args, player) ->{
-			if(!Authority_control(player.uuid,"team")) {
+			if (!Authority_control(player.uuid,"team")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				if (!Vars.state.rules.pvp){
@@ -337,7 +339,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("difficulty", "<difficulty>", getinput("difficulty"), (args, player) -> {
-			if(!Authority_control(player.uuid,"difficulty")) {
+			if (!Authority_control(player.uuid,"difficulty")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				try {
@@ -350,7 +352,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("gameover","",getinput("gameover"), (args, player) -> {
-			if(!Authority_control(player.uuid,"gameover")) {
+			if (!Authority_control(player.uuid,"gameover")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				Events.fire(new GameOverEvent(Team.crux));
@@ -359,7 +361,7 @@ public class Main extends Plugin {
 
 
 		handler.<Player>register("host","<mapname> [mode]",getinput("host"), (args, player) -> {
-			if(!Authority_control(player.uuid,"host")) {
+			if (!Authority_control(player.uuid,"host")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				host(args[0],args[1],player);
@@ -367,7 +369,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("runwave",getinput("runwave"), (args, player) -> {
-			if(!Authority_control(player.uuid,"runwave")) {
+			if (!Authority_control(player.uuid,"runwave")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				logic.runWave();
@@ -377,7 +379,7 @@ public class Main extends Plugin {
 		handler.<Player>register("time",getinput("time"), (args, player) -> player.sendMessage(getinput("time.info",timee())));
 
 		handler.<Player>register("tr","<text> <Output-language>",getinput("tr"), (args, player) -> {
-			if(!Authority_control(player.uuid,"tr")) {
+			if (!Authority_control(player.uuid,"tr")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				//No spaces are allowed in the input language??
@@ -399,7 +401,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("maps", "[page] [mode]", getinput("maps"), (args, player) -> {
-			if(!Authority_control(player.uuid,"maps")) {
+			if (!Authority_control(player.uuid,"maps")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				List<String> MapsList = (List<String>)Lists.getMaps_List();
