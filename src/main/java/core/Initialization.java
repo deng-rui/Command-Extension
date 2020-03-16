@@ -16,6 +16,7 @@ import static mindustry.Vars.maps;
 //Mindustry-Static
 
 import extension.data.global.Config;
+import extension.net.Net;
 import extension.util.LogUtil;
 import extension.util.file.FileUtil;
 //GA-Exted
@@ -32,9 +33,17 @@ import static extension.dependent.Librarydependency.importLib;
 
 public class Initialization {
 	public static void Start_Initialization() {
-		Data();
-		SQL();
-		Json();
+		Thread t1  = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Data();
+				SQL();
+				Json();
+			}
+		});
+		t1.start();
+		IsNetwork();
+		IsCN();
 	}
 
 	public static void Follow_up_Initialization() {
@@ -94,5 +103,15 @@ public class Initialization {
 		} else {
 			addMaps_List("The map is empty");
 		}
+	}
+
+	private static void IsCN() {
+		
+	}
+
+	private static void IsNetwork() {
+		LogUtil.info("ST",Config.Server_Networking);
+		Config.Server_Networking = Net.isConnect();
+		LogUtil.info("ED",Config.Server_Networking);
 	}
 }

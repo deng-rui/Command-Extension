@@ -26,7 +26,7 @@ public class Event {
 
 	public static String PlayerChatEvent_translate(String check, String text) {
 		Google googletranslation = new Google();
-		if(!check.equals("/")) {
+		if (!check.equals("/")) {
 			boolean valid = text.matches("\\w+");
 			JSONObject date = getData("mods/GA/setting.json");
 			// 检查是否启用翻译

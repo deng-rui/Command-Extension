@@ -39,7 +39,7 @@ public class Vote {
 	private static String name;
 	private static int require;
 	private static int reciprocal;
-	private static boolean sted=true;
+	public static boolean sted = true;
 	private static ScheduledFuture Vote_time;
 	private static ScheduledFuture Count_down;
 	private static ScheduledExecutorService service;
@@ -126,7 +126,12 @@ public class Vote {
 				default :
 					defaulta();
 					return;
-
+				/*
+				case "kick" -> kick();
+				case "host" -> host();
+				case "skipwave" -> skipwave();
+				default -> defaulta();
+				*/
 			}
 		} else {
 			Call.sendMessage(getinput("vote.done.no",name));
