@@ -22,8 +22,8 @@ Production environment is required. Please download the published file
 
 | configure     | CPU             | RAM   | System        | Hard disk | Java      | Gradle    |
 |:---           |:---             |:---   |:---           |:---       |:---       |:---       |
-| Current use   | BCM2711         | 4G    | ubuntu 19.10  | 500G HHD  | Java 11   | 6.2       |
-| Recommended   | Intel I3-6100+  | 4G    | ubuntu 16.04+ | 500G HHD  | Java 8+   | 6.2       |
+| Current use   | BCM2711         | 4G    | ubuntu 19.10  | 500G HHD  | Java 13   | 6.2.2     |
+| Recommended   | Intel I3-6100+  | 4G    | ubuntu 16.04+ | 500G HHD  | Java 8+   | 6.0+      |
 
 ## Server commands
 
@@ -86,6 +86,8 @@ config
            └───bundles      //Language file                               
            └───other        //Other file                             
         └───log             //Plug in log (within ten days)               *
+            Error.txt       //Error file                                  *
+            bans.txt        //bans file                                   *
 ```
 
 ### Installing

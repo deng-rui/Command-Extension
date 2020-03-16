@@ -22,8 +22,8 @@ linglan512572354:https://github.com/linglan512572354
 
 | 配置 		| CPU             | 内存 	| 系统 			| 硬盘大小 	| Java      | Gradle    |
 |:--- 		|:---             |:--- 	|:--- 			|:---      	|:---       |:---       |
-| 当前配置 	| BCM2711         | 4G 		| Ubuntu 19.10 	| 500G HHD 	| Java 11   | 6.2       |
-| 建议配置 	| Intel I3-6100+  | 4G 		| ubuntu 16.04+ | 500G HHD 	| Java 8+   | 6.2       |
+| 当前配置 	| BCM2711         | 4G 		| Ubuntu 19.10 	| 500G HHD 	| Java 13   | 6.2.2     |
+| 建议配置 	| Intel I3-6100+  | 4G 		| ubuntu 16.04+ | 500G HHD 	| Java 8+   | 6.0+      |
 
 ## 服务器命令列表
 
@@ -84,6 +84,8 @@ config
            └───bundles      //语言文件              
            └───other        //其他文件            
         └───log             //插件使用log目录       *
+            Error.txt       //错误log              *
+            bans.txt        //投票ban 记录          *
 ```
 
 ### 如何安装
