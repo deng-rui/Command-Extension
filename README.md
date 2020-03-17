@@ -15,15 +15,21 @@ linglan512572354:https://github.com/linglan512572354
 
 This project is open. If you have any questions, please email me or submit a question  
 This project is a centralized project. If you need some modules, please wait for the segmentation after the finished product is completed, or you can complete it yourself  
-By default, Google translator should not set the source time to 0, otherwise Google will blackmail your IP in 1-7 days  
+By default, Google translator should not set the source time to 0, otherwise Google will blackmail your IP in 12h  
 Production environment is required. Please download the published file  
+
+## Required configuration
+
+| configure     | CPU             | RAM   | System        | Hard disk | Java      |
+|:---           |:---             |:---   |:---           |:---       |:---       |
+| Current use   | BCM2711         | 4G    | ubuntu 19.10  | 500G HHD  | Java 11   |
+| Recommended   | Intel I3-6100+  | 4G    | ubuntu 16.04+ | 500G HHD  | Java 8+   |
 
 ## build configuration
 
 | configure     | CPU             | RAM   | System        | Hard disk | Java      | Gradle    |
 |:---           |:---             |:---   |:---           |:---       |:---       |:---       |
-| Current use   | BCM2711         | 4G    | ubuntu 19.10  | 500G HHD  | Java 13   | 6.2.2     |
-| Recommended   | Intel I3-6100+  | 4G    | ubuntu 16.04+ | 500G HHD  | Java 8+   | 6.0+      |
+| Current use   | BCM2711         | 4G    | ubuntu 19.10  | 500G HHD  | Java 11   | 6.2.2     |
 
 ## Server commands
 
