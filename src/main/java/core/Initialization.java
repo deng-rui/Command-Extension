@@ -17,33 +17,41 @@ import static mindustry.Vars.maps;
 
 import extension.data.global.Config;
 import extension.net.Net;
+import extension.data.json.Json;
+import extension.data.global.Lists;
+import extension.data.global.Maps;
 import extension.util.LogUtil;
 import extension.util.file.FileUtil;
 //GA-Exted
 
-import static extension.data.db.SQLite.Player_Privilege_classification;
 import static extension.data.db.SQLite.InitializationSQLite;
-import static extension.data.global.Lists.addMaps_List;
-import static extension.data.global.Lists.EmptyMaps_List;
-import static extension.data.global.Lists.getMaps_List;
-import static extension.data.json.Json.Initialization;
-import static extension.data.json.Json.Initialize_permissions;
 import static extension.dependent.Librarydependency.importLib;
+import static extension.data.json.Json.getData;
 //Static
+
+import com.alibaba.fastjson.JSONObject;
+//Json
 
 public class Initialization {
 	public static void Start_Initialization() {
-		Thread t1  = new Thread(new Runnable() {
+		IsNetwork();
+		IsCN();
+		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				Data();
 				SQL();
 				Json();
+				Player_Privilege_classification();
 			}
-		});
-		t1.start();
-		IsNetwork();
-		IsCN();
+		}).start();
+		// new Thread(new Runnable() {
+		// 	@Override
+		// 	public void run() {
+
+		// 	}
+		// }).start();
+		
 	}
 
 	public static void Follow_up_Initialization() {
@@ -53,13 +61,12 @@ public class Initialization {
 	private static void SQL() {
 		importLib("org.xerial","sqlite-jdbc","3.30.1",Config.Plugin_Lib_Path);
 		//notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
-		if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists())InitializationSQLite();
+		//if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists())InitializationSQLite();
 	}
 
 	private static void Json() {
-		if(!Core.settings.getDataDirectory().child("mods/GA/setting.json").exists())Initialization();
-		if(!Core.settings.getDataDirectory().child("mods/GA/Authority.json").exists())Initialize_permissions();
-		Player_Privilege_classification();
+		//if(!Core.settings.getDataDirectory().child("mods/GA/Setting.json").exists())Json.Initialization();
+		//if(!Core.settings.getDataDirectory().child("mods/GA/Authority.json").exists())Json.Initialize_permissions();
 	}
 
 	private static void Data() {
@@ -80,28 +87,28 @@ public class Initialization {
 	}
 
 	public static void MapList() {
-		EmptyMaps_List();
+		Lists.EmptyMaps_List();
 		if(!maps.all().isEmpty()){
 			for(Map map : maps.all()){
 				if(map.custom) {
 					switch(String.valueOf(map.file.name().charAt(0))){
 						case "P" :
 						case "p" :
-							addMaps_List(map.name().replace(' ', '_')+" "+map.width+"x"+map.height+" pvp"+" P");
+							Lists.addMaps_List(map.name().replace(' ', '_')+" "+map.width+"x"+map.height+" pvp"+" P");
 							break;
 						case "S" :
 						case "s" :
-							addMaps_List(map.name().replace(' ', '_')+" "+map.width+"x"+map.height+" survival"+" S");
+							Lists.addMaps_List(map.name().replace(' ', '_')+" "+map.width+"x"+map.height+" survival"+" S");
 							break;
 						case "A" :
 						case "a" :
-							addMaps_List(map.name().replace(' ', '_')+" "+map.width+"x"+map.height+" attack"+" A");
+							Lists.addMaps_List(map.name().replace(' ', '_')+" "+map.width+"x"+map.height+" attack"+" A");
 							break;
 					}			
 				}
 			}
 		} else {
-			addMaps_List("The map is empty");
+			Lists.addMaps_List("The map is empty");
 		}
 	}
 
@@ -113,5 +120,12 @@ public class Initialization {
 		LogUtil.info("ST",Config.Server_Networking);
 		Config.Server_Networking = Net.isConnect();
 		LogUtil.info("ED",Config.Server_Networking);
+	}
+
+	private static void Player_Privilege_classification() {
+		JSONObject date = getData("mods/GA/Authority.json");
+		for (int i = 0; i < 11; i++) {
+			Maps.setPower_Data(i,(List)date.get(i));
+		}
 	}
 }
