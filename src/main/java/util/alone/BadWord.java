@@ -12,15 +12,15 @@ import java.util.Set;
 //Java
 
 //DFA? Bloom Filter?
-public class BadWordUtil {
+public class BadWord {
 	public static String filePath = "/other/Sensitive_Thesaurus.txt";
 	public static Set<String> words;
 	public static Map<String,String> wordMap;
 	public static int minMatchTYpe = 1;// 最小匹配规则
 	public static int maxMatchType = 2;// 最大匹配规则
 	static{
-		BadWordUtil.words = readTxtByLine(filePath);
-		addBadWordToHashMap(BadWordUtil.words);
+		BadWord.words = readTxtByLine(filePath);
+		addBadWordToHashMap(BadWord.words);
 	}
 	private static Set<String> readTxtByLine(String path){  
 		Set<String> keyWordSet = new HashSet<String>();
@@ -28,7 +28,7 @@ public class BadWordUtil {
 		String temp=null;  
 		//int line=1;  
 		try{  
-			reader=new BufferedReader(new InputStreamReader(BadWordUtil.class.getResourceAsStream(path),"UTF-8"));  
+			reader=new BufferedReader(new InputStreamReader(BadWord.class.getResourceAsStream(path),"UTF-8"));  
 			while((temp=reader.readLine())!=null){  
 				keyWordSet.add(temp); 
 			}  
@@ -180,11 +180,11 @@ public class BadWordUtil {
 	}
 	
 	
-	public static Set<String> BadWordUtil(String text) {
-		Set<String> s = BadWordUtil.words;
-		Map<String,String> map = BadWordUtil.wordMap;
+	public static Set<String> BadWord(String text) {
+		Set<String> s = BadWord.words;
+		Map<String,String> map = BadWord.wordMap;
 		long beginTime = System.currentTimeMillis();
-		Set<String> set = BadWordUtil.getBadWord(text, 2);
+		Set<String> set = BadWord.getBadWord(text, 2);
 		return set;
 	}
 }

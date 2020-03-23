@@ -21,12 +21,12 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 //Java
 
-import static extension.util.db.JdbcUtil.backConnection;
+import static extension.util.db.Jdbc.backConnection;
 
 
-public class JdbcConnUtil implements Connection {
+public class JdbcConn implements Connection {
 	private  Connection conn;
-	public JdbcConnUtil(Connection conn) {
+	public JdbcConn(Connection conn) {
 		 this.conn = conn;
 	}
 
@@ -94,12 +94,12 @@ public class JdbcConnUtil implements Connection {
  
 	@Override
 	public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
-		return null;
+		return conn.createStatement(resultSetType,resultSetConcurrency);
 	}
  
 	@Override
 	public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
-		return null;
+		return conn.createStatement(resultSetType,resultSetConcurrency,resultSetHoldability);
 	}
  
 	@Override
@@ -199,7 +199,7 @@ public class JdbcConnUtil implements Connection {
  
 	@Override
 	public PreparedStatement prepareStatement(String sql) throws SQLException {
-		return null;
+		return conn.prepareStatement(sql);
 	}
  
 	@Override

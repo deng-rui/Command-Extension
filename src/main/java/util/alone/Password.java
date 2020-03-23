@@ -15,7 +15,7 @@ import javax.crypto.spec.PBEKeySpec;
 import org.apache.commons.codec.binary.Base64;
 //apach
 
-public class PasswordUtil {
+public class Password {
 	/**
 	 * 密码哈希：
 	 * @param passwd
@@ -48,7 +48,7 @@ public class PasswordUtil {
 		return hash.equals(passHash);
 	}
 
-	public static Map<String, Object> newPasswd(String pw) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public static Map<String, Object> newPasswd(String pw , String USER) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		Map<String, Object> Password = new HashMap<String, Object>();
 		String salt = genRandomSalt();
 		// 经过加盐后的密码摘要
@@ -59,6 +59,7 @@ public class PasswordUtil {
 		boolean resualt = Passwdverify(pw, passwordHash, salt);
 		// 验证密码
 		Password.put("resualt",resualt);
+		Password.put("user",USER);
 		
 		return Password;
 	}

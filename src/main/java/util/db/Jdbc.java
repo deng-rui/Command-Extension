@@ -4,10 +4,14 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import extension.util.db.JdbcPoolUtil;
+import extension.util.db.JdbcPool;
 
-public class JdbcUtil {
-	private static JdbcPoolUtil pool = new JdbcPoolUtil(10);
+import extension.data.global.Config;
+import extension.util.file.FileUtil;
+//GA-Exted
+
+public class Jdbc {
+	private static JdbcPool pool = new JdbcPool(10,FileUtil.File(Config.Plugin_Data_Path).getPath("Data.db"));
 
 	public static Connection getConnection() throws SQLException{
 		return pool.getConnection();

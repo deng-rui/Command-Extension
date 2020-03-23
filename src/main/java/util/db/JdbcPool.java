@@ -17,21 +17,18 @@ import java.util.logging.Logger;
 import javax.sql.DataSource;
 //Javax
 
-import extension.data.global.Config;
-import extension.util.file.FileUtil;
-import extension.util.LogUtil;
-import extension.util.db.JdbcConnUtil;
+import extension.util.db.JdbcConn;
 //GA-Exted
 
-public class JdbcPoolUtil implements DataSource {
+public class JdbcPool implements DataSource {
 
 	private LinkedList<Connection> pool = new LinkedList<Connection>();
 
-	public JdbcPoolUtil(int end) {
+	public JdbcPool(int end,String file) {
 		// 一次性创建10个连接
 		for (int i = 0; i < end; i++) {
 			try {
-				Connection conn = DriverManager.getConnection("jdbc:sqlite:"+FileUtil.File(Config.Plugin_Data_Path).getPath("Data.db"));
+				Connection conn = DriverManager.getConnection("jdbc:sqlite:"+file);
 				// 将连接加入连接池中
 				pool.add(conn);
 			} catch (Exception e) {
@@ -46,8 +43,7 @@ public class JdbcPoolUtil implements DataSource {
 		// 删除第一个连接返回
 		final Connection conn = pool.removeFirst();
 		System.out.println("取出一个连接剩余 " + pool.size() + "个连接！");
-		// 将目标Connection对象进行增强
-		return new JdbcConnUtil(conn);
+		return new JdbcConn(conn);
 	}
 
 	// 将连接放回连接池
