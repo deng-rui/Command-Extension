@@ -1,43 +1,45 @@
-## 语言
+## 语言  
 
 [跳转中文](https://github.com/deng-rui/Command-Extension/blob/master/README-zh_CN.md)  
 [TO EN](https://github.com/deng-rui/Command-Extension/blob/master/README.md)  
 
 
-## 鸣谢
+## 鸣谢  
 
 感谢wzyzer和linglan512572354对项目所提供的帮助
 
 wzyzer:https://github.com/way-zer  
 linglan512572354:https://github.com/linglan512572354  
 
-## 前言
+## 前言  
 
+警告: 当前项目处于不稳定状态 数据库 数据将不会做迁移操作 请谨慎使用 :)
+
+  
 这个项目是开放的，如果有任何问题，请给我发电子邮件或提交一个问题  
 这个项目是一个集中的项目。如果您需要一些模块，请在成品完成后等待分割，或者您可以自己完成  
 默认情况下，Google Translator不应将源时间设置为0，否则谷歌将拉黑您的ip于12小时  
-需要生产环境请下载发布的文件  
 
-## 运行配置
+## 运行配置  
 
 | 配置 		| CPU             | 内存 	| 系统 			| 硬盘大小 	| Java      |
 |:--- 		|:---             |:---     |:---           |:---       |:---       |
 | 当前配置 	| BCM2711         | 4G      | Ubuntu 19.10  | 500G HHD  | Java 11   |
 | 建议配置 	| Intel I3-6100+  | 4G      | ubuntu 16.04+ | 500G HHD  | Java 8+   |
 
-## 构建配置
+## 构建配置  
 
 | 配置 		| CPU             | 内存 	| 系统 			| 硬盘大小 	| Java      | Gradle    |
 |:--- 		|:---             |:--- 	|:--- 			|:---      	|:---       |:---       |
 | 当前配置 	| BCM2711         | 4G 		| Ubuntu 19.10 	| 500G HHD 	| Java 11   | 6.2.2     |
 
-## 服务器命令列表
+## 服务器命令列表  
 
 | 命令 					 | 参数 												 | 信息 									 |
 |:--- 					 |:--- 												 |:--- 									 |
 | reloadmaps(覆盖) 		 | 													 | 重载地图(便于重新读取模式) 				 |
 
-## 游戏命令列表
+## 游戏命令列表  
 
 | 命令 			| 参数 												 | 信息 										 |
 |:---           |:--- 												 |:--- 										 |
@@ -58,7 +60,7 @@ linglan512572354:https://github.com/linglan512572354
 | vote          |[gameover/kick/skipwave/host] [玩家名/地图序号] 		 | 投票 										 |
 
 
-### 当前进度
+### 当前进度  
 
 - [ ] Baidu翻译支持
 - [x] Vote
@@ -74,7 +76,7 @@ linglan512572354:https://github.com/linglan512572354
     - [x] 玩家
     - [ ] 命令
 
-### 插件使用的目录及文件
+### 插件使用的目录及文件  
 
 标记 \* 均为后续加入目录及文件
 
@@ -94,15 +96,17 @@ config
             bans.txt        //投票ban 记录          *
 ```
 
-### 如何安装
+### 如何安装  
 
-只需将下载的jar放在服务器的“config/mods”目录中，然后重新启动服务器。
-通过运行“mods”命令列出当前安装的插件。
+只需将下载的jar放在服务器的“config/mods”目录中，然后重新启动服务器。  
+通过运行“mods”命令列出当前安装的插件。  
 
-### 个人广告:)
+### 个人广告:)  
+
 (很遗憾，为了维持稳定性 服务器暂时不对外开放)  
-如有必要，您可以自己尝试更改本地化参数
+如有必要，您可以自己尝试更改本地化参数  
 
-### 许可证
-The Unlicense-公共领域
+### 许可证 
+
+The Unlicense-公共领域  
 :) 

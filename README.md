@@ -1,10 +1,10 @@
-## Language
+## Language  
 
 [跳转中文](https://github.com/deng-rui/Command-Extension/blob/master/README-zh_CN.md)  
 [TO EN](https://github.com/deng-rui/Command-Extension/blob/master/README.md)  
 
 
-## Acknowledgement
+## Acknowledgement  
 
 Thank wzyzer and linglan512572354 for their help in this project  
 
@@ -13,31 +13,33 @@ linglan512572354:https://github.com/linglan512572354
 
 ## Premise
 
+Warning: The current project is under pressure. Database data will not be migrated. Please use it with caution :)  
+  
+  
 This project is open. If you have any questions, please email me or submit a question  
 This project is a centralized project. If you need some modules, please wait for the segmentation after the finished product is completed, or you can complete it yourself  
 By default, Google translator should not set the source time to 0, otherwise Google will blackmail your IP in 12h  
-Production environment is required. Please download the published file  
 
-## Required configuration
+## Required configuration  
 
 | configure     | CPU             | RAM   | System        | Hard disk | Java      |
 |:---           |:---             |:---   |:---           |:---       |:---       |
 | Current use   | BCM2711         | 4G    | ubuntu 19.10  | 500G HHD  | Java 11   |
 | Recommended   | Intel I3-6100+  | 4G    | ubuntu 16.04+ | 500G HHD  | Java 8+   |
 
-## build configuration
+## build configuration  
 
 | configure     | CPU             | RAM   | System        | Hard disk | Java      | Gradle    |
 |:---           |:---             |:---   |:---           |:---       |:---       |:---       |
 | Current use   | BCM2711         | 4G    | ubuntu 19.10  | 500G HHD  | Java 11   | 6.2.2     |
 
-## Server commands
+## Server commands  
 
 | Command               | Parameter                                          | Description                                           |
 |:---                   |:---                                                |:---                                                   |
 | reloadmaps(replace)   |                                                    | Reload the map (easy to re-read the mode)             |
 
-## Game command
+## Game command  
 
 | Command       | Parameter                                          | Description                                           |
 |:---           |:---                                                |:---                                                   |
@@ -60,7 +62,7 @@ Production environment is required. Please download the published file
 Notes:
 1: You need to view the schema abbreviation of the map for the specified schema
 
-### Current progress
+### Current progress  
 
 - [ ] Baidu translation support
 - [x] Vote
@@ -76,7 +78,7 @@ Notes:
     - [x] Player
     - [ ] Help
 
-### Directories and files used by plug-ins
+### Directories and files used by plug-ins  
 
 The marks \* are all subsequent added directories and files
 
@@ -96,16 +98,16 @@ config
             bans.txt        //bans file                                   *
 ```
 
-### Installing
+### Installing  
 
 Simply place the output jar from the step above in your server's `config/mods` directory and restart the server.
 List your currently installed plugins by running the `mods` command.
 
-### NOT TAB
+### NOT TAB  
 (unfortunately, in order to maintain stability, the server is temporarily closed)  
 If necessary, you can try to change the localization parameters yourself  
 
 
-###Licenses
-The Unlicense
+###Licenses  
+The Unlicense  
 :) 
