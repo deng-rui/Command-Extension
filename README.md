@@ -13,7 +13,7 @@ linglan512572354:https://github.com/linglan512572354
 
 ## Premise
 
-Warning: The current project is under pressure. Database data will not be migrated. Please use it with caution :)  
+Warning: database data will not be migrated when the current project is in an unstable state. Please use with caution:)
   
   
 This project is open. If you have any questions, please email me or submit a question  
