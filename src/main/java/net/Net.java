@@ -6,13 +6,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 //Java
 
-import extension.util.LogUtil;
+import extension.util.Log;
 //GA-Exted
 
 public class Net {
 
 	public static boolean isConnect() {
-		boolean connect = false;
 		Runtime runtime = Runtime.getRuntime();
 		Process process;
 		InputStream is = null;
@@ -39,7 +38,7 @@ public class Net {
 			isr.close();
 			br.close();
 		} catch (IOException e) {
-			LogUtil.error("Net-Connect",e);
+			Log.error("Net-Connect",e);
 		}
 		return false;
 	}

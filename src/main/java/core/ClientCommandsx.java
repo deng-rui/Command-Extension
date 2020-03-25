@@ -52,13 +52,12 @@ import static extension.data.db.Player.getSQLite_UUID;
 import static extension.data.db.Player.InitializationPlayersSQLite;
 import static extension.data.db.Player.isSQLite_User;
 import static extension.data.db.Player.savePlayer_Data;
-import static extension.data.db.SQLite.SQL_type;
 import static extension.net.HttpRequest.doGet;
 import static extension.util.DateUtil.getLocalTimeFromUTC;
 import static extension.util.LocaleUtil.getinput;
 import static extension.util.LocaleUtil.Language_determination;
-import static extension.util.alone.PasswordUtil.newPasswd;
-import static extension.util.alone.PasswordUtil.Passwdverify;
+import static extension.util.alone.Password.newPasswd;
+import static extension.util.alone.Password.Passwdverify;
 //Static
 
 import com.alibaba.fastjson.JSONObject;
@@ -71,6 +70,7 @@ public class ClientCommandsx {
 			player.sendMessage(getinput("login.usrno"));
 			return;
 		}
+	/*
 		List<String> data = getSQLite_USER(usr);
 		try {
 			if(!(boolean)Passwdverify(pw,(String)data.get(SQL_type("PasswordHash")),(String)data.get(SQL_type("CSPRNG")))) {
@@ -94,13 +94,13 @@ public class ClientCommandsx {
 		}
 		Call.onPlayerDeath(player);
 		Maps.setPlayer_power_Data(player.uuid,Integer.parseInt((String)data.get(SQL_type("Authority"))));
-		Maps.setPlayer_Data_SQL_Temp(player.uuid,data);
+		
 		Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(Long.valueOf((String)data.get(SQL_type("GMT"))),Integer.parseInt((String)data.get(SQL_type("Time_format"))))),30f);
+	*/
 	}
 
 	public static void register(Player player, String newusr, String newpw, String renewpw) {
-		//String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
-		String ip = "1.1.1.1";
+		String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
 		if(!newpw.equals(renewpw)) {
 			player.sendMessage(getinput("register.pawno"));
 			return;
@@ -109,8 +109,9 @@ public class ClientCommandsx {
 			player.sendMessage(getinput("register.usrerr"));
 			return;
 		}
+	/*
 		try {
-			java.util.Map<String, Object> Passwd_date = (java.util.Map<String, Object>)newPasswd(newpw);
+			java.util.Map<String, Object> Passwd_date = (java.util.Map<String, Object>)newPasswd(newpw,newusr);
 			if(!(boolean)Passwd_date.get("resualt"))return;
 			JSONObject date = JSONObject.parseObject(doGet("http://ip-api.com/json/"+ip+"?fields=country,timezone"));
 			long GMT = TimeZone.getTimeZone((String)date.get("timezone")).getRawOffset();
@@ -122,12 +123,13 @@ public class ClientCommandsx {
 			}
 			Call.onPlayerDeath(player);
 			Maps.setPlayer_power_Data(player.uuid,1);
-			Maps.setPlayer_Data_SQL_Temp(player.uuid,(List<String>)getSQLite_UUID(player.uuid));
+			
 			Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(GMT,0)),30f);
 		} catch (Exception e) {
 			player.sendMessage(getinput("passwd.err"));
 			return;
 		}
+		*/
 	}
 
 	public static String status(String then) {
@@ -154,18 +156,17 @@ public class ClientCommandsx {
 		return String.valueOf(bancount);
 		default :
 		return null;
-		//Laziness,Avoid opening more if
 		}
 	}
 
-	public static String host(String mapp, String gamemodes, Player player) {
+	public static void host(String mapp, String gamemodes, Player player) {
 		if("sandbox".equalsIgnoreCase(gamemodes)){
 		}else if ("pvp".equalsIgnoreCase(gamemodes)){
 		}else if ("attack".equalsIgnoreCase(gamemodes)){
 		}else if ("survival".equalsIgnoreCase(gamemodes)){
 		}else{
 			player.sendMessage(getinput("host.mode",gamemodes));
-		return null;
+		return;
 		}
 		Call.sendMessage(getinput("host.re"));;
 
@@ -184,7 +185,7 @@ public class ClientCommandsx {
 		try{
 			preset = Gamemode.valueOf(gamemodes);
 		}catch(IllegalArgumentException e){
-			return null;
+			return;
 		}
 		logic.reset();
 		world.loadMap(result,result.applyRules(preset));
@@ -195,20 +196,10 @@ public class ClientCommandsx {
 		}catch(Exception e){
 			state.set(State.menu);
 		}
-
-		return null;
 	}
 
 	public static String timee() {
-		TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
-		LocalDateTime now = LocalDateTime.now();
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd a h:m:ss");
-		String nowString = now.format(dateTimeFormatter);
-		return nowString;
-	}
-
-	public static void vote(String type) {
-
+		return getLocalTimeFromUTC(1);
 	}
 
 	public static void setting_language() {

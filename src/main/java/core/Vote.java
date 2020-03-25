@@ -25,7 +25,7 @@ import static mindustry.Vars.world;
 import static mindustry.Vars.state;
 //Mindustry-Static
 
-import extension.util.LogUtil;
+import extension.util.Log;
 //GA-Exted
 
 import static extension.data.global.Lists.getMaps_List;
@@ -126,12 +126,6 @@ public class Vote {
 				default :
 					defaulta();
 					return;
-				/*
-				case "kick" -> kick();
-				case "host" -> host();
-				case "skipwave" -> skipwave();
-				default -> defaulta();
-				*/
 			}
 		} else {
 			Call.sendMessage(getinput("vote.done.no",name));

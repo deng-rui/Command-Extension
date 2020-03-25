@@ -11,6 +11,7 @@ import extension.util.file.FileUtil;
 //GA-Exted
 
 public class Jdbc {
+	// 可以更改为在线SQL 使得可以多服同步
 	private static JdbcPool pool = new JdbcPool(10,FileUtil.File(Config.Plugin_Data_Path).getPath("Data.db"));
 
 	public static Connection getConnection() throws SQLException{

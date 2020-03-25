@@ -16,7 +16,8 @@ import javax.net.ssl.HttpsURLConnection;
 
 import extension.data.global.Config;
 import extension.util.file.FileUtil;
-import extension.util.LogUtil;
+import extension.util.Log;
+import extension.util.log.Exceptions;
 //GA-Exted
 
 import static extension.util.IsBlankUtil.Blank;
@@ -31,21 +32,30 @@ public class HttpRequest {
 	}
 
 	public static String doGet(String url, String ref, String cookie) throws Exception {
-		URL conn = new URL(url);
-		HttpURLConnection con = (HttpURLConnection) conn.openConnection();
-		con.setRequestMethod("GET");
-		con.addRequestProperty("Accept-Charset", "UTF-8");
-		if(Blank(ref))con.setRequestProperty("Referrer", ref);
-		if(Blank(cookie))con.setRequestProperty("Cookie", cookie);
-		con.setRequestProperty("User-Agent", USER_AGENT);
-		int responseCode = con.getResponseCode();
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String inputLine;
+		if()throw Exceptions.Net("NETWORK_NOT_CONNECTED");
+		HttpURLConnection con = null;
+		BufferedReader in = null;
 		StringBuffer response = new StringBuffer();
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
+		try {
+			URL conn = new URL(url);
+			con = (HttpURLConnection) conn.openConnection();
+			con.setRequestMethod("GET");
+			con.addRequestProperty("Accept-Charset", "UTF-8");
+			if(Blank(ref))con.setRequestProperty("Referrer", ref);
+			if(Blank(cookie))con.setRequestProperty("Cookie", cookie);
+			con.setRequestProperty("User-Agent", USER_AGENT);
+			int responseCode = con.getResponseCode();
+			in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+		} finally{
+			if(in != null) in.close();
+			if(con != null) con.disconnect();
 		}
-		in.close();
 		return response.toString();
 	}
 
@@ -94,10 +104,10 @@ public class HttpRequest {
 			conn.addRequestProperty("User-Agent",USER_AGENT);
 			conn.connect();
 			String location = conn.getHeaderField("Location");
-			LogUtil.debug("URL-302",location);
+			Log.debug("URL-302",location);
 			downUrl(location,file);
 		} catch (Exception e) {
-			LogUtil.warn("Url302",e);
+			Log.warn("Url302",e);
 		} finally{
 			if(conn != null) conn.disconnect();
 		}
@@ -128,9 +138,9 @@ public class HttpRequest {
 			}
 			bos.close();
 			bis.close();
-			LogUtil.debug("URL-Down-End");
+			Log.debug("URL-Down-End");
 		} catch (Exception e) {
-			LogUtil.error("downUrl",e);
+			Log.error("downUrl",e);
 		} finally{
 			if(conn != null) conn.disconnect();
 		}	 

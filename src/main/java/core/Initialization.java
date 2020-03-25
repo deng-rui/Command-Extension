@@ -20,7 +20,7 @@ import extension.net.Net;
 import extension.data.json.Json;
 import extension.data.global.Lists;
 import extension.data.global.Maps;
-import extension.util.LogUtil;
+import extension.util.Log;
 import extension.util.file.FileUtil;
 //GA-Exted
 
@@ -73,16 +73,16 @@ public class Initialization {
 		try {
 			List file = (List)FileUtil.readfile(true,new InputStreamReader(Initialization.class.getResourceAsStream("/other/FileList.txt"), "UTF-8"));
 			for(int i=0;i<file.size();i++){
-				//LogUtil.info((String)file.get(i));
+				//Log.info((String)file.get(i));
 				if(!FileUtil.File(Config.Plugin_Resources_Path+(String)file.get(i)).exists()) {
 					//IPR必须加上/
 					String a = (String)FileUtil.readfile(false,new InputStreamReader(Initialization.class.getResourceAsStream((String)file.get(i)), "UTF-8"));
 					FileUtil.writefile(a,false);
-					LogUtil.info("Defect : Start creating write external resource File",Config.Plugin_Resources_Path+(String)file.get(i));
+					Log.info("Defect : Start creating write external resource File",Config.Plugin_Resources_Path+(String)file.get(i));
 				}
 			}
 		}catch(UnsupportedEncodingException e){
-			LogUtil.fatal("File write error",e);
+			Log.fatal("File write error",e);
 		}  
 	}
 
@@ -117,9 +117,9 @@ public class Initialization {
 	}
 
 	private static void IsNetwork() {
-		LogUtil.info("ST",Config.Server_Networking);
+		Log.info("ST",Config.Server_Networking);
 		Config.Server_Networking = Net.isConnect();
-		LogUtil.info("ED",Config.Server_Networking);
+		Log.info("ED",Config.Server_Networking);
 	}
 
 	private static void Player_Privilege_classification() {
