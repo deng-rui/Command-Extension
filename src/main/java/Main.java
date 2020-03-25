@@ -1,7 +1,6 @@
 package extension;
 
 import java.util.List;
-import java.util.Set;
 import java.lang.Math;
 //Java
 
@@ -14,168 +13,60 @@ import arc.util.CommandHandler;
 import mindustry.entities.type.Player;
 import mindustry.gen.Call;
 import mindustry.game.Team;
-import mindustry.game.Teams;
 import mindustry.game.Difficulty;
 import mindustry.game.EventType.GameOverEvent;
-import mindustry.game.EventType.ServerLoadEvent;
-import mindustry.game.EventType.PlayerChatEvent;
-import mindustry.game.EventType.PlayerJoin;
-import mindustry.game.EventType.PlayerLeave;
-import mindustry.game.EventType.UnitDestroyEvent;
-import mindustry.net.Administration.PlayerInfo ;
-import mindustry.net.Packets.KickReason;
-import mindustry.net.NetConnection;
 import mindustry.plugin.Plugin;
 import mindustry.Vars;
 //Mindustry
 
 import static arc.util.Log.info;
-import static mindustry.Vars.state;
-import static mindustry.Vars.netServer;
 import static mindustry.Vars.logic;
 import static mindustry.Vars.maps;
+import static mindustry.Vars.state;
 import static mindustry.Vars.playerGroup;
 //Mindustry-Static
 
+import extension.core.Event;
 import extension.core.Vote;
-import extension.util.LogUtil;
-import extension.util.file.FileUtil;
+import extension.util.Log;
 import extension.util.translation.Bing;
 import extension.util.translation.Google;
-import extension.data.global.Lists;
-import extension.data.global.Maps;
-import extension.data.global.Strings;
 //GA-Exted
 
 import static extension.core.ClientCommandsx.*;
-import static extension.core.Event.*;
+import static extension.core.Extend.*;
 import static extension.core.Initialization.MapList;
 import static extension.core.Initialization.Start_Initialization;
-import static extension.core.Initialization.Follow_up_Initialization;
-import static extension.data.db.SQLite.Authority_control;
-import static extension.data.db.SQLite.SQL_type;
 import static extension.data.db.Player.getSQLite_UUID;
-import static extension.util.alone.BadWordUtil.*;
 import static extension.util.LocaleUtil.getinput;
-import static extension.util.String_filteringUtil.*;
+import static extension.util.IsBlankUtil.Blank;
 //Static
+import static extension.util.log.Error.Error;
 
 public class Main extends Plugin {
 
 	Google googletranslation = new Google();
 	//动态难度
 	//PVP限制
+	//
 
-	//@SuppressWarnings("unchecked")
 	public Main() {
-
-		//Log
-		LogUtil.Set("ALL");
-
-		try{
-					//System.out.println(new Bing().translate("fuck world","zh-Hans"));
-				}catch(Exception e){
-					LogUtil.warn(e);
-				}
 		
-		//初始化
+		//Log 权限
+		Log.Set("ALL");
+
+		googletranslation.translate("FUCK WORLD","jp");
+
+		//初始化 所需依赖
 		Start_Initialization();
 
-		//发言时
-		Events.on(PlayerChatEvent.class, e -> {
-			String result = PlayerChatEvent_translate(String.valueOf(e.message.charAt(0)),e.message);
-			if (null != result)Call.sendMessage("["+e.player.name+"]"+"[green] : [] "+result+"   -From Google Translator");
-			//自动翻译
-			Set<String> set = (Set<String>)BadWordUtil(removeAll_EN(e.message));
-			if (0 < set.size())
-				PlayerChatEvent_Sensitive_Thesaurus(e.player, set.iterator().next());
-			Set<String> set1 = (Set<String>)BadWordUtil(removeAll_CN(e.message));
-			if (0 < set1.size())
-				PlayerChatEvent_Sensitive_Thesaurus(e.player, set1.iterator().next());
-			//中英分检测
-			List<String> Pvpwincount = (List<String>)Maps.getPlayer_Data_SQL_Temp(e.player.uuid);
-			if(Maps.getPlayer_power_Data(e.player.uuid)>0) {
-				if(String.valueOf(e.message).equalsIgnoreCase("y") && !Vote.sted) {
-					if (Vote.playerlist.contains(e.player.uuid)) {
-						e.player.sendMessage("vote y");
-					} else {
-						Vote.playerlist.add(e.player.uuid);
-						new Vote();	
-					}
-				}
-			}
-			//金字塔！
-		});
+		//加载Event
+		Event.Main();
+		
+	}
 
-		//加入服务器时
-		Events.on(PlayerJoin.class, e -> {
-			Set<String> set = (Set<String>)BadWordUtil(removeAll_EN(e.player.name));
-			if (0 < set.size())
-				Call.onKick(e.player.con, getinput("Sensitive.Thesaurus.join.kick",set.iterator().next()));
-			Set<String> set1 = (Set<String>)BadWordUtil(removeAll_CN(e.player.name));
-			if (0 < set1.size())
-				Call.onKick(e.player.con, getinput("Sensitive.Thesaurus.join.kick",set1.iterator().next()));
-			//中英分检测
-			PlayerJoin_Logins(e.player);
-			Maps.setPlayer_Data_Temp(e.player.uuid,"Playtime-start",String.valueOf(System.currentTimeMillis()));
-		});
-
-		//退出时
-		Events.on(PlayerLeave.class, e -> {
-			Maps.removePlayer_Data_Temp(e.player.uuid,"Playtime-start");
-		});
-
-		//Gameover
-		Events.on(GameOverEvent.class, e -> {
-			if (state.rules.pvp) {
-				int index = 5;
-				for (int a = 0; a < 5; a++) {
-					if (state.teams.get(Team.all()[index]).cores.isEmpty()) {
-						index--;
-					}
-				}
-				if (index == 1) {
-					for (int i = 0; i < playerGroup.size(); i++) {
-						Player player = playerGroup.all().get(i);
-						if (player.getTeam().name.equals(e.winner.name)) {
-							List<String> Pvpwincount = (List<String>)Maps.getPlayer_Data_SQL_Temp(player.uuid);
-							System.out.println(player.uuid);
-							if(Maps.getPlayer_power_Data(player.uuid)>0)
-								Maps.setPlayer_Data_SQL_Temp(player.uuid,Lists.updatePlayerData(Pvpwincount,SQL_type("Pvpwincount"),String.valueOf(Integer.parseInt(Pvpwincount.get(SQL_type("Pvpwincount")))+1)));
-						} else {
-							List<String> Pvpwincount = (List<String>)Maps.getPlayer_Data_SQL_Temp(player.uuid);
-							System.out.println(player.uuid);
-							if(Maps.getPlayer_power_Data(player.uuid)>0)
-								Maps.setPlayer_Data_SQL_Temp(player.uuid,Lists.updatePlayerData(Pvpwincount,SQL_type("Pvplosecount"),String.valueOf(Integer.parseInt(Pvpwincount.get(SQL_type("Pvplosecount")))+1)));
-						}
-					}
-				}
-			}
-		});
-
-		//服务器加载完成时
-		Events.on(ServerLoadEvent.class, e-> {
-			netServer.admins.addChatFilter((player, message) -> {
-				return replaceBadWord(message,2,"*");
-			});
-
-			netServer.assigner = ((player, players) -> {
-				if (Vars.state.rules.pvp) {
-					Teams.TeamData re = (Teams.TeamData)Vars.state.teams.getActive().min(data -> {
-						int count = 0;
-						for (final Player other : players)if (other.getTeam() == data.team && other != player)count++;
-						if (!data.hasCore())count = 256;
-						return (float)count;
-					});
-					return (null == re) ? null : re.team;
-				}
-				return Vars.state.rules.defaultTeam;
-			});
-			//linglan
-
-			Follow_up_Initialization();
-			//部分加载需要服务器加载完毕 例如maps
-		});
+	@Override
+	public void init(){
 		
 	}
 		
@@ -189,7 +80,7 @@ public class Main extends Plugin {
 		});
 
 
-		handler.register("reloadmaps", getinput("info"), (arg) -> {
+		handler.register("reloadmaps", "reload maps", (arg) -> {
 			int beforeMaps = maps.all().size;
 			maps.reload();
 			if(maps.all().size > beforeMaps){
@@ -239,7 +130,7 @@ public class Main extends Plugin {
 			} else {
 				login(player,args[0],args[1]);
 			}
-		});
+		});Retrieve password
 
 		handler.<Player>register("register", "<new_id> <new_password> <password_repeat>", "Login to account", (args, player) -> {
 			if (!Authority_control(player.uuid,"register")) {
@@ -248,6 +139,15 @@ public class Main extends Plugin {
 				register(player,args[0],args[1],args[2]);
 			}
 		});
+
+		handler.<Player>register("ftpasswd", "<Email at registration> [Verification Code]", "Forget password", (args, player) -> {
+			if (!Authority_control(player.uuid,"ftpasswd")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
+				ftpasswd(player,args[0],args[1],args[2]);
+			}
+		});
+		//
 
 		handler.<Player>register("info",getinput("info"), (args, player) -> {
 			if (!Authority_control(player.uuid,"info")) {
@@ -263,7 +163,7 @@ public class Main extends Plugin {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				player.sendMessage("FPS:"+status("getfps")+"  Occupied memory:"+status("getmemory")+"MB");
-				player.sendMessage(getinput("status.number",String.valueOf(Vars.playerGroup.size())));
+				player.sendMessage(getinput("status.number",String.valueOf(playerGroup.size())));
 				player.sendMessage(getinput("status.ban",status("getbancount")));
 			}
 		});
@@ -296,8 +196,8 @@ public class Main extends Plugin {
 			if (!Authority_control(player.uuid,"tp")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
-				Player other = Vars.playerGroup.find(p->p.name.equalsIgnoreCase(args[0]));
-				if(other == null){
+				Player other = playerGroup.find(p->p.name.equalsIgnoreCase(args[0]));
+				if(null == other){
 					player.sendMessage(getinput("tp.fail"));
 					return;
 				}
@@ -318,7 +218,7 @@ public class Main extends Plugin {
 			if (!Authority_control(player.uuid,"team")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
-				if (!Vars.state.rules.pvp){
+				if (!state.rules.pvp){
 					player.sendMessage(getinput("team.fail"));
 					return;
 				}
@@ -328,7 +228,7 @@ public class Main extends Plugin {
 					if (index >= Team.all().length){
 						index = 0;
 					}
-					if (!Vars.state.teams.get(Team.all()[index]).cores.isEmpty()){
+					if (!state.teams.get(Team.all()[index]).cores.isEmpty()){
 						player.setTeam(Team.all()[index]);
 						break;
 					}
@@ -345,7 +245,7 @@ public class Main extends Plugin {
 				try {
 					Difficulty.valueOf(args[0]);
 					player.sendMessage(getinput("difficulty.success",args[0]));
-				}catch(IllegalArgumentException e){
+				}catch(IllegalArgumentException e) {
 					player.sendMessage(getinput("difficulty.fail",args[0]));
 				}
 			}
@@ -361,7 +261,7 @@ public class Main extends Plugin {
 
 
 		handler.<Player>register("host","<mapname> [mode]",getinput("host"), (args, player) -> {
-			if (!Authority_control(player.uuid,"host")) {
+			if (Authority_control(player.uuid,"host")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				host(args[0],args[1],player);
@@ -378,25 +278,21 @@ public class Main extends Plugin {
 
 		handler.<Player>register("time",getinput("time"), (args, player) -> player.sendMessage(getinput("time.info",timee())));
 
-		handler.<Player>register("tr","<text> <Output-language>",getinput("tr"), (args, player) -> {
+		handler.<Player>register("tr","<text> [Output-language]",getinput("tr"), (args, player) -> {
 			if (!Authority_control(player.uuid,"tr")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				//No spaces are allowed in the input language??
 				player.sendMessage(getinput("tr.tips"));
 				player.sendMessage(getinput("tr.tips1"));
-				String text = args[0].replace('-',' ');	
+				String text = ;	
 				try {
 					Thread.currentThread().sleep(2500);
 				}catch(InterruptedException ie){
 					ie.printStackTrace();
-				} 
-				try{
-					String translationm = googletranslation.translate(text,args[1]);
-					Call.sendMessage("["+player.name+"]"+"[green] : [] "+translationm+"   -From Google Translator");
-				}catch(Exception e){
-					return;
 				}
+				// 默认EN
+				Call.sendMessage("["+player.name+"]"+"[green] : [] "+googletranslation.translate(args[0].replace('_',' '),(Blank(args[1])) ? "en" : args[1])+"   -From Google Translator");
 			}	
 		});
 
@@ -493,5 +389,5 @@ public class Main extends Plugin {
  *UTF8Control.Java					UTF8Control  		https://answer-id.com/52120414
  *GoogletranslateApi.Java			Googletranslate		https://github.com/PopsiCola/GoogleTranslate
  *Main.Java 						assigner 			Tencent qun(QQ qun)
- *BadWordUtil.Java 					参考DFA算法 			http://blog.csdn.net/chenssy/article/details/26961957
+ *BadWord.Java 					参考DFA算法 			http://blog.csdn.net/chenssy/article/details/26961957
 */
