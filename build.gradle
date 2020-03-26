@@ -22,11 +22,27 @@ dependencies{
 	//Mindustry
 
 	//compile fileTree(dir:'libs',include:['*.jar'])
+
+	/* Json Import
+	 * 1.2MB 
+	 */
 	implementation group: 'com.alibaba', name: 'fastjson', version: '1.2.59'
-	//NO AutoType
+	/* Passwd Import
+	 * 300KB? 
+	 */
 	implementation group: 'commons-codec', name: 'commons-codec', version: '1.14'
 	implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
-
+	/* Mail Import
+	 * 608KB 
+	 */
+	implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
+	implementation group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
+	/*
+	 * 为项目加入Tencent QQ支持
+	 * TEST - 不会投入稳定版本
+	 * https://github.com/mamoe/mirai
+	 * implementation 'net.mamoe:mirai-core:0.29.1'
+	 */
 
 }
 
