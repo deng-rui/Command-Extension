@@ -28,7 +28,7 @@ public class Json {
 		date.put("translateo", false);
 		date.put("Server_Country_CN", false);
 		String json = JSONObject.toJSONString(date,SerializerFeature.PrettyFormat);
-		Core.settings.getDataDirectory().child("mods/GA/setting.json").writeString(json);
+		Core.settings.getDataDirectory().child("mods/GA/Setting.json").writeString(json);
 	}
 
 	public static JSONObject getData(String path){
