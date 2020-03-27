@@ -9,266 +9,221 @@ import arc.Core;
 //Arc
 
 import extension.data.global.Config;
-import extension.util.LogUtil;
+import extension.util.Log;
 import extension.util.file.FileUtil;
 //GA-Exted
 
-import static extension.data.db.SQLite.SQL_type;
+import static extension.util.ExtractUtil.InttoBoolean;
+import static extension.util.ExtractUtil.BooleantoInt;
 //Static
 
 public class Player {
-	public static void InitializationPlayersSQLite(String UUID, String NAME, String IP, String GMT, String Country, String Language, String LastLogin, String User, String PasswordHash, String CSPRNG) {
+
+	private static Connection c;
+
+	static {
 		try {
-			Connection c = connectSQLite();
+			c = DriverManager.getConnection("jdbc:sqlite:"+FileUtil.File(Config.Plugin_Data_Path).getPath("Data.db"));
 			c.setAutoCommit(false);
-			String sql = "INSERT INTO Player (UUID,NAME,IP,GMT,Country,Time_format,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Deadcount,Killcount,Joincount,Breakcount) VALUES (?,?,?,?,?,'1',?,?,?,?,?,'0','0','0','0','0','0','0','0','0','0','1','0','0','0','0','0')";
-			PreparedStatement stmt = c.prepareStatement(sql);
-			stmt.setString(1,UUID);
-			stmt.setString(2,NAME);
-			stmt.setString(3,IP);
-			stmt.setString(4,GMT);
-			stmt.setString(5,Country);
-			stmt.setString(6,Language);
-			stmt.setString(7,LastLogin);
-			stmt.setString(8,User);
-			stmt.setString(9,PasswordHash);
-			stmt.setString(10,CSPRNG);
-			stmt.execute();
-			stmt.close();
-			c.commit();
-			c.close();
-		} catch (Exception e ) {
-			LogUtil.fatal(e);
+		} catch (Exception e) {
+			Log.fatal(e);
 		}
 	}
 
-	public static void addSQLite() {
-		try {
-			String sql;
-			Connection c = connectSQLite();
-			c.setAutoCommit(false);
-			Statement stmt = c.createStatement();
-			sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
-			  "VALUES ('ZNSDsdjdemDRtest==','Dr','1.1.1.1','GMT+8','ZH-CN','ZH-CN','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0')"; 
-			stmt.executeUpdate(sql);
-			System.out.println("1");
-			sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
-			 "VALUES ('ZNSDsdjdXemDRtest==','DXr','1.1.1.1','GMT+8','ZH-CN','ZH-CN','','','','','','','','','','','','','','','','','','','','','')"; 
-			stmt.executeUpdate(sql);
-			System.out.println("2");
-			sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
-			 "VALUES ('ZNSDsdjdemXXDRtest==','DXXr','1.1.1.1','GMT+8','ZH-CN','ZH-CN','','','','','','','','','','','','','','','','','','','','','')"; 
-			stmt.executeUpdate(sql);
-			sql ="INSERT INTO TEST (UUID,NAME,IP,GMT,Country,Language,LastLogin,User,PasswordHash,CSPRNG,Kickcount,Sensitive,Translate,Level,Exp,Reqexp,Reqtotalexp,Playtime,Pvpwincount,Pvplosecount,Authority,Lastchat,Chatcount,Deadcount,Killcount,Joincount,Breakcount) " +
-			 "VALUES ('ZNSDsdjdXXXemDRtest==','DXXXr','1.1.1.1','GMT+8','ZH-CN','ZH-CN','','','','','','','','','','','','','','','','','','','','','')"; 
-			stmt.executeUpdate(sql);
-			stmt.close();
+	public static void InitializationPlayersSQLite(String UUID, String User, String NAME, long IP, long GMT, String Country, String Language, long LastLogin, String PasswordHash, String CSPRNG) {
+		PreparedStatement playerdata = null;
+		PreparedStatement playerpriv = null;
+		try {	
+			playerdata = c.prepareStatement("INSERT INTO PlayerData VALUES (?,?,?,?,?,?,'1',?,?,'0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','0','0','0')");
+			playerpriv = c.prepareStatement("INSERT INTO PlayerPrivate VALUES (?,'NULL','1',?,?)");
+			playerdata.setString(1,UUID);
+			playerdata.setString(2,User);
+			playerdata.setString(3,NAME);
+			playerdata.setLong(4,IP);
+			playerdata.setLong(5,GMT);
+			playerdata.setString(6,Country);
+			playerdata.setString(7,Language);
+			playerdata.setLong(8,LastLogin);
+			playerdata.execute();
+			playerpriv.setString(1,User);
+			playerpriv.setString(2,PasswordHash);
+			playerpriv.setString(3,CSPRNG);
+			playerpriv.addBatch();
+			playerpriv.execute();
 			c.commit();
-			c.close();
-		} catch (Exception e ) {
-			LogUtil.error(e);
+		} catch (Exception e) {
+			Log.fatal(e);
+		} finally {
+			close(playerdata);
+			close(playerpriv);
 		}
 	}
 
-	public static void savePlayer_Data(List data, boolean uu, String uoru) {
+	public static void savePlayer_Data(PlayerData data, String uoru) {
+		PreparedStatement stmt = null;
 		try {
-			Connection c = connectSQLite();
-			c.setAutoCommit(false);
-			String sql=sql = "UPDATE Player SET UUID=?,NAME=?,IP=?,GMT=?,Country=?,Time_format=?,Language=?,LastLogin=?,User=?,PasswordHash=?,CSPRNG=?,Kickcount=?,Sensitive=?,Translate=?,Level=?,Exp=?,Reqexp=?,Reqtotalexp=?,Playtime=?,Pvpwincount=?,Pvplosecount=?,Authority=?,Lastchat=?,Deadcount=?,Killcount=?,Joincount=?,Breakcount=? WHERE UUID=?";
-			if(uu)sql="UPDATE Player SET UUID=?,NAME=?,IP=?,GMT=?,Country=?,Time_format=?,Language=?,LastLogin=?,User=?,PasswordHash=?,CSPRNG=?,Kickcount=?,Sensitive=?,Translate=?,Level=?,Exp=?,Reqexp=?,Reqtotalexp=?,Playtime=?,Pvpwincount=?,Pvplosecount=?,Authority=?,Lastchat=?,Deadcount=?,Killcount=?,Joincount=?,Breakcount=? WHERE User=?";
-			PreparedStatement stmt = c.prepareStatement(sql);
-			stmt.setString(1,(String)data.get(SQL_type("UUID")));
-			stmt.setString(2,(String)data.get(SQL_type("NAME")));
-			stmt.setString(3,(String)data.get(SQL_type("IP")));
-			stmt.setString(4,(String)data.get(SQL_type("GMT")));
-			stmt.setString(5,(String)data.get(SQL_type("Country")));
-			stmt.setString(6,(String)data.get(SQL_type("Time_format")));
-			stmt.setString(7,(String)data.get(SQL_type("Language")));
-			stmt.setString(8,(String)data.get(SQL_type("LastLogin")));
-			stmt.setString(9,(String)data.get(SQL_type("User")));
-			stmt.setString(10,(String)data.get(SQL_type("PasswordHash")));
-			stmt.setString(11,(String)data.get(SQL_type("CSPRNG")));
-			stmt.setString(12,(String)data.get(SQL_type("Kickcount")));
-			stmt.setString(13,(String)data.get(SQL_type("Sensitive")));
-			stmt.setString(14,(String)data.get(SQL_type("Translate")));
-			stmt.setString(15,(String)data.get(SQL_type("Level")));
-			stmt.setString(16,(String)data.get(SQL_type("Exp")));
-			stmt.setString(17,(String)data.get(SQL_type("Reqexp")));
-			stmt.setString(18,(String)data.get(SQL_type("Reqtotalexp")));
-			stmt.setString(19,(String)data.get(SQL_type("Playtime")));
-			stmt.setString(20,(String)data.get(SQL_type("Pvpwincount")));
-			stmt.setString(21,(String)data.get(SQL_type("Pvplosecount")));
-			stmt.setString(22,(String)data.get(SQL_type("Authority")));
-			stmt.setString(23,(String)data.get(SQL_type("Lastchat")));
-			stmt.setString(24,(String)data.get(SQL_type("Deadcount")));
-			stmt.setString(25,(String)data.get(SQL_type("Killcount")));
-			stmt.setString(26,(String)data.get(SQL_type("Joincount")));
-			stmt.setString(27,(String)data.get(SQL_type("Breakcount")));
+			stmt = c.prepareStatement("UPDATE PlayerData SET UUID=?,User=?,NAME=?,IP=?,GMT=?,Country=?,Time_format=?,Language=?,LastLogin=?,Buildcount=?,Dismantledcount=?,Cumulative_build=?,Kickcount=?,Sensitive=?,Translate=?,Level=?,Exp=?,Reqexp=?,Reqtotalexp=?,Playtime=?,Pvpwincount=?,Pvplosecount=?,Authority=?,Lastchat=?,Deadcount=?,Killcount=?,Joincount=?,Breakcount=? WHERE User=?");
+			stmt.setString(1,data.UUID);
+			stmt.setString(2,data.User);
+			stmt.setString(3,data.NAME);
+			stmt.setLong(4,data.IP);
+			stmt.setLong(5,data.GMT);
+			stmt.setString(6,data.Country);
+			stmt.setInt(7,data.Time_format);
+			stmt.setString(8,data.Language);
+			stmt.setLong(9,data.LastLogin);
+			stmt.setInt(10,data.Buildcount);
+			stmt.setInt(11,data.Dismantledcount);
+			stmt.setInt(12,data.Cumulative_build);
+			stmt.setInt(13,data.Kickcount);
+			stmt.setInt(14,BooleantoInt(data.Translate));
+			stmt.setInt(15,data.Level);
+			stmt.setLong(16,data.Exp);
+			stmt.setLong(17,data.Reqexp);
+			stmt.setLong(18,data.Reqtotalexp);
+			stmt.setLong(19,data.Playtime);
+			stmt.setInt(20,data.Pvpwincount);
+			stmt.setInt(21,data.Pvplosecount);
+			stmt.setInt(21,data.Authority);
+			stmt.setLong(22,data.Lastchat);
+			stmt.setInt(24,data.Deadcount);
+			stmt.setInt(25,data.Killcount);
+			stmt.setInt(26,data.Joincount);
+			stmt.setInt(27,data.Breakcount);
 			stmt.setString(28,uoru);
 			stmt.execute();
-			stmt.close();
 			c.commit();
-			c.close();
-		} catch (Exception e ) {
-			LogUtil.error(e);
+		} catch (SQLException e) {
+			Log.error(e);
+		} finally {
+			close(stmt);
 		}
 	}
 
-	public static List<String> getSQLite_UUID(String uuid) {
+	public static void savePlayer_Private(PlayerData data, String user) {
+		PreparedStatement stmt = null;
 		try {
-			List<String> Players = new ArrayList<String>();
-			Connection c = connectSQLite();
-			c.setAutoCommit(false);
-			PreparedStatement stmt = c.prepareStatement("SELECT * FROM Player WHERE UUID=?");
-			stmt.setString(1,uuid);
-			ResultSet rs = stmt.executeQuery();
-			while ( rs.next() ) {
-			Players.add(rs.getString("UUID"));
-			Players.add(rs.getString("NAME"));
-			Players.add(rs.getString("IP"));
-			Players.add(rs.getString("GMT"));
-			Players.add(rs.getString("Country"));
-			Players.add(rs.getString("Time_format"));
-			Players.add(rs.getString("Language"));
-			Players.add(rs.getString("LastLogin"));
-			Players.add(rs.getString("User"));
-			Players.add(rs.getString("PasswordHash"));
-			Players.add(rs.getString("CSPRNG"));
-			//Players.add(rs.getInt("Kickcount"));
-			//Players.add(rs.getInt("Sensitive"));
-			Players.add(rs.getString("Kickcount"));
-			Players.add(rs.getString("Sensitive"));
-			Players.add(rs.getString("Translate"));
-			//Players.add(rs.getInt("Level"));
-			//Players.add(rs.getInt("Exp"));
-			//Players.add(rs.getInt("Reqexp"));
-			//Players.add(rs.getInt("Reqtotalexp"));
-			//Players.add(rs.getInt("Playtime"));
-			//Players.add(rs.getInt("Pvpwincount"));
-			//Players.add(rs.getInt("Pvplosecount"));
-			//Players.add(rs.getInt("Authority"));
-			Players.add(rs.getString("Level"));
-			Players.add(rs.getString("Exp"));
-			Players.add(rs.getString("Reqexp"));
-			Players.add(rs.getString("Reqtotalexp"));
-			Players.add(rs.getString("Playtime"));
-			Players.add(rs.getString("Pvpwincount"));
-			Players.add(rs.getString("Pvplosecount"));
-			Players.add(rs.getString("Authority"));
-			Players.add(rs.getString("Lastchat"));
-			//Players.add(rs.getInt("Chatcount"));
-			//Players.add(rs.getInt("Deadcount"));
-			//Players.add(rs.getInt("Killcount"));
-			//Players.add(rs.getInt("Joincount"));
-			//Players.add(rs.getInt("Breakcount"));
-			Players.add(rs.getString("Deadcount"));
-			Players.add(rs.getString("Killcount"));
-			Players.add(rs.getString("Joincount"));
-			Players.add(rs.getString("Breakcount"));
-			}
-			/*
-			for(int i=0;i<Players.size();i++){
-			System.out.println(Players.get(i));
-			}*/
-			rs.close();
-			stmt.close();
-			c.close();
-			return Players;
-		} catch ( Exception e ) {
-			LogUtil.error(e);
+			stmt = c.prepareStatement("UPDATE PlayerPrivate SET User=?,Mail=?,Online=?,PasswordHash=?,CSPRNG=? WHERE User=?");
+			stmt.setString(1,data.User);
+			stmt.setString(2,data.Mail);
+			stmt.setInt(3,BooleantoInt(data.Online));
+			stmt.setString(4,data.PasswordHash);
+			stmt.setString(5,data.CSPRNG);
+			stmt.setString(6,user);
+			stmt.execute();
+			c.commit();
+		} catch (SQLException e) {
+			Log.error(e);
+		} finally {
+			close(stmt);
 		}
-		return null;
 	}
 
-	public static List<String> getSQLite_USER(String user) {
+	public static void getSQLite(PlayerData data, String user) {
+		PreparedStatement playerdata = null;
+		PreparedStatement playerpriv = null;
+		ResultSet rs = null;
+		ResultSet rss = null;
 		try {
-			List<String> Players = new ArrayList<String>();
-			Connection c = connectSQLite();
-			c.setAutoCommit(false);
-			PreparedStatement stmt = c.prepareStatement("SELECT * FROM Player WHERE User=?");
-			stmt.setString(1,user);
-			ResultSet rs = stmt.executeQuery();
+			playerdata = c.prepareStatement("SELECT * FROM PlayerData WHERE User=?");
+			playerdata.setString(1,user);
+			rs = playerdata.executeQuery();
 			while ( rs.next() ) {
-				Players.add(rs.getString("UUID"));
-				Players.add(rs.getString("NAME"));
-				Players.add(rs.getString("IP"));
-				Players.add(rs.getString("GMT"));
-				Players.add(rs.getString("Country"));
-				Players.add(rs.getString("Time_format"));
-				Players.add(rs.getString("Language"));
-				Players.add(rs.getString("LastLogin"));
-				Players.add(rs.getString("User"));
-				Players.add(rs.getString("PasswordHash"));
-				Players.add(rs.getString("CSPRNG"));
-				//Players.add(rs.getInt("Kickcount"));
-				//Players.add(rs.getInt("Sensitive"));
-				Players.add(rs.getString("Kickcount"));
-				Players.add(rs.getString("Sensitive"));
-				Players.add(rs.getString("Translate"));
-				//Players.add(rs.getInt("Level"));
-				//Players.add(rs.getInt("Exp"));
-				//Players.add(rs.getInt("Reqexp"));
-				//Players.add(rs.getInt("Reqtotalexp"));
-				//Players.add(rs.getInt("Playtime"));
-				//Players.add(rs.getInt("Pvpwincount"));
-				//Players.add(rs.getInt("Pvplosecount"));
-				//Players.add(rs.getInt("Authority"));
-				Players.add(rs.getString("Level"));
-				Players.add(rs.getString("Exp"));
-				Players.add(rs.getString("Reqexp"));
-				Players.add(rs.getString("Reqtotalexp"));
-				Players.add(rs.getString("Playtime"));
-				Players.add(rs.getString("Pvpwincount"));
-				Players.add(rs.getString("Pvplosecount"));
-				Players.add(rs.getString("Authority"));
-				Players.add(rs.getString("Lastchat"));
-				//Players.add(rs.getInt("Chatcount"));
-				//Players.add(rs.getInt("Deadcount"));
-				//Players.add(rs.getInt("Killcount"));
-				//Players.add(rs.getInt("Joincount"));
-				//Players.add(rs.getInt("Breakcount"));
-				Players.add(rs.getString("Deadcount"));
-				Players.add(rs.getString("Killcount"));
-				Players.add(rs.getString("Joincount"));
-				Players.add(rs.getString("Breakcount"));
+				data.UUID 				= rs.getString("UUID");
+				data.User 				= rs.getString("User");
+				data.NAME 				= rs.getString("NAME");
+				data.IP 				= rs.getLong("IP");
+				data.GMT 				= rs.getLong("GMT");
+				data.Country 			= rs.getString("Country");
+				data.Time_format 		= rs.getInt("Time_format");
+				data.Language 			= rs.getString("Language");
+				data.Lastchat 			= rs.getLong("LastLogin");
+				//data.Online 			= rs.getInt("Online");
+				data.Buildcount 		= rs.getInt("Buildcount");
+				data.Dismantledcount 	= rs.getInt("Dismantledcount");
+				data.Cumulative_build 	= rs.getInt("Cumulative_build");
+				data.Kickcount 			= rs.getInt("Kickcount");
+				data.Translate 			= InttoBoolean(rs.getInt("Translate"));
+				data.Level 				= rs.getInt("Level");
+				data.Exp 				= rs.getLong("Exp");
+				data.Reqexp 			= rs.getLong("Reqexp");
+				data.Reqtotalexp 		= rs.getLong("Reqtotalexp");
+				data.Playtime 			= rs.getLong("Playtime");
+				data.Pvpwincount 		= rs.getInt("Pvpwincount");
+				data.Pvplosecount 		= rs.getInt("Pvplosecount");
+				data.Authority 			= rs.getInt("Authority");
+				data.Lastchat 			= rs.getLong("Lastchat");
+				data.Deadcount 			= rs.getInt("Deadcount");
+				data.Killcount 			= rs.getInt("Killcount");
+				data.Joincount 			= rs.getInt("Joincount");
+				data.Breakcount 		= rs.getInt("Breakcount");
 			}
-		/*
-		for(int i=0;i<Players.size();i++){
-		System.out.println(Players.get(i));
-		}*/
-			rs.close();
-			stmt.close();
-			c.close();
-			return Players;
-		} catch ( Exception e ) {
-			LogUtil.error(e);
+			playerpriv = c.prepareStatement("SELECT * FROM PlayerPrivate WHERE User=?");
+			playerpriv.setString(1,user);
+			rss = playerpriv.executeQuery();
+			while (rss.next()) {
+				data.Mail 				= rss.getString("Mail");
+				data.Online 			= InttoBoolean(rss.getInt("Online"));
+				data.PasswordHash 		= rss.getString("PasswordHash");
+				data.CSPRNG 			= rss.getString("CSPRNG");
+			}
+		} catch (SQLException e) {
+			Log.error(e);
+		} finally {
+			close(rs,playerdata);
+			close(rss,playerpriv);
 		}
-		return null;
 	}
 
 	public static boolean isSQLite_User(String user) {
 		boolean result = true;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		try {
-			String temp;
-			Connection c = connectSQLite();
-			c.setAutoCommit(false);
-			PreparedStatement stmt = c.prepareStatement("SELECT COUNT(*) FROM Player where User=?");
+			stmt = c.prepareStatement("SELECT COUNT(User) FROM PlayerPrivate where User=?");
+			// 真的奇怪?
 			stmt.setString(1,user);
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			rs.next();
 			if(rs.getInt(1)>0)result = false;
-			rs.close();
-			stmt.close();
-			c.close();
 			//用户名存在 避免冲突
-		} catch ( Exception e ) {
+		} catch (SQLException e) {
 			System.out.println(e);
+		} finally {
+			close(rs,stmt);
 		}
 		return result;
 	}
 
-	public static Connection connectSQLite() throws Exception {
-		return (Connection)DriverManager.getConnection("jdbc:sqlite:"+FileUtil.File(Config.Plugin_Data_Path).getPath("Data.db"));
+	private static void close(Statement stmt) {
+		close(null,stmt,null);
 	}
 
+	private static void close(ResultSet rs,Statement stmt) {
+		close(rs,stmt,null);
+	}
+
+	private static void close(Statement stmt,Connection conn) {
+		close(null,stmt,conn);
+	}
+
+	private static void close(ResultSet rs,Statement stmt,Connection conn) {
+		try {
+			if (rs != null) rs.close();
+		} catch (Exception e) {  
+			rs = null;  
+		} finally {
+			try {
+				if (stmt != null) stmt.close();
+			} catch (Exception e) {  
+				stmt = null;  
+			} finally {
+				try {
+					if (conn != null) conn.close();
+				} catch (Exception e) {  
+					conn = null;  
+				}
+			}
+		}
+	}
 }
