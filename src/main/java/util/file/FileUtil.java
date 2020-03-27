@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.ArrayList;
 //Java
 
-import extension.util.LogUtil;
-//GA-Exted
+import extension.util.Log;
 
 public class FileUtil {
 
@@ -19,6 +18,7 @@ public class FileUtil {
 
 	public FileUtil(String filepath){
 		this.filepath = filepath;
+		this.file = new File(filepath);
 	}
 
 	public FileUtil(File file, String filepath){
@@ -56,6 +56,10 @@ public class FileUtil {
 		String temp = filepath;
 		new FileUtil(temp+"/"+filename);
 		return temp+"/"+filename;
+	} 
+
+	public static FileUtil toPath(String filename) {
+		return new FileUtil(filepath+"/"+filename);
 	}
 
 	public static List<File> getFileList() {
@@ -90,25 +94,8 @@ public class FileUtil {
 	}
 
 	public static Object readfile(boolean list) {
-		try { 
-			FileInputStream fis = new FileInputStream(file); 
-			InputStreamReader isr = new InputStreamReader(fis, "UTF-8"); 
-			BufferedReader br = new BufferedReader(isr); 
-			String line = null; 
-			if(list){
-				List<String> FileContent = new ArrayList<String>();
-				while ((line = br.readLine()) != null) { 
-					FileContent.add(line);
-				} 
-				return FileContent;
-			} else {
-				String FileContent = "";
-				while ((line = br.readLine()) != null) { 
-					FileContent += line; 
-					FileContent += "\r\n";
-				}
-				return FileContent;
-			}
+		try {
+			return readfile(list,new InputStreamReader(new FileInputStream(file), "UTF-8"));
 		} catch (Exception e) { 
 			e.printStackTrace(); 
 		}

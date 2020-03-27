@@ -19,6 +19,12 @@ public class DateUtil {
 		cal.add(Calendar.MILLISECOND, -(zoneOffset + dstOffset));
 		return cal.getTimeInMillis();
 	}
+
+	public static String simp(long GMT,int fot){
+		String[] ft=new String[]{"yyyy-MM-dd","yyyy-MM-dd HH:mm:ss","yyyy-MM-dd'T'HH:mm:ss'Z'","dd-MM-yyyy HH:mm:ss","MM-dd-yyyy HH:mm:ss"};
+		return new SimpleDateFormat(ft[fot]).format(new Date(GMT));
+	}
+
 	/**
 	 * 获取指定时间
 	 * @param GMT 目标偏移量
@@ -26,23 +32,33 @@ public class DateUtil {
 	 * @return 格式化后GMT时间
 	 */
 
+	public static long getLocalTimeFromUTC(){
+		return Long.valueOf(getLocalTimeFromUTC(0,0,false));
+	}
+
+	// 获取指定类型GMT
+	public static String getLocalTimeFromUTC(int fot){
+		return getLocalTimeFromUTC(0,fot,true);
+	}
+
 	public static String getLocalTimeFromUTC(long GMT){
 		return getLocalTimeFromUTC(GMT,0,false);
 	}
 
+	// 获取格式化后的指定GMT
 	public static String getLocalTimeFromUTC(long GMT, int fot){
 		return getLocalTimeFromUTC(GMT,fot,true);
 	}
 
-	public static String getLocalTimeFromUTC(long GMT, int fot, boolean slf){
-		String[] ft=new String[]{"yyyy-MM-dd","yyyy-MM-dd HH:mm:ss","yyyy-MM-dd'T'HH:mm:ss'Z'","dd-MM-yyyy HH:mm:ss","MM-dd-yyyy HH:mm:ss"};
+	public static String getLocalTimeFromUTC(long GMT, int fot, boolean format){
 		long UTC = getUTCTimeStr();
 		// UTC时间加上偏移量 即取得目标时间
 		UTC = UTC + GMT;
-		if (slf) {
-			SimpleDateFormat sdf=new SimpleDateFormat(ft[fot]);
-			return sdf.format(new Date(Long.valueOf(UTC/1000) * 1000L));
-		}
-		return String.valueOf(Long.valueOf(UTC));
+		// UTC/1000 毫秒转换
+		if (format) return simp((Long.valueOf(UTC) * 1000L)/1000,fot);
+		// 去除末尾
+		// 1584377312921
+		// 1584377312
+		return String.valueOf((Long.valueOf(UTC) * 1000L)/1000);
 	}
 }

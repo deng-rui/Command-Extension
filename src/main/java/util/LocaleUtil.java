@@ -16,7 +16,7 @@ import java.util.MissingResourceException;
 import extension.data.global.Config;
 import extension.dependent.UTF8Control;
 import extension.util.file.FileUtil;
-import extension.util.LogUtil;
+import extension.util.Log;
 //GA-Exted
 
 import static extension.data.json.Json.getData;
@@ -26,7 +26,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 //Json
 
-import extension.util.LogUtil;
+import extension.util.Log;
  
 public class LocaleUtil {
 
@@ -49,7 +49,7 @@ public class LocaleUtil {
 			}
 		//防止使游戏崩溃 CALL..
 		} catch (MissingResourceException e) {
-			LogUtil.error(e);
+			Log.error(e);
 			
 		}
 		return input+" : Key is invalid.";
@@ -57,20 +57,16 @@ public class LocaleUtil {
 	}
 
 	public static String getinput(String input,Object... params) {
-		JSONObject date = getData("mods/GA/setting.json");
+		JSONObject date = getData("mods/GA/Setting.json");
 		try {
 			String o = (String) date.get("languageO");
 			String t = (String) date.get("languageT");
-			if (params == null) {
-				return language(o,t,input,null);
-			}
+			if (params == null) return language(o,t,input,null);
 			Object[] ps = new Object[params.length];
-			for (int i=0;i<params.length;i++) {
-				ps[i] = params[i];
-			}
+			for (int i=0;i<params.length;i++) ps[i] = params[i];
 			return language(o,t,input,ps);
 		} catch (Exception e) {
-			LogUtil.error(e);
+			Log.error(e);
 		}
 		return null;
 	}

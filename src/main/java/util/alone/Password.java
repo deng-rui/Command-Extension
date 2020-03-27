@@ -48,7 +48,7 @@ public class Password {
 		return hash.equals(passHash);
 	}
 
-	public static Map<String, Object> newPasswd(String pw , String USER) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public static Map<String, Object> newPasswd(String pw) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		Map<String, Object> Password = new HashMap<String, Object>();
 		String salt = genRandomSalt();
 		// 经过加盐后的密码摘要
@@ -59,7 +59,6 @@ public class Password {
 		boolean resualt = Passwdverify(pw, passwordHash, salt);
 		// 验证密码
 		Password.put("resualt",resualt);
-		Password.put("user",USER);
 		
 		return Password;
 	}
