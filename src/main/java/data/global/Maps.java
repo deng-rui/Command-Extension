@@ -15,6 +15,9 @@ public class Maps {
 	// 权限内容
 	private static final Map<Integer, List> Power_Data = Collections.synchronizedMap(new HashMap<Integer, List>());	
 
+	public static Map getMapPlayer_Data() {
+		return Player_Data;
+	}
 	public static PlayerData getPlayer_Data(String uuid) {
 		return Player_Data.get(uuid);
 	}
@@ -36,6 +39,9 @@ public class Maps {
 	}
 	//删除
 
+	public static boolean Player_Data_boolean(String uuid) {
+		return Player_Data.containsKey(uuid);
+	}
 	public static boolean Power_Data_boolean(int id) {
 		return Power_Data.containsKey(id);
 	}

@@ -1,5 +1,7 @@
 package extension.data.global;
 
+import static extension.util.file.LoadConfig.loadint;
+
 public class Config {
 
 	public static final String Plugin_Path 						= "/config/mods";
@@ -12,5 +14,13 @@ public class Config {
 
 	public static boolean Server_Country_CN 					= false;
 	public static boolean Server_Networking 					= false;
+
+	public static final int Warning_quantity;
+	public static final int Reject_quantity;
+
+	static {
+		Warning_quantity 	= loadint("Wan_Construction");
+		Reject_quantity 	= loadint("MAX_Construction");
+	}
 
 }

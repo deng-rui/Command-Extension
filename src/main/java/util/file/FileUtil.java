@@ -93,10 +93,19 @@ public class FileUtil {
 		}
 	}
 
+	public static InputStreamReader readconfig() {
+		try {
+			return new InputStreamReader(new FileInputStream(file), "UTF-8");
+		} catch (IOException e) { 
+			e.printStackTrace(); 
+		}
+		return null;
+	}
+
 	public static Object readfile(boolean list) {
 		try {
 			return readfile(list,new InputStreamReader(new FileInputStream(file), "UTF-8"));
-		} catch (Exception e) { 
+		} catch (IOException e) { 
 			e.printStackTrace(); 
 		}
 		return null;
@@ -120,7 +129,7 @@ public class FileUtil {
 				}
 				return FileContent;
 			}
-		} catch (Exception e) { 
+		} catch (IOException e) { 
 			e.printStackTrace(); 
 		}
 		return null;

@@ -32,7 +32,6 @@ public class HttpRequest {
 	}
 
 	public static String doGet(String url, String ref, String cookie) throws Exception {
-		if()throw Exceptions.Net("NETWORK_NOT_CONNECTED");
 		HttpURLConnection con = null;
 		BufferedReader in = null;
 		StringBuffer response = new StringBuffer();
