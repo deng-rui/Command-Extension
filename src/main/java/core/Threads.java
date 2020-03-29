@@ -65,7 +65,7 @@ public class Threads {
 				if(Config.Regular_Reporting)Status_Reporting();
 			}
 		};
-		Thread_Time=service.scheduleAtFixedRate(Atime,1,2,TimeUnit.MINUTES);
+		Thread_Time=service.scheduleAtFixedRate(Atime,5,5,TimeUnit.MINUTES);
 	}
 
 	public static void close() {
