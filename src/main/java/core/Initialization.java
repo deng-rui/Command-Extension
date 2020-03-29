@@ -38,10 +38,8 @@ import com.alibaba.fastjson.JSONObject;
 public class Initialization {
 	public static void Start_Initialization() {
 		Config();
-		Resource();
-		new Config();
-		IsNetwork();
-		IsCN();
+		//Resource();
+		//IsCN();
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -147,14 +145,11 @@ public class Initialization {
 		}
 	}
 
+	private static void IsNetwork() {
+		Config.Server_Networking = Net.isConnect();
+	}
 	private static void IsCN() {
 		
-	}
-
-	private static void IsNetwork() {
-		Log.info("ST",Config.Server_Networking);
-		Config.Server_Networking = Net.isConnect();
-		Log.info("ED",Config.Server_Networking);
 	}
 
 	private static void Player_Privilege_classification() {

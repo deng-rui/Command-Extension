@@ -31,10 +31,10 @@ public class LocaleUtil {
 	public static String language(String o,String t,String input,Object[] params) throws MalformedURLException {
 		
 		Locale locale = new Locale(o,t);
-		URLClassLoader file = new URLClassLoader(new URL[] {new File(FileUtil.File(Config.Plugin_Resources_bundles_Path).getPath()).toURI().toURL()});
-		ResourceBundle bundle = ResourceBundle.getBundle("GA", locale, file, new UTF8Control());
+		//URLClassLoader file = new URLClassLoader(new URL[] {new File(FileUtil.File(Config.Plugin_Resources_bundles_Path).getPath()).toURI().toURL()});
+		//ResourceBundle bundle = ResourceBundle.getBundle("GA", locale, file, new UTF8Control());
 		//UTF-8 外置资源
-		//ResourceBundle bundle = ResourceBundle.getBundle("bundles/GA", locale, new UTF8Control());
+		ResourceBundle bundle = ResourceBundle.getBundle("bundles/GA", locale, new UTF8Control());
 		try {
 			if (input !=null){
 				if (params == null){
