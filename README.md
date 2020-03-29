@@ -24,14 +24,14 @@ By default, Google translator should not set the source time to 0, otherwise Goo
 
 | configure     | CPU             | RAM   | System        | Hard disk | Java      |
 |:---           |:---             |:---   |:---           |:---       |:---       |
-| Current use   | BCM2711         | 4G    | ubuntu 19.10  | 500G HHD  | Java 11   |
+| Current use   | BCM2711         | 4G    | ubuntu 19.10  | 500G HHD  | Java 8    |
 | Recommended   | Intel I3-6100+  | 4G    | ubuntu 16.04+ | 500G HHD  | Java 8+   |
 
 ## build configuration  
 
 | configure     | CPU             | RAM   | System        | Hard disk | Java      | Gradle    |
 |:---           |:---             |:---   |:---           |:---       |:---       |:---       |
-| Current use   | BCM2711         | 4G    | ubuntu 19.10  | 500G HHD  | Java 8   | 6.2.2     |
+| Current use   | BCM2711         | 4G    | ubuntu 19.10  | 500G HHD  | Java 8    | 6.2.2     |
 
 ## Server commands  
 

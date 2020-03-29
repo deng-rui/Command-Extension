@@ -24,14 +24,14 @@ linglan512572354:https://github.com/linglan512572354
 
 | 配置 		| CPU             | 内存 	| 系统 			| 硬盘大小 	| Java      |
 |:--- 		|:---             |:---     |:---           |:---       |:---       |
-| 当前配置 	| BCM2711         | 4G      | Ubuntu 19.10  | 500G HHD  | Java 11   |
+| 当前配置 	| BCM2711         | 4G      | Ubuntu 19.10  | 500G HHD  | Java 8    |
 | 建议配置 	| Intel I3-6100+  | 4G      | ubuntu 16.04+ | 500G HHD  | Java 8+   |
 
 ## 构建配置  
 
 | 配置 		| CPU             | 内存 	| 系统 			| 硬盘大小 	| Java      | Gradle    |
 |:--- 		|:---             |:--- 	|:--- 			|:---      	|:---       |:---       |
-| 当前配置 	| BCM2711         | 4G 		| Ubuntu 19.10 	| 500G HHD 	| Java 8   | 6.2.2     |
+| 当前配置 	| BCM2711         | 4G 		| Ubuntu 19.10 	| 500G HHD 	| Java 8    | 6.2.2     |
 
 ## 服务器命令列表  
 

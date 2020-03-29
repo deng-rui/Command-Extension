@@ -2,6 +2,7 @@ package extension.util.file;
 
 import java.io.*;
 import java.util.*;
+import java.text.MessageFormat;
 //Java
 
 import extension.data.global.Config;
@@ -13,7 +14,7 @@ import extension.util.Log;
 
 public class LoadConfig {
 
-	public static Object load(String input) {
+	private static Object load(String input) {
 		Properties properties = new Properties();
         InputStreamReader inputStream = FileUtil.File(Config.Plugin_Data_Path).toPath("/Config.ini").readconfig();
         try {
@@ -31,6 +32,24 @@ public class LoadConfig {
 		return null;
 	}
 
+	public static String CustomLoad(String input,Object[] params) {
+		Properties properties = new Properties();
+        try {
+            properties.load(new InputStreamReader(LoadConfig.class.getResourceAsStream("/bundles/GA.properties"), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            Log.warn(e);
+        } catch (IOException e) {
+            Log.warn(e);
+        }
+		try {
+			return new MessageFormat(properties.get(input).toString()).format(params);
+		//防止使读取无效 CALL..
+		} catch (MissingResourceException e) {
+			Log.error("NO KEY- Please check the file",e);
+		}
+		return null;
+	}
+
 	public static int loadint(String input) {
 		return Integer.parseInt(load(input).toString());
 	}
@@ -40,5 +59,9 @@ public class LoadConfig {
 		if(temp.equals("on") || temp.equals("true")) 
 			return true;
 		return false;
+	}
+
+	public static String loadstring(String input) {
+		return load(input).toString();
 	}
 }

@@ -38,6 +38,7 @@ import com.alibaba.fastjson.JSONObject;
 public class Initialization {
 	public static void Start_Initialization() {
 		Config();
+		Config.LaodConfig();
 		//Resource();
 		//IsCN();
 		new Thread(new Runnable() {
