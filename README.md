@@ -68,16 +68,16 @@ Notes:
 
 ### Current progress  
 
+- [ ] Config
+    - [ ] Log
+    - [ ] Mail
 - [ ] Baidu translation support
-- [x] Vote
-    - [x] Map pattern recognition(WZY)
 - [ ] Dynamic difficulty
 - [ ] PVP pre limit
 - [ ] plug in segmentation
     - [ ] Google translation
     - [ ] language filtering
     - [ ] Vote
-- [x] External resource file for dynamic refresh
 - [ ] Internationalization
     - [x] Player
     - [ ] Help

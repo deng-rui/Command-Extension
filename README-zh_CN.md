@@ -66,16 +66,16 @@ linglan512572354:https://github.com/linglan512572354
 
 ### 当前进度  
 
+- [ ] Config
+    - [ ] Log
+    - [ ] Mail
 - [ ] Baidu翻译支持
-- [x] Vote
-    - [x] 地图模式识别(WZY)
 - [ ] 动态难度
 - [ ] PVP前期限制
 - [ ] 插件分割
     - [ ] Google翻译
     - [ ] 语言过滤
     - [ ] Vote
-- [x] 资源文件外置 便于动态刷新
 - [ ] 多语言支持
     - [x] 玩家
     - [ ] 命令
