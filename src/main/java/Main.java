@@ -49,12 +49,6 @@ import static extension.util.IsBlankUtil.Blank;
 //Static
 import static extension.util.log.Error.Error;
 
-import mindustry.game.EventType;
-import arc.Application;
-import arc.ApplicationListener;
-import java.lang.reflect.Field;
-
-
 public class Main extends Plugin {
 	
 	private final Google googletranslation = new Google();

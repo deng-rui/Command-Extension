@@ -94,7 +94,7 @@ public class Extend {
 		return java.util.Arrays.asList(params,paramss);
 	}
 
-	private static String secToTime(long time) {
+	public static String secToTime(long time) {
         String timeStr = null;
         long hour = 0;
         long minute = 0;

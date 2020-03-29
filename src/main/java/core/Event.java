@@ -183,26 +183,29 @@ public class Event {
 				else if (block == Blocks.copperWall || block == Blocks.copperWallLarge || block == Blocks.titaniumWall || block == Blocks.titaniumWallLarge || block == Blocks.plastaniumWall || block == Blocks.doorLarge || block == Blocks.door || block == Blocks.plastaniumWallLarge ) {
 					//
 				}
+				// 过滤墙2
 				else if (block == Blocks.shockMine || block == Blocks.surgeWallLarge || block == Blocks.thoriumWallLarge ||block == Blocks.thoriumWall || block == Blocks.phaseWall || block == Blocks.surgeWall || block == Blocks.phaseWallLarge) {
 					//
 				}
 				
 				// 其他建筑
 				else {
-					int team = e.player.getTeam().id;
-					if(!Building_number.containsKey(team)) {
-						Building_number.put(team,1);
-						return;
-					}
-					if(Building_number.get(team) >= Config.Warning_quantity) e.player.sendMessage(getinput("Warning.quantity"));
-					if(Building_number.get(team) >= Config.Reject_quantity) {
-						Call.onTileDestroyed(e.tile);
-						e.player.sendMessage(getinput("Reject.quantity"));
-						return;
+					if(Config.Building_Restriction) {
+						int team = e.player.getTeam().id;
+						if(!Building_number.containsKey(team)) {
+							Building_number.put(team,1);
+							return;
+						}
+						if(Building_number.get(team) >= Config.Warning_quantity) e.player.sendMessage(getinput("Warning.quantity"));
+						if(Building_number.get(team) >= Config.Reject_quantity) {
+							Call.onTileDestroyed(e.tile);
+							e.player.sendMessage(getinput("Reject.quantity"));
+							return;
+						}
+						int temp = ((int)Building_number.get(team))+1;
+						Building_number.put(team,temp);
 					}
 					playerdata.Buildcount++;
-					int temp = ((int)Building_number.get(team))+1;
-					Building_number.put(team,temp);
 				}
 				
 			}
@@ -220,10 +223,13 @@ public class Event {
 				if (block == Blocks.copperWall || block == Blocks.copperWallLarge || block == Blocks.titaniumWall || block == Blocks.titaniumWallLarge || block == Blocks.plastaniumWall || block == Blocks.doorLarge || block == Blocks.door || block == Blocks.plastaniumWallLarge || block == Blocks.shockMine || block == Blocks.surgeWallLarge || block == Blocks.thoriumWallLarge || block == Blocks.thoriumWall || block == Blocks.phaseWall || block == Blocks.surgeWall || block == Blocks.phaseWallLarge) return;	
 				PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
 				playerdata.Dismantledcount++;
-				int team = player.getTeam().id;
-				if(!Building_number.containsKey(team)) return;
-				int temp = ((int)Building_number.get(team))-1;
-				Building_number.put(team,temp);
+				if(Config.Building_Restriction) {
+					int team = player.getTeam().id;
+					if(!Building_number.containsKey(team)) 
+						return;
+					int temp = ((int)Building_number.get(team))-1;
+					Building_number.put(team,temp);
+				}
 			}
 			
 		});
