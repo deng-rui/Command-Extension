@@ -64,14 +64,15 @@ public class Initialization {
 	}
  
 	private static void Cover_Gameover() { 
-	try {    
-		ApplicationListener sr = Core.app.getListeners().find(e -> e.getClass().getSimpleName().equalsIgnoreCase("ServerControl"));
-		Field field = sr.getClass().getDeclaredField("inExtraRound");      
-		field.setAccessible(true);      
-		field.setBoolean(sr, true);      
-		field.setAccessible(false);   
+		// 覆盖掉自带的Gameover 使用自己的 便于自动更换模式
+		try {    
+			ApplicationListener sr = Core.app.getListeners().find(e -> e.getClass().getSimpleName().equalsIgnoreCase("ServerControl"));
+			Field field = sr.getClass().getDeclaredField("inExtraRound");      
+			field.setAccessible(true);      
+			field.setBoolean(sr, true);      
+			field.setAccessible(false);   
 		}catch(Exception e){
-			Log.fatal("File write error",e);
+			Log.fatal("Cover Gameover error",e);
 		}        
 	}      
 
