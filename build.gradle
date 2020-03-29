@@ -21,7 +21,7 @@ dependencies{
 	compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
 	//Mindustry
 
-	//compile fileTree(dir:'libs',include:['*.jar'])
+	//compileOnly fileTree(dir:'libs',include:['*.jar'])
 
 	/* Json Import
 	 * 1.2MB 

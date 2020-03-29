@@ -16,7 +16,7 @@ import java.util.Properties;
 //Java
 
 import extension.util.file.FileUtil;
-import extension.util.LogUtil;
+import extension.util.Log;
 //GA-Exted
 
 import static extension.net.HttpRequest.Url302;
@@ -42,11 +42,11 @@ public class Librarydependency implements Driver {
 			url = "https://maven.aliyun.com/nexus/content/groups/public"+url+name+"/"+version+"/"+name+"-"+version+".jar";
 			// 解决aliyun 302跳转
 			Url302(url,savePath);
-			LogUtil.debug("CN-ALI");
+			Log.debug("CN-ALI");
 		}else{
 			url = "https://repo1.maven.org/maven2"+url+name+"/"+version+"/"+name+"-"+version+".jar";
 			downUrl(url,savePath);
-			LogUtil.debug("NO CN-MAVEN");
+			Log.debug("NO CN-MAVEN");
 		}
 	}
 
@@ -66,15 +66,15 @@ public class Librarydependency implements Driver {
 	}
 
 	private static void notWork(String name, String version, String savePath) {
-		LogUtil.info("START import SQL");
+		Log.info("START import SQL");
 		try {
 			URLClassLoader classLoader = new URLClassLoader(new URL[] {new File(FileUtil.File(savePath).getPath(name+"_"+version+".jar")).toURI().toURL()});
 			Driver driver = (Driver) Class.forName("org.sqlite.JDBC", true, classLoader).getDeclaredConstructor().newInstance();
 			// 加壳
 			DriverManager.registerDriver(new Librarydependency(driver));
-			LogUtil.info("SQL import Done");
+			Log.info("SQL import Done");
 		} catch (Exception e){
-			LogUtil.error("import SQL",e);
+			Log.error("import SQL",e);
 		}
 	}
 
