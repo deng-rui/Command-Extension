@@ -22,11 +22,16 @@ import mindustry.Vars;
 import static arc.util.Log.info;
 import static mindustry.Vars.logic;
 import static mindustry.Vars.maps;
+import static mindustry.Vars.net;
 import static mindustry.Vars.state;
 import static mindustry.Vars.playerGroup;
 //Mindustry-Static
 
+import extension.data.db.PlayerData;
+import extension.data.global.Lists;
+import extension.data.global.Maps;
 import extension.core.Event;
+import extension.core.Threads;
 import extension.core.Vote;
 import extension.util.Log;
 import extension.util.translation.Bing;
@@ -37,46 +42,52 @@ import static extension.core.ClientCommandsx.*;
 import static extension.core.Extend.*;
 import static extension.core.Initialization.MapList;
 import static extension.core.Initialization.Start_Initialization;
-import static extension.data.db.Player.getSQLite_UUID;
+import static extension.core.Initialization.mll;
 import static extension.util.LocaleUtil.getinput;
+import static extension.util.LocaleUtil.getinputt;
 import static extension.util.IsBlankUtil.Blank;
 //Static
 import static extension.util.log.Error.Error;
 
-public class Main extends Plugin {
+import mindustry.game.EventType;
+import arc.Application;
+import arc.ApplicationListener;
+import java.lang.reflect.Field;
 
-	Google googletranslation = new Google();
+
+public class Main extends Plugin {
+	
+	private final Google googletranslation = new Google();
 	//动态难度
 	//PVP限制
-	//
 
 	public Main() {
 		
 		//Log 权限
 		Log.Set("ALL");
 
-		googletranslation.translate("FUCK WORLD","jp");
-
 		//初始化 所需依赖
 		Start_Initialization();
 
 		//加载Event
 		Event.Main();
+
 		
 	}
 
 	@Override
 	public void init(){
-		
-	}
-		
+		mll();
+	}	
+
 	@Override
 	public void registerServerCommands(CommandHandler handler){
+		handler.removeCommand("exit");
 		handler.removeCommand("reloadmaps");
 
-		handler.register("testinfo","<GA>" ,"GA TEST", (arg) -> {
-			info("{0}", getinput(arg[0]));
-
+		handler.register("testinfo","[GA]" ,"GA TEST", (arg) -> {
+			//info("{0}", getinput(arg[0]));
+		System.out.println((arg.length > 0) ? arg[0] : null);
 		});
 
 
@@ -90,6 +101,13 @@ public class Main extends Plugin {
 			}
 			MapList();
 		});
+
+		handler.register("exit", "Exit the server application.", (arg)-> {
+            info("Shutting down server.");
+            net.dispose();
+            Threads.close();
+            Core.app.exit();
+        });
 
 	};
 
@@ -130,31 +148,36 @@ public class Main extends Plugin {
 			} else {
 				login(player,args[0],args[1]);
 			}
-		});Retrieve password
+		});
 
-		handler.<Player>register("register", "<new_id> <new_password> <password_repeat>", "Login to account", (args, player) -> {
+		handler.<Player>register("register", "<new_id> <new_password> <password_repeat> [your_mail]", "Login to account", (args, player) -> {
 			if (!Authority_control(player.uuid,"register")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
-				register(player,args[0],args[1],args[2]);
+				register(player,args[0],args[1],args[2],(args.length > 3) ? args[3] : null);
 			}
 		});
 
-		handler.<Player>register("ftpasswd", "<Email at registration> [Verification Code]", "Forget password", (args, player) -> {
+		handler.<Player>register("ftpasswd", "<Email_at_registration> [Verification_Code]", "Forget password", (args, player) -> {
 			if (!Authority_control(player.uuid,"ftpasswd")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
-				ftpasswd(player,args[0],args[1],args[2]);
+				//ftpasswd(player,args[0],args[1],args[2]);
 			}
 		});
 		//
 
-		handler.<Player>register("info",getinput("info"), (args, player) -> {
+		handler.<Player>register("info","[page]",getinput("info"), (args, player) -> {
 			if (!Authority_control(player.uuid,"info")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
-				List data=getSQLite_UUID(player.uuid);
-				//Call.onInfoMessage(player.con,getinput("join.start",Playerdate));
+				PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
+				List<Object[]> list = PlayerdatatoObject(playerdata);
+				if(args.length == 0) 
+					Call.onInfoMessage(player.con,getinputt("info.info.1",list.get(0)));
+				else
+					Call.onInfoMessage(player.con,getinputt("info.info.2",list.get(1)));
+
 			}
 		});
 
@@ -165,15 +188,6 @@ public class Main extends Plugin {
 				player.sendMessage("FPS:"+status("getfps")+"  Occupied memory:"+status("getmemory")+"MB");
 				player.sendMessage(getinput("status.number",String.valueOf(playerGroup.size())));
 				player.sendMessage(getinput("status.ban",status("getbancount")));
-			}
-		});
-
-
-		handler.<Player>register("getpos",getinput("getpos"), (args, player) -> {
-			if (!Authority_control(player.uuid,"getpos")) {
-				player.sendMessage(getinput("authority.no"));
-			} else {
-				player.sendMessage(getinput("getpos.info",String.valueOf(Math.round(player.x/8)),String.valueOf(Math.round(player.y/8))));
 			}
 		});
 
@@ -251,7 +265,7 @@ public class Main extends Plugin {
 			}
 		});
 
-		handler.<Player>register("gameover","",getinput("gameover"), (args, player) -> {
+		handler.<Player>register("gameover",getinput("gameover"), (args, player) -> {
 			if (!Authority_control(player.uuid,"gameover")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
@@ -285,7 +299,6 @@ public class Main extends Plugin {
 				//No spaces are allowed in the input language??
 				player.sendMessage(getinput("tr.tips"));
 				player.sendMessage(getinput("tr.tips1"));
-				String text = ;	
 				try {
 					Thread.currentThread().sleep(2500);
 				}catch(InterruptedException ie){

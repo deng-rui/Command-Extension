@@ -17,6 +17,7 @@ import static mindustry.Vars.maps;
 
 import extension.data.global.Config;
 import extension.net.Net;
+import extension.core.Threads;
 import extension.data.json.Json;
 import extension.data.global.Lists;
 import extension.data.global.Maps;
@@ -32,27 +33,49 @@ import static extension.data.json.Json.getData;
 import com.alibaba.fastjson.JSONObject;
 //Json
 
+import java.lang.reflect.Field;
+import arc.ApplicationListener;
+
+
 public class Initialization {
 	public static void Start_Initialization() {
+		Config();
+		Resource();
+		new Config();
 		IsNetwork();
 		IsCN();
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				Data();
 				SQL();
 				Json();
+			}
+		}).start();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
 				Player_Privilege_classification();
 			}
 		}).start();
-		// new Thread(new Runnable() {
-		// 	@Override
-		// 	public void run() {
-
-		// 	}
-		// }).start();
 		
+		new Threads();
 	}
+
+	
+ 
+    public static void mll() {  
+    try {    
+        ApplicationListener sr = Core.app.getListeners().find(e -> e.getClass().getSimpleName().equalsIgnoreCase("ServerControl"));
+        Log.info("?????",sr.getClass().getSimpleName());
+        Field field = sr.getClass().getDeclaredField("inExtraRound");      
+        field.setAccessible(true);      
+        field.set(sr, true);      
+        field.setAccessible(false);   
+        }catch(Exception e){
+			Log.fatal("File write error",e);
+		}        
+    }      
+
 
 	public static void Follow_up_Initialization() {
 		MapList();
@@ -60,8 +83,7 @@ public class Initialization {
 
 	private static void SQL() {
 		importLib("org.xerial","sqlite-jdbc","3.30.1",Config.Plugin_Lib_Path);
-		//notWork("sqlite-jdbc","3.30.1",Core.settings.getDataDirectory().child("mods/GA/Lib/"));
-		//if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists())InitializationSQLite();
+		if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists())InitializationSQLite();
 	}
 
 	private static void Json() {
@@ -69,7 +91,20 @@ public class Initialization {
 		//if(!Core.settings.getDataDirectory().child("mods/GA/Authority.json").exists())Json.Initialize_permissions();
 	}
 
-	private static void Data() {
+	private static void Config() {
+		try {
+			if(!FileUtil.File(Config.Plugin_Data_Path).toPath("/Config.ini").exists()) {
+				String data = (String)FileUtil.readfile(false,new InputStreamReader(Initialization.class.getResourceAsStream("/Config.ini"), "UTF-8"));
+				Log.info(data);
+				FileUtil.writefile(data,false);
+				Log.info("Defect : Start creating write external Config File",Config.Plugin_Data_Path+"/Config.ini");
+			}
+		}catch(UnsupportedEncodingException e){
+			Log.fatal("File write error",e);
+		}  
+	}
+
+	private static void Resource() {
 		try {
 			List file = (List)FileUtil.readfile(true,new InputStreamReader(Initialization.class.getResourceAsStream("/other/FileList.txt"), "UTF-8"));
 			for(int i=0;i<file.size();i++){
@@ -83,7 +118,7 @@ public class Initialization {
 			}
 		}catch(UnsupportedEncodingException e){
 			Log.fatal("File write error",e);
-		}  
+		}
 	}
 
 	public static void MapList() {
