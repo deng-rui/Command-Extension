@@ -26,36 +26,38 @@ public class SQLite {
 			Statement stmt = c.createStatement();
 			// 时间可以改成BUGINT
 			sql = "CREATE TABLE PlayerData (" +
-				  "UUID 			TEXT,"+//
-				  "User 			TEXT,"+//
-				  "NAME 			TEXT,"+//
-				  "IP 				INT(4),"+//
-				  "GMT 				INT,"+//
-				  "Country 			TEXT,"+//
-				  "Time_format 		INT,"+//
-				  "Language 		CHAR(5),"+//
-				  "LastLogin 		INT(4),"+//
-				  "Buildcount 		INT,"+
-				  "Dismantledcount 	INT,"+
-				  "Cumulative_build INT,"+
+				  "UUID 			TEXT,"+
+				  "User 			TEXT,"+
+				  "NAME 			TEXT,"+
+				  "IP 				BIGINT(4),"+
+				  "GMT 				INT,"+
+				  "Country 			TEXT,"+
+				  "Time_format 		TINYINT(1),"+
+				  "Language 		CHAR(5),"+
+				  "LastLogin 		BIGINT,"+
+				  //
+				  "Buildcount 		INTEGER,"+
+				  "Dismantledcount 	INTEGER,"+
+				  "Cumulative_build INTEGER,"+
+				  "Pipe_build 		INTEGER,"+
 				  //玩家普通信息
 				  "Kickcount		INTEGER,"+
 				  //被踢次数
 				  "Translate 		TINYINT(1),"+
 				  //翻译权限
-				  "Level 			INT,"+
-				  "Exp 				INT,"+
-				  "Reqexp 			INT,"+
-				  "Reqtotalexp 		INT,"+
+				  "Level 			INTEGER,"+
+				  "Exp 				BIGINT,"+
+				  "Reqexp 			BIGINT,"+
+				  "Reqtotalexp 		BIGINT,"+
 				  //等级
-				  "Playtime 		INT(4),"+
+				  "Playtime 		BIGINT,"+
 				  //游戏时长
-				  "Pvpwincount 		INTEGER,"+//
-				  "Pvplosecount 	INTEGER,"+//
+				  "Pvpwincount 		INTEGER,"+
+				  "Pvplosecount 	INTEGER,"+
 				  //胜利 输数
-				  "Authority 		TINYINT(1),"+//
+				  "Authority 		TINYINT(1),"+
 				  //权限1
-				  "Lastchat 		INT(4),"+
+				  "Lastchat 		BIGINT,"+
 				  //最后聊天时间 聊天计数
 				  "Deadcount		INTEGER,"+
 				  "Killcount 		INTEGER,"+

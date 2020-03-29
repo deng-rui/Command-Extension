@@ -43,21 +43,24 @@ import static mindustry.Vars.state;
 import static mindustry.Vars.world;
 //Mindustry-Static
 
+import extension.data.db.PlayerData;
+import extension.data.global.Config;
 import extension.data.global.Lists;
 import extension.data.global.Maps;
 //
 
-import static extension.data.db.Player.getSQLite_USER;
-import static extension.data.db.Player.getSQLite_UUID;
+import static extension.data.db.Player.getSQLite;
 import static extension.data.db.Player.InitializationPlayersSQLite;
 import static extension.data.db.Player.isSQLite_User;
-import static extension.data.db.Player.savePlayer_Data;
+import static extension.data.db.Player.savePlayer;
 import static extension.net.HttpRequest.doGet;
-import static extension.util.DateUtil.getLocalTimeFromUTC;
-import static extension.util.LocaleUtil.getinput;
-import static extension.util.LocaleUtil.Language_determination;
 import static extension.util.alone.Password.newPasswd;
 import static extension.util.alone.Password.Passwdverify;
+import static extension.util.DateUtil.getLocalTimeFromUTC;
+import static extension.util.ExtractUtil.ipToLong;
+import static extension.util.IsBlankUtil.Blank;
+import static extension.util.LocaleUtil.getinput;
+import static extension.util.LocaleUtil.Language_determination;
 //Static
 
 import com.alibaba.fastjson.JSONObject;
@@ -70,10 +73,15 @@ public class ClientCommandsx {
 			player.sendMessage(getinput("login.usrno"));
 			return;
 		}
-	/*
-		List<String> data = getSQLite_USER(usr);
+
+		PlayerData temp = new PlayerData("temp");
+		getSQLite(temp,usr);
+		if(temp.Online) {
+			player.sendMessage(getinput("login.in"));
+			return;
+		}
 		try {
-			if(!(boolean)Passwdverify(pw,(String)data.get(SQL_type("PasswordHash")),(String)data.get(SQL_type("CSPRNG")))) {
+			if(!Passwdverify(pw,temp.PasswordHash,temp.CSPRNG)) {
 			player.sendMessage(getinput("login.pwno"));
 			return;
 			}
@@ -81,25 +89,25 @@ public class ClientCommandsx {
 			player.sendMessage(getinput("passwd.err"));
 			return;
 		}
-		
-		if(!data.get(SQL_type("UUID")).equals(player.uuid)) {
-			savePlayer_Data(Lists.updatePlayerData(data,SQL_type("UUID"),player.uuid),true,usr);
+		temp.Online = true;
+		temp.Joincount++;
+		temp.LastLogin = getLocalTimeFromUTC(temp.GMT);
+		savePlayer(temp,player.uuid);
+		if(!(temp.UUID).equals(player.uuid)) {
+			temp.UUID = player.uuid;
 			player.sendMessage(getinput("uuid.update"));
 		}
-		data = getSQLite_USER(usr);
 		if (Vars.state.rules.pvp){
 			player.setTeam(netServer.assignTeam(player, playerGroup.all()));
 		} else {
 			player.setTeam(Team.sharded);
 		}
 		Call.onPlayerDeath(player);
-		Maps.setPlayer_power_Data(player.uuid,Integer.parseInt((String)data.get(SQL_type("Authority"))));
-		
-		Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(Long.valueOf((String)data.get(SQL_type("GMT"))),Integer.parseInt((String)data.get(SQL_type("Time_format"))))),30f);
-	*/
+		Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(temp.GMT,temp.Time_format)),20f);
+		Maps.setPlayer_Data(player.uuid,temp);
 	}
 
-	public static void register(Player player, String newusr, String newpw, String renewpw) {
+	public static void register(Player player, String newusr, String newpw, String renewpw, String mail) {
 		String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
 		if(!newpw.equals(renewpw)) {
 			player.sendMessage(getinput("register.pawno"));
@@ -109,27 +117,48 @@ public class ClientCommandsx {
 			player.sendMessage(getinput("register.usrerr"));
 			return;
 		}
-	/*
+		java.util.Map<String, Object> Passwd_date;
 		try {
-			java.util.Map<String, Object> Passwd_date = (java.util.Map<String, Object>)newPasswd(newpw,newusr);
-			if(!(boolean)Passwd_date.get("resualt"))return;
-			JSONObject date = JSONObject.parseObject(doGet("http://ip-api.com/json/"+ip+"?fields=country,timezone"));
-			long GMT = TimeZone.getTimeZone((String)date.get("timezone")).getRawOffset();
-			InitializationPlayersSQLite(player.uuid,player.name,ip,String.valueOf(GMT),(String)date.get("country"),Language_determination((String)date.get("country")),getLocalTimeFromUTC(GMT,0),newusr,(String)Passwd_date.get("passwordHash"),(String)Passwd_date.get("salt"));
-			if (Vars.state.rules.pvp){
-				player.setTeam(netServer.assignTeam(player, playerGroup.all()));
-			} else {
-				player.setTeam(Team.sharded);
-			}
-			Call.onPlayerDeath(player);
-			Maps.setPlayer_power_Data(player.uuid,1);
-			
-			Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(GMT,0)),30f);
+			Passwd_date = (java.util.Map<String, Object>)newPasswd(newpw);
 		} catch (Exception e) {
 			player.sendMessage(getinput("passwd.err"));
 			return;
 		}
-		*/
+		long GMT = 0;
+		String country = "Intranet";
+		if(!(boolean)Passwd_date.get("resualt"))return;
+		if(ip.equals("127.0.0.1")) {
+			player.sendMessage(getinput("register.ip.nat"));
+		}else{
+			if(!Config.Server_Networking) {
+				player.sendMessage(getinput("register.no.network"));
+				country = "NOT network";
+				ip = "0";
+			}else{
+				try {
+					JSONObject data = JSONObject.parseObject(doGet("http://ip-api.com/json/"+ip+"?fields=country,timezone"));
+					GMT = TimeZone.getTimeZone((String)data.get("timezone")).getRawOffset();
+					country = (String)data.get("country");
+				} catch (Exception e) {
+					player.sendMessage(getinput("passwd.net"));
+					return;
+				}
+				
+			}
+			
+		}	
+		InitializationPlayersSQLite(player.uuid,newusr,player.name,ipToLong(ip),GMT,country,Language_determination(country),getLocalTimeFromUTC(GMT),Blank(mail)?mail:"NULL",(String)Passwd_date.get("passwordHash"),(String)Passwd_date.get("salt"));
+		if (Vars.state.rules.pvp){
+			player.setTeam(netServer.assignTeam(player, playerGroup.all()));
+		} else {
+			player.setTeam(Team.sharded);
+		}
+		Call.onPlayerDeath(player);
+		PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
+		getSQLite(playerdata,newusr);
+		playerdata.Joincount++;
+		Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(GMT,1)),20f);
+		
 	}
 
 	public static String status(String then) {
@@ -199,7 +228,7 @@ public class ClientCommandsx {
 	}
 
 	public static String timee() {
-		return getLocalTimeFromUTC(1);
+		return getLocalTimeFromUTC(0,1);
 	}
 
 	public static void setting_language() {
