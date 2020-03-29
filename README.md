@@ -37,27 +37,31 @@ By default, Google translator should not set the source time to 0, otherwise Goo
 
 | Command               | Parameter                                          | Description                                           |
 |:---                   |:---                                                |:---                                                   |
+| gameover(replace)     |                                                    | Force end of game (prevent original gameover recovery)|
 | reloadmaps(replace)   |                                                    | Reload the map (easy to re-read the mode)             |
+| exit(replace)         |                                                    | Shut down the server (end built-in timer)             |
 
 ## Game command  
 
-| Command       | Parameter                                          | Description                                           |
-|:---           |:---                                                |:---                                                   |
-| info          |                                                    | info me                                               |
-| status        |                                                    | View server status                                    |
-| getpos        |                                                    | View the current coordinates                          |
-| tp            |&lt;player name&gt;                                 | Teleport to other players                             |
-| tpp           |&lt;XYZ&gt;                                         | Transfer to specified coordinates                     |
-| suicide       |                                                    | Kill yourself.                                        |
-| team          |                                                    | Replacement team.                                     |
-| difficulty    |&lt;mode&gt;                                        | Set server difficulty                                 |
-| gameover      |                                                    | KEnd the game                                         |
-| host          |&lt;mapsname&gt; [gamemode]                         | Start a new game                                      |
-| runwave       |                                                    | Runwave                                               |
-| time          |                                                    | View the current time of the server                   |
-| tr            |                                                    | Google translation(Use - instead of spaces in text)   |
-| maps          |[page] [mode(1)]                                    | View the map currently available to the server        |
-| vote          |&lt;gameover/kick/skipwave/host&gt; [name/number]   | VOTE                                                  |
+| Command       | Parameter                                                    | Description                                           |
+|:---           |:---                                                          |:---                                                   |
+| register      |&lt;New Username&gt; &lt;passwd&gt; &lt;repasswd&gt; [Mail]   | register user                                         |
+| login         |&lt;Username&gt; &lt;passwd&gt;                               | login user                                            |
+| repasswd      |&lt;Username/Mail&gt; [Verification code sent by mail]        | Forget password                                       |
+| info          |                                                              | info me                                               |
+| status        |                                                              | View server status                                    |
+| tp            |&lt;player name&gt;                                           | Teleport to other players                             |
+| tpp           |&lt;XYZ&gt;                                                   | Transfer to specified coordinates                     |
+| suicide       |                                                              | Kill yourself.                                        |
+| team          |                                                              | Replacement team.                                     |
+| difficulty    |&lt;mode&gt;                                                  | Set server difficulty                                 |
+| gameover      |                                                              | KEnd the game                                         |
+| host          |&lt;mapsname&gt; [gamemode]                                   | Start a new game                                      |
+| runwave       |                                                              | Runwave                                               |
+| time          |                                                              | View the current time of the server                   |
+| tr            |                                                              | Google translation(Use - instead of spaces in text)   |
+| maps          |[page] [mode(1)]                                              | View the map currently available to the server        |
+| vote          |&lt;gameover/kick/skipwave/host&gt; [name/number]             | VOTE                                                  |
 
 Notes:
 1: You need to view the schema abbreviation of the map for the specified schema
