@@ -1,10 +1,12 @@
 package extension.core;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Arrays;
 //Java
 
+import arc.ApplicationListener;
 import arc.Core;
 //Arc
 
@@ -33,10 +35,6 @@ import static extension.data.json.Json.getData;
 import com.alibaba.fastjson.JSONObject;
 //Json
 
-import java.lang.reflect.Field;
-import arc.ApplicationListener;
-
-
 public class Initialization {
 	public static void Start_Initialization() {
 		Config();
@@ -61,20 +59,21 @@ public class Initialization {
 		new Threads();
 	}
 
-	
+	public static void Override_Initialization() {
+		Cover_Gameover();
+	}
  
-    public static void mll() {  
-    try {    
-        ApplicationListener sr = Core.app.getListeners().find(e -> e.getClass().getSimpleName().equalsIgnoreCase("ServerControl"));
-        Log.info("?????",sr.getClass().getSimpleName());
-        Field field = sr.getClass().getDeclaredField("inExtraRound");      
-        field.setAccessible(true);      
-        field.set(sr, true);      
-        field.setAccessible(false);   
-        }catch(Exception e){
+	private static void Cover_Gameover() { 
+	try {    
+		ApplicationListener sr = Core.app.getListeners().find(e -> e.getClass().getSimpleName().equalsIgnoreCase("ServerControl"));
+		Field field = sr.getClass().getDeclaredField("inExtraRound");      
+		field.setAccessible(true);      
+		field.setBoolean(sr, true);      
+		field.setAccessible(false);   
+		}catch(Exception e){
 			Log.fatal("File write error",e);
 		}        
-    }      
+	}      
 
 
 	public static void Follow_up_Initialization() {

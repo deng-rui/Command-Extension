@@ -42,7 +42,7 @@ import static extension.core.ClientCommandsx.*;
 import static extension.core.Extend.*;
 import static extension.core.Initialization.MapList;
 import static extension.core.Initialization.Start_Initialization;
-import static extension.core.Initialization.mll;
+import static extension.core.Initialization.Override_Initialization;
 import static extension.util.LocaleUtil.getinput;
 import static extension.util.LocaleUtil.getinputt;
 import static extension.util.IsBlankUtil.Blank;
@@ -77,12 +77,13 @@ public class Main extends Plugin {
 
 	@Override
 	public void init(){
-		mll();
+		Override_Initialization();
 	}	
 
 	@Override
 	public void registerServerCommands(CommandHandler handler){
 		handler.removeCommand("exit");
+		handler.removeCommand("gameover");
 		handler.removeCommand("reloadmaps");
 
 		handler.register("testinfo","[GA]" ,"GA TEST", (arg) -> {
@@ -102,7 +103,12 @@ public class Main extends Plugin {
 			MapList();
 		});
 
-		handler.register("exit", "Exit the server application.", (arg)-> {
+		handler.register("gameover", "Force a game over", (arg)-> {
+            info("&lyCore destroyed.");
+            Events.fire(new GameOverEvent(Team.crux));
+        });
+
+		handler.register("exit", "Exit the server application", (arg)-> {
             info("Shutting down server.");
             net.dispose();
             Threads.close();
