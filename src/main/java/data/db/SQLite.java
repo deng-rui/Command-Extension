@@ -28,7 +28,6 @@ public class SQLite {
 			sql = "CREATE TABLE PlayerData (" +
 				  "UUID 			TEXT,"+
 				  "User 			TEXT,"+
-				  "NAME 			TEXT,"+
 				  "IP 				BIGINT(4),"+
 				  "GMT 				INT,"+
 				  "Country 			TEXT,"+
