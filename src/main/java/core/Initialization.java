@@ -2,8 +2,11 @@ package extension.core;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.HashSet;
+
 //Java
 
 import arc.ApplicationListener;
@@ -30,6 +33,8 @@ import extension.util.file.FileUtil;
 import static extension.data.db.SQLite.InitializationSQLite;
 import static extension.dependent.Librarydependency.importLib;
 import static extension.data.json.Json.getData;
+import static extension.util.file.LoadConfig.loadint;
+import static extension.util.file.LoadConfig.loadstring;
 //Static
 
 import com.alibaba.fastjson.JSONObject;
@@ -154,9 +159,49 @@ public class Initialization {
 	}
 
 	private static void Player_Privilege_classification() {
-		JSONObject date = getData("mods/GA/Authority.json");
-		for (int i = 0; i < 11; i++) {
-			Maps.setPower_Data(i,(List)date.get(i));
+		String[] tempstring=loadstring("Privilege_Level").split(",");
+		int[] tempint = new int[tempstring.length];
+		for (int i = 0; i < tempstring.length; i++) tempint[i] = Integer.parseInt(tempstring[i]);
+		int temp[] = selectionSort(tempint);	
+		if(Config.Permission_Passing) {
+			for (int i = 0; i < temp.length; i++) {
+				final String data = loadstring("Privilege."+temp[i]);
+				if (data == null) continue;
+				if (i <= 1) {
+					Maps.setPower_Data(i,Arrays.asList(data.split(",")));
+					continue;
+				}
+				List<String> listtemp = Maps.getPower_Data(temp[i-1]);
+				List<String> l = new ArrayList<String>(Arrays.asList(data.split(",")));
+
+				l.addAll(listtemp);
+				HashSet<String> h = new HashSet<String>(l); 
+				List<String> c = new ArrayList<String>();
+				c.addAll(h);
+				Maps.setPower_Data(temp[i],c);
+			}
+		} else {
+			for (int i = 0; i < temp.length; i++) {
+				final String data = loadstring("Privilege."+temp[i]);
+				if (data == null) continue;
+				Maps.setPower_Data(temp[i],Arrays.asList(data.split(",")));
+			}
 		}
+	}
+
+	private static int[] selectionSort(int[] array) {
+		if (array.length == 0)
+			return array;
+		for (int i = 0; i < array.length; i++) {
+			int minIndex = i;
+			for (int j = i; j < array.length; j++) {
+				if (array[j] < array[minIndex])
+					minIndex = j;
+			}
+			int temp = array[minIndex];
+			array[minIndex] = array[i];
+			array[i] = temp;
+		}
+		return array;
 	}
 }

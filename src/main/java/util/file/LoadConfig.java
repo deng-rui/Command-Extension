@@ -12,6 +12,10 @@ import extension.util.file.FileUtil;
 
 import extension.util.Log;
 
+/*
+ *  Config.java
+ *	Initialization.java
+ */
 public class LoadConfig {
 
 	private static Object load(String input) {
@@ -62,6 +66,8 @@ public class LoadConfig {
 	}
 
 	public static String loadstring(String input) {
-		return load(input).toString();
+		Object str = load(input);
+		if (str == null || "".equals(str.toString().trim())) return null;
+		return str.toString();
 	}
 }
