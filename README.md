@@ -1,7 +1,7 @@
 ## Language  
 
 [跳转中文](https://github.com/deng-rui/Command-Extension/blob/master/README-zh_CN.md)  
-[TO EN](https://github.com/deng-rui/Command-Extension/blob/master/README.md)  
+[TO Engilsh](https://github.com/deng-rui/Command-Extension/blob/master/README.md)  
 
 
 ## Acknowledgement  
@@ -16,9 +16,17 @@ linglan512572354:https://github.com/linglan512572354
 Warning: database data will not be migrated when the current project is in an unstable state. Please use with caution:)
   
   
-This project is open. If you have any questions, please email me or submit a question  
-This project is a centralized project. If you need some modules, please wait for the segmentation after the finished product is completed, or you can complete it yourself  
+This project is open. If you have any questions, please email me or submit a question    
 By default, Google translator should not set the source time to 0, otherwise Google will blackmail your IP in 12h  
+
+## Plug in split status
+
+| name                      | Effect                                                |
+|:---                       |:---                                                   |
+| Shielding words           | Block keywords                                        |
+| Vote+gameover+load        | Vote for map change support map pattern recognition   |
+| Google tr                 | Google tr                                             |
+| Bing tr                   | Bing tr                                               |
 
 ## Required configuration  
 
