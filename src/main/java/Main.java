@@ -43,6 +43,7 @@ import static extension.core.Extend.*;
 import static extension.core.Initialization.MapList;
 import static extension.core.Initialization.Start_Initialization;
 import static extension.core.Initialization.Override_Initialization;
+import static extension.core.Initialization.ReLoadConfig;
 import static extension.util.LocaleUtil.getinput;
 import static extension.util.LocaleUtil.getinputt;
 import static extension.util.IsBlankUtil.Blank;
@@ -98,16 +99,21 @@ public class Main extends Plugin {
 		});
 
 		handler.register("gameover", "Force a game over", (arg)-> {
-            info("&lyCore destroyed.");
-            Events.fire(new GameOverEvent(Team.crux));
-        });
+			info("&lyCore destroyed.");
+			Events.fire(new GameOverEvent(Team.crux));
+		});
+
+		handler.register("reloadconfig", "reload Command-Extension Config.ini", (arg)-> {
+			info("&lyReLoad Config.ini End.");
+			ReLoadConfig();
+		});
 
 		handler.register("exit", "Exit the server application", (arg)-> {
-            info("Shutting down server.");
-            net.dispose();
-            Threads.close();
-            Core.app.exit();
-        });
+			info("Shutting down server.");
+			net.dispose();
+			Threads.close();
+			Core.app.exit();
+		});
 
 	};
 
@@ -162,7 +168,7 @@ public class Main extends Plugin {
 			if (!Authority_control(player.uuid,"ftpasswd")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
-				//ftpasswd(player,args[0],args[1],args[2]);
+				ftpasswd(player,args[0],(args.length > 1) ? args[1] : null);
 			}
 		});
 		//
@@ -174,9 +180,9 @@ public class Main extends Plugin {
 				PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
 				List<Object[]> list = PlayerdatatoObject(playerdata);
 				if(args.length == 0) 
-					Call.onInfoMessage(player.con,getinputt("info.info.1",list.get(0)));
+					player.sendMessage(getinputt("info.info.1",list.get(0)));
 				else
-					Call.onInfoMessage(player.con,getinputt("info.info.2",list.get(1)));
+					player.sendMessage(getinputt("info.info.2",list.get(1)));
 
 			}
 		});
@@ -274,11 +280,11 @@ public class Main extends Plugin {
 		});
 
 
-		handler.<Player>register("host","<mapname> [mode]",getinput("host"), (args, player) -> {
+		handler.<Player>register("host","<map_number>",getinput("host"), (args, player) -> {
 			if (Authority_control(player.uuid,"host")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
-				host(args[0],args[1],player);
+				host(player,args[0]);
 			}
 		});
 
@@ -356,7 +362,7 @@ public class Main extends Plugin {
 						player.sendMessage(getinput("vote.host.maps.err",args[1]));
 						break;
 					default:
-						player.sendMessage(getinput("vote.errr",args[0]));
+						player.sendMessage(getinput("vote.err",args[0]));
 						break;
 				}
 		});

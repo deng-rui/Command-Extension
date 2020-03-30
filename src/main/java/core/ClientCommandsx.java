@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 //Java
 
 import arc.*;
@@ -49,6 +50,7 @@ import extension.data.global.Lists;
 import extension.data.global.Maps;
 //
 
+import static extension.core.Extend.loadmaps;
 import static extension.data.db.Player.getSQLite;
 import static extension.data.db.Player.InitializationPlayersSQLite;
 import static extension.data.db.Player.isSQLite_User;
@@ -127,7 +129,8 @@ public class ClientCommandsx {
 		long GMT = 0;
 		String country = "Intranet";
 		if(!(boolean)Passwd_date.get("resualt"))return;
-		if(ip.equals("127.0.0.1")) {
+		Pattern reg = Pattern.compile("^(127\\.0\\.0\\.1)|(localhost)|(10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|(172\\.((1[6-9])|(2\\d)|(3[01]))\\.\\d{1,3}\\.\\d{1,3})|(192\\.168\\.\\d{1,3}\\.\\d{1,3})$");
+		if(reg.matcher(ip).find()) {
 			player.sendMessage(getinput("register.ip.nat"));
 		}else{
 			if(!Config.Server_Networking) {
@@ -158,7 +161,10 @@ public class ClientCommandsx {
 		getSQLite(playerdata,newusr);
 		playerdata.Joincount++;
 		Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(GMT,1)),20f);
-		
+	}
+
+	public static void ftpasswd(Player player, String mail, String cod) {
+		//not 
 	}
 
 	public static String status(String then) {
@@ -188,43 +194,24 @@ public class ClientCommandsx {
 		}
 	}
 
-	public static void host(String mapp, String gamemodes, Player player) {
-		if("sandbox".equalsIgnoreCase(gamemodes)){
-		}else if ("pvp".equalsIgnoreCase(gamemodes)){
-		}else if ("attack".equalsIgnoreCase(gamemodes)){
-		}else if ("survival".equalsIgnoreCase(gamemodes)){
-		}else{
-			player.sendMessage(getinput("host.mode",gamemodes));
-		return;
-		}
-		Call.sendMessage(getinput("host.re"));;
-
-		try{
-			Thread.currentThread().sleep(5000);
-		}catch(InterruptedException ie){
-			ie.printStackTrace();
-		}
-
-		netServer.kickAll(KickReason.gameover);
-		state.set(State.menu);
-		net.closeServer();
-
-		Map result = maps.all().find(map -> map.name().equalsIgnoreCase(mapp.replace('_', ' ')) || map.name().equalsIgnoreCase(mapp));
-		Gamemode preset = Gamemode.survival;
-		try{
-			preset = Gamemode.valueOf(gamemodes);
-		}catch(IllegalArgumentException e){
+	public static void host(Player player, String mapss) {
+		if (!(Lists.getMaps_List().size() >= Integer.parseInt(mapss))) {
+			player.sendMessage(getinput("vote.host.maps.err",mapss));
 			return;
 		}
-		logic.reset();
-		world.loadMap(result,result.applyRules(preset));
-		state.rules = result.applyRules(preset);
-		logic.play();
+		List<String> MapsList = (List<String>)Lists.getMaps_List();
+		String [] data = MapsList.get(Integer.parseInt(mapss)).split("\\s+");
+		Map result = maps.all().find(map -> map.name().equalsIgnoreCase(data[0].replace('_', ' ')) || map.name().equalsIgnoreCase(data[0]));
+		Gamemode mode = Gamemode.survival;
 		try{
-			netServer.openServer();
-		}catch(Exception e){
-			state.set(State.menu);
+			mode = Gamemode.valueOf(data[2]);
+		}catch(IllegalArgumentException ex){
+			player.sendMessage(getinput("host.mode",data[2]));
+			return;
 		}
+		final Gamemode gamemode = mode;
+		Call.sendMessage(getinput("host.re"));
+		loadmaps(true, () -> world.loadMap(result, result.applyRules(gamemode)),gamemode);
 	}
 
 	public static String timee() {

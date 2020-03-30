@@ -28,6 +28,7 @@ import static mindustry.Vars.state;
 import extension.util.Log;
 //GA-Exted
 
+import static extension.core.Extend.loadmaps;
 import static extension.data.global.Lists.getMaps_List;
 import static extension.util.LocaleUtil.getinput;
 import static extension.util.DateUtil.getLocalTimeFromUTC;
@@ -67,23 +68,24 @@ public class Vote {
 
 	private void start(){
 		if(!sted) {
-			player.sendMessage("NO START");
+			player.sendMessage(getinput("vote.already_begun"));
 			return;
 		}
 		if(playerGroup.size() == 1){
-			//player.sendMessage();
+			player.sendMessage(getinput("vote.no1"));
 			require = 1;
 		} else if(playerGroup.size() <= 3){
 			require = 2;
 		} else {
 			require = (int) Math.ceil((double) playerGroup.size() / 2);
 		}
+		Call.sendMessage(getinput("vote.start",type));
 		service=Executors.newScheduledThreadPool(2);
 		Runnable Countdown=new Runnable() {
 			@Override
 			public void run() {
-				reciprocal--;
-				System.out.println(getLocalTimeFromUTC(0,0));
+				reciprocal = reciprocal-10;
+				Call.sendMessage(getinput("vote.ing",reciprocal));
 			}
 		};
 		//倒计时 10S/r
@@ -91,7 +93,6 @@ public class Vote {
 		Runnable Votetime=new Runnable() {
 			@Override
 			public void run() {
-				System.out.println("S?");
 				Count_down.cancel(true);
 				sted = true;
 				end();
@@ -99,7 +100,7 @@ public class Vote {
 		};
 		//倒计时58s 便于停止
 		Vote_time=service.schedule(Votetime,58,TimeUnit.SECONDS);
-		reciprocal=6;
+		reciprocal=60;
 		sted = false;
 
 	}
@@ -113,6 +114,7 @@ public class Vote {
 		Vote_time=null;
 		//-
 		if (playerlist.size() >= require) {
+			Call.sendMessage(getinput("vote.ok"));
 			switch(type){
 				case "kick" :
 					kick();
@@ -128,7 +130,7 @@ public class Vote {
 					return;
 			}
 		} else {
-			Call.sendMessage(getinput("vote.done.no",name));
+			Call.sendMessage(getinput("vote.done.no",name,playerlist.size(),playerGroup.size()));
 		}
 	}
 
@@ -146,18 +148,16 @@ public class Vote {
 		List<String> MapsList = (List<String>)getMaps_List();
 		String [] data = MapsList.get(Integer.parseInt(name)).split("\\s+");
 		Map result = maps.all().find(map -> map.name().equalsIgnoreCase(data[0].replace('_', ' ')) || map.name().equalsIgnoreCase(data[0]));
-		Gamemode preset;
+		Gamemode mode = Gamemode.survival;
 		try{
-			preset = Gamemode.valueOf(data[2]);
-			netServer.kickAll(KickReason.gameover);
-			logic.reset();
-			world.loadMap(result,result.applyRules(preset));
-			state.rules = result.applyRules(preset);
-			logic.play();
-		}catch(IllegalArgumentException e){
-			player.sendMessage(getinput("vote.host.mode.err",data[2]));
+			mode = Gamemode.valueOf(data[2]);
+		}catch(IllegalArgumentException ex){
+			player.sendMessage(getinput("host.mode",data[2]));
 			return;
 		}
+		final Gamemode gamemode = mode;
+		Call.sendMessage(getinput("host.re"));
+		loadmaps(true, () -> world.loadMap(result, result.applyRules(gamemode)),gamemode);
 	}
 
 	private void skipwave() {

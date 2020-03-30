@@ -14,9 +14,10 @@ public class Config {
 	public static final String Plugin_Resources_bundles_Path 	= "/config/mods/GA/resources/bundles";
 	public static final String Plugin_Resources_Other_Path 		= "/config/mods/GA/resources/other";
 
-	public static boolean Server_Networking 					= false;
+	public static boolean Server_Networking 					= true;
 	public static boolean Server_Country_CN 					= false;
 
+	public static boolean Login 								= false;
 	public static boolean Permission_Passing 					= false;
 
 	public static boolean Building_Restriction 					= false;
@@ -27,7 +28,7 @@ public class Config {
 	public static String Mail_SMTP_IP 							= null;
 	public static String Mail_SMTP_Port 						= null;
 	public static String Mail_SMTP_User 						= null;
-	public static String Mail_SMTP_Passwd 							= null;
+	public static String Mail_SMTP_Passwd 						= null;
 	public static boolean Regular_Reporting						= false;
 	public static int Regular_Reporting_Time 					= 0;
 	public static String Regular_Reporting_ToMail 				= null;
@@ -36,9 +37,12 @@ public class Config {
 
 
 	public static void LaodConfig() {
-		Permission_Passing 										= loadboolean("Permission_Passing");
+		Login 													= loadboolean("Login");
 		Building_Restriction 									= loadboolean("Building_Restriction");
 		Mail_Use 												= loadboolean("Mail_Use");
+		if(Login) {
+			Permission_Passing 									= loadboolean("Permission_Passing");
+		}
 		if(Building_Restriction) {
 			Warning_quantity 									= loadint("Wan_Construction");
 			Reject_quantity 									= loadint("MAX_Construction");

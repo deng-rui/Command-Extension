@@ -47,7 +47,7 @@ linglan512572354:https://github.com/linglan512572354
 |:---           |:--- 												 |:--- 										 |
 | register      |&lt;用户名&gt; &lt;密码&gt; &lt;重复密码&gt;	[Mail]   | 注册账号 									 |
 | login         |&lt;用户名&gt; &lt;密码&gt;						 	 | 登录账号 									 |
-| repasswd      |&lt;用户名/Mail&gt; [邮件内的验证码] 				 | 忘记密码 									 |
+| ftpasswd      |&lt;用户名/Mail&gt; [邮件内的验证码] 				 | 忘记密码 									 |
 | info          | 													 | 查看我的信息 								 |
 | status        | 													 | 查看服务器当前状态 						 |
 | tp            |&lt;玩家名称&gt; 									 | TP到指定人身边 							 |
@@ -68,7 +68,7 @@ linglan512572354:https://github.com/linglan512572354
 
 - [ ] Config
     - [ ] Log
-    - [ ] Mail
+    - [x] Mail
 - [ ] Baidu翻译支持
 - [ ] 动态难度
 - [ ] PVP前期限制

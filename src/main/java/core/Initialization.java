@@ -66,6 +66,11 @@ public class Initialization {
 	public static void Override_Initialization() {
 		Cover_Gameover();
 	}
+
+	public static void ReLoadConfig() {
+		Config.LaodConfig();
+		Player_Privilege_classification();
+	}
  
 	private static void Cover_Gameover() { 
 		// 覆盖掉自带的Gameover 使用自己的 便于自动更换模式
@@ -171,14 +176,11 @@ public class Initialization {
 					Maps.setPower_Data(i,Arrays.asList(data.split(",")));
 					continue;
 				}
-				List<String> listtemp = Maps.getPower_Data(temp[i-1]);
-				List<String> l = new ArrayList<String>(Arrays.asList(data.split(",")));
-
-				l.addAll(listtemp);
-				HashSet<String> h = new HashSet<String>(l); 
-				List<String> c = new ArrayList<String>();
-				c.addAll(h);
-				Maps.setPower_Data(temp[i],c);
+				List<String> power = new ArrayList<String>(Arrays.asList(data.split(",")));
+				power.addAll(Maps.getPower_Data(temp[i-1]));
+				List<String> filter = new ArrayList<String>();
+				filter.addAll(new HashSet<String>(power));
+				Maps.setPower_Data(temp[i],filter);
 			}
 		} else {
 			for (int i = 0; i < temp.length; i++) {

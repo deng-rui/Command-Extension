@@ -63,4 +63,16 @@ public class ExtractUtil {
 		return (Long.parseLong(ip[0]) << 24) + (Long.parseLong(ip[1]) << 16) + (Long.parseLong(ip[2]) << 8) + Long.parseLong(ip[3]);
 	}
 
+	public static String longToIP(long longIp) {
+		StringBuffer sb = new StringBuffer("");
+		sb.append(String.valueOf((longIp >>> 24)))
+		.append(".")
+		.append(String.valueOf((longIp & 0x00FFFFFF) >>> 16))
+		.append(".")
+		.append(String.valueOf((longIp & 0x0000FFFF) >>> 8))
+		.append(".")
+		.append(String.valueOf((longIp & 0x000000FF)));
+		return sb.toString();
+	}
+
 }

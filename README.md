@@ -47,7 +47,7 @@ By default, Google translator should not set the source time to 0, otherwise Goo
 |:---           |:---                                                          |:---                                                   |
 | register      |&lt;New Username&gt; &lt;passwd&gt; &lt;repasswd&gt; [Mail]   | register user                                         |
 | login         |&lt;Username&gt; &lt;passwd&gt;                               | login user                                            |
-| repasswd      |&lt;Username/Mail&gt; [Verification code sent by mail]        | Forget password                                       |
+| ftpasswd      |&lt;Username/Mail&gt; [Verification code sent by mail]        | Forget password                                       |
 | info          |                                                              | info me                                               |
 | status        |                                                              | View server status                                    |
 | tp            |&lt;player name&gt;                                           | Teleport to other players                             |
@@ -70,7 +70,7 @@ Notes:
 
 - [ ] Config
     - [ ] Log
-    - [ ] Mail
+    - [x] Mail
 - [ ] Baidu translation support
 - [ ] Dynamic difficulty
 - [ ] PVP pre limit

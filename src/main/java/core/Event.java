@@ -28,6 +28,7 @@ import mindustry.maps.Map;
 import mindustry.net.Administration.PlayerInfo;
 import mindustry.net.Packets.KickReason;
 import mindustry.net.NetConnection;
+import mindustry.net.ValidateException;
 import mindustry.Vars;
 import mindustry.world.Block;
 //Mindustry
@@ -109,7 +110,7 @@ public class Event {
 		// 加入服务器时
 		Events.on(PlayerJoin.class, e -> {
 			if(!Maps.Player_Data_boolean(e.player.uuid)) {
-				Call.onInfoMessage(e.player.con,"第一次");
+				Call.onInfoToast(e.player.con,getinput("join.tourist",getLocalTimeFromUTC(0,1)),10f);
 				PlayerData playerdata = new PlayerData(e.player.uuid);
 				playerdata.Authority = 0;
 				playerdata.Jointime  = getLocalTimeFromUTC();
@@ -122,9 +123,10 @@ public class Event {
 				return;
 			}
 			PlayerData playerdata = Maps.getPlayer_Data(e.player.uuid);
+			if (e.player.isAdmin) playerdata.Authority = 2;
 			playerdata.Online = true;
 			playerdata.Joincount++;
-			Call.onInfoMessage(e.player.con,"欢迎回来");
+			Call.onInfoToast(e.player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
 			//Call.onPlayerDeath(e.player);
 		});
 
@@ -134,7 +136,7 @@ public class Event {
 			Google googletranslation = new Google();
 			if (!"/".equals(e.message.charAt(0))) {
 			boolean valid = e.message.matches("\\w+");
-			JSONObject date = getData("mods/GA/setting.json");
+			JSONObject date = getData("mods/GA/Setting.json");
 			// 检查是否启用翻译
 			boolean translateo = (boolean) date.get("translateo");
 				if (!valid && translateo) {
@@ -257,6 +259,13 @@ public class Event {
 			}
 		});
 
+		// EXPION
+		Events.on(ValidateException.class, e -> {
+			Call.onWorldDataBegin(e.player.con);
+            Vars.netServer.sendWorldData(e.player);
+            e.player.sendMessage(getinput("error"));
+		});
+
 		// 游戏结束时
 		Events.on(GameOverEvent.class, e -> {
 			Map map = maps.getNextMap(world.getMap());
@@ -271,6 +280,7 @@ public class Event {
 						}catch(IllegalArgumentException ex){
 						}
 						final Gamemode gamemode = mode;
+						Call.onInfoMessage(getinput("gameover.game",data[1],data[2]));
 						loadmaps(true, () -> world.loadMap(map, map.applyRules(gamemode)),gamemode);
 					}
 				}
