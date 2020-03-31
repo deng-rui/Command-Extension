@@ -30,70 +30,40 @@ public class Player {
 		}
 	}
 
-	public static void InitializationPlayersSQLite(String UUID, String User, String NAME, long IP, long GMT, String Country, String Language, long LastLogin, String Mail, String PasswordHash, String CSPRNG) {
-		PreparedStatement playerdata = null;
-		PreparedStatement playerpriv = null;
-		try {	
-			playerdata = c.prepareStatement("INSERT INTO PlayerData VALUES (?,?,?,?,?,?,'1',?,?,'0','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','0','0','0')");
-			playerpriv = c.prepareStatement("INSERT INTO PlayerPrivate VALUES (?,?,'1',?,?)");
-			playerdata.setString(1,UUID);
-			playerdata.setString(2,User);
-			playerdata.setString(3,NAME);
-			playerdata.setLong(4,IP);
-			playerdata.setInt(5,(int)GMT);
-			playerdata.setString(6,Country);
-			playerdata.setString(7,Language);
-			playerdata.setLong(8,LastLogin);
-			playerpriv.setString(1,User);
-			playerpriv.setString(2,Mail);
-			playerpriv.setString(3,PasswordHash);
-			playerpriv.setString(4,CSPRNG);
-			playerdata.execute();
-			playerpriv.execute();
-			c.commit();
-		} catch (Exception e) {
-			Log.fatal(e);
-		} finally {
-			close(playerdata);
-			close(playerpriv);
-		}
-	}
-
 	public static void savePlayer(PlayerData data, String user) {
 		PreparedStatement playerdata = null;
 		PreparedStatement playerpriv = null;
 		try {
-			playerdata = c.prepareStatement("UPDATE PlayerData SET UUID=?,User=?,NAME=?,IP=?,GMT=?,Country=?,Time_format=?,Language=?,LastLogin=?,Buildcount=?,Dismantledcount=?,Cumulative_build=?,Pipe_build=?,Kickcount=?,Translate=?,Level=?,Exp=?,Reqexp=?,Reqtotalexp=?,Playtime=?,Pvpwincount=?,Pvplosecount=?,Authority=?,Lastchat=?,Deadcount=?,Killcount=?,Joincount=?,Breakcount=? WHERE User=?");
+			playerdata = c.prepareStatement("UPDATE PlayerData SET UUID=?,User=?,IP=?,GMT=?,Country=?,Time_format=?,Language=?,LastLogin=?,Buildcount=?,Dismantledcount=?,Cumulative_build=?,Pipe_build=?,Kickcount=?,Translate=?,Level=?,Exp=?,Reqexp=?,Reqtotalexp=?,Playtime=?,Pvpwincount=?,Pvplosecount=?,Authority=?,Lastchat=?,Deadcount=?,Killcount=?,Joincount=?,Breakcount=? WHERE User=?");
 			playerpriv = c.prepareStatement("UPDATE PlayerPrivate SET User=?,Mail=?,Online=?,PasswordHash=?,CSPRNG=? WHERE User=?");
 			playerdata.setString(1,data.UUID);
 			playerdata.setString(2,data.User);
-			playerdata.setString(3,data.NAME);
-			playerdata.setLong(4,data.IP);
-			playerdata.setLong(5,data.GMT);
-			playerdata.setString(6,data.Country);
-			playerdata.setInt(7,data.Time_format);
-			playerdata.setString(8,data.Language);
-			playerdata.setLong(9,data.LastLogin);
-			playerdata.setInt(10,data.Buildcount);
-			playerdata.setInt(11,data.Dismantledcount);
-			playerdata.setInt(12,data.Cumulative_build);
-			playerdata.setInt(13,data.Pipe_build);
-			playerdata.setInt(14,data.Kickcount);
-			playerdata.setInt(15,BooleantoInt(data.Translate));
-			playerdata.setInt(16,data.Level);
-			playerdata.setLong(17,data.Exp);
-			playerdata.setLong(18,data.Reqexp);
-			playerdata.setLong(19,data.Reqtotalexp);
-			playerdata.setLong(20,data.Playtime);
-			playerdata.setInt(21,data.Pvpwincount);
-			playerdata.setInt(22,data.Pvplosecount);
-			playerdata.setInt(23,data.Authority);
-			playerdata.setLong(24,data.Lastchat);
-			playerdata.setInt(25,data.Deadcount);
-			playerdata.setInt(26,data.Killcount);
-			playerdata.setInt(27,data.Joincount);
-			playerdata.setInt(28,data.Breakcount);
-			playerdata.setString(29,user);
+			playerdata.setLong(3,data.IP);
+			playerdata.setLong(4,data.GMT);
+			playerdata.setString(5,data.Country);
+			playerdata.setInt(6,data.Time_format);
+			playerdata.setString(7,data.Language);
+			playerdata.setLong(8,data.LastLogin);
+			playerdata.setInt(9,data.Buildcount);
+			playerdata.setInt(10,data.Dismantledcount);
+			playerdata.setInt(11,data.Cumulative_build);
+			playerdata.setInt(12,data.Pipe_build);
+			playerdata.setInt(13,data.Kickcount);
+			playerdata.setInt(14,BooleantoInt(data.Translate));
+			playerdata.setInt(15,data.Level);
+			playerdata.setLong(16,data.Exp);
+			playerdata.setLong(17,data.Reqexp);
+			playerdata.setLong(18,data.Reqtotalexp);
+			playerdata.setLong(18,data.Playtime);
+			playerdata.setInt(20,data.Pvpwincount);
+			playerdata.setInt(21,data.Pvplosecount);
+			playerdata.setInt(22,data.Authority);
+			playerdata.setLong(23,data.Lastchat);
+			playerdata.setInt(24,data.Deadcount);
+			playerdata.setInt(25,data.Killcount);
+			playerdata.setInt(26,data.Joincount);
+			playerdata.setInt(27,data.Breakcount);
+			playerdata.setString(28,user);
 			playerdata.execute();
 			playerpriv.setString(1,data.User);
 			playerpriv.setString(2,data.Mail);
@@ -121,9 +91,9 @@ public class Player {
 			playerdata.setString(1,user);
 			rs = playerdata.executeQuery();
 			while ( rs.next() ) {
+				// 防止游戏玩一半登录 导致数据飞天
 				data.UUID 				= rs.getString("UUID");
 				data.User 				= rs.getString("User");
-				data.NAME 				= rs.getString("NAME");
 				data.IP 				= rs.getLong("IP");
 				data.GMT 				= rs.getLong("GMT");
 				data.Country 			= rs.getString("Country");
@@ -131,25 +101,25 @@ public class Player {
 				data.Language 			= rs.getString("Language");
 				data.LastLogin 			= rs.getLong("LastLogin");
 				//data.Online 			= rs.getInt("Online");
-				data.Buildcount 		= rs.getInt("Buildcount");
-				data.Dismantledcount 	= rs.getInt("Dismantledcount");
-				data.Cumulative_build 	= rs.getInt("Cumulative_build");
-				data.Pipe_build			= rs.getInt("Pipe_build");
-				data.Kickcount 			= rs.getInt("Kickcount");
+				data.Buildcount 		= data.Buildcount + rs.getInt("Buildcount");
+				data.Dismantledcount 	= data.Dismantledcount + rs.getInt("Dismantledcount");
+				data.Cumulative_build 	= data.Cumulative_build + rs.getInt("Cumulative_build");
+				data.Pipe_build			= data.Pipe_build + rs.getInt("Pipe_build");
+				data.Kickcount 			= data.Kickcount + rs.getInt("Kickcount");
 				data.Translate 			= InttoBoolean(rs.getInt("Translate"));
 				data.Level 				= rs.getInt("Level");
 				data.Exp 				= rs.getLong("Exp");
 				data.Reqexp 			= rs.getLong("Reqexp");
 				data.Reqtotalexp 		= rs.getLong("Reqtotalexp");
-				data.Playtime 			= rs.getLong("Playtime");
-				data.Pvpwincount 		= rs.getInt("Pvpwincount");
-				data.Pvplosecount 		= rs.getInt("Pvplosecount");
+				data.Playtime 			= data.Playtime + rs.getLong("Playtime");
+				data.Pvpwincount 		= data.Pvpwincount + rs.getInt("Pvpwincount");
+				data.Pvplosecount 		= data.Pvplosecount + rs.getInt("Pvplosecount");
 				data.Authority 			= rs.getInt("Authority");
 				data.Lastchat 			= rs.getLong("Lastchat");
-				data.Deadcount 			= rs.getInt("Deadcount");
-				data.Killcount 			= rs.getInt("Killcount");
-				data.Joincount 			= rs.getInt("Joincount");
-				data.Breakcount 		= rs.getInt("Breakcount");
+				data.Deadcount 			= data.Deadcount + rs.getInt("Deadcount");
+				data.Killcount 			= data.Killcount + rs.getInt("Killcount");
+				data.Joincount 			= data.Joincount + rs.getInt("Joincount");
+				data.Breakcount 		= data.Breakcount + rs.getInt("Breakcount");
 			}
 			playerpriv = c.prepareStatement("SELECT * FROM PlayerPrivate WHERE User=?");
 			playerpriv.setString(1,user);
