@@ -3,11 +3,7 @@ package extension.core;
 import java.lang.Math;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.TimeZone;
-import java.util.regex.Pattern;
 //Java
 
 import arc.*;
@@ -52,31 +48,30 @@ import extension.data.global.Maps;
 
 import static extension.core.Extend.loadmaps;
 import static extension.data.db.Player.getSQLite;
-import static extension.data.db.Player.InitializationPlayersSQLite;
 import static extension.data.db.Player.isSQLite_User;
 import static extension.data.db.Player.savePlayer;
-import static extension.net.HttpRequest.doGet;
+import static extension.data.db.Player.InitializationPlayersSQLite;
 import static extension.util.alone.Password.newPasswd;
 import static extension.util.alone.Password.Passwdverify;
 import static extension.util.DateUtil.getLocalTimeFromUTC;
-import static extension.util.ExtractUtil.ipToLong;
 import static extension.util.IsBlankUtil.Blank;
 import static extension.util.LocaleUtil.getinput;
 import static extension.util.LocaleUtil.Language_determination;
 //Static
 
-import com.alibaba.fastjson.JSONObject;
-//Json
-
 public class ClientCommandsx {
 
 	public static void login(Player player, String usr, String pw) {
+		PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
+		if(playerdata.Login) {
+			player.sendMessage(getinput("login.yes"));
+			return;
+		}
 		if((boolean)isSQLite_User(usr)) {
 			player.sendMessage(getinput("login.usrno"));
 			return;
 		}
-
-		PlayerData temp = new PlayerData("temp");
+		PlayerData temp = new PlayerData("temp","temp",0);
 		getSQLite(temp,usr);
 		if(temp.Online) {
 			player.sendMessage(getinput("login.in"));
@@ -84,19 +79,19 @@ public class ClientCommandsx {
 		}
 		try {
 			if(!Passwdverify(pw,temp.PasswordHash,temp.CSPRNG)) {
-			player.sendMessage(getinput("login.pwno"));
+			player.sendMessage(getinput("login.pwno"));  
 			return;
 			}
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
 			player.sendMessage(getinput("passwd.err"));
 			return;
-		}
-		temp.Online = true;
-		temp.Joincount++;
-		temp.LastLogin = getLocalTimeFromUTC(temp.GMT);
-		savePlayer(temp,player.uuid);
-		if(!(temp.UUID).equals(player.uuid)) {
-			temp.UUID = player.uuid;
+		}	
+		getSQLite(playerdata,usr);
+		playerdata.Joincount++;
+		playerdata.Login=true;
+		playerdata.LastLogin=getLocalTimeFromUTC(playerdata.GMT);
+		if(!(playerdata.UUID).equals(player.uuid)) {
+			playerdata.UUID = player.uuid;
 			player.sendMessage(getinput("uuid.update"));
 		}
 		if (Vars.state.rules.pvp){
@@ -104,13 +99,23 @@ public class ClientCommandsx {
 		} else {
 			player.setTeam(Team.sharded);
 		}
-		Call.onPlayerDeath(player);
-		Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(temp.GMT,temp.Time_format)),20f);
-		Maps.setPlayer_Data(player.uuid,temp);
+		if (Config.Login_Radical) {
+			if (Vars.state.rules.pvp)
+				player.setTeam(netServer.assignTeam(player, playerGroup.all()));
+			else
+				player.setTeam(Team.sharded);
+			Call.onPlayerDeath(player);
+		}
+		Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
+		Maps.setPlayer_Data(player.uuid,playerdata);
 	}
 
 	public static void register(Player player, String newusr, String newpw, String renewpw, String mail) {
-		String ip = Vars.netServer.admins.getInfo(player.uuid).lastIP;
+		PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
+		if(playerdata.Login) {
+			player.sendMessage(getinput("register.yes"));
+			return;
+		}
 		if(!newpw.equals(renewpw)) {
 			player.sendMessage(getinput("register.pawno"));
 			return;
@@ -126,41 +131,29 @@ public class ClientCommandsx {
 			player.sendMessage(getinput("passwd.err"));
 			return;
 		}
-		long GMT = 0;
-		String country = "Intranet";
-		if(!(boolean)Passwd_date.get("resualt"))return;
-		Pattern reg = Pattern.compile("^(127\\.0\\.0\\.1)|(localhost)|(10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|(172\\.((1[6-9])|(2\\d)|(3[01]))\\.\\d{1,3}\\.\\d{1,3})|(192\\.168\\.\\d{1,3}\\.\\d{1,3})$");
-		if(reg.matcher(ip).find()) {
-			player.sendMessage(getinput("register.ip.nat"));
-		}else{
-			if(!Config.Server_Networking) {
-				player.sendMessage(getinput("register.no.network"));
-				country = "NOT network";
-				ip = "0";
-			}else{
-				try {
-					JSONObject data = JSONObject.parseObject(doGet("http://ip-api.com/json/"+ip+"?fields=country,timezone"));
-					GMT = TimeZone.getTimeZone((String)data.get("timezone")).getRawOffset();
-					country = (String)data.get("country");
-				} catch (Exception e) {
-					player.sendMessage(getinput("passwd.net"));
-					return;
-				}
-				
-			}
-			
-		}	
-		InitializationPlayersSQLite(player.uuid,newusr,player.name,ipToLong(ip),GMT,country,Language_determination(country),getLocalTimeFromUTC(GMT),Blank(mail)?mail:"NULL",(String)Passwd_date.get("passwordHash"),(String)Passwd_date.get("salt"));
-		if (Vars.state.rules.pvp){
-			player.setTeam(netServer.assignTeam(player, playerGroup.all()));
-		} else {
-			player.setTeam(Team.sharded);
+		if(!(boolean)Passwd_date.get("resualt")) {
+			player.sendMessage(getinput("passwd.err"));
+			return;
 		}
-		Call.onPlayerDeath(player);
-		PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
-		getSQLite(playerdata,newusr);
+		if (Config.Login_Radical) {
+			if (Vars.state.rules.pvp)
+				player.setTeam(netServer.assignTeam(player, playerGroup.all()));
+			else
+				player.setTeam(Team.sharded);
+			Call.onPlayerDeath(player);
+		}
+		InitializationPlayersSQLite(newusr);	
+		playerdata.User=newusr;
+		playerdata.Login=true;
+		playerdata.Authority=1;
+		playerdata.Mail=(mail == null) ? "NULL":mail;
+		playerdata.PasswordHash=(String)Passwd_date.get("passwordHash");
+		playerdata.CSPRNG=(String)Passwd_date.get("salt");
 		playerdata.Joincount++;
-		Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(GMT,1)),20f);
+		if(!Config.Login_IP) 
+			PlayerData.playerip(Maps.getPlayer_Data(player.uuid),player,Vars.netServer.admins.getInfo(player.uuid).lastIP);
+		playerdata.LastLogin=getLocalTimeFromUTC(playerdata.GMT);
+		Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
 	}
 
 	public static void ftpasswd(Player player, String mail, String cod) {
