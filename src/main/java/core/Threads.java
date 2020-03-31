@@ -76,7 +76,7 @@ public class Threads {
 
 	// 用户过期?
 	public static void LoginStatus() {
-		if (Config.Login_Time >= status_login) {
+		if (Config.Login_Time > status_login) {
 			status_login++;
 			return;
 		}
@@ -93,7 +93,7 @@ public class Threads {
 	}
 
 	public static void Status_Reporting() {
-		if (Config.Regular_Reporting_Time >= status_mail) {
+		if (Config.Regular_Reporting_Time > status_mail) {
 			status_mail++;
 			return;
 		}
@@ -117,16 +117,7 @@ public class Threads {
 			long totalPhysicalMemory = getLongFromOperatingSystem(system,"getTotalPhysicalMemorySize");
 	        long freePhysicalMemory = getLongFromOperatingSystem(system, "getFreePhysicalMemorySize");
 	        long usedPhysicalMemorySize =totalPhysicalMemory - freePhysicalMemory;
-	        String FPS = null;
-	        String MEMORY = null;
-	        if(state.is(State.menu)) {
-	        	FPS="Server Closed";
-	        	MEMORY="Server Closed";
-	        } else {
-	        	FPS = String.valueOf(Math.round((int)60f / Time.delta()));
-				MEMORY = String.valueOf(Core.app.getJavaHeap() / 1024 / 1024);
-	        }
-			Object[] pasm = {system.getName(),totalPhysicalMemory/MB,freePhysicalMemory/MB,usedPhysicalMemorySize/MB,FPS,MEMORY,secToTime((long)ManagementFactory.getRuntimeMXBean().getUptime()/1000),getLocalTimeFromUTC(0,0)+" UTC"};
+			Object[] pasm = {system.getName(),totalPhysicalMemory/MB,freePhysicalMemory/MB,usedPhysicalMemorySize/MB,Core.graphics.getFramesPerSecond(),Core.app.getJavaHeap()/MB,secToTime((long)ManagementFactory.getRuntimeMXBean().getUptime()/1000),getLocalTimeFromUTC(0,0)+" UTC"};
 			//
 			msg.setContent(CustomLoad("Mail.Report",pasm),"text/html;charset = UTF-8");
 			msg.setFrom(new InternetAddress(Config.Mail_SMTP_User));
