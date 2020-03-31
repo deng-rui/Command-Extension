@@ -29,14 +29,14 @@ By default, Google translator should not set the source time to 0, otherwise Goo
 | Bing tr                   | Bing tr                                               |
 
 ## Plug in can realize functions
-PVP:
-1.Limit the number of team generating units
-2.Limit the accumulated building quantity of the team
+PVP:  
+1.Limit the number of team generating units  
+2.Limit the accumulated building quantity of the team  
 General function
-1.Semi automatic recognition map game mode can be changed automatically
-2.Vote
-3.Regular status reporting (Mail)
-4.Shielding keywords (DFA)
+1.Semi automatic recognition map game mode can be changed automatically  
+2.Vote  
+3.Regular status reporting (Mail)  
+4.Shielding keywords (DFA)  
 
 ## Required configuration  
 
