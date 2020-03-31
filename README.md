@@ -28,6 +28,16 @@ By default, Google translator should not set the source time to 0, otherwise Goo
 | Google tr                 | Google tr                                             |
 | Bing tr                   | Bing tr                                               |
 
+## Plug in can realize functions
+PVP:
+1.Limit the number of team generating units
+2.Limit the accumulated building quantity of the team
+General function
+1.Semi automatic recognition map game mode can be changed automatically
+2.Vote
+3.Regular status reporting (Mail)
+4.Shielding keywords (DFA)
+
 ## Required configuration  
 
 | configure     | CPU             | RAM   | System        | Hard disk | Java      |
@@ -46,6 +56,7 @@ By default, Google translator should not set the source time to 0, otherwise Goo
 | Command               | Parameter                                          | Description                                           |
 |:---                   |:---                                                |:---                                                   |
 | gameover(replace)     |                                                    | Force end of game (prevent original gameover recovery)|
+| reloadconfig          |                                                    | Reload the this plugins config.ini                    |
 | reloadmaps(replace)   |                                                    | Reload the map (easy to re-read the mode)             |
 | exit(replace)         |                                                    | Shut down the server (end built-in timer)             |
 
@@ -78,7 +89,6 @@ Notes:
 
 - [ ] Config
     - [ ] Log
-    - [x] Mail
 - [ ] Baidu translation support
 - [ ] Dynamic difficulty
 - [ ] PVP pre limit
@@ -120,6 +130,6 @@ List your currently installed plugins by running the `mods` command.
 If necessary, you can try to change the localization parameters yourself  
 
 
-###Licenses  
+### Licenses  
 The Unlicense  
 :) 

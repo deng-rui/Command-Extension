@@ -28,6 +28,18 @@ linglan512572354:https://github.com/linglan512572354
 | Google tr 				| 谷歌翻译 						|
 | Bing tr 					| 必应翻译 						|
 
+## 插件可实现功能
+
+PVP :   
+1.限制队伍生成单位的数量  
+2.限制队伍累计建筑数量  
+
+通用功能
+1.半自动识别地图游戏模式 可自动改变模式
+2.Vote
+3.状态定时上报 (Mail)
+4.屏蔽关键词 (DFA)
+
 ## 运行配置  
 
 | 配置 		| CPU             | 内存 	| 系统 			| 硬盘大小 	| Java      |
@@ -46,6 +58,7 @@ linglan512572354:https://github.com/linglan512572354
 | 命令 					 | 参数 												 | 信息 									 |
 |:--- 					 |:--- 												 |:--- 									 |
 | gameover(覆盖) 		 |                                                   | 强制结束游戏(防止原gameover恢复) 		 |
+| reloadconfig           |                                                   | 热重载配置文件 						 |
 | reloadmaps(覆盖) 		 |                                                   | 重载地图(便于重新读取模式) 				 |
 | exit(覆盖) 			 | 													 | 关闭服务器(结束内置计时器) 				 |
 
@@ -76,7 +89,6 @@ linglan512572354:https://github.com/linglan512572354
 
 - [ ] Config
     - [ ] Log
-    - [x] Mail
 - [ ] Baidu翻译支持
 - [ ] 动态难度
 - [ ] PVP前期限制
