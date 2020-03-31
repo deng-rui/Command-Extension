@@ -55,13 +55,14 @@ public class Threads {
 
 	private static ScheduledFuture Thread_Time;
 	private static ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
-	private static int status = 0;
+	private static int status_login = 0;
+	private static int status_mail = 0;
 
 	static {
 		Runnable Atime=new Runnable() {
 			@Override
 			public void run() {
-				LoginStatus();
+				if(Config.Login)LoginStatus();
 				if(Config.Regular_Reporting)Status_Reporting();
 			}
 		};
@@ -75,6 +76,11 @@ public class Threads {
 
 	// 用户过期?
 	public static void LoginStatus() {
+		if (Config.Login_Time >= status_login) {
+			status_login++;
+			return;
+		}
+		status_login = 0;
 		Map data = Maps.getMapPlayer_Data();
 		Iterator it = data.entrySet().iterator();
 		while(it.hasNext()){
@@ -87,10 +93,11 @@ public class Threads {
 	}
 
 	public static void Status_Reporting() {
-		if(!(Config.Regular_Reporting_Time == status)) {
-			status++;
+		if (Config.Regular_Reporting_Time >= status_mail) {
+			status_mail++;
 			return;
 		}
+		status_mail = 0;
 		try {
 			Properties props = new Properties();
 			props.setProperty("mail.smtp.auth", "true");  
@@ -125,7 +132,6 @@ public class Threads {
 			msg.setFrom(new InternetAddress(Config.Mail_SMTP_User));
 			Transport transport = session.getTransport();
 			transport.connect(Config.Mail_SMTP_IP,Config.Mail_SMTP_User,Config.Mail_SMTP_Passwd);
-
 			transport.sendMessage(msg, new Address[] { new InternetAddress(Config.Regular_Reporting_ToMail)});
 			transport.close();
 		} catch (Exception e) {

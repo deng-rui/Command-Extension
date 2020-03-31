@@ -24,6 +24,7 @@ import static mindustry.Vars.netServer;
 import static mindustry.Vars.playerGroup;
 //Mindustry-Static
 
+import extension.data.global.Config;
 import extension.data.global.Maps;
 import extension.util.Log;
 import extension.data.db.PlayerData;
@@ -34,12 +35,12 @@ import static extension.util.DateUtil.simp;
 //Static
 
 public class Extend {
-	public static boolean Authority_control(String uuid, String a) {
-		return (boolean)Maps.getPower_Data((int)Maps.getPlayer_Data(uuid).Authority).contains(a);
+	public static boolean Authority_control(Player player, String a) {
+		// 未开启登录 直接抢答结果
+		if(!Config.Login) return true;
+		return (boolean)Maps.getPower_Data((int)Maps.getPlayer_Data(player.uuid).Authority).contains(a);
 	}
-	//算法写的烂 bug满天飞
-	//没啥好办法:(
-	//
+
 	public static void loadmaps(boolean wait, Runnable run, Gamemode mode){
 		Runnable r = () -> {
 			Array<Player> players = new Array<>();

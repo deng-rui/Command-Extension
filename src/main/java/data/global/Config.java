@@ -18,11 +18,18 @@ public class Config {
 	public static boolean Server_Country_CN 					= false;
 
 	public static boolean Login 								= false;
+	public static boolean Login_IP 								= false;
+	public static int Login_Time 								= 0;
+	public static boolean Login_Radical 						= false;
 	public static boolean Permission_Passing 					= false;
 
 	public static boolean Building_Restriction 					= false;
-	public static int Warning_quantity 							= 0;
-	public static int Reject_quantity 							= 0;
+	public static int Building_Warning_quantity 				= 0;
+	public static int Building_Reject_quantity 					= 0;
+
+	public static boolean Soldier_Restriction 					= false;
+	public static int Soldier_Warning_quantity 					= 0;
+	public static int Soldier_Reject_quantity 					= 0;
 
 	public static boolean Mail_Use 								= false;
 	public static String Mail_SMTP_IP 							= null;
@@ -39,13 +46,20 @@ public class Config {
 	public static void LaodConfig() {
 		Login 													= loadboolean("Login");
 		Building_Restriction 									= loadboolean("Building_Restriction");
+		Soldier_Restriction 									= loadboolean("Soldier_Restriction");
 		Mail_Use 												= loadboolean("Mail_Use");
+		Permission_Passing 										= loadboolean("Permission_Passing");
 		if(Login) {
-			Permission_Passing 									= loadboolean("Permission_Passing");
+			Login_Time 											= loadint("Login_Time")/5;
+			Login_Radical 										= loadboolean("Login_Radical");
 		}
 		if(Building_Restriction) {
-			Warning_quantity 									= loadint("Wan_Construction");
-			Reject_quantity 									= loadint("MAX_Construction");
+			Building_Warning_quantity 							= loadint("Building_Wan_Construction");
+			Building_Reject_quantity 							= loadint("Building_Max_Construction");
+		}
+		if(Soldier_Restriction) {
+			Soldier_Warning_quantity 							= loadint("Soldier_Wan_Construction");
+			Soldier_Reject_quantity 							= loadint("Soldier_Max_Construction");
 		}
 		if(Mail_Use) {
 			Mail_SMTP_IP 										= loadstring("Mail_SMTP.IP");

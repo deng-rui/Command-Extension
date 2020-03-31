@@ -28,6 +28,7 @@ import static mindustry.Vars.playerGroup;
 //Mindustry-Static
 
 import extension.data.db.PlayerData;
+import extension.data.global.Config;
 import extension.data.global.Lists;
 import extension.data.global.Maps;
 import extension.core.Event;
@@ -147,34 +148,35 @@ public class Main extends Plugin {
 			player.sendMessage(result.toString());
 		});
 		*/
+		if (Config.Login) {
+			handler.<Player>register("login", "<id> <password>", "Login to account", (args, player) -> {
+				if (!Authority_control(player,"login")) {
+					player.sendMessage(getinput("authority.no"));
+				} else {
+					login(player,args[0],args[1]);
+				}
+			});
 
-		handler.<Player>register("login", "<id> <password>", "Login to account", (args, player) -> {
-			if (!Authority_control(player.uuid,"login")) {
-				player.sendMessage(getinput("authority.no"));
-			} else {
-				login(player,args[0],args[1]);
-			}
-		});
+			handler.<Player>register("register", "<new_id> <new_password> <password_repeat> [your_mail]", "Login to account", (args, player) -> {
+				if (!Authority_control(player,"register")) {
+					player.sendMessage(getinput("authority.no"));
+				} else {
+					register(player,args[0],args[1],args[2],(args.length > 3) ? args[3] : null);
+				}
+			});
 
-		handler.<Player>register("register", "<new_id> <new_password> <password_repeat> [your_mail]", "Login to account", (args, player) -> {
-			if (!Authority_control(player.uuid,"register")) {
-				player.sendMessage(getinput("authority.no"));
-			} else {
-				register(player,args[0],args[1],args[2],(args.length > 3) ? args[3] : null);
-			}
-		});
-
-		handler.<Player>register("ftpasswd", "<Email_at_registration> [Verification_Code]", "Forget password", (args, player) -> {
-			if (!Authority_control(player.uuid,"ftpasswd")) {
-				player.sendMessage(getinput("authority.no"));
-			} else {
-				ftpasswd(player,args[0],(args.length > 1) ? args[1] : null);
-			}
-		});
+			handler.<Player>register("ftpasswd", "<Email_at_registration> [Verification_Code]", "Forget password", (args, player) -> {
+				if (!Authority_control(player,"ftpasswd")) {
+					player.sendMessage(getinput("authority.no"));
+				} else {
+					ftpasswd(player,args[0],(args.length > 1) ? args[1] : null);
+				}
+			});
+		}
 		//
 
 		handler.<Player>register("info","[page]",getinput("info"), (args, player) -> {
-			if (!Authority_control(player.uuid,"info")) {
+			if (!Authority_control(player,"info")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
@@ -188,7 +190,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("status",getinput("status"), (args, player) -> {
-			if (!Authority_control(player.uuid,"status")) {
+			if (!Authority_control(player,"status")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				player.sendMessage("FPS:"+status("getfps")+"  Occupied memory:"+status("getmemory")+"MB");
@@ -198,7 +200,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("tpp","<player> <player>",getinput("tpp"), (args, player) -> {
-			if (!Authority_control(player.uuid,"tpp")) {
+			if (!Authority_control(player,"tpp")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				try {
@@ -213,7 +215,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("tp","<player...>",getinput("tp"), (args, player) -> {
-			if (!Authority_control(player.uuid,"tp")) {
+			if (!Authority_control(player,"tp")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				Player other = playerGroup.find(p->p.name.equalsIgnoreCase(args[0]));
@@ -226,7 +228,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("suicide",getinput("suicide"), (args, player) -> {
-			if (!Authority_control(player.uuid,"suicide")) {
+			if (!Authority_control(player,"suicide")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				player.onPlayerDeath(player);
@@ -235,7 +237,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("team",getinput("team"), (args, player) ->{
-			if (!Authority_control(player.uuid,"team")) {
+			if (!Authority_control(player,"team")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				if (!state.rules.pvp){
@@ -259,7 +261,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("difficulty", "<difficulty>", getinput("difficulty"), (args, player) -> {
-			if (!Authority_control(player.uuid,"difficulty")) {
+			if (!Authority_control(player,"difficulty")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				try {
@@ -272,7 +274,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("gameover",getinput("gameover"), (args, player) -> {
-			if (!Authority_control(player.uuid,"gameover")) {
+			if (!Authority_control(player,"gameover")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				Events.fire(new GameOverEvent(Team.crux));
@@ -281,7 +283,7 @@ public class Main extends Plugin {
 
 
 		handler.<Player>register("host","<map_number>",getinput("host"), (args, player) -> {
-			if (Authority_control(player.uuid,"host")) {
+			if (Authority_control(player,"host")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				host(player,args[0]);
@@ -289,7 +291,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("runwave",getinput("runwave"), (args, player) -> {
-			if (!Authority_control(player.uuid,"runwave")) {
+			if (!Authority_control(player,"runwave")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				logic.runWave();
@@ -299,7 +301,7 @@ public class Main extends Plugin {
 		handler.<Player>register("time",getinput("time"), (args, player) -> player.sendMessage(getinput("time.info",timee())));
 
 		handler.<Player>register("tr","<text> [Output-language]",getinput("tr"), (args, player) -> {
-			if (!Authority_control(player.uuid,"tr")) {
+			if (!Authority_control(player,"tr")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				//No spaces are allowed in the input language??
@@ -316,7 +318,7 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("maps", "[page] [mode]", getinput("maps"), (args, player) -> {
-			if (!Authority_control(player.uuid,"maps")) {
+			if (!Authority_control(player,"maps")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				List<String> MapsList = (List<String>)Lists.getMaps_List();
