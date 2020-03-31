@@ -1,6 +1,7 @@
 package extension.core;
 
 import java.util.List;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.TimeZone;
@@ -23,6 +24,7 @@ import mindustry.game.EventType.PlayerChatEvent;
 import mindustry.game.EventType.PlayerJoin;
 import mindustry.game.EventType.PlayerLeave;
 import mindustry.game.EventType.UnitDestroyEvent;
+import mindustry.game.EventType.UnitCreateEvent;
 import mindustry.gen.Call;
 import mindustry.maps.Map;
 import mindustry.net.Administration.PlayerInfo;
@@ -63,12 +65,13 @@ import com.alibaba.fastjson.JSONObject;
 //Json
 
 import mindustry.game.EventType.UnitCreateEvent;
+import static extension.data.db.Player.*;
 
 
 public class Event {
 	// 
 
-	private static final java.util.Map<Integer, Integer> Building_number = new HashMap<Integer, Integer>();
+	private static final java.util.Map<Integer, Integer> Building_number = Collections.synchronizedMap(new HashMap<Integer, Integer>());
 
 	public static void Main() {
 
@@ -109,24 +112,37 @@ public class Event {
 
 		// 加入服务器时
 		Events.on(PlayerJoin.class, e -> {
-			if(!Maps.Player_Data_boolean(e.player.uuid)) {
-				Call.onInfoToast(e.player.con,getinput("join.tourist",getLocalTimeFromUTC(0,1)),10f);
-				PlayerData playerdata = new PlayerData(e.player.uuid);
-				playerdata.Authority = 0;
-				playerdata.Jointime  = getLocalTimeFromUTC();
-				Maps.setPlayer_Data(e.player.uuid,playerdata);
+			if(Config.Login && Config.Login_Radical) {
+				if(!Maps.Player_Data_boolean(e.player.uuid)) {
+					Call.onInfoToast(e.player.con,getinput("join.tourist",getLocalTimeFromUTC(0,1)),10f);
+					PlayerData playerdata = new PlayerData(e.player.uuid,e.player.name,0);
+					Maps.setPlayer_Data(e.player.uuid,playerdata);
+				}
+				if(Maps.getPlayer_Data(e.player.uuid).Authority == 0) {
+					// 设置队伍 登陆
+					e.player.kill();
+					e.player.setTeam(Team.derelict);
+					return;
+				}	
+				PlayerData playerdata = Maps.getPlayer_Data(e.player.uuid);
+				if (e.player.isAdmin) playerdata.Authority = 2;
+				playerdata.Online = true;
+				playerdata.Joincount++;
+				Call.onInfoToast(e.player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),40f);
+			} else {
+				if(!Maps.Player_Data_boolean(e.player.uuid)) {
+					PlayerData playerdata = new PlayerData(e.player.uuid,e.player.name,1);
+					Maps.setPlayer_Data(e.player.uuid,playerdata);
+					return;
+				}
+				PlayerData playerdata = Maps.getPlayer_Data(e.player.uuid);
+				if (e.player.isAdmin) playerdata.Authority = 2;
+				playerdata.Online = true;
+				playerdata.Joincount++;
+				Call.onInfoToast(e.player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),40f);
 			}
-			if(Maps.getPlayer_Data(e.player.uuid).Authority == 0) {
-				// 设置队伍 登陆
-				e.player.kill();
-				e.player.setTeam(Team.derelict);
-				return;
-			}
-			PlayerData playerdata = Maps.getPlayer_Data(e.player.uuid);
-			if (e.player.isAdmin) playerdata.Authority = 2;
-			playerdata.Online = true;
-			playerdata.Joincount++;
-			Call.onInfoToast(e.player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
+			if(Config.Login_IP) 
+				PlayerData.playerip(Maps.getPlayer_Data(e.player.uuid),e.player,Vars.netServer.admins.getInfo(e.player.uuid).lastIP);
 			//Call.onPlayerDeath(e.player);
 		});
 
@@ -147,14 +163,19 @@ public class Event {
 
 			// 去除语言检测
 			if((int)Maps.getPlayer_Data(e.player.uuid).Authority > 0) {
-				if(String.valueOf(e.message).equalsIgnoreCase("y") && !Vote.sted) {
-					if (Vote.playerlist.contains(e.player.uuid)) {
-						e.player.sendMessage("vote y");
-					} else {
-						Vote.playerlist.add(e.player.uuid);
-						new Vote();	
+				if(String.valueOf(e.message).equalsIgnoreCase("y")) {
+					if(Vote.sted)
+						e.player.sendMessage(getinput("vote.noy"));
+					else {
+						if (Vote.playerlist.contains(e.player.uuid)) {
+							e.player.sendMessage(getinput("vote.rey"));
+						} else {
+							Vote.playerlist.add(e.player.uuid);
+							e.player.sendMessage(getinput("vote.y"));
+							new Vote();	
+						}
 					}
-				}
+				}	
 			}
 
 			PlayerData playerdata = Maps.getPlayer_Data(e.player.uuid);
@@ -182,14 +203,13 @@ public class Event {
 					//
 				}
 				// 过滤墙
-				else if (block == Blocks.copperWall || block == Blocks.copperWallLarge || block == Blocks.titaniumWall || block == Blocks.titaniumWallLarge || block == Blocks.plastaniumWall || block == Blocks.doorLarge || block == Blocks.door || block == Blocks.plastaniumWallLarge ) {
+				else if (block == Blocks.copperWall || block == Blocks.copperWallLarge || block == Blocks.titaniumWall || block == Blocks.titaniumWallLarge || block == Blocks.plastaniumWall || block == Blocks.doorLarge || block == Blocks.door || block == Blocks.plastaniumWallLarge || block == Blocks.shockMine || block == Blocks.surgeWallLarge || block == Blocks.thoriumWallLarge ||block == Blocks.thoriumWall || block == Blocks.phaseWall || block == Blocks.surgeWall || block == Blocks.phaseWallLarge) {
 					//
 				}
-				// 过滤墙2
-				else if (block == Blocks.shockMine || block == Blocks.surgeWallLarge || block == Blocks.thoriumWallLarge ||block == Blocks.thoriumWall || block == Blocks.phaseWall || block == Blocks.surgeWall || block == Blocks.phaseWallLarge) {
+				// 电池 节点 二极管
+				else if (block == Blocks.battery || block == Blocks.batteryLarge || block == Blocks.powerNode || block == Blocks.powerNodeLarge || block == Blocks.surgeTower || block == Blocks.diode) {
 					//
 				}
-				
 				// 其他建筑
 				else {
 					if(Config.Building_Restriction) {
@@ -198,10 +218,10 @@ public class Event {
 							Building_number.put(team,1);
 							return;
 						}
-						if(Building_number.get(team) >= Config.Warning_quantity) e.player.sendMessage(getinput("Warning.quantity"));
-						if(Building_number.get(team) >= Config.Reject_quantity) {
+						if(Building_number.get(team) >= Config.Building_Warning_quantity) e.player.sendMessage(getinput("Building_Warning.quantity",Building_number.get(team)));
+						if(Building_number.get(team) >= Config.Building_Reject_quantity) {
 							Call.onTileDestroyed(e.tile);
-							e.player.sendMessage(getinput("Reject.quantity"));
+							e.player.sendMessage(getinput("Building_Reject.quantity"));
 							return;
 						}
 						int temp = ((int)Building_number.get(team))+1;
@@ -223,6 +243,7 @@ public class Event {
 				if (block == Blocks.conduit || block == Blocks.pulseConduit || block == Blocks.platedConduit) return;
 				if (block == Blocks.junction || block == Blocks.router || block == Blocks.distributor || block == Blocks.sorter || block == Blocks.invertedSorter || block == Blocks.overflowGate || block == Blocks.underflowGate) return;
 				if (block == Blocks.copperWall || block == Blocks.copperWallLarge || block == Blocks.titaniumWall || block == Blocks.titaniumWallLarge || block == Blocks.plastaniumWall || block == Blocks.doorLarge || block == Blocks.door || block == Blocks.plastaniumWallLarge || block == Blocks.shockMine || block == Blocks.surgeWallLarge || block == Blocks.thoriumWallLarge || block == Blocks.thoriumWall || block == Blocks.phaseWall || block == Blocks.surgeWall || block == Blocks.phaseWallLarge) return;	
+				if (block == Blocks.battery || block == Blocks.batteryLarge || block == Blocks.powerNode || block == Blocks.powerNodeLarge || block == Blocks.surgeTower || block == Blocks.diode) return;
 				PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
 				playerdata.Dismantledcount++;
 				if(Config.Building_Restriction) {
@@ -259,11 +280,29 @@ public class Event {
 			}
 		});
 
+		Events.on(UnitCreateEvent.class, e-> {	
+			if(Config.Soldier_Restriction) {
+				int count = Vars.unitGroup.count(ex -> ex.getTeam().equals(e.unit.getTeam()));
+				if (count >= Config.Soldier_Warning_quantity) 
+					for (Player it : Vars.playerGroup.all()) 
+						if (it.getTeam().equals(e.unit.getTeam())) 
+							it.sendMessage(getinput("Soldier_Warning.quantity",count));
+				if (count >= Config.Soldier_Reject_quantity) {
+					for (Player it : Vars.playerGroup.all()) 
+						if (it.getTeam().equals(e.unit.getTeam())) 
+							it.sendMessage(getinput("Soldier_Reject.quantity"));
+					e.unit.kill();
+					return;
+				}
+			}
+				
+		});
+
 		// EXPION
 		Events.on(ValidateException.class, e -> {
 			Call.onWorldDataBegin(e.player.con);
-            Vars.netServer.sendWorldData(e.player);
-            e.player.sendMessage(getinput("error"));
+			Vars.netServer.sendWorldData(e.player);
+			e.player.sendMessage(getinput("error"));
 		});
 
 		// 游戏结束时
@@ -280,11 +319,13 @@ public class Event {
 						}catch(IllegalArgumentException ex){
 						}
 						final Gamemode gamemode = mode;
-						Call.onInfoMessage(getinput("gameover.game",data[1],data[2]));
+						Call.onInfoMessage(getinput("gameover.game",data[0],data[1],data[2]));
 						loadmaps(true, () -> world.loadMap(map, map.applyRules(gamemode)),gamemode);
 					}
 				}
 			}
+
+			Building_number.clear();
 			//info("Selected next map to be {0}.", map.name());
 
 			if (state.rules.pvp) {
