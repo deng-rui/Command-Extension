@@ -9,10 +9,15 @@ import java.util.List;
 import java.util.ArrayList;
 //Java
 
+import arc.Events;
+//Arc
+
 import mindustry.net.Packets.KickReason;
 import mindustry.gen.Call;
+import mindustry.game.Team;
 import mindustry.entities.type.Player;
 import mindustry.game.Gamemode;
+import mindustry.game.EventType.GameOverEvent;
 import mindustry.maps.Map;
 import mindustry.maps.Maps.*;
 //Mindustry
@@ -94,7 +99,6 @@ public class Vote {
 			@Override
 			public void run() {
 				Count_down.cancel(true);
-				sted = true;
 				end();
 			}
 		};
@@ -115,6 +119,8 @@ public class Vote {
 		//-
 		if (playerlist.size() >= require) {
 			Call.sendMessage(getinput("vote.ok"));
+			playerlist.clear();
+			sted = true;
 			switch(type){
 				case "kick" :
 					kick();
@@ -125,12 +131,15 @@ public class Vote {
 				case "skipwave" :
 					skipwave();
 					break;
+				case "gameover" :
+					gameover();
+					break;
 				default :
 					defaulta();
 					return;
 			}
 		} else {
-			Call.sendMessage(getinput("vote.done.no",name,playerlist.size(),playerGroup.size()));
+			Call.sendMessage(getinput("vote.done.no",type,playerlist.size(),playerGroup.size()));
 		}
 	}
 
@@ -164,6 +173,10 @@ public class Vote {
 		for (int i = 0; i < 10; i++) {
 			logic.runWave();
 		}
+	}
+
+	private void gameover() {
+		Events.fire(new GameOverEvent(Team.crux));
 	}
 
 	private void defaulta() {
