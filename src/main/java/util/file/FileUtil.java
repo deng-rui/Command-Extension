@@ -35,11 +35,13 @@ public class FileUtil {
 			File directory = new File("");
 			filepath=directory.getCanonicalPath()+to;
 			file = new File(filepath);
-			if (null==tofile)file = new File(directory.getCanonicalPath());
+			if (null==tofile)
+				file = new File(directory.getCanonicalPath());
 		} catch (Exception e) {	
 			filepath=System.getProperty("user.dir")+to;
 			file = new File(filepath);
-			if (null==tofile)file = new File(System.getProperty("user.dir"));
+			if (null==tofile)
+				file = new File(System.getProperty("user.dir"));
 		}
 		return new FileUtil(file,filepath);
 	}

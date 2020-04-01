@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 //Java
 
 import static extension.net.HttpRequest.doGet;
-import static extension.util.IsBlankUtil.NotBlank;
+import static extension.util.IsUtil.NotBlank;
 import static extension.util.String_filteringUtil.removeAllBlank;
 import static extension.util.String_filteringUtil.trim;
 //Static

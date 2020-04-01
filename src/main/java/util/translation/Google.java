@@ -16,8 +16,8 @@ import extension.util.Log;
 
 import static extension.net.HttpRequest.doGet;
 import static extension.util.ExtractUtil.getkeys;
-import static extension.util.IsBlankUtil.Blank;
-import static extension.util.IsBlankUtil.NotBlank;
+import static extension.util.IsUtil.Blank;
+import static extension.util.IsUtil.NotBlank;
 //Static
 
 import com.alibaba.fastjson.JSONArray;
