@@ -8,6 +8,8 @@ import java.util.TimeZone;
 //Java
 
 import arc.Events;
+import arc.math.Mathf;
+import arc.util.Time;
 //Arc
 
 import mindustry.content.Blocks;
@@ -25,6 +27,7 @@ import mindustry.game.EventType.PlayerJoin;
 import mindustry.game.EventType.PlayerLeave;
 import mindustry.game.EventType.UnitDestroyEvent;
 import mindustry.game.EventType.UnitCreateEvent;
+import mindustry.game.EventType.Trigger;
 import mindustry.gen.Call;
 import mindustry.maps.Map;
 import mindustry.net.Administration.PlayerInfo;
@@ -33,6 +36,7 @@ import mindustry.net.NetConnection;
 import mindustry.net.ValidateException;
 import mindustry.Vars;
 import mindustry.world.Block;
+import mindustry.world.Tile;
 //Mindustry
 
 import static mindustry.Vars.maps;
@@ -40,6 +44,7 @@ import static mindustry.Vars.state;
 import static mindustry.Vars.world;
 import static mindustry.Vars.netServer;
 import static mindustry.Vars.playerGroup;
+import static mindustry.core.NetClient.onSetRules;
 //Mindustry-Static
 
 import extension.data.db.PlayerData;
@@ -114,7 +119,7 @@ public class Event {
 		Events.on(PlayerJoin.class, e -> {
 			if(Config.Login && Config.Login_Radical) {
 				if(!Maps.Player_Data_boolean(e.player.uuid)) {
-					Call.onInfoToast(e.player.con,getinput("join.tourist",getLocalTimeFromUTC(0,1)),10f);
+					Call.onInfoToast(e.player.con,getinput("join.tourist",getLocalTimeFromUTC(0,1)),30f);
 					PlayerData playerdata = new PlayerData(e.player.uuid,e.player.name,0);
 					Maps.setPlayer_Data(e.player.uuid,playerdata);
 				}
@@ -133,6 +138,7 @@ public class Event {
 				if(!Maps.Player_Data_boolean(e.player.uuid)) {
 					PlayerData playerdata = new PlayerData(e.player.uuid,e.player.name,1);
 					Maps.setPlayer_Data(e.player.uuid,playerdata);
+					Call.onInfoMessage(e.player.con,getinput("gc"));
 					return;
 				}
 				PlayerData playerdata = Maps.getPlayer_Data(e.player.uuid);
@@ -143,6 +149,8 @@ public class Event {
 			}
 			if(Config.Login_IP) 
 				PlayerData.playerip(Maps.getPlayer_Data(e.player.uuid),e.player,Vars.netServer.admins.getInfo(e.player.uuid).lastIP);
+			state.rules.playerDamageMultiplier = 0f;
+			onSetRules(state.rules);
 			//Call.onPlayerDeath(e.player);
 		});
 
@@ -170,9 +178,12 @@ public class Event {
 						if (Vote.playerlist.contains(e.player.uuid)) {
 							e.player.sendMessage(getinput("vote.rey"));
 						} else {
+							if (Vote.isteam)
+								if (!(e.player.getTeam().equals(Vote.team)))
+									return;
 							Vote.playerlist.add(e.player.uuid);
 							e.player.sendMessage(getinput("vote.y"));
-							new Vote();	
+							new Vote();
 						}
 					}
 				}	
@@ -180,6 +191,16 @@ public class Event {
 
 			PlayerData playerdata = Maps.getPlayer_Data(e.player.uuid);
 			playerdata.Lastchat = getLocalTimeFromUTC(playerdata.GMT);
+		});
+
+		// :(
+		Events.on(Trigger.update, () -> {
+			for(Player player : playerGroup.all())
+				if (player.getTeam() != Team.derelict && player.getTeam().cores().isEmpty()) {
+					player.kill();
+					killTiles(player.getTeam());
+					player.setTeam(Team.derelict);
+				}
 		});
 
 		// 建造时
@@ -361,6 +382,16 @@ public class Event {
 			playerdata.Playtime = playerdata.Playtime+time;
 			savePlayer(playerdata,playerdata.User);
 		});
+	}
+
+	private static void killTiles(Team team){
+		for(int x = 0; x < world.width(); x++)
+			for(int y = 0; y < world.height(); y++){
+				Tile tile = world.tile(x, y);
+				if(tile.entity != null && tile.getTeam() == team){
+					Time.run(Mathf.random(60f * 6), tile.entity::kill);
+				}
+			}
 	}
 
 		//Call.onInfoToast(player.con,getinput("join.tourist",String.valueOf(TimeZone.getTimeZone((String)doGet("http://ip-api.com/line/"+Vars.netServer.admins.getInfo(player.uuid).lastIP+"?fields=timezone")).getRawOffset())),20f);
