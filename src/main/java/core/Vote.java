@@ -1,15 +1,14 @@
 package extension.core;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.Executors;
 import java.util.List;
 import java.util.ArrayList;
 //Java
 
 import arc.Events;
+import arc.math.Mathf;
+import arc.util.Time;
 //Arc
 
 import mindustry.net.Packets.KickReason;
@@ -19,7 +18,9 @@ import mindustry.entities.type.Player;
 import mindustry.game.Gamemode;
 import mindustry.game.EventType.GameOverEvent;
 import mindustry.maps.Map;
-import mindustry.maps.Maps.*;
+//import mindustry.maps.Maps.*;
+import mindustry.world.Tile;
+import mindustry.Vars;
 //Mindustry
 
 import static mindustry.Vars.logic;
@@ -30,13 +31,15 @@ import static mindustry.Vars.world;
 import static mindustry.Vars.state;
 //Mindustry-Static
 
+import extension.data.global.Config;
 import extension.util.Log;
 //GA-Exted
 
 import static extension.core.Extend.loadmaps;
 import static extension.data.global.Lists.getMaps_List;
-import static extension.util.LocaleUtil.getinput;
 import static extension.util.DateUtil.getLocalTimeFromUTC;
+import static extension.util.LocaleUtil.getinput;
+import static extension.util.IsUtil.Blank;
 //Static
 
 public class Vote {
@@ -45,16 +48,25 @@ public class Vote {
 	private static String name;
 	private static int require;
 	private static int reciprocal;
+	public static Team team;
 	public static boolean sted = true;
+	public static boolean isteam = false;
 	private static ScheduledFuture Vote_time;
 	private static ScheduledFuture Count_down;
-	private static ScheduledExecutorService service;
 	public static List<String> playerlist = new ArrayList<String>();
 
 	public Vote(Player player, String type, String name){
 		this.player = player;
 		this.type = type;
 		this.name = name;
+		start();
+	}
+
+	public Vote(Player player, String type, Team team){
+		this.player = player;
+		this.type = type;
+		this.team = team;
+		isteam = true;
 		start();
 	}
 
@@ -67,25 +79,29 @@ public class Vote {
 	public Vote(){
 		if (playerlist.size() >= require) {
 			Count_down.cancel(true);
+			Vote_time.cancel(true);
 			end();
 		}
 	}
 
 	private void start(){
-		if(!sted) {
-			player.sendMessage(getinput("vote.already_begun"));
-			return;
+		int number = 0;
+		if (isteam) {
+			for (Player it : Vars.playerGroup.all())
+				if (it.getTeam().equals(team))
+					number++;
 		}
-		if(playerGroup.size() == 1){
+		else
+			number = playerGroup.size();
+		if(number == 1){
 			player.sendMessage(getinput("vote.no1"));
 			require = 1;
-		} else if(playerGroup.size() <= 3){
+		} else if(number <= 3){
 			require = 2;
 		} else {
-			require = (int) Math.ceil((double) playerGroup.size() / 2);
+			require = (int) Math.ceil((double) number / 2);
 		}
 		Call.sendMessage(getinput("vote.start",type));
-		service=Executors.newScheduledThreadPool(2);
 		Runnable Countdown=new Runnable() {
 			@Override
 			public void run() {
@@ -94,7 +110,7 @@ public class Vote {
 			}
 		};
 		//倒计时 10S/r
-		Count_down=service.scheduleAtFixedRate(Countdown,10,10,TimeUnit.SECONDS);
+		Count_down=Config.service.scheduleAtFixedRate(Countdown,10,10,TimeUnit.SECONDS);
 		Runnable Votetime=new Runnable() {
 			@Override
 			public void run() {
@@ -103,21 +119,18 @@ public class Vote {
 			}
 		};
 		//倒计时58s 便于停止
-		Vote_time=service.schedule(Votetime,58,TimeUnit.SECONDS);
+		Vote_time=Config.service.schedule(Votetime,58,TimeUnit.SECONDS);
 		reciprocal=60;
 		sted = false;
 
 	}
 
 	private void end() {
-		Vote_time.cancel(true);
-		service.shutdown();
 		//释放内存-
-		service=null;
 		Count_down=null;
 		Vote_time=null;
 		//-
-		if (playerlist.size() >= require) {
+		if ((Blank(playerlist.size())? 0:playerlist.size()) >= require) {
 			Call.sendMessage(getinput("vote.ok"));
 			playerlist.clear();
 			switch(type){
@@ -133,13 +146,17 @@ public class Vote {
 				case "gameover" :
 					gameover();
 					break;
+				case "ff" :
+					ff();
+					break;
 				default :
 					defaulta();
 					break;
 			}
 		} else {
-			Call.sendMessage(getinput("vote.done.no",type,playerlist.size(),playerGroup.size()));
+			Call.sendMessage(getinput("vote.done.no",type,Blank(playerlist.size())? 0:playerlist.size(),playerGroup.size()));
 		}
+		isteam = false;
 		sted = true;
 	}
 
@@ -177,6 +194,27 @@ public class Vote {
 
 	private void gameover() {
 		Events.fire(new GameOverEvent(Team.crux));
+	}
+
+	private void ff() {
+		for (Player it : Vars.playerGroup.all())
+			if (it.getTeam().equals(team)) {
+				killTiles(it.getTeam());
+				it.kill();
+				it.setTeam(Team.derelict);
+			}
+
+	}
+
+	private void killTiles(Team team){
+		for(int x = 0; x < world.width(); x++){
+			for(int y = 0; y < world.height(); y++){
+				Tile tile = world.tile(x, y);
+				if(tile.entity != null && tile.getTeam() == team){
+					Time.run(Mathf.random(60f * 6), tile.entity::kill);
+				}
+			}
+		}
 	}
 
 	private void defaulta() {

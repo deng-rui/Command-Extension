@@ -24,6 +24,7 @@ import static mindustry.Vars.logic;
 import static mindustry.Vars.maps;
 import static mindustry.Vars.net;
 import static mindustry.Vars.state;
+import static mindustry.Vars.world;
 import static mindustry.Vars.playerGroup;
 //Mindustry-Static
 
@@ -47,7 +48,8 @@ import static extension.core.Initialization.Override_Initialization;
 import static extension.core.Initialization.ReLoadConfig;
 import static extension.util.LocaleUtil.getinput;
 import static extension.util.LocaleUtil.getinputt;
-import static extension.util.IsBlankUtil.Blank;
+import static extension.util.IsUtil.Blank;
+import static extension.util.IsUtil.NotisNumeric;
 //Static
 import static extension.util.log.Error.Error;
 
@@ -150,27 +152,24 @@ public class Main extends Plugin {
 		*/
 		if (Config.Login) {
 			handler.<Player>register("login", "<id> <password>", "Login to account", (args, player) -> {
-				if (!Authority_control(player,"login")) {
+				if (!Authority_control(player,"login"))
 					player.sendMessage(getinput("authority.no"));
-				} else {
+				else
 					login(player,args[0],args[1]);
-				}
 			});
 
 			handler.<Player>register("register", "<new_id> <new_password> <password_repeat> [your_mail]", "Login to account", (args, player) -> {
-				if (!Authority_control(player,"register")) {
+				if (!Authority_control(player,"register"))
 					player.sendMessage(getinput("authority.no"));
-				} else {
+				else
 					register(player,args[0],args[1],args[2],(args.length > 3) ? args[3] : null);
-				}
 			});
 
 			handler.<Player>register("ftpasswd", "<Email_at_registration> [Verification_Code]", "Forget password", (args, player) -> {
-				if (!Authority_control(player,"ftpasswd")) {
+				if (!Authority_control(player,"ftpasswd"))
 					player.sendMessage(getinput("authority.no"));
-				} else {
+				else
 					ftpasswd(player,args[0],(args.length > 1) ? args[1] : null);
-				}
 			});
 		}
 		//
@@ -190,13 +189,10 @@ public class Main extends Plugin {
 		});
 
 		handler.<Player>register("status",getinput("status"), (args, player) -> {
-			if (!Authority_control(player,"status")) {
+			if (!Authority_control(player,"status"))
 				player.sendMessage(getinput("authority.no"));
-			} else {
-				player.sendMessage("FPS:"+status("getfps")+"  Occupied memory:"+status("getmemory")+"MB");
-				player.sendMessage(getinput("status.number",String.valueOf(playerGroup.size())));
-				player.sendMessage(getinput("status.ban",status("getbancount")));
-			}
+			else
+				player.sendMessage(getinput("status.info",playerGroup.size(),world.getMap().name(),Core.graphics.getFramesPerSecond(),Core.app.getJavaHeap()/1024/1024));
 		});
 
 		handler.<Player>register("tpp","<player> <player>",getinput("tpp"), (args, player) -> {
@@ -321,10 +317,14 @@ public class Main extends Plugin {
 			if (!Authority_control(player,"maps")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
+				if(NotisNumeric(args.length > 0?args[0]:"1")) {
+					player.sendMessage(getinput("nber.err"));
+					return;
+				}
 				List<String> MapsList = (List<String>)Lists.getMaps_List();
 				int Maximum = 6;
 				//6为list最大承载 可自行改
-				int page = args.length > 0 ? Integer.parseInt(args[0]) : 1;
+				int page = args.length > 0 ? Integer.parseInt(args[0]):1;
 				int pages = Mathf.ceil((float)MapsList.size() / Maximum);
 				page --;
 				if(page >= pages || page < 0){
@@ -347,8 +347,18 @@ public class Main extends Plugin {
 			}
 		});
 
-		handler.<Player>register("vote", "<gameover/kick/skipwave/host> [name/number]", getinput("vote"), (args, player) -> {
+		handler.<Player>register("vote", "<help> [parameter]", getinput("vote"), (args, player) -> {
+			if (!Authority_control(player,"vote")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
+				if(!Vote.sted) {
+					player.sendMessage(getinput("vote.already_begun"));
+					return;
+				}
 				switch(args[0]) {
+					case "help":
+						Call.onInfoToast(player.con,getinput("vote.help"),40f);
+						break;
 					case "gameover":
 					case "skipwave":
 						new Vote(player,args[0]);
@@ -356,18 +366,25 @@ public class Main extends Plugin {
 					case "kick":
 						new Vote(player,args[0],args[1]);
 						break;
+					case "ff":
+						new Vote(player,args[0],player.getTeam());
+						break;
 					case "host":
-						if (Lists.getMaps_List().size() >= Integer.parseInt(args[1])) {
-							new Vote(player,args[0],args[1]);
+						if(NotisNumeric(args[0])) {
+							player.sendMessage(getinput("nber.err"));
 							return;
 						}
-						player.sendMessage(getinput("vote.host.maps.err",args[1]));
+						if (!(Lists.getMaps_List().size() >= Integer.parseInt(args[1])))
+							player.sendMessage(getinput("vote.host.maps.err",args[1]));
+						new Vote(player,args[0],args[1]);
 						break;
 					default:
 						player.sendMessage(getinput("vote.err",args[0]));
 						break;
 				}
+			}
 		});
+
 /*
 		handler.<Player>register("setting","<text> [text]",getinput("setting"), (args, player) -> {
 			if(!player.isAdmin){
