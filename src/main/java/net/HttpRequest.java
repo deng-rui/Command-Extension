@@ -20,7 +20,7 @@ import extension.util.Log;
 import extension.util.log.Exceptions;
 //GA-Exted
 
-import static extension.util.IsBlankUtil.Blank;
+import static extension.util.IsUtil.Blank;
 
 public class HttpRequest {
 

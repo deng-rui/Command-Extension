@@ -4,11 +4,8 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.Executors;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -54,7 +51,6 @@ import com.sun.mail.util.MailSSLSocketFactory;
 public class Threads {
 
 	private static ScheduledFuture Thread_Time;
-	private static ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
 	private static int status_login = 0;
 	private static int status_mail = 0;
 
@@ -62,16 +58,18 @@ public class Threads {
 		Runnable Atime=new Runnable() {
 			@Override
 			public void run() {
-				if(Config.Login)LoginStatus();
-				if(Config.Regular_Reporting)Status_Reporting();
+				if(Config.Login)
+					LoginStatus();
+				if(Config.Regular_Reporting)
+					Status_Reporting();
 			}
 		};
-		Thread_Time=service.scheduleAtFixedRate(Atime,5,5,TimeUnit.MINUTES);
+		Thread_Time=Config.service.scheduleAtFixedRate(Atime,5,5,TimeUnit.MINUTES);
 	}
 
 	public static void close() {
 		Thread_Time.cancel(true);
-		service.shutdown();
+		Config.service.shutdown();
 	}
 
 	// 用户过期?

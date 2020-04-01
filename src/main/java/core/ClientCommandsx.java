@@ -54,7 +54,7 @@ import static extension.data.db.Player.InitializationPlayersSQLite;
 import static extension.util.alone.Password.newPasswd;
 import static extension.util.alone.Password.Passwdverify;
 import static extension.util.DateUtil.getLocalTimeFromUTC;
-import static extension.util.IsBlankUtil.Blank;
+import static extension.util.IsUtil.Blank;
 import static extension.util.LocaleUtil.getinput;
 import static extension.util.LocaleUtil.Language_determination;
 //Static
@@ -158,33 +158,6 @@ public class ClientCommandsx {
 
 	public static void ftpasswd(Player player, String mail, String cod) {
 		//not 
-	}
-
-	public static String status(String then) {
-		float fps = Math.round((int)60f / Time.delta());
-		float memory = Core.app.getJavaHeap() / 1024 / 1024;
-		int idb = 0;
-		int ipb = 0;
-
-		Array<PlayerInfo> bans = netServer.admins.getBanned();
-		for(PlayerInfo info : bans){
-			idb++;
-		}
-		Array<String> ipbans = netServer.admins.getBannedIPs();
-		for(String string : ipbans){
-			ipb++;
-		}
-		int bancount = idb + ipb;
-		switch(then){
-		case "getfps":
-		return String.valueOf(fps);
-		case "getmemory":
-		return String.valueOf(memory);
-		case "getbancount":
-		return String.valueOf(bancount);
-		default :
-		return null;
-		}
 	}
 
 	public static void host(Player player, String mapss) {

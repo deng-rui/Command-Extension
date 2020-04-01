@@ -103,9 +103,9 @@ public class PlayerData {
 	}
 
 	public static void playerip(PlayerData data,Player player,String ip) {
-		data.Country = "Intranet";
 		Pattern reg = Pattern.compile("^(127\\.0\\.0\\.1)|(localhost)|(10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|(172\\.((1[6-9])|(2\\d)|(3[01]))\\.\\d{1,3}\\.\\d{1,3})|(192\\.168\\.\\d{1,3}\\.\\d{1,3})$");
 		if(reg.matcher(ip).find()) {
+			data.Country = "Intranet";
 			player.sendMessage(getinput("register.ip.nat"));
 		}else{
 			try {
