@@ -120,7 +120,6 @@ public class Vote {
 		if (playerlist.size() >= require) {
 			Call.sendMessage(getinput("vote.ok"));
 			playerlist.clear();
-			sted = true;
 			switch(type){
 				case "kick" :
 					kick();
@@ -136,11 +135,12 @@ public class Vote {
 					break;
 				default :
 					defaulta();
-					return;
+					break;
 			}
 		} else {
 			Call.sendMessage(getinput("vote.done.no",type,playerlist.size(),playerGroup.size()));
 		}
+		sted = true;
 	}
 
 	private void kick() {
