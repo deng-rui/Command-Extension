@@ -11,13 +11,16 @@ import java.util.ResourceBundle;
 import java.util.MissingResourceException;
 //Java
 
+import extension.data.db.PlayerData;
 import extension.data.global.Config;
+import extension.data.global.Maps;
 import extension.dependent.UTF8Control;
 import extension.util.file.FileUtil;
 import extension.util.Log;
 //GA-Exted
 
 import static extension.data.json.Json.getData;
+import static extension.util.IsUtil.NotBlank;
 //GA-Exted
 
 import com.alibaba.fastjson.JSONArray;
@@ -28,13 +31,13 @@ import extension.util.Log;
  
 public class LocaleUtil {
 
-	public static String language(String o,String t,String input,Object[] params) throws MalformedURLException {
+	public static String language(String o,String t,String input,Object[] params) {
 		
 		Locale locale = new Locale(o,t);
 		//URLClassLoader file = new URLClassLoader(new URL[] {new File(FileUtil.File(Config.Plugin_Resources_bundles_Path).getPath()).toURI().toURL()});
 		//ResourceBundle bundle = ResourceBundle.getBundle("GA", locale, file, new UTF8Control());
 		//UTF-8 外置资源
-		ResourceBundle bundle = ResourceBundle.getBundle("bundles/GA", locale, new UTF8Control());
+		ResourceBundle bundle = ResourceBundle.getBundle("bundles/GA", locale, new UTF8Control());	
 		try {
 			if (input !=null){
 				if (params == null){
@@ -54,30 +57,27 @@ public class LocaleUtil {
 	}
 
 	public static String getinput(String input,Object... params) {
-		JSONObject date = getData("mods/GA/Setting.json");
-		try {
-			String o = (String) date.get("languageO");
-			String t = (String) date.get("languageT");
-			if (params == null) return language(o,t,input,null);
-			Object[] ps = new Object[params.length];
-			for (int i=0;i<params.length;i++) ps[i] = params[i];
-			return language(o,t,input,ps);
-		} catch (Exception e) {
-			Log.error(e);
-		}
-		return null;
+		if (params == null) return getinputs(null,input,null);
+		Object[] ps = new Object[params.length];
+		for (int i=0;i<params.length;i++) ps[i] = params[i];
+		return getinputs(null,input,ps);
 	}
 
 	public static String getinputt(String input,Object[] ps) {
-		JSONObject date = getData("mods/GA/Setting.json");
-		try {
-			String o = (String) date.get("languageO");
-			String t = (String) date.get("languageT");
-			return language(o,t,input,ps);
-		} catch (Exception e) {
-			Log.error(e);
+		return getinputs(null,input,ps);
+	}
+
+	// 我还未想好到底如何实现 help :(
+	public static String getinputs(String uuid,String input,Object[] params) {
+		String[] lang = null;
+		if(NotBlank(uuid)) {
+			PlayerData playerdata = Maps.getPlayer_Data(uuid);
+			lang = playerdata.Language.split("_");
+		} else {
+			lang = Config.Server_Language.split("_");
 		}
-		return null;
+		if (params == null) return language(lang[0],lang[1],input,null);
+		return language(lang[0],lang[1],input,params);
 	}
 
 	public static String Language_determination(String string) {
