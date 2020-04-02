@@ -115,7 +115,7 @@ public class Threads {
 			long totalPhysicalMemory = getLongFromOperatingSystem(system,"getTotalPhysicalMemorySize");
 	        long freePhysicalMemory = getLongFromOperatingSystem(system, "getFreePhysicalMemorySize");
 	        long usedPhysicalMemorySize =totalPhysicalMemory - freePhysicalMemory;
-			Object[] pasm = {system.getName(),totalPhysicalMemory/MB,freePhysicalMemory/MB,usedPhysicalMemorySize/MB,Core.graphics.getFramesPerSecond(),Core.app.getJavaHeap()/MB,secToTime((long)ManagementFactory.getRuntimeMXBean().getUptime()/1000),getLocalTimeFromUTC(0,0)+" UTC"};
+			Object[] pasm = {system.getName(),totalPhysicalMemory/MB,freePhysicalMemory/MB,usedPhysicalMemorySize/MB,Core.graphics.getFramesPerSecond(),Core.app.getJavaHeap()/MB,secToTime((long)ManagementFactory.getRuntimeMXBean().getUptime()/1000),getLocalTimeFromUTC(0,1)+" UTC"};
 			//
 			msg.setContent(CustomLoad("Mail.Report",pasm),"text/html;charset = UTF-8");
 			msg.setFrom(new InternetAddress(Config.Mail_SMTP_User));
