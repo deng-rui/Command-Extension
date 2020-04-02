@@ -51,8 +51,8 @@ import com.sun.mail.util.MailSSLSocketFactory;
 public class Threads {
 
 	private static ScheduledFuture Thread_Time;
-	private static int status_login = 0;
-	private static int status_mail = 0;
+	private static int status_login = 1;
+	private static int status_mail = 1;
 
 	static {
 		Runnable Atime=new Runnable() {
@@ -78,7 +78,7 @@ public class Threads {
 			status_login++;
 			return;
 		}
-		status_login = 0;
+		status_login = 1;
 		Map data = Maps.getMapPlayer_Data();
 		Iterator it = data.entrySet().iterator();
 		while(it.hasNext()){
@@ -95,7 +95,7 @@ public class Threads {
 			status_mail++;
 			return;
 		}
-		status_mail = 0;
+		status_mail = 1;
 		try {
 			Properties props = new Properties();
 			props.setProperty("mail.smtp.auth", "true");  
