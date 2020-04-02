@@ -370,7 +370,7 @@ public class Main extends Plugin {
 						new Vote(player,args[0],player.getTeam());
 						break;
 					case "host":
-						if(NotisNumeric(args[0])) {
+						if(NotisNumeric(args[1])) {
 							player.sendMessage(getinput("nber.err"));
 							return;
 						}
