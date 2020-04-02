@@ -51,10 +51,8 @@ public class Extend {
 				if(Maps.getPlayer_Data(p.uuid).Authority > 0)
 					playerspvp.add(p);
 				p.setDead(true);
-			}
-			
+			}		
 			logic.reset();
-
 			Call.onWorldDataBegin();
 			run.run();
 			state.rules = world.getMap().applyRules(mode);
