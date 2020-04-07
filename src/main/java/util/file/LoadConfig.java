@@ -55,12 +55,14 @@ public class LoadConfig {
 	}
 
 	public static int loadint(String input) {
-		return Integer.parseInt(load(input).toString());
+		Object str = load(input);
+		if (str == null || "".equals(str.toString().trim())) return 0;
+		return Integer.parseInt(str.toString());
 	}
 
 	public static boolean loadboolean(String input) {
 		final String  temp = load(input).toString();
-		if(temp.equals("on") || temp.equals("true")) 
+		if(temp.equalsIgnoreCase("on") || temp.equalsIgnoreCase("true")) 
 			return true;
 		return false;
 	}
