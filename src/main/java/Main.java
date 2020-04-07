@@ -177,15 +177,8 @@ public class Main extends Plugin {
 		handler.<Player>register("info","[page]",getinput("info"), (args, player) -> {
 			if (!Authority_control(player,"info")) {
 				player.sendMessage(getinput("authority.no"));
-			} else {
-				PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
-				List<Object[]> list = PlayerdatatoObject(playerdata);
-				if(args.length == 0) 
-					player.sendMessage(getinputt("info.info.1",list.get(0)));
-				else
-					player.sendMessage(getinputt("info.info.2",list.get(1)));
-
-			}
+			} else 
+				Call.onInfoMessage(player.con,getinputt("info.info.1",PlayerdatatoObject(Maps.getPlayer_Data(player.uuid))));
 		});
 
 		handler.<Player>register("status",getinput("status"), (args, player) -> {
