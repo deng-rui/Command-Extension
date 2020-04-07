@@ -85,8 +85,10 @@ public class Threads {
 			Entry entry = (Entry)it.next();
 			PlayerData playerdata = (PlayerData)entry.getValue();
 			long currenttime = getLocalTimeFromUTC()-0;
-			if(playerdata.Backtime <= currenttime) 
-				Maps.removePlayer_Data((String)entry.getKey());
+			// 防止初期登录就被刷
+			if (playerdata.Backtime != 0)
+				if (playerdata.Backtime <= currenttime) 
+					Maps.removePlayer_Data((String)entry.getKey());
 		}
 	}
 
