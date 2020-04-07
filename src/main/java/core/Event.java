@@ -69,10 +69,6 @@ import static extension.util.String_filteringUtil.*;
 import com.alibaba.fastjson.JSONObject;
 //Json
 
-import mindustry.game.EventType.UnitCreateEvent;
-import static extension.data.db.Player.*;
-
-
 public class Event {
 	// 
 
@@ -90,10 +86,13 @@ public class Event {
 				if (Vars.state.rules.pvp) {
 					Teams.TeamData re = (Teams.TeamData)Vars.state.teams.getActive().min(data -> {
 						int count = 0;
-						for (final Player other : players)if (other.getTeam() == data.team && other != player)count++;
+						for (final Player other : players)
+							if (other.getTeam() == data.team && other != player)
+								count++;
 						if (!data.hasCore())count = 256;
 						return (float)count;
 					});
+					Log.info(re);
 					return (null == re) ? null : re.team;
 				}
 				return Vars.state.rules.defaultTeam;
@@ -133,18 +132,21 @@ public class Event {
 				if (e.player.isAdmin) playerdata.Authority = 2;
 				playerdata.Online = true;
 				playerdata.Joincount++;
+				playerdata.Jointime = getLocalTimeFromUTC();
 				Call.onInfoToast(e.player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),40f);
 			} else {
 				if(!Maps.Player_Data_boolean(e.player.uuid)) {
 					PlayerData playerdata = new PlayerData(e.player.uuid,e.player.name,1);
 					Maps.setPlayer_Data(e.player.uuid,playerdata);
 					Call.onInfoMessage(e.player.con,getinput("gc"));
+        			//Call.onInfoPopup(e.player.con,"info",30f,3,10,1,10,10);
 					return;
 				}
 				PlayerData playerdata = Maps.getPlayer_Data(e.player.uuid);
 				if (e.player.isAdmin) playerdata.Authority = 2;
 				playerdata.Online = true;
 				playerdata.Joincount++;
+				playerdata.Jointime = getLocalTimeFromUTC();
 				Call.onInfoToast(e.player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),40f);
 			}
 			if(Config.Login_IP) 
