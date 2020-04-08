@@ -16,6 +16,7 @@ import arc.Core;
 import arc.util.Time;
 //
 
+import mindustry.gen.Call;
 import mindustry.core.GameState.State;
 //
 
@@ -53,18 +54,26 @@ public class Threads {
 	private static ScheduledFuture Thread_Time;
 	private static int status_login = 1;
 	private static int status_mail = 1;
+	private static int status_day_night = 1;
+	// 夜晚渐变 => Gradual change at night
+	private static float current_time = 0f;
+	private static boolean day_or_night = true;
+	private static boolean gradual_change = true;
 
+	// 定时任务 1min/S
 	static {
 		Runnable Atime=new Runnable() {
 			@Override
 			public void run() {
-				if(Config.Login)
+				if (Config.Login)
 					LoginStatus();
-				if(Config.Regular_Reporting)
+				if (Config.Regular_Reporting)
 					Status_Reporting();
+				if (Config.Day_and_night)
+					Day_and_night_shift();
 			}
 		};
-		Thread_Time=Config.service.scheduleAtFixedRate(Atime,5,5,TimeUnit.MINUTES);
+		Thread_Time=Config.service.scheduleAtFixedRate(Atime,1,1,TimeUnit.MINUTES);
 	}
 
 	public static void close() {
@@ -115,8 +124,8 @@ public class Threads {
 			OperatingSystemMXBean system = ManagementFactory.getOperatingSystemMXBean();
 			final long MB = 1024 * 1024;
 			long totalPhysicalMemory = getLongFromOperatingSystem(system,"getTotalPhysicalMemorySize");
-	        long freePhysicalMemory = getLongFromOperatingSystem(system, "getFreePhysicalMemorySize");
-	        long usedPhysicalMemorySize =totalPhysicalMemory - freePhysicalMemory;
+			long freePhysicalMemory = getLongFromOperatingSystem(system, "getFreePhysicalMemorySize");
+			long usedPhysicalMemorySize =totalPhysicalMemory - freePhysicalMemory;
 			Object[] pasm = {system.getName(),totalPhysicalMemory/MB,freePhysicalMemory/MB,usedPhysicalMemorySize/MB,Core.graphics.getFramesPerSecond(),Core.app.getJavaHeap()/MB,secToTime((long)ManagementFactory.getRuntimeMXBean().getUptime()/1000),getLocalTimeFromUTC(0,1)+" UTC"};
 			//
 			msg.setContent(CustomLoad("Mail.Report",pasm),"text/html;charset = UTF-8");
@@ -131,20 +140,57 @@ public class Threads {
 	}
 
 	private static long getLongFromOperatingSystem(OperatingSystemMXBean operatingSystem, String methodName) {
-        try {
-            final Method method = operatingSystem.getClass().getMethod(methodName,
-                    (Class<?>[]) null);
-            method.setAccessible(true);
-            return (Long) method.invoke(operatingSystem, (Object[]) null);
-        } catch (final InvocationTargetException e) {
-            if (e.getCause() instanceof RuntimeException) {
-                throw (RuntimeException) e.getCause();
-            }
-            throw new IllegalStateException(e.getCause());
-        } catch (final NoSuchMethodException e) {
-            throw new IllegalArgumentException(e);
-        } catch (final IllegalAccessException e) {
-            throw new IllegalStateException(e);
-        }
-    }
+		try {
+			final Method method = operatingSystem.getClass().getMethod(methodName,
+					(Class<?>[]) null);
+			method.setAccessible(true);
+			return (Long) method.invoke(operatingSystem, (Object[]) null);
+		} catch (final InvocationTargetException e) {
+			if (e.getCause() instanceof RuntimeException) {
+				throw (RuntimeException) e.getCause();
+			}
+			throw new IllegalStateException(e.getCause());
+		} catch (final NoSuchMethodException e) {
+			throw new IllegalArgumentException(e);
+		} catch (final IllegalAccessException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	private static void Day_and_night_shift() {
+		// 白天黑夜
+		if(day_or_night) {
+			// 渐变
+			if(gradual_change) {
+				// 前半夜
+				if(current_time < 1.0f)
+					current_time = current_time + Config.Night_Time;
+				else{
+					gradual_change = false; 
+					current_time = current_time - Config.Night_Time;
+				}
+			} else if(current_time >= 0f) 
+					current_time = current_time - Config.Night_Time;
+				else {
+					// 转白天
+					day_or_night = false;
+					status_day_night++;
+				}    
+		}else{
+			if (status_day_night < Config.Day_Time)
+				status_day_night++;
+			else{
+				day_or_night = true;
+				gradual_change = true;
+				status_day_night = 1;
+				current_time = current_time - Config.Night_Time;  
+			}
+		}
+		if (current_time > 0) {
+			state.rules.lighting = true;
+			state.rules.ambientLight.a = current_time;
+		} else
+			state.rules.lighting = false;
+		Call.onSetRules(state.rules);
+	}
 }

@@ -13,16 +13,22 @@ public class Maps {
 	//玩家数据
 	private static final Map<String, PlayerData> Player_Data = Collections.synchronizedMap(new HashMap<String, PlayerData>());
 	// 权限内容
-	private static final Map<Integer, List<String>> Power_Data = Collections.synchronizedMap(new HashMap<Integer, List<String>>());	
+	private static final Map<Integer, List<String>> Power_Data = Collections.synchronizedMap(new HashMap<Integer, List<String>>());
+	// 投票权重
+	private static final Map<Integer, Integer> Vote_Authority = new HashMap<Integer, Integer>();	
 
 	public static Map getMapPlayer_Data() {
 		return Player_Data;
 	}
+	//
 	public static PlayerData getPlayer_Data(String uuid) {
 		return Player_Data.get(uuid);
 	}
 	public static List<String> getPower_Data(int id) {
 		return Power_Data.get(id);
+	}
+	public static int getVote_Authority(int id) {
+		return Vote_Authority.get(id);
 	}
 	//读取
 
@@ -31,6 +37,9 @@ public class Maps {
 	}
 	public static void setPower_Data(int id, List<String> list) {
 		Power_Data.put(id, list);
+	}
+	public static void setVote_Authority(int id, int vote) {
+		Vote_Authority.put(id,vote);
 	}
 	//设置
 
