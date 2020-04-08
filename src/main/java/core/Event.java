@@ -92,7 +92,6 @@ public class Event {
 						if (!data.hasCore())count = 256;
 						return (float)count;
 					});
-					Log.info(re);
 					return (null == re) ? null : re.team;
 				}
 				return Vars.state.rules.defaultTeam;

@@ -117,4 +117,16 @@ public class Extend {
             retStr = "" + i;
         return retStr;
     }
+
+    public static void addMesg_Team(String msg, Team team){
+    	for (Player player : playerGroup.all())
+			if (player.getTeam().equals(team))
+				player.sendMessage(msg);
+    }
+
+    public static void addMesg_Admin(String msg){
+    	for (Player player : playerGroup.all())
+			if (player.isAdmin)
+				player.sendMessage(msg);
+    }
 }

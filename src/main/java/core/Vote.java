@@ -31,11 +31,14 @@ import static mindustry.Vars.world;
 import static mindustry.Vars.state;
 //Mindustry-Static
 
+import extension.core.Extend;
 import extension.data.global.Config;
+import extension.data.global.Maps;
+import extension.data.global.Lists;
 import extension.util.Log;
 //GA-Exted
 
-import static extension.core.Extend.loadmaps;
+
 import static extension.data.global.Lists.getMaps_List;
 import static extension.util.DateUtil.getLocalTimeFromUTC;
 import static extension.util.LocaleUtil.getinput;
@@ -44,22 +47,29 @@ import static extension.util.IsUtil.Blank;
 
 public class Vote {
 	private static Player player;
+	private static Player target;
 	private static String type;
 	private static String name;
 	private static int require;
 	private static int reciprocal;
-	public static Team team;
-	public static boolean sted = true;
-	public static boolean isteam = false;
 	private static ScheduledFuture Vote_time;
 	private static ScheduledFuture Count_down;
+	public static Team team;
+	// 投票状态
+	public static boolean sted = true;
+	// 队伍锁定 /FF
+	public static boolean isteam = false;
+	// 已投票玩家
 	public static List<String> playerlist = new ArrayList<String>();
+	// 投票数
+	public static int playervote = 0;
+
 
 	public Vote(Player player, String type, String name){
 		this.player = player;
 		this.type = type;
 		this.name = name;
-		start();
+		Preprocessing();
 	}
 
 	public Vote(Player player, String type, Team team){
@@ -67,41 +77,110 @@ public class Vote {
 		this.type = type;
 		this.team = team;
 		isteam = true;
-		start();
+		Preprocessing();
 	}
 
 	public Vote(Player player, String type){
 		this.player = player;
 		this.type = type;
-		start();
+		Preprocessing();
 	}
 
 	public Vote(){
 		if (playerlist.size() >= require) {
 			Count_down.cancel(true);
 			Vote_time.cancel(true);
-			end();
+			End();
 		}
 	}
 
-	private void start(){
-		int number = 0;
-		if (isteam) {
-			for (Player it : Vars.playerGroup.all())
-				if (it.getTeam().equals(team))
-					number++;
+	private void Preprocessing() {
+		// 预处理
+		switch(type){
+			case "kick" :
+				target = playerGroup.find(p -> p.name.equals(name));
+				if(target == null)
+					player.sendMessage(getinput("vote.kick.err",target.name));
+				else
+					Normal_distribution();
+				break;
+			case "host" :
+				if (!(Lists.getMaps_List().size() >= Integer.parseInt(name)))
+					player.sendMessage(getinput("vote.host.maps.err",name));
+				else
+					Normal_distribution();
+				break;
+			case "skipwave" :
+				if (state.rules.pvp)
+					player.sendMessage(getinput("vote.wave.fail"));
+				else
+					Normal_distribution();
+				break;
+			case "gameover" :
+				Normal_distribution();
+				break;
+			case "ff" :
+				Team_only();
+				break;
+			case "admin" :
+				if(Config.Vote_Admin)
+					if(player.isAdmin)
+						Management_only();
+					else
+						player.sendMessage(getinput("admin.no"));
+				else
+					player.sendMessage(getinput("vote.admin.no"));
+				break;
+			default :
+				Call.sendMessage(getinput("vote.end.err",type));
+				break;
 		}
-		else
-			number = playerGroup.size();
-		if(number == 1){
+	}
+
+	// 正常投票
+	private void Normal_distribution() {
+		int temp = 0;
+		if(Config.Login_Radical) {
+			for (Player it : Vars.playerGroup.all())
+				if (Maps.getPlayer_Data(it.uuid).Authority > 0)
+					temp++;
+				} else
+					temp = playerGroup.size();
+		if(temp == 1){
 			player.sendMessage(getinput("vote.no1"));
 			require = 1;
-		} else if(number <= 3){
+		} else if(temp <= 3)
 			require = 2;
-		} else {
-			require = (int) Math.ceil((double) number / 2);
-		}
-		Call.sendMessage(getinput("vote.start",type));
+		else
+			require = (int) Math.ceil((double) temp / 2);
+		Start();
+		Call.sendMessage(getinput("vote.start",player.name,type+" "+(Blank(name)?"":name)));
+	}
+
+	// 团队投票
+	private void Team_only() {
+		int temp = 0;
+		for (Player it : Vars.playerGroup.all())
+			if (it.getTeam().equals(team))
+				temp++;
+		require = temp;
+		Start();
+	}
+
+	// 管理投票
+	private void Management_only() {
+		int temp = 0;
+		for (Player it : Vars.playerGroup.all())
+			if(it.isAdmin)
+				temp++;
+		if (temp > 5) {
+			require = temp;
+			Start();
+		} else
+			player.sendMessage(getinput("vote.admin.no"));
+	}
+
+	private void Start(){
 		Runnable Countdown=new Runnable() {
 			@Override
 			public void run() {
@@ -109,23 +188,28 @@ public class Vote {
 				Call.sendMessage(getinput("vote.ing",reciprocal));
 			}
 		};
-		//倒计时 10S/r
 		Count_down=Config.service.scheduleAtFixedRate(Countdown,10,10,TimeUnit.SECONDS);
 		Runnable Votetime=new Runnable() {
 			@Override
 			public void run() {
 				Count_down.cancel(true);
-				end();
+				End();
 			}
 		};
-		//倒计时58s 便于停止
 		Vote_time=Config.service.schedule(Votetime,58,TimeUnit.SECONDS);
+		// 剩余时间
 		reciprocal=60;
+		// 正在投票
 		sted = false;
-
+		playerlist.add(player.uuid);
+		if (playerlist.size() >= require) {
+			Count_down.cancel(true);
+			Vote_time.cancel(true);
+			End();
+		}
 	}
 
-	private void end() {
+	private void End() {
 		//释放内存-
 		Count_down=null;
 		Vote_time=null;
@@ -149,25 +233,19 @@ public class Vote {
 				case "ff" :
 					ff();
 					break;
-				default :
-					defaulta();
-					break;
 			}
 		} else {
 			Call.sendMessage(getinput("vote.done.no",type,Blank(playerlist.size())? 0:playerlist.size(),playerGroup.size()));
 		}
 		isteam = false;
 		sted = true;
+		// 归零.jpg
+		name = null;
 	}
 
 	private void kick() {
-		Player target = playerGroup.find(p -> p.name.equals(name));
-		if(target != null){
-			Call.sendMessage(getinput("vote.kick.done",name));
-			target.con.kick(KickReason.kick);
-			return;
-		}
-		Call.sendMessage(getinput("vote.kick.err",target.name));
+		Call.sendMessage(getinput("kick.done",name));
+		target.con.kick(KickReason.kick);
 	}
 
 	private void host() {
@@ -183,7 +261,7 @@ public class Vote {
 		}
 		final Gamemode gamemode = mode;
 		Call.sendMessage(getinput("host.re"));
-		loadmaps(true, () -> world.loadMap(result, result.applyRules(gamemode)),gamemode);
+		Extend.loadmaps(true, () -> world.loadMap(result, result.applyRules(gamemode)),gamemode);
 	}
 
 	private void skipwave() {
@@ -215,9 +293,5 @@ public class Vote {
 				}
 			}
 		}
-	}
-
-	private void defaulta() {
-		Call.sendMessage(getinput("vote.end.err",type));
 	}
 }
