@@ -70,8 +70,7 @@ public class BadWord {
 						break;
 					}
 				}
-			}
-			else{     // 不存在，直接返回
+			} else {     // 不存在，直接返回
 				break;
 			}
 		}
