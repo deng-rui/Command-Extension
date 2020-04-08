@@ -56,20 +56,21 @@ public class LoadConfig {
 
 	public static int loadint(String input) {
 		Object str = load(input);
-		if (str == null || "".equals(str.toString().trim())) return 0;
+		if (str == null) return 0;
 		return Integer.parseInt(str.toString());
 	}
 
 	public static boolean loadboolean(String input) {
-		final String  temp = load(input).toString();
-		if(temp.equalsIgnoreCase("on") || temp.equalsIgnoreCase("true")) 
+		Object  str = load(input);
+		if (str == null) return false;
+		if(str.toString().equalsIgnoreCase("on") || str.toString().equalsIgnoreCase("true")) 
 			return true;
 		return false;
 	}
 
 	public static String loadstring(String input) {
 		Object str = load(input);
-		if (str == null || "".equals(str.toString().trim())) return null;
+		if (str == null) return null;
 		return str.toString();
 	}
 }
