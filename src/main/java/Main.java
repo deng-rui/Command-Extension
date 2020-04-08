@@ -87,6 +87,7 @@ public class Main extends Plugin {
 		handler.register("testinfo","[GA]" ,"GA TEST", (arg) -> {
 			//info("{0}", getinput(arg[0]));
 		System.out.println((arg.length > 0) ? arg[0] : null);
+	
 		});
 
 
@@ -357,24 +358,35 @@ public class Main extends Plugin {
 						new Vote(player,args[0]);
 						break;
 					case "kick":
-						new Vote(player,args[0],args[1]);
+						if (args.length > 1)
+							new Vote(player,args[0],args[1]);
+						else
+							player.sendMessage(getinput("args.err"));
 						break;
 					case "ff":
 						new Vote(player,args[0],player.getTeam());
 						break;
 					case "host":
-						if(NotisNumeric(args[1])) {
-							player.sendMessage(getinput("nber.err"));
-							return;
-						}
-						if (!(Lists.getMaps_List().size() >= Integer.parseInt(args[1])))
-							player.sendMessage(getinput("vote.host.maps.err",args[1]));
-						new Vote(player,args[0],args[1]);
+						if (args.length > 1)
+							if(NotisNumeric(args[1])) 
+								player.sendMessage(getinput("nber.err"));
+							else
+								new Vote(player,args[0],args[1]);
+						else
+							player.sendMessage(getinput("args.err"));
 						break;
 					default:
 						player.sendMessage(getinput("vote.err",args[0]));
 						break;
 				}
+			}
+		});
+
+		handler.<Player>register("votekick", "<player>", getinput("maps"), (args, player) -> {
+			if (!Authority_control(player,"votekick")) {
+				player.sendMessage(getinput("authority.no"));
+			} else {
+				new Vote(player,"kick",args[0]);
 			}
 		});
 
