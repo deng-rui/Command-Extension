@@ -21,12 +21,7 @@ By default, Google translator should not set the source time to 0, otherwise Goo
 
 ## Plug in split status
 
-| name                      | Effect                                                |
-|:---                       |:---                                                   |
-| Shielding words           | Block keywords                                        |
-| Vote+gameover+load        | Vote for map change support map pattern recognition   |
-| Google tr                 | Google tr                                             |
-| Bing tr                   | Bing tr                                               |
+In progress  
 
 ## Plug in can realize functions
 PVP:  
@@ -99,6 +94,17 @@ Notes:
 - [ ] Internationalization
     - [x] Player
     - [ ] Help
+- [ ] Authority
+    - [ ] Help supports permission display
+    - [ ] Try finer authority control
+- [ ] Optimization
+    - [ ] Memory usage
+    - [ ] Logical processing
+- [ ] Optional
+    - [ ] DB
+    - [ ] NO TAB
+- [ ] No tab
+    - [ ] Test comm (java/core/testmode)
 
 ### Directories and files used by plug-ins  
 
@@ -110,10 +116,10 @@ config
     └───GA                  //Plug in uses home directory
         │   Authority.json  //Authority Data
         │   Data.db         //Player Data
-        │   Setting.json    //Setting
+        │   Config.ini      //Setting
         └───lib             //Plug in uses jar external directory
         └───resources       //Plug in using resource external directory   
-           └───bundles      //Language file                               
+           └───bundles      //Language file                               -Removed files that are not easy to update
            └───other        //Other file                             
         └───log             //Plug in log (within ten days)               *
             Error.txt       //Error file                                  *
