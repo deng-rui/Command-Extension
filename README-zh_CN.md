@@ -116,9 +116,8 @@ PVP :
 config
 └───mods
     └───GA                  //插件使用主目录
-        │   Authority.json  //权限配置
         │   Data.db         //玩家数据
-        │   Config.ini      //设置
+        │   Config.ini      //配置文件
         └───lib             //插件使用jar-外置目录
         └───resources       //插件使用资源外置目录   
            └───bundles      //语言文件              -已去除 不便于更新文件

@@ -114,9 +114,8 @@ The marks \* are all subsequent added directories and files
 config
 └───mods
     └───GA                  //Plug in uses home directory
-        │   Authority.json  //Authority Data
         │   Data.db         //Player Data
-        │   Config.ini      //Setting
+        │   Config.ini      //Plugin Config
         └───lib             //Plug in uses jar external directory
         └───resources       //Plug in using resource external directory   
            └───bundles      //Language file                               -Removed files that are not easy to update
