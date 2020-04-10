@@ -23,6 +23,10 @@ By default, Google translator should not set the source time to 0, otherwise Goo
 
 In progress  
 
+## 注意
+
+Please use custom mode map, all mode(/shuffle all) will interfere with pattern recognition (/shuffle custom)  
+
 ## Plug in can realize functions
 PVP:  
 1.Limit the number of team generating units  

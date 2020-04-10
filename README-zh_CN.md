@@ -24,6 +24,10 @@ linglan512572354:https://github.com/linglan512572354
 进行中  
 与本项目并行  
 
+## 注意
+
+请使用custom模式地图 自带地图将会对模式识别产生干扰 (/shuffle custom)
+
 ## 插件可实现功能
 
 PVP :   
