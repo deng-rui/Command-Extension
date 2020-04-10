@@ -22,7 +22,7 @@ import static mindustry.Vars.maps;
 
 import extension.data.global.Config;
 import extension.net.Net;
-import extension.core.Threads;
+import extension.core.ex.Threads;
 import extension.data.json.Json;
 import extension.data.global.Lists;
 import extension.data.global.Maps;
@@ -41,11 +41,14 @@ import com.alibaba.fastjson.JSONObject;
 //Json
 
 public class Initialization {
-	public static void Start_Initialization() {
+	public void Start_Initialization() {
+		// 配置文件初始化
 		Config();
+		// 初始化配置
 		Config.LaodConfig();
 		//Resource();
 		//IsCN();
+		//新线程 初始化数据
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -53,6 +56,7 @@ public class Initialization {
 				Json();
 			}
 		}).start();
+		// 新线程 初始化权限list
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -63,16 +67,16 @@ public class Initialization {
 		new Threads();
 	}
 
-	public static void Override_Initialization() {
+	public void Override_Initialization() {
 		Cover_Gameover();
 	}
 
-	public static void ReLoadConfig() {
+	public void ReLoadConfig() {
 		Config.LaodConfig();
 		Player_Privilege_classification();
 	}
- 
-	private static void Cover_Gameover() { 
+
+	private void Cover_Gameover() { 
 		// 覆盖掉自带的Gameover 使用自己的 便于自动更换模式
 		try {    
 			ApplicationListener sr = Core.app.getListeners().find(e -> e.getClass().getSimpleName().equalsIgnoreCase("ServerControl"));
@@ -86,21 +90,20 @@ public class Initialization {
 	}      
 
 
-	public static void Follow_up_Initialization() {
-		MapList();
-	}
+	
 
-	private static void SQL() {
+	private void SQL() {
 		importLib("org.xerial","sqlite-jdbc","3.30.1",Config.Plugin_Lib_Path);
 		if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists())InitializationSQLite();
 	}
 
-	private static void Json() {
+	// 下个版本 弃用 -X
+	private void Json() {
 		//if(!Core.settings.getDataDirectory().child("mods/GA/Setting.json").exists())Json.Initialization();
 		//if(!Core.settings.getDataDirectory().child("mods/GA/Authority.json").exists())Json.Initialize_permissions();
 	}
 
-	private static void Config() {
+	private void Config() {
 		try {
 			if(!FileUtil.File(Config.Plugin_Data_Path).toPath("/Config.ini").exists()) {
 				String data = (String)FileUtil.readfile(false,new InputStreamReader(Initialization.class.getResourceAsStream("/Config.ini"), "UTF-8"));
@@ -113,7 +116,10 @@ public class Initialization {
 		}  
 	}
 
-	private static void Resource() {
+	// CP出jar特定文件至硬盘
+	// 下个版本 弃用 -X
+	// 无法便于更新语言文件
+	private void Resource() {
 		try {
 			List file = (List)FileUtil.readfile(true,new InputStreamReader(Initialization.class.getResourceAsStream("/other/FileList.txt"), "UTF-8"));
 			for(int i=0;i<file.size();i++){
@@ -130,10 +136,11 @@ public class Initialization {
 		}
 	}
 
-	public static void MapList() {
+	public void MapList() {
 		Lists.EmptyMaps_List();
 		if(!maps.all().isEmpty()){
 			for(Map map : maps.all()){
+				// 只会加载自定义地图
 				if(map.custom) {
 					switch(String.valueOf(map.file.name().charAt(0))){
 						case "P" :
@@ -156,14 +163,14 @@ public class Initialization {
 		}
 	}
 
-	private static void IsNetwork() {
+	private void IsNetwork() {
 		Config.Server_Networking = Net.isConnect();
 	}
-	private static void IsCN() {
+	private void IsCN() {
 		
 	}
 
-	private static void Player_Privilege_classification() {
+	private void Player_Privilege_classification() {
 		String[] tempstring=loadstring("Privilege_Level").split(",");
 		int[] tempint = new int[tempstring.length];
 		for (int i = 0; i < tempstring.length; i++) tempint[i] = Integer.parseInt(tempstring[i]);
@@ -191,7 +198,7 @@ public class Initialization {
 		}
 	}
 
-	private static int[] selectionSort(int[] array) {
+	private int[] selectionSort(int[] array) {
 		if (array.length == 0)
 			return array;
 		for (int i = 0; i < array.length; i++) {

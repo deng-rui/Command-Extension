@@ -1,4 +1,4 @@
-package extension.core;
+package extension.core.ex;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
@@ -29,7 +29,7 @@ import extension.data.global.Maps;
 import extension.util.Log;
 //GA-Exted
 
-import static extension.core.Extend.secToTime;
+import static extension.core.ex.Extend.secToTime;
 import static extension.util.file.LoadConfig.CustomLoad;
 import static extension.util.DateUtil.getLocalTimeFromUTC;
 //Static
@@ -166,6 +166,7 @@ public class Threads {
 				if(current_time < 1.0f)
 					current_time = current_time + Config.Night_Time;
 				else{
+					// 后半夜
 					gradual_change = false; 
 					current_time = current_time - Config.Night_Time;
 				}
@@ -177,6 +178,7 @@ public class Threads {
 					status_day_night++;
 				}    
 		}else{
+			// 白天的0-1.5f好像没有变换
 			if (status_day_night < Config.Day_Time)
 				status_day_night++;
 			else{
@@ -186,11 +188,13 @@ public class Threads {
 				current_time = current_time - Config.Night_Time;  
 			}
 		}
+		// 夜晚设置
 		if (current_time > 0) {
 			state.rules.lighting = true;
 			state.rules.ambientLight.a = current_time;
 		} else
 			state.rules.lighting = false;
+		// 设置规则
 		Call.onSetRules(state.rules);
 	}
 }

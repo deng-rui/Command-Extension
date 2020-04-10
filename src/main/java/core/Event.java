@@ -47,6 +47,7 @@ import static mindustry.Vars.playerGroup;
 import static mindustry.core.NetClient.onSetRules;
 //Mindustry-Static
 
+import extension.core.ex.Vote;
 import extension.data.db.PlayerData;
 import extension.data.global.Config;
 import extension.data.global.Lists;
@@ -55,8 +56,7 @@ import extension.util.translation.Google;
 import extension.util.Log;
 //GA-Exted
 
-import static extension.core.Extend.loadmaps;
-import static extension.core.Initialization.Follow_up_Initialization;
+import static extension.core.ex.Extend.loadmaps;
 import static extension.data.db.Player.savePlayer;
 import static extension.data.json.Json.getData;
 import static extension.net.HttpRequest.doGet;
@@ -72,9 +72,9 @@ import com.alibaba.fastjson.JSONObject;
 public class Event {
 	// 
 
-	private static final java.util.Map<Integer, Integer> Building_number = Collections.synchronizedMap(new HashMap<Integer, Integer>());
+	private final java.util.Map<Integer, Integer> Building_number = Collections.synchronizedMap(new HashMap<Integer, Integer>());
 
-	public static void Main() {
+	public void register() {
 
 		// 服务器加载完成时
 		Events.on(ServerLoadEvent.class, e-> {
@@ -89,7 +89,8 @@ public class Event {
 						for (final Player other : players)
 							if (other.getTeam() == data.team && other != player)
 								count++;
-						if (!data.hasCore())count = 256;
+						if (!data.hasCore())
+							count = 256;
 						return (float)count;
 					});
 					return (null == re) ? null : re.team;
@@ -97,9 +98,6 @@ public class Event {
 				return Vars.state.rules.defaultTeam;
 			});
 			// linglan
-
-			Follow_up_Initialization();
-			// 部分加载需要服务器加载完毕 例如maps
 		});
 
 		// 连接时
@@ -381,7 +379,8 @@ public class Event {
 			playerdata.Online 	= false;
 			final long time = playerdata.Backtime-playerdata.Jointime;
 			playerdata.Playtime = playerdata.Playtime+time;
-			savePlayer(playerdata,playerdata.User);
+			if (playerdata.Login)
+				savePlayer(playerdata,playerdata.User);
 		});
 	}
 

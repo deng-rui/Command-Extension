@@ -1,4 +1,4 @@
-package extension.core;
+package extension.core.ex;
 
 import java.util.List;
 //Java
@@ -37,7 +37,8 @@ import static extension.util.DateUtil.simp;
 public class Extend {
 	public static boolean Authority_control(Player player, String a) {
 		// 未开启登录 直接抢答结果
-		if(!Config.Login) return true;
+		// 逻辑有问题:(
+		//if(!Config.Login) return true;
 		return (boolean)Maps.getPower_Data((int)Maps.getPlayer_Data(player.uuid).Authority).contains(a);
 	}
 

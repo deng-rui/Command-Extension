@@ -1,4 +1,4 @@
-package extension.core;
+package extension.core.ex;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +18,7 @@ import mindustry.entities.type.Player;
 import mindustry.game.Gamemode;
 import mindustry.game.EventType.GameOverEvent;
 import mindustry.maps.Map;
-//import mindustry.maps.Maps.*;
+//import mindustry.maps.Maps;
 import mindustry.world.Tile;
 import mindustry.Vars;
 //Mindustry
@@ -31,7 +31,7 @@ import static mindustry.Vars.world;
 import static mindustry.Vars.state;
 //Mindustry-Static
 
-import extension.core.Extend;
+import extension.core.ex.Extend;
 import extension.data.global.Config;
 import extension.data.global.Maps;
 import extension.data.global.Lists;
@@ -100,7 +100,7 @@ public class Vote {
 			case "kick" :
 				target = playerGroup.find(p -> p.name.equals(name));
 				if(target == null)
-					player.sendMessage(getinput("vote.kick.err",target.name));
+					player.sendMessage(getinput("vote.kick.err",name));
 				else
 					Normal_distribution();
 				break;
@@ -144,8 +144,8 @@ public class Vote {
 			for (Player it : Vars.playerGroup.all())
 				if (Maps.getPlayer_Data(it.uuid).Authority > 0)
 					temp++;
-				} else
-					temp = playerGroup.size();
+		} else
+			temp = playerGroup.size();
 		if(temp == 1){
 			player.sendMessage(getinput("vote.no1"));
 			require = 1;
@@ -165,6 +165,7 @@ public class Vote {
 				temp++;
 		require = temp;
 		Start();
+		Extend.addMesg_Team(getinput("vote.start",player.name,type+" "+(Blank(name)?"":name)),team);
 	}
 
 	// 管理投票
@@ -214,7 +215,7 @@ public class Vote {
 		Count_down=null;
 		Vote_time=null;
 		//-
-		if ((Blank(playerlist.size())? 0:playerlist.size()) >= require) {
+		if (playerlist.size() >= require) {
 			Call.sendMessage(getinput("vote.ok"));
 			playerlist.clear();
 			switch(type){
