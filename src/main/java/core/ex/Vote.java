@@ -46,14 +46,16 @@ import static extension.util.IsUtil.Blank;
 //Static
 
 public class Vote {
-	private static Player player;
-	private static Player target;
-	private static String type;
-	private static String name;
-	private static int require;
-	private static int reciprocal;
-	private static ScheduledFuture Vote_time;
-	private static ScheduledFuture Count_down;
+	private Player player;
+	private Player target;
+	private String type;
+	private String name;
+	private int require;
+	private int reciprocal;
+	private ScheduledFuture Vote_time;
+	private ScheduledFuture Count_down;
+	private int temp = 0;
+	private Runnable endmsg;
 	public static Team team;
 	// 投票状态
 	public static boolean sted = true;
@@ -132,20 +134,46 @@ public class Vote {
 					player.sendMessage(getinput("vote.admin.no"));
 				break;
 			default :
-				Call.sendMessage(getinput("vote.end.err",type));
+				Call.sendMessage(getinput("vote.end.err",type+" "+(Blank(name)?"":name)));
 				break;
 		}
 	}
 
 	// 正常投票
 	private void Normal_distribution() {
-		int temp = 0;
 		if(Config.Login_Radical) {
 			for (Player it : Vars.playerGroup.all())
 				if (Maps.getPlayer_Data(it.uuid).Authority > 0)
 					temp++;
 		} else
 			temp = playerGroup.size();
+		Start(() -> Call.sendMessage(getinput("vote.start",player.name,type+" "+(Blank(name)?"":name))));
+		endmsg = () -> Call.sendMessage(getinput("vote.done.no",type+" "+(Blank(name)?"":name),playerlist.size(),temp));;
+	}
+
+	// 团队投票
+	private void Team_only() {
+		for (Player it : Vars.playerGroup.all())
+			if (it.getTeam().equals(team))
+				temp++;
+		require = temp;
+		Start(() -> Extend.addMesg_Team(getinput("vote.start",player.name,type+" "+(Blank(name)?"":name)),team));
+		endmsg = () -> Extend.addMesg_Team(getinput("vote.done.no",type+" "+(Blank(name)?"":name),playerlist.size(),temp),team);
+	}
+
+	// 管理投票
+	private void Management_only() {
+		for (Player it : Vars.playerGroup.all())
+			if(it.isAdmin)
+				temp++;
+		if (temp > 5) {
+			require = temp;
+			//Start();
+		} else
+			player.sendMessage(getinput("vote.admin.no"));
+	}
+
+	private void Start(Runnable run){
 		if(temp == 1){
 			player.sendMessage(getinput("vote.no1"));
 			require = 1;
@@ -153,35 +181,7 @@ public class Vote {
 			require = 2;
 		else
 			require = (int) Math.ceil((double) temp / 2);
-		Start();
-		Call.sendMessage(getinput("vote.start",player.name,type+" "+(Blank(name)?"":name)));
-	}
 
-	// 团队投票
-	private void Team_only() {
-		int temp = 0;
-		for (Player it : Vars.playerGroup.all())
-			if (it.getTeam().equals(team))
-				temp++;
-		require = temp;
-		Start();
-		Extend.addMesg_Team(getinput("vote.start",player.name,type+" "+(Blank(name)?"":name)),team);
-	}
-
-	// 管理投票
-	private void Management_only() {
-		int temp = 0;
-		for (Player it : Vars.playerGroup.all())
-			if(it.isAdmin)
-				temp++;
-		if (temp > 5) {
-			require = temp;
-			Start();
-		} else
-			player.sendMessage(getinput("vote.admin.no"));
-	}
-
-	private void Start(){
 		Runnable Countdown=new Runnable() {
 			@Override
 			public void run() {
@@ -207,7 +207,8 @@ public class Vote {
 			Count_down.cancel(true);
 			Vote_time.cancel(true);
 			End();
-		}
+		} else
+			run.run();
 	}
 
 	private void End() {
@@ -236,12 +237,14 @@ public class Vote {
 					break;
 			}
 		} else {
-			Call.sendMessage(getinput("vote.done.no",type,Blank(playerlist.size())? 0:playerlist.size(),playerGroup.size()));
+			endmsg.run();
 		}
 		isteam = false;
 		sted = true;
 		// 归零.jpg
 		name = null;
+		temp = 0;
+		endmsg = null;
 	}
 
 	private void kick() {
