@@ -327,27 +327,6 @@ public class Event {
 
 		// 游戏结束时
 		Events.on(GameOverEvent.class, e -> {
-			Map map = maps.getNextMap(world.getMap());
-			if(map != null) {
-				List<String> MapsList = (List<String>)Lists.getMaps_List();
-				for(int i = 0; i < MapsList.size(); i++){
-					String [] data = MapsList.get(i).split("\\s+");
-					if(map.name().equalsIgnoreCase(data[0].replace('_', ' ')) || map.name().equalsIgnoreCase(data[0])) {
-						Gamemode mode = Gamemode.survival;
-						try{
-							mode = Gamemode.valueOf(data[2]);
-						}catch(IllegalArgumentException ex){
-						}
-						final Gamemode gamemode = mode;
-						Call.onInfoMessage(getinput("gameover.game",data[0],data[1],data[2]));
-						loadmaps(true, () -> world.loadMap(map, map.applyRules(gamemode)),gamemode);
-					}
-				}
-			}
-
-			Building_number.clear();
-			//info("Selected next map to be {0}.", map.name());
-
 			if (state.rules.pvp) {
 				int index = 5;
 				for (int a = 0; a < 5; a++) {
@@ -369,6 +348,27 @@ public class Event {
 					}
 				}
 			}
+
+			Map map = maps.getNextMap(world.getMap());
+			if(map != null) {
+				List<String> MapsList = (List<String>)Lists.getMaps_List();
+				for(int i = 0; i < MapsList.size(); i++){
+					String [] data = MapsList.get(i).split("\\s+");
+					if(map.name().equalsIgnoreCase(data[0].replace('_', ' ')) || map.name().equalsIgnoreCase(data[0])) {
+						Gamemode mode = Gamemode.survival;
+						try{
+							mode = Gamemode.valueOf(data[2]);
+						}catch(IllegalArgumentException ex){
+						}
+						final Gamemode gamemode = mode;
+						Call.onInfoMessage(getinput("gameover.game",data[0],data[1],data[2]));
+						loadmaps(true, () -> world.loadMap(map, map.applyRules(gamemode)),gamemode);
+					}
+				}
+			}
+
+			Building_number.clear();
+			//info("Selected next map to be {0}.", map.name());	
 		});
 
 		// 退出时
