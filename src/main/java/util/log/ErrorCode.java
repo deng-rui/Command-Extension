@@ -11,12 +11,13 @@ public enum ErrorCode {
 
 	/*网络层*/
 	//无网络
-	NETWORK_NOT_CONNECTED(10001,"Network not connected");
+	NETWORK_NOT_CONNECTED(10001,"Network not connected"),
 	
 	/*客户端层*/
 	
 	
 	/*文件层*/
+	INVALID_PARAMETER(30001,"Please check the configuration file");
 
 	
 	

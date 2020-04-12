@@ -4,15 +4,15 @@ import extension.util.Log;
 
 public class Exceptions {
 
-	public static Exception Variable(String type) {
+	public static VariableException Variable(String type) {
 		return new VariableException(type);
 	}
 
-	public static Exception Net(String type) {
+	public static NetException Net(String type) {
 		return new NetException(type);
 	}
 
-	public static Exception File(String type) {
+	public static FileException File(String type) {
 		return new FileException(type);
 	}
 
