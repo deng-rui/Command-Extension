@@ -26,51 +26,57 @@ public class Config {
 	public static boolean Server_Country_CN 					= false;
 
 	// [服务器语言]
-	public static String Server_Language 						= null;
+	public static String Server_Language;
 
 	// [登录]
-	public static boolean Login 								= false;
-	public static boolean Login_IP 								= false;
-	public static int Login_Time 								= 0;
-	public static boolean Login_Radical 						= false;
-	public static boolean Permission_Passing 					= false;
+	public static boolean Login;
+	public static boolean Login_IP;
+	public static int Login_Time;
+	public static boolean Login_Radical;
+	public static boolean Permission_Passing;
 
 	// [投票]
-	public static boolean Vote_Admin 							= false;
-	public static boolean Vote_New_Player 						= false;
-	public static int Vote_New_Player_Time 						= 1;
+	public static boolean Vote_Admin;
+	public static boolean Vote_New_Player;
+	public static int Vote_New_Player_Time;
 
 	//
-	public static boolean Day_and_night 						= false;
-	public static int Day_Time 									= 0;
-	public static float Night_Time 								= 0;
+	public static boolean Day_and_night;
+	public static int Day_Time;
+	public static float Night_Time;
 
 	// [建造限制]
-	public static boolean Building_Restriction 					= false;
-	public static int Building_Warning_quantity 				= 0;
-	public static int Building_Reject_quantity 					= 0;
+	public static boolean Building_Restriction;
+	public static int Building_Warning_quantity;
+	public static int Building_Reject_quantity;
 
 	// [单位限制]
-	public static boolean Soldier_Restriction 					= false;
-	public static int Soldier_Warning_quantity 					= 0;
-	public static int Soldier_Reject_quantity 					= 0;
+	public static boolean Soldier_Restriction;
+	public static int Soldier_Warning_quantity;
+	public static int Soldier_Reject_quantity;
 
 	// [邮件]
-	public static boolean Mail_Use 								= false;
-	public static String Mail_SMTP_IP 							= null;
-	public static String Mail_SMTP_Port 						= null;
-	public static String Mail_SMTP_User 						= null;
-	public static String Mail_SMTP_Passwd 						= null;
-	public static boolean Regular_Reporting						= false;
-	public static int Regular_Reporting_Time 					= 0;
-	public static String Regular_Reporting_ToMail 				= null;
+	public static boolean Mail_Use;
+	public static String Mail_SMTP_IP;
+	public static String Mail_SMTP_Port;
+	public static String Mail_SMTP_User;
+	public static String Mail_SMTP_Passwd;
+	public static boolean Regular_Reporting;
+	public static int Regular_Reporting_Time;
+	public static String Regular_Reporting_ToMail;
+
+	// [Display]
+	public static int Maximum_Screen_Display;
+
+	// [Help]
+	//public static boolean
 
 
 
 
 	public static void LaodConfig() {
 		// [服务器]
-		Server_Language 										= loadstring("Server_Language");
+		Server_Language 										= new String(loadstring("Server_Language"));
 
 		// [登录]
 		Login 													= loadboolean("Login");
@@ -110,14 +116,14 @@ public class Config {
 		// [邮件]
 		Mail_Use 												= loadboolean("Mail_Use");
 		if(Mail_Use) {
-			Mail_SMTP_IP 										= loadstring("Mail_SMTP.IP");
-			Mail_SMTP_Port 										= loadstring("Mail_SMTP.Port");
-			Mail_SMTP_User 										= loadstring("Mail_SMTP.User");
-			Mail_SMTP_Passwd 									= loadstring("Mail_SMTP.Passwd");
+			Mail_SMTP_IP 										= new String(loadstring("Mail_SMTP.IP"));
+			Mail_SMTP_Port 										= new String(loadstring("Mail_SMTP.Port"));
+			Mail_SMTP_User 										= new String(loadstring("Mail_SMTP.User"));
+			Mail_SMTP_Passwd 									= new String(loadstring("Mail_SMTP.Passwd"));
 			Regular_Reporting 									= loadboolean("Regular_Reporting");
 			if(Regular_Reporting) {
 				Regular_Reporting_Time 							= loadint("Regular_Reporting_Time");
-				Regular_Reporting_ToMail 						= loadstring("Regular_Reporting_ToMail");
+				Regular_Reporting_ToMail 						= new String(loadstring("Regular_Reporting_ToMail"));
 			}
 		}
 	}

@@ -111,13 +111,13 @@ public class Player {
 			rs = playerdata.executeQuery();
 			while ( rs.next() ) {
 				// 防止游戏玩一半登录 导致数据飞天
-				data.UUID 				= rs.getString("UUID");
-				data.User 				= rs.getString("User");
+				data.UUID 				= new String(rs.getString("UUID"));
+				data.User 				= new String(rs.getString("User"));
 				data.IP 				= rs.getLong("IP");
 				data.GMT 				= rs.getLong("GMT");
-				data.Country 			= rs.getString("Country");
-				data.Time_format 		= rs.getInt("Time_format");
-				data.Language 			= rs.getString("Language");
+				data.Country 			= new String(rs.getString("Country"));
+				data.Time_format 		= rs.getByte("Time_format");
+				data.Language 			= new String(rs.getString("Language"));
 				data.LastLogin 			= rs.getLong("LastLogin");
 				//data.Online 			= rs.getInt("Online");
 				data.Buildcount 		= data.Buildcount + rs.getInt("Buildcount");
@@ -144,10 +144,10 @@ public class Player {
 			playerpriv.setString(1,user);
 			rss = playerpriv.executeQuery();
 			while (rss.next()) {
-				data.Mail 				= rss.getString("Mail");
+				data.Mail 				= new String(rss.getString("Mail"));
 				data.Online 			= InttoBoolean(rss.getInt("Online"));
-				data.PasswordHash 		= rss.getString("PasswordHash");
-				data.CSPRNG 			= rss.getString("CSPRNG");
+				data.PasswordHash 		= new String(rss.getString("PasswordHash"));
+				data.CSPRNG 			= new String(rss.getString("CSPRNG"));
 			}
 		} catch (SQLException e) {
 			Log.error(e);

@@ -25,7 +25,7 @@ public class PlayerData {
 	public long IP;
 	public long GMT;
 	public String Country;
-	public int Time_format;
+	public byte Time_format;
 	public String Language;
 	public long LastLogin;
 	public int Kickcount;
@@ -66,8 +66,8 @@ public class PlayerData {
 		//
 		IP 					= 0;
 		GMT 				= 0;
-		Country 			= "NO Login";
-		Language 			= "en_US";
+		Country 			= new String("NO Login");
+		Language 			= new String("en_US");
 		Time_format 		= 1;
 		LastLogin 			= 0;
 		/* */

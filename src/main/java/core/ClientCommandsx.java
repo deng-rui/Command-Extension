@@ -182,8 +182,8 @@ public class ClientCommandsx {
 					playerdata.Login=true;
 					playerdata.Authority=1;
 					playerdata.Mail=(args.length > 3) ? args[3]:"NULL";
-					playerdata.PasswordHash=(String)Passwd_date.get("passwordHash");
-					playerdata.CSPRNG=(String)Passwd_date.get("salt");
+					playerdata.PasswordHash=new String((String)Passwd_date.get("passwordHash"));
+					playerdata.CSPRNG=new String((String)Passwd_date.get("salt"));
 					playerdata.Joincount++;
 					if(!Config.Login_IP) 
 						PlayerData.playerip(Maps.getPlayer_Data(player.uuid),player,Vars.netServer.admins.getInfo(player.uuid).lastIP);
@@ -201,7 +201,7 @@ public class ClientCommandsx {
 			});
 		}
 		//
-
+		
 		handler.<Player>register("info",getinput("info"), (args, player) -> {
 			if (!Authority_control(player,"info")) {
 				player.sendMessage(getinput("authority.no"));
