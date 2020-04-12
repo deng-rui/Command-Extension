@@ -3,6 +3,7 @@ package extension.util.alone;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.Base64;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.SecureRandom;
@@ -12,7 +13,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 //Javax
 
-import org.apache.commons.codec.binary.Base64;
+//import org.apache.commons.codec.binary.Base64;
 //apach
 
 public class Password {
@@ -24,10 +25,10 @@ public class Password {
 	 * ITERATIONS=128: 迭代次数RFC2898  HASH_BIT_SIZE=256: 摘要长度
 	 */
 	private static String genPasswordHash(String password, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {	
-		PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), Base64.decodeBase64(salt), 128, 256);
+		PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), Base64.getDecoder().decode(salt), 128, 256);
 		SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
 		byte[] hash = skf.generateSecret(spec).getEncoded();
-		return Base64.encodeBase64String(hash);
+		return Base64.getEncoder().encodeToString(hash);
 	}
 
 	/**
@@ -40,7 +41,7 @@ public class Password {
 		byte[] salt = new byte[64];
 		SecureRandom rand = new SecureRandom();
 		rand.nextBytes(salt);
-		return Base64.encodeBase64String(salt);
+		return Base64.getEncoder().encodeToString(salt);
 	}
 	
 	public static boolean Passwdverify(String password, String passHash, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
