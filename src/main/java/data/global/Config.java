@@ -5,6 +5,8 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Executors;
 
+import extension.core.ex.Vote;
+
 import static extension.util.file.LoadConfig.loadint;
 import static extension.util.file.LoadConfig.loadstring;
 import static extension.util.file.LoadConfig.loadboolean;
@@ -20,6 +22,9 @@ public class Config {
 	public static final String Plugin_Resources_Other_Path 		= "/config/mods/GA/resources/other";
 	// [线程]
 	public static final ScheduledExecutorService service 		= Executors.newScheduledThreadPool(5);
+
+	// [Cache]
+	public static Vote vote;
 
 	// [服务器]
 	public static boolean Server_Networking 					= true;
@@ -76,7 +81,7 @@ public class Config {
 
 	public static void LaodConfig() {
 		// [服务器]
-		Server_Language 										= new String(loadstring("Server_Language"));
+		Server_Language 										= loadstring("Server_Language");
 
 		// [登录]
 		Login 													= loadboolean("Login");
@@ -116,14 +121,14 @@ public class Config {
 		// [邮件]
 		Mail_Use 												= loadboolean("Mail_Use");
 		if(Mail_Use) {
-			Mail_SMTP_IP 										= new String(loadstring("Mail_SMTP.IP"));
-			Mail_SMTP_Port 										= new String(loadstring("Mail_SMTP.Port"));
-			Mail_SMTP_User 										= new String(loadstring("Mail_SMTP.User"));
-			Mail_SMTP_Passwd 									= new String(loadstring("Mail_SMTP.Passwd"));
+			Mail_SMTP_IP 										= loadstring("Mail_SMTP.IP");
+			Mail_SMTP_Port 										= loadstring("Mail_SMTP.Port");
+			Mail_SMTP_User 										= loadstring("Mail_SMTP.User");
+			Mail_SMTP_Passwd 									= loadstring("Mail_SMTP.Passwd");
 			Regular_Reporting 									= loadboolean("Regular_Reporting");
 			if(Regular_Reporting) {
 				Regular_Reporting_Time 							= loadint("Regular_Reporting_Time");
-				Regular_Reporting_ToMail 						= new String(loadstring("Regular_Reporting_ToMail"));
+				Regular_Reporting_ToMail 						= loadstring("Regular_Reporting_ToMail");
 			}
 		}
 	}

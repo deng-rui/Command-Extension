@@ -23,7 +23,7 @@ public class PlayerData {
 	public String Mail;
 	//
 	public long IP;
-	public long GMT;
+	public int GMT;
 	public String Country;
 	public byte Time_format;
 	public String Language;
@@ -32,7 +32,8 @@ public class PlayerData {
 	//int Sensitive;
 	public boolean Translate;
 	public int Level;
-	public long Exp;
+	// MAX = 32767
+	public short Exp;
 	public long Reqexp;
 	public long Reqtotalexp;
 	public long Playtime;
@@ -66,8 +67,8 @@ public class PlayerData {
 		//
 		IP 					= 0;
 		GMT 				= 0;
-		Country 			= new String("NO Login");
-		Language 			= new String("en_US");
+		Country 			= "NO Login";
+		Language 			= "en_US";
 		Time_format 		= 1;
 		LastLogin 			= 0;
 		/* */

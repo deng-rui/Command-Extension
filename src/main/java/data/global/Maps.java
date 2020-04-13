@@ -15,7 +15,7 @@ public class Maps {
 	// 权限内容
 	private static final Map<Integer, List<String>> Power_Data = Collections.synchronizedMap(new HashMap<Integer, List<String>>());
 	// 投票权重
-	private static final Map<Integer, Integer> Vote_Authority = new HashMap<Integer, Integer>();	
+	private static final Map<Integer, Integer> Vote_Authority = new HashMap<Integer, Integer>();
 
 	public static Map getMapPlayer_Data() {
 		return Player_Data;

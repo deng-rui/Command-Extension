@@ -58,9 +58,9 @@ public class Player {
 			playerdata.setString(1,data.UUID);
 			playerdata.setString(2,data.User);
 			playerdata.setLong(3,data.IP);
-			playerdata.setLong(4,data.GMT);
+			playerdata.setInt(4,data.GMT);
 			playerdata.setString(5,data.Country);
-			playerdata.setInt(6,data.Time_format);
+			playerdata.setByte(6,data.Time_format);
 			playerdata.setString(7,data.Language);
 			playerdata.setLong(8,data.LastLogin);
 			playerdata.setInt(9,data.Buildcount);
@@ -70,7 +70,7 @@ public class Player {
 			playerdata.setInt(13,data.Kickcount);
 			playerdata.setInt(14,BooleantoInt(data.Translate));
 			playerdata.setInt(15,data.Level);
-			playerdata.setLong(16,data.Exp);
+			playerdata.setShort(16,data.Exp);
 			playerdata.setLong(17,data.Reqexp);
 			playerdata.setLong(18,data.Reqtotalexp);
 			playerdata.setLong(19,data.Playtime);
@@ -111,13 +111,13 @@ public class Player {
 			rs = playerdata.executeQuery();
 			while ( rs.next() ) {
 				// 防止游戏玩一半登录 导致数据飞天
-				data.UUID 				= new String(rs.getString("UUID"));
-				data.User 				= new String(rs.getString("User"));
+				data.UUID 				= rs.getString("UUID");
+				data.User 				= rs.getString("User");
 				data.IP 				= rs.getLong("IP");
-				data.GMT 				= rs.getLong("GMT");
-				data.Country 			= new String(rs.getString("Country"));
+				data.GMT 				= rs.getInt("GMT");
+				data.Country 			= rs.getString("Country");
 				data.Time_format 		= rs.getByte("Time_format");
-				data.Language 			= new String(rs.getString("Language"));
+				data.Language 			= rs.getString("Language");
 				data.LastLogin 			= rs.getLong("LastLogin");
 				//data.Online 			= rs.getInt("Online");
 				data.Buildcount 		= data.Buildcount + rs.getInt("Buildcount");
@@ -127,7 +127,7 @@ public class Player {
 				data.Kickcount 			= data.Kickcount + rs.getInt("Kickcount");
 				data.Translate 			= InttoBoolean(rs.getInt("Translate"));
 				data.Level 				= rs.getInt("Level");
-				data.Exp 				= rs.getLong("Exp");
+				data.Exp 				= rs.getShort("Exp");
 				data.Reqexp 			= rs.getLong("Reqexp");
 				data.Reqtotalexp 		= rs.getLong("Reqtotalexp");
 				data.Playtime 			= data.Playtime + rs.getLong("Playtime");
