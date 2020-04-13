@@ -30,7 +30,6 @@ public class ServerCommandsx {
 	
 		});
 
-
 		handler.register("reloadmaps", "reload maps", (arg) -> {
 			int beforeMaps = maps.all().size;
 			maps.reload();

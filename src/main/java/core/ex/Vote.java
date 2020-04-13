@@ -38,7 +38,7 @@ import extension.data.global.Lists;
 import extension.util.Log;
 //GA-Exted
 
-
+import static extension.core.ex.Extend.Authority_control;
 import static extension.data.global.Lists.getMaps_List;
 import static extension.util.DateUtil.getLocalTimeFromUTC;
 import static extension.util.LocaleUtil.getinput;
@@ -55,7 +55,8 @@ public class Vote {
 	private ScheduledFuture Vote_time;
 	private ScheduledFuture Count_down;
 	private int temp = 0;
-	private Runnable endmsg;
+	private Runnable endyesmsg;
+	private Runnable endnomsg;
 	public static Team team;
 	// 投票状态
 	public static boolean sted = true;
@@ -63,20 +64,20 @@ public class Vote {
 	public static boolean isteam = false;
 	// 已投票玩家
 	public static List<String> playerlist = new ArrayList<String>();
-	// 投票数
-	public static int playervote = 0;
+	// 投票数 A/B ?
+	private int playervote = 0;
 
-
+	// 防止输入法开头大写
 	public Vote(Player player, String type, String name){
 		this.player = player;
-		this.type = type;
+		this.type = type.toLowerCase();
 		this.name = name;
 		Preprocessing();
 	}
 
 	public Vote(Player player, String type, Team team){
 		this.player = player;
-		this.type = type;
+		this.type = type.toLowerCase();
 		this.team = team;
 		isteam = true;
 		Preprocessing();
@@ -84,31 +85,68 @@ public class Vote {
 
 	public Vote(Player player, String type){
 		this.player = player;
-		this.type = type;
+		this.type = type.toLowerCase();
 		Preprocessing();
 	}
 
-	public Vote(){
-		if (playerlist.size() >= require) {
-			Count_down.cancel(true);
-			Vote_time.cancel(true);
-			End();
+	public void ToVote(Player playerplayer,String playerpick) {
+		switch(playerpick){
+			// 我也不像写一堆一样的啊:(
+			case "y" :
+			case "n" :
+				playerlist.add(playerplayer.uuid);
+				if ("y".equals(playerpick)) {
+					playervote++;
+					playerplayer.sendMessage(getinput("vote.y"));
+				}else
+					playerplayer.sendMessage(getinput("vote.n"));
+				break;
+			// Vote Compulsory passage
+			case "cy" :
+				if (Authority_control(playerplayer,"votec")) {
+					if (isteam)
+						endyesmsg = () -> Extend.addMesg_Team(getinput("vote.cy.end",playerplayer.name,type+" "+(Blank(name)?"":name)),team);
+					else
+						endyesmsg = () -> Call.sendMessage(getinput("vote.cy.end",playerplayer.name,type+" "+(Blank(name)?"":name)));
+					require = 0;
+					Force_End();
+				} else
+					playerplayer.sendMessage(getinput("authority.no"));
+				break;
+			// Vote Compulsory refusal
+			case "cn" :
+				if (Authority_control(playerplayer,"votec")) {
+					if (isteam)
+						endnomsg = () -> Extend.addMesg_Team(getinput("vote.cn.end",playerplayer.name,type+" "+(Blank(name)?"":name)),team);
+					else
+						endnomsg = () -> Call.sendMessage(getinput("vote.cn.end",playerplayer.name,type+" "+(Blank(name)?"":name)));
+					playervote = 0;
+					Force_End();
+				} else
+					playerplayer.sendMessage(getinput("authority.no"));
+				break;
 		}
 	}
 
 	private void Preprocessing() {
 		// 预处理
 		switch(type){
-			case "kick" :
-				target = playerGroup.find(p -> p.name.equals(name));
-				if(target == null)
-					player.sendMessage(getinput("vote.kick.err",name));
-				else
-					Normal_distribution();
+			case "gameover" :
+				Normal_distribution();
+				break;
+			case "ff" :
+				Team_only();
 				break;
 			case "host" :
 				if (!(Lists.getMaps_List().size() >= Integer.parseInt(name)))
 					player.sendMessage(getinput("vote.host.maps.err",name));
+				else
+					Normal_distribution();
+				break;
+			case "kick" :
+				target = playerGroup.find(p -> p.name.equals(name));
+				if(target == null)
+					player.sendMessage(getinput("vote.kick.err",name));
 				else
 					Normal_distribution();
 				break;
@@ -117,13 +155,7 @@ public class Vote {
 					player.sendMessage(getinput("vote.wave.fail"));
 				else
 					Normal_distribution();
-				break;
-			case "gameover" :
-				Normal_distribution();
-				break;
-			case "ff" :
-				Team_only();
-				break;
+				break;		
 			case "admin" :
 				if(Config.Vote_Admin)
 					if(player.isAdmin)
@@ -146,9 +178,10 @@ public class Vote {
 				if (Maps.getPlayer_Data(it.uuid).Authority > 0)
 					temp++;
 		} else
-			temp = playerGroup.size();
+			temp = playerGroup.size();	
+		endnomsg = () -> Call.sendMessage(getinput("vote.done.no",type+" "+(Blank(name)?"":name),playervote,temp));
+		endyesmsg = () -> Call.sendMessage(getinput("vote.ok"));
 		Start(() -> Call.sendMessage(getinput("vote.start",player.name,type+" "+(Blank(name)?"":name))));
-		endmsg = () -> Call.sendMessage(getinput("vote.done.no",type+" "+(Blank(name)?"":name),playerlist.size(),temp));;
 	}
 
 	// 团队投票
@@ -157,8 +190,9 @@ public class Vote {
 			if (it.getTeam().equals(team))
 				temp++;
 		require = temp;
+		endnomsg = () -> Extend.addMesg_Team(getinput("vote.done.no",type+" "+(Blank(name)?"":name),playervote,temp),team);
+		endyesmsg = () -> Extend.addMesg_Team(getinput("vote.ok"),team);
 		Start(() -> Extend.addMesg_Team(getinput("vote.start",player.name,type+" "+(Blank(name)?"":name)),team));
-		endmsg = () -> Extend.addMesg_Team(getinput("vote.done.no",type+" "+(Blank(name)?"":name),playerlist.size(),temp),team);
 	}
 
 	// 管理投票
@@ -203,22 +237,16 @@ public class Vote {
 		// 正在投票
 		sted = false;
 		playerlist.add(player.uuid);
-		if (playerlist.size() >= require) {
-			Count_down.cancel(true);
-			Vote_time.cancel(true);
-			End();
-		} else
+		playervote++;
+		if (playervote >= require)
+			Force_End();
+		else
 			run.run();
 	}
 
 	private void End() {
-		//释放内存-
-		Count_down=null;
-		Vote_time=null;
-		//-
-		if (playerlist.size() >= require) {
-			Call.sendMessage(getinput("vote.ok"));
-			playerlist.clear();
+		if (playervote >= require) {
+			endyesmsg.run();	
 			switch(type){
 				case "kick" :
 					kick();
@@ -237,14 +265,21 @@ public class Vote {
 					break;
 			}
 		} else {
-			endmsg.run();
+			endnomsg.run();
 		}
+		playerlist.clear();
 		isteam = false;
 		sted = true;
 		// 归零.jpg
-		name = null;
 		temp = 0;
-		endmsg = null;
+		playervote = 0;
+		// 释放内存
+		name = null;
+		endnomsg = null;
+		endyesmsg = null;
+		Count_down=null;
+		Vote_time=null;
+		Config.vote = null;
 	}
 
 	private void kick() {
@@ -286,6 +321,20 @@ public class Vote {
 				it.setTeam(Team.derelict);
 			}
 
+	}
+
+	private void Inspect_End() {
+		if (playervote >= require) {
+			Count_down.cancel(true);
+			Vote_time.cancel(true);
+			End();
+		}
+	}
+
+	private void Force_End() {
+		Count_down.cancel(true);
+		Vote_time.cancel(true);
+		End();
 	}
 
 	private void killTiles(Team team){

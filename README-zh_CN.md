@@ -28,6 +28,8 @@ linglan512572354:https://github.com/linglan512572354
 
 请使用custom模式地图 自带地图将会对模式识别产生干扰 (/shuffle custom)
 
+最低为JAVA8! JAVA7将无法运行(java.util.Base64)
+
 ## 插件可实现功能
 
 PVP :   

@@ -57,18 +57,26 @@ public class LocaleUtil {
 	}
 
 	public static String getinput(String input,Object... params) {
-		if (params == null) return getinputs(null,input,null);
+		if (params == null) return getinputts(null,input,null);
 		Object[] ps = new Object[params.length];
 		for (int i=0;i<params.length;i++) ps[i] = params[i];
-		return getinputs(null,input,ps);
+		return getinputts(null,input,ps);
 	}
 
 	public static String getinputt(String input,Object[] ps) {
-		return getinputs(null,input,ps);
+		return getinputts(null,input,ps);
 	}
 
+	public static String getinputs(String uuid,String input,Object... params) {
+		if (params == null) return getinputts(null,input,null);
+		Object[] ps = new Object[params.length];
+		for (int i=0;i<params.length;i++) ps[i] = params[i];
+		return getinputts(uuid,input,ps);
+	}
+
+	// 暂时并行
 	// 我还未想好到底如何实现 help :(
-	public static String getinputs(String uuid,String input,Object[] params) {
+	public static String getinputts(String uuid,String input,Object[] params) {
 		String[] lang = null;
 		if(NotBlank(uuid)) {
 			PlayerData playerdata = Maps.getPlayer_Data(uuid);

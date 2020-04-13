@@ -93,52 +93,59 @@ public class ClientCommandsx {
 				if (!Authority_control(player,"login"))
 					player.sendMessage(getinput("authority.no"));
 				else {
-					PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
-					if(playerdata.Login) {
-						player.sendMessage(getinput("login.yes"));
-						return;
-					}
-					if((boolean)isSQLite_User(args[0])) {
-						player.sendMessage(getinput("login.usrno"));
-						return;
-					}
-					PlayerData temp = new PlayerData("temp","temp",0);
-					getSQLite(temp,args[0]);
-					if(temp.Online) {
-						player.sendMessage(getinput("login.in"));
-						return;
-					}
-					try {
-						if(!Passwdverify(args[1],temp.PasswordHash,temp.CSPRNG)) {
-						player.sendMessage(getinput("login.pwno"));  
-						return;
+					final String id = args[0];
+					final String pw = args[1];
+					new Thread(new Runnable() {
+					@Override
+						public void run() {
+							PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
+							if(playerdata.Login) {
+								player.sendMessage(getinput("login.yes"));
+								return;
+							}
+							if((boolean)isSQLite_User(id)) {
+								player.sendMessage(getinput("login.usrno"));
+								return;
+							}
+							PlayerData temp = new PlayerData("temp","temp",0);
+							getSQLite(temp,id);
+							if(temp.Online) {
+								player.sendMessage(getinput("login.in"));
+								return;
+							}
+							try {
+								if(!Passwdverify(pw,temp.PasswordHash,temp.CSPRNG)) {
+								player.sendMessage(getinput("login.pwno"));  
+								return;
+								}
+							} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+								player.sendMessage(getinput("passwd.err"));
+								return;
+							}	
+							getSQLite(playerdata,id);
+							playerdata.Login=true;
+							playerdata.LastLogin=getLocalTimeFromUTC(playerdata.GMT);
+							if(!(playerdata.UUID).equals(player.uuid)) {
+								playerdata.UUID = player.uuid;
+								player.sendMessage(getinput("uuid.update"));
+							}
+							if (Vars.state.rules.pvp){
+								player.setTeam(netServer.assignTeam(player, playerGroup.all()));
+							} else {
+								player.setTeam(Team.sharded);
+							}
+							if (Config.Login_Radical) {
+								if (Vars.state.rules.pvp)
+									player.setTeam(netServer.assignTeam(player, playerGroup.all()));
+								else
+									player.setTeam(Team.sharded);
+								Call.onPlayerDeath(player);
+							}
+							Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
+							Maps.setPlayer_Data(player.uuid,playerdata);
+							savePlayer(playerdata,playerdata.User);
 						}
-					} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-						player.sendMessage(getinput("passwd.err"));
-						return;
-					}	
-					getSQLite(playerdata,args[0]);
-					playerdata.Joincount++;
-					playerdata.Login=true;
-					playerdata.LastLogin=getLocalTimeFromUTC(playerdata.GMT);
-					if(!(playerdata.UUID).equals(player.uuid)) {
-						playerdata.UUID = player.uuid;
-						player.sendMessage(getinput("uuid.update"));
-					}
-					if (Vars.state.rules.pvp){
-						player.setTeam(netServer.assignTeam(player, playerGroup.all()));
-					} else {
-						player.setTeam(Team.sharded);
-					}
-					if (Config.Login_Radical) {
-						if (Vars.state.rules.pvp)
-							player.setTeam(netServer.assignTeam(player, playerGroup.all()));
-						else
-							player.setTeam(Team.sharded);
-						Call.onPlayerDeath(player);
-					}
-					Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
-					Maps.setPlayer_Data(player.uuid,playerdata);
+					}).start();
 				}
 			});
 
@@ -182,13 +189,13 @@ public class ClientCommandsx {
 					playerdata.Login=true;
 					playerdata.Authority=1;
 					playerdata.Mail=(args.length > 3) ? args[3]:"NULL";
-					playerdata.PasswordHash=new String((String)Passwd_date.get("passwordHash"));
-					playerdata.CSPRNG=new String((String)Passwd_date.get("salt"));
-					playerdata.Joincount++;
+					playerdata.PasswordHash=(String)Passwd_date.get("passwordHash");
+					playerdata.CSPRNG=(String)Passwd_date.get("salt");
 					if(!Config.Login_IP) 
 						PlayerData.playerip(Maps.getPlayer_Data(player.uuid),player,Vars.netServer.admins.getInfo(player.uuid).lastIP);
 					playerdata.LastLogin=getLocalTimeFromUTC(playerdata.GMT);
 					Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
+					savePlayer(playerdata,playerdata.User);
 				}
 			});
 
@@ -220,6 +227,10 @@ public class ClientCommandsx {
 			if (!Authority_control(player,"tpp")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
+				if (player.isMobile) {
+					player.sendMessage(getinput("mob.no"));
+					return;
+				}
 				try {
 					int x = Integer.parseInt(args[0])*8;
 					int y = Integer.parseInt(args[1])*8;
@@ -235,12 +246,15 @@ public class ClientCommandsx {
 			if (!Authority_control(player,"tp")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
-				Player other = playerGroup.find(p->p.name.equalsIgnoreCase(args[0]));
-				if(null == other){
-					player.sendMessage(getinput("tp.fail"));
+				if (player.isMobile) {
+					player.sendMessage(getinput("mob.no"));
 					return;
 				}
-				player.setNet(other.x, other.y);
+				Player other = playerGroup.find(p->p.name.equalsIgnoreCase(args[0]));
+				if(null == other)
+					player.sendMessage(getinput("tp.fail"));
+				else
+					player.setNet(other.x, other.y);
 			}
 		});
 
@@ -379,29 +393,29 @@ public class ClientCommandsx {
 					player.sendMessage(getinput("vote.already_begun"));
 					return;
 				}
-				switch(args[0]) {
+				switch(args[0].toLowerCase()) {
 					case "help":
 						Call.onInfoToast(player.con,getinput("vote.help"),40f);
 						break;
 					case "gameover":
 					case "skipwave":
-						new Vote(player,args[0]);
+						Config.vote = new Vote(player,args[0]);
 						break;
 					case "kick":
 						if (args.length > 1)
-							new Vote(player,args[0],args[1]);
+							Config.vote = new Vote(player,args[0],args[1]);
 						else
 							player.sendMessage(getinput("args.err"));
 						break;
 					case "ff":
-						new Vote(player,args[0],player.getTeam());
+						Config.vote = new Vote(player,args[0],player.getTeam());
 						break;
 					case "host":
 						if (args.length > 1)
 							if(NotisNumeric(args[1])) 
 								player.sendMessage(getinput("nber.err"));
 							else
-								new Vote(player,args[0],args[1]);
+								Config.vote = new Vote(player,args[0],args[1]);
 						else
 							player.sendMessage(getinput("args.err"));
 						break;

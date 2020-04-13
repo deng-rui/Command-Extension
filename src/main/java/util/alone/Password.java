@@ -13,9 +13,6 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 //Javax
 
-//import org.apache.commons.codec.binary.Base64;
-//apach
-
 public class Password {
 	/**
 	 * 密码哈希：

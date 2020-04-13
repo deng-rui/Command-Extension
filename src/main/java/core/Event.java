@@ -73,6 +73,7 @@ public class Event {
 	// 
 
 	private final java.util.Map<Integer, Integer> Building_number = Collections.synchronizedMap(new HashMap<Integer, Integer>());
+	//private final java.util.Map<String, Team> Sava_Team = Collections.synchronizedMap(new HashMap<String, Team>());
 
 	public void register() {
 
@@ -83,7 +84,7 @@ public class Event {
 			});
 
 			netServer.assigner = ((player, players) -> {
-				if (Vars.state.rules.pvp) {
+				if (Vars.state.rules.pvp) {		
 					Teams.TeamData re = (Teams.TeamData)Vars.state.teams.getActive().min(data -> {
 						int count = 0;
 						for (final Player other : players)
@@ -170,22 +171,22 @@ public class Event {
 
 			// 去除语言检测
 			if((int)Maps.getPlayer_Data(e.player.uuid).Authority > 0) {
-				if(String.valueOf(e.message).equalsIgnoreCase("y")) {
+				String msg = String.valueOf(e.message);
+				if(msg.equalsIgnoreCase("y") || msg.equalsIgnoreCase("n") || msg.equalsIgnoreCase("cy") || msg.equalsIgnoreCase("cn")) {
 					if(Vote.sted)
 						e.player.sendMessage(getinput("vote.noy"));
-					else {
-						if (Vote.playerlist.contains(e.player.uuid)) {
+					else 
+						if (Vote.playerlist.contains(e.player.uuid))
 							e.player.sendMessage(getinput("vote.rey"));
-						} else {
-							if (Vote.isteam)
-								if (!(e.player.getTeam().equals(Vote.team)))
+						else
+							if (Vote.isteam) {
+								if (!(Vote.team.equals(e.player.getTeam()))) {
+									e.player.sendMessage(getinput("vote.team"));
 									return;
-							Vote.playerlist.add(e.player.uuid);
-							e.player.sendMessage(getinput("vote.y"));
-							new Vote();
-						}
-					}
-				}	
+								}
+							} else
+								Config.vote.ToVote(e.player,msg);
+				}
 			}
 
 			PlayerData playerdata = Maps.getPlayer_Data(e.player.uuid);
