@@ -33,6 +33,7 @@ import static mindustry.Vars.world;
 import extension.core.ex.Vote;
 import extension.data.db.PlayerData;
 import extension.data.global.Config;
+import extension.data.global.Data;
 import extension.data.global.Lists;
 import extension.data.global.Maps;
 import extension.util.translation.Bing;
@@ -42,6 +43,7 @@ import extension.util.translation.Google;
 import static extension.core.ex.Extend.Authority_control;
 import static extension.core.ex.Extend.loadmaps;
 import static extension.core.ex.Extend.PlayerdatatoObject;
+import static extension.core.ex.Threads.NewThred_DB;
 
 import static extension.data.db.Player.getSQLite;
 import static extension.data.db.Player.isSQLite_User;
@@ -95,8 +97,8 @@ public class ClientCommandsx {
 				else {
 					final String id = args[0];
 					final String pw = args[1];
-					new Thread(new Runnable() {
-					@Override
+					Data.Thred_service.execute(new Runnable() {
+						@Override
 						public void run() {
 							PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
 							if(playerdata.Login) {
@@ -124,28 +126,26 @@ public class ClientCommandsx {
 							}	
 							getSQLite(playerdata,id);
 							playerdata.Login=true;
+							playerdata.Online=true;							
 							playerdata.LastLogin=getLocalTimeFromUTC(playerdata.GMT);
 							if(!(playerdata.UUID).equals(player.uuid)) {
 								playerdata.UUID = player.uuid;
 								player.sendMessage(getinput("uuid.update"));
-							}
-							if (Vars.state.rules.pvp){
-								player.setTeam(netServer.assignTeam(player, playerGroup.all()));
-							} else {
-								player.setTeam(Team.sharded);
 							}
 							if (Config.Login_Radical) {
 								if (Vars.state.rules.pvp)
 									player.setTeam(netServer.assignTeam(player, playerGroup.all()));
 								else
 									player.setTeam(Team.sharded);
-								Call.onPlayerDeath(player);
+								//Call.onPlayerDeath(player);
+								player.kill();
 							}
-							Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
+							player.sendMessage(getinput("login.to"));
+							//Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
 							Maps.setPlayer_Data(player.uuid,playerdata);
-							savePlayer(playerdata,playerdata.User);
+							NewThred_DB(() -> savePlayer(playerdata,playerdata.User));
 						}
-					}).start();
+					});
 				}
 			});
 
@@ -153,49 +153,60 @@ public class ClientCommandsx {
 				if (!Authority_control(player,"register"))
 					player.sendMessage(getinput("authority.no"));
 				else {
-					PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
-					if(playerdata.Login) {
-						player.sendMessage(getinput("login.yes"));
-						return;
-					}
-					if(!args[1].equals(args[2])) {
-						player.sendMessage(getinput("register.pawno"));
-						return;
-					}
-					if(!(boolean)isSQLite_User(args[0])) {
-						player.sendMessage(getinput("register.usrerr"));
-						return;
-					}
-					java.util.Map<String, Object> Passwd_date;
-					try {
-						Passwd_date = (java.util.Map<String, Object>)newPasswd(args[1]);
-					} catch (Exception e) {
-						player.sendMessage(getinput("passwd.err"));
-						return;
-					}
-					if(!(boolean)Passwd_date.get("resualt")) {
-						player.sendMessage(getinput("passwd.err"));
-						return;
-					}
-					if (Config.Login_Radical) {
-						if (Vars.state.rules.pvp)
-							player.setTeam(netServer.assignTeam(player, playerGroup.all()));
-						else
-							player.setTeam(Team.sharded);
-						Call.onPlayerDeath(player);
-					}
-					InitializationPlayersSQLite(args[0]);	
-					playerdata.User=args[0];
-					playerdata.Login=true;
-					playerdata.Authority=1;
-					playerdata.Mail=(args.length > 3) ? args[3]:"NULL";
-					playerdata.PasswordHash=(String)Passwd_date.get("passwordHash");
-					playerdata.CSPRNG=(String)Passwd_date.get("salt");
-					if(!Config.Login_IP) 
-						PlayerData.playerip(Maps.getPlayer_Data(player.uuid),player,Vars.netServer.admins.getInfo(player.uuid).lastIP);
-					playerdata.LastLogin=getLocalTimeFromUTC(playerdata.GMT);
-					Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
-					savePlayer(playerdata,playerdata.User);
+					final String newid = args[0];
+					final String newpw = args[1];
+					final String renewpw = args[2];
+					final String mail = (args.length > 3) ? args[3]:"NULL";
+					Data.Thred_service.execute(new Runnable() {
+						@Override
+						public void run() {
+							PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
+							if(playerdata.Login) {
+								player.sendMessage(getinput("login.yes"));
+								return;
+							}
+							if(!newpw.equals(renewpw)) {
+								player.sendMessage(getinput("register.pawno"));
+								return;
+							}
+							if(!(boolean)isSQLite_User(newid)) {
+								player.sendMessage(getinput("register.usrerr"));
+								return;
+							}
+							java.util.Map<String, Object> Passwd_date;
+							try {
+								Passwd_date = (java.util.Map<String, Object>)newPasswd(newpw);
+							} catch (Exception e) {
+								player.sendMessage(getinput("passwd.err"));
+								return;
+							}
+							if(!(boolean)Passwd_date.get("resualt")) {
+								player.sendMessage(getinput("passwd.err"));
+								return;
+							}
+							if (Config.Login_Radical) {
+								if (Vars.state.rules.pvp)
+									player.setTeam(netServer.assignTeam(player, playerGroup.all()));
+								else
+									player.setTeam(Team.sharded);
+								//Call.onPlayerDeath(player);
+								player.kill();
+							}
+							InitializationPlayersSQLite(newid);	
+							playerdata.User=newid;
+							playerdata.Login=true;
+							playerdata.Authority=1;
+							playerdata.Mail=mail;
+							playerdata.PasswordHash=(String)Passwd_date.get("passwordHash");
+							playerdata.CSPRNG=(String)Passwd_date.get("salt");
+							if(!Config.Login_IP) 
+								NewThred_DB(() -> PlayerData.playerip(Maps.getPlayer_Data(player.uuid),player,Vars.netServer.admins.getInfo(player.uuid).lastIP));
+							playerdata.LastLogin=getLocalTimeFromUTC(playerdata.GMT);
+							player.sendMessage(getinput("register.to"));
+							//Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
+							NewThred_DB(() -> savePlayer(playerdata,playerdata.User));
+						}
+					});
 				}
 			});
 
@@ -287,7 +298,7 @@ public class ClientCommandsx {
 					}
 					index++;
 				}
-				Call.onPlayerDeath(player);
+				player.kill();
 			}
 		});
 
@@ -312,7 +323,7 @@ public class ClientCommandsx {
 			}
 		});
 
-
+/*
 		handler.<Player>register("host","<map_number>",getinput("host"), (args, player) -> {
 			if (Authority_control(player,"host")) {
 				player.sendMessage(getinput("authority.no"));
@@ -320,7 +331,7 @@ public class ClientCommandsx {
 				host(player,args[0]);
 			}
 		});
-
+*/
 		handler.<Player>register("runwave",getinput("runwave"), (args, player) -> {
 			if (!Authority_control(player,"runwave")) {
 				player.sendMessage(getinput("authority.no"));
@@ -347,7 +358,7 @@ public class ClientCommandsx {
 					ie.printStackTrace();
 				}
 				// 默认EN
-				Call.sendMessage("["+player.name+"]"+"[green] : [] "+googletranslation.translate(args[0].replace('_',' '),(Blank(args[1])) ? "en" : args[1])+"   -From Google Translator");
+				Call.sendMessage("["+player.name+"]"+"[green] : [] [white]"+googletranslation.translate(args[0].replace('_',' '),(Blank(args[1])) ? "en" : args[1])+"   -From Google Translator");
 			}	
 		});
 
@@ -399,23 +410,26 @@ public class ClientCommandsx {
 						break;
 					case "gameover":
 					case "skipwave":
-						Config.vote = new Vote(player,args[0]);
+						Data.vote = new Vote(player,args[0]);
 						break;
 					case "kick":
 						if (args.length > 1)
-							Config.vote = new Vote(player,args[0],args[1]);
+							Data.vote = new Vote(player,args[0],args[1]);
 						else
 							player.sendMessage(getinput("args.err"));
 						break;
 					case "ff":
-						Config.vote = new Vote(player,args[0],player.getTeam());
+						Data.vote = new Vote(player,args[0],player.getTeam());
 						break;
 					case "host":
 						if (args.length > 1)
-							if(NotisNumeric(args[1])) 
+							if(NotisNumeric(args[1])) {
 								player.sendMessage(getinput("nber.err"));
-							else
-								Config.vote = new Vote(player,args[0],args[1]);
+							} else
+								if (!(Lists.getMaps_List().size() >= Integer.parseInt(args[1]))) {
+									player.sendMessage(getinput("vote.host.maps.err",args[1]));
+								} else
+									Data.vote = new Vote(player,args[0],args[1]);
 						else
 							player.sendMessage(getinput("args.err"));
 						break;
