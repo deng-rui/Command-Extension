@@ -24,6 +24,7 @@ import static mindustry.Vars.netServer;
 import static mindustry.Vars.playerGroup;
 //Mindustry-Static
 
+import extension.core.Event;
 import extension.data.global.Config;
 import extension.data.global.Maps;
 import extension.util.Log;
@@ -81,11 +82,13 @@ public class Extend {
 					}
 				}
 			};
-			// 延迟5S.
-			Timer.schedule(lastTask, 5);
+			// 延迟4S. 微调
+			Timer.schedule(lastTask, 4);
 		}else{
 			r.run();
 		}
+
+		Event.syncTeam();
 	}
 
 	public static Object[] PlayerdatatoObject(PlayerData d){

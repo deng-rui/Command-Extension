@@ -25,6 +25,7 @@ import static mindustry.Vars.state;
 
 import extension.data.db.PlayerData;
 import extension.data.global.Config;
+import extension.data.global.Data;
 import extension.data.global.Maps;
 import extension.util.Log;
 //GA-Exted
@@ -65,24 +66,38 @@ public class Threads {
 		Runnable Atime=new Runnable() {
 			@Override
 			public void run() {
+
+				Custom();
+				Data.ismsg = true;
+				//
 				if (Config.Login)
 					LoginStatus();
-				if (Config.Regular_Reporting)
-					Status_Reporting();
 				if (Config.Day_and_night)
 					Day_and_night_shift();
+				if (Config.Regular_Reporting)
+					Status_Reporting();
 			}
 		};
-		Thread_Time=Config.service.scheduleAtFixedRate(Atime,1,1,TimeUnit.MINUTES);
+		Thread_Time=Data.service.scheduleAtFixedRate(Atime,1,1,TimeUnit.MINUTES);
 	}
 
 	public static void close() {
 		Thread_Time.cancel(true);
-		Config.service.shutdown();
+		Data.service.shutdown();
+		Data.Thred_service.shutdown();
+		Data.Thred_DB_service.shutdown();
+	}
+
+	public static void NewThred_DB(Runnable run) {
+		Data.Thred_DB_service.execute(run);
+	}
+
+	public static void NewThred_SE(Runnable run) {
+		Data.Thred_service.execute(run);
 	}
 
 	// 用户过期?
-	public static void LoginStatus() {
+	private static void LoginStatus() {
 		if (Config.Login_Time > status_login) {
 			status_login++;
 			return;
@@ -101,7 +116,7 @@ public class Threads {
 		}
 	}
 
-	public static void Status_Reporting() {
+	private static void Status_Reporting() {
 		if (Config.Regular_Reporting_Time > status_mail) {
 			status_mail++;
 			return;
@@ -195,6 +210,11 @@ public class Threads {
 		} else
 			state.rules.lighting = false;
 		// 设置规则
+		Call.onSetRules(state.rules);
+	}
+
+	private static void Custom() {
+		state.rules.playerDamageMultiplier = 0f;
 		Call.onSetRules(state.rules);
 	}
 }
