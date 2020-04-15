@@ -33,6 +33,7 @@ import static mindustry.Vars.state;
 
 import extension.core.ex.Extend;
 import extension.data.global.Config;
+import extension.data.global.Data;
 import extension.data.global.Maps;
 import extension.data.global.Lists;
 import extension.util.Log;
@@ -100,6 +101,7 @@ public class Vote {
 					playerplayer.sendMessage(getinput("vote.y"));
 				}else
 					playerplayer.sendMessage(getinput("vote.n"));
+				Inspect_End();
 				break;
 			// Vote Compulsory passage
 			case "cy" :
@@ -147,8 +149,12 @@ public class Vote {
 				target = playerGroup.find(p -> p.name.equals(name));
 				if(target == null)
 					player.sendMessage(getinput("vote.kick.err",name));
-				else
-					Normal_distribution();
+				else {
+					if (target.isAdmin)
+						player.sendMessage(getinput("vote.err.admin",name));
+					else
+						Normal_distribution();
+				}	
 				break;
 			case "skipwave" :
 				if (state.rules.pvp)
@@ -223,7 +229,7 @@ public class Vote {
 				Call.sendMessage(getinput("vote.ing",reciprocal));
 			}
 		};
-		Count_down=Config.service.scheduleAtFixedRate(Countdown,10,10,TimeUnit.SECONDS);
+		Count_down=Data.service.scheduleAtFixedRate(Countdown,10,10,TimeUnit.SECONDS);
 		Runnable Votetime=new Runnable() {
 			@Override
 			public void run() {
@@ -231,7 +237,7 @@ public class Vote {
 				End();
 			}
 		};
-		Vote_time=Config.service.schedule(Votetime,58,TimeUnit.SECONDS);
+		Vote_time=Data.service.schedule(Votetime,58,TimeUnit.SECONDS);
 		// 剩余时间
 		reciprocal=60;
 		// 正在投票
@@ -264,9 +270,8 @@ public class Vote {
 					ff();
 					break;
 			}
-		} else {
+		} else
 			endnomsg.run();
-		}
 		playerlist.clear();
 		isteam = false;
 		sted = true;
@@ -279,7 +284,7 @@ public class Vote {
 		endyesmsg = null;
 		Count_down=null;
 		Vote_time=null;
-		Config.vote = null;
+		Data.vote = null;
 	}
 
 	private void kick() {
