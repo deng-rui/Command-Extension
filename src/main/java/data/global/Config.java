@@ -1,30 +1,12 @@
 package extension.data.global;
 
 import java.text.DecimalFormat;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.Executors;
-
-import extension.core.ex.Vote;
 
 import static extension.util.file.LoadConfig.loadint;
 import static extension.util.file.LoadConfig.loadstring;
 import static extension.util.file.LoadConfig.loadboolean;
 
 public class Config {
-
-	public static final String Plugin_Path 						= "/config/mods";
-	public static final String Plugin_Data_Path 				= "/config/mods/GA";
-	public static final String Plugin_Lib_Path 					= "/config/mods/GA/lib";
-	public static final String Plugin_Log_Path 					= "/config/mods/GA/log";
-	public static final String Plugin_Resources_Path 			= "/config/mods/GA/resources";
-	public static final String Plugin_Resources_bundles_Path 	= "/config/mods/GA/resources/bundles";
-	public static final String Plugin_Resources_Other_Path 		= "/config/mods/GA/resources/other";
-	// [线程]
-	public static final ScheduledExecutorService service 		= Executors.newScheduledThreadPool(5);
-
-	// [Cache]
-	public static Vote vote;
 
 	// [服务器]
 	public static boolean Server_Networking 					= true;
