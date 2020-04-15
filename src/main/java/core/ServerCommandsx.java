@@ -14,6 +14,10 @@ import static mindustry.Vars.net;
 import static mindustry.Vars.maps;
 //Mindustry-Static
 
+import extension.data.db.PlayerData;
+import extension.data.global.Maps;
+//
+
 import extension.core.Initialization;
 import extension.core.ex.Threads;
 //Static
@@ -49,6 +53,12 @@ public class ServerCommandsx {
 		handler.register("reloadconfig", "reload Command-Extension Config.ini", (arg)-> {
 			info("&lyReLoad Config.ini End.");
 			new Initialization().ReLoadConfig();
+		});
+
+		handler.register("toadmin", "<uuid> <id>","reload Command-Extension Config.ini", (arg)-> {
+			PlayerData playerdata = Maps.getPlayer_Data(arg[0]);
+			if (playerdata != null)
+				playerdata.Authority = Integer.parseInt(arg[1]);
 		});
 
 		handler.register("exit", "Exit the server application", (arg)-> {
