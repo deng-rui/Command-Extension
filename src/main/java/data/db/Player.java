@@ -9,6 +9,7 @@ import arc.Core;
 //Arc
 
 import extension.data.global.Config;
+import extension.data.global.Data;
 import extension.util.Log;
 import extension.util.file.FileUtil;
 //GA-Exted
@@ -23,7 +24,7 @@ public class Player {
 
 	static {
 		try {
-			c = DriverManager.getConnection("jdbc:sqlite:"+FileUtil.File(Config.Plugin_Data_Path).getPath("Data.db"));
+			c = DriverManager.getConnection("jdbc:sqlite:"+FileUtil.File(Data.Plugin_Data_Path).getPath("Data.db"));
 			c.setAutoCommit(false);
 		} catch (Exception e) {
 			Log.fatal(e);

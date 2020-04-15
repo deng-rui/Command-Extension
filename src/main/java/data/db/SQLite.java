@@ -8,6 +8,7 @@ import arc.Core;
 //Arc
 
 import extension.data.global.Config;
+import extension.data.global.Data;
 import extension.util.file.FileUtil;
 import extension.util.Log;
 //GA-Exted
@@ -22,7 +23,7 @@ public class SQLite {
 	public static void InitializationSQLite() {
 		try {
 			String sql;
-			Connection c = DriverManager.getConnection("jdbc:sqlite:"+FileUtil.File(Config.Plugin_Data_Path).getPath("Data.db"));
+			Connection c = DriverManager.getConnection("jdbc:sqlite:"+FileUtil.File(Data.Plugin_Data_Path).getPath("Data.db"));
 			Statement stmt = c.createStatement();
 			// 时间可以改成BUGINT
 			sql = "CREATE TABLE PlayerData (" +

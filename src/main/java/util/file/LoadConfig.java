@@ -6,6 +6,7 @@ import java.text.MessageFormat;
 //Java
 
 import extension.data.global.Config;
+import extension.data.global.Data;
 import extension.util.Log;
 import extension.util.file.FileUtil;
 //GA-Exted
@@ -21,7 +22,7 @@ public class LoadConfig {
 
 	private static Object load(String input) throws RuntimeException{
 		Properties properties = new Properties();
-        InputStreamReader inputStream = FileUtil.File(Config.Plugin_Data_Path).toPath("/Config.ini").readconfig();
+        InputStreamReader inputStream = FileUtil.File(Data.Plugin_Data_Path).toPath("/Config.ini").readconfig();
         try {
             properties.load(inputStream);
         } catch (IOException e) {

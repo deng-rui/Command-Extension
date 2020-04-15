@@ -20,6 +20,7 @@ import mindustry.maps.Maps.*;
 import static mindustry.Vars.maps;
 //Mindustry-Static
 
+import extension.data.global.Data;
 import extension.data.global.Config;
 import extension.net.Net;
 import extension.core.ex.Threads;
@@ -93,7 +94,7 @@ public class Initialization {
 	
 
 	private void SQL() {
-		importLib("org.xerial","sqlite-jdbc","3.30.1",Config.Plugin_Lib_Path);
+		importLib("org.xerial","sqlite-jdbc","3.30.1",Data.Plugin_Lib_Path);
 		if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists())InitializationSQLite();
 	}
 
@@ -105,11 +106,10 @@ public class Initialization {
 
 	private void Config() {
 		try {
-			if(!FileUtil.File(Config.Plugin_Data_Path).toPath("/Config.ini").exists()) {
+			if(!FileUtil.File(Data.Plugin_Data_Path).toPath("/Config.ini").exists()) {
 				String data = (String)FileUtil.readfile(false,new InputStreamReader(Initialization.class.getResourceAsStream("/Config.ini"), "UTF-8"));
-				Log.info(data);
 				FileUtil.writefile(data,false);
-				Log.info("Defect : Start creating write external Config File",Config.Plugin_Data_Path+"/Config.ini");
+				Log.info("Defect : Start creating write external Config File",Data.Plugin_Data_Path+"/Config.ini");
 			}
 		}catch(UnsupportedEncodingException e){
 			Log.fatal("File write error",e);
@@ -124,11 +124,11 @@ public class Initialization {
 			List file = (List)FileUtil.readfile(true,new InputStreamReader(Initialization.class.getResourceAsStream("/other/FileList.txt"), "UTF-8"));
 			for(int i=0;i<file.size();i++){
 				//Log.info((String)file.get(i));
-				if(!FileUtil.File(Config.Plugin_Resources_Path+(String)file.get(i)).exists()) {
+				if(!FileUtil.File(Data.Plugin_Resources_Path+(String)file.get(i)).exists()) {
 					//IPR必须加上/
 					String a = (String)FileUtil.readfile(false,new InputStreamReader(Initialization.class.getResourceAsStream((String)file.get(i)), "UTF-8"));
 					FileUtil.writefile(a,false);
-					Log.info("Defect : Start creating write external resource File",Config.Plugin_Resources_Path+(String)file.get(i));
+					Log.info("Defect : Start creating write external resource File",Data.Plugin_Resources_Path+(String)file.get(i));
 				}
 			}
 		}catch(UnsupportedEncodingException e){
