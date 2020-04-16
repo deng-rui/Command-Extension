@@ -24,10 +24,15 @@ import arc.util.CommandHandler.Command;
 import arc.struct.Array;
 import arc.struct.ObjectMap;
 
+import java.io.*;
+import java.util.*;
+import extension.util.file.FileUtil;
+
 
 public class Main extends Plugin {
 	//动态难度
 	//PVP限制
+	private boolean a = true;
 
 	public Main() {
 		
@@ -39,6 +44,39 @@ public class Main extends Plugin {
 
 		//加载Event
 		new Event().register();
+/*
+NGROK-OK
+		Threads.NewThred_SE(() -> {
+			String line;
+		    Process p;
+		    BufferedReader input = null;
+
+		    try {
+		        p = Runtime.getRuntime().exec(FileUtil.File("/").getPath()+"ngrok -log="+FileUtil.File("/").getPath()+"ngrok.log -config ngrok.conf start httptun tcptun");
+
+		        input = new BufferedReader(
+		                new InputStreamReader(p.getInputStream()));
+
+		        if(a) {
+		        	while ((line = input.readLine()) != null) {
+		            System.out.println(line);
+		        }
+		        a = false;
+		        }
+		        
+		    } catch (IOException e) {
+		        e.printStackTrace();
+		    } finally {
+		        if (null != input) {
+		            try {
+		                input.close();
+		            } catch (IOException e) {
+		                e.printStackTrace();
+		            }
+		        }
+		       }
+		});
+*/
 	}
 
 	@Override
