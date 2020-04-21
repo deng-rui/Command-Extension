@@ -10,7 +10,7 @@ import arc.Core;
 import extension.data.global.Config;
 import extension.data.global.Data;
 import extension.util.file.FileUtil;
-import extension.util.Log;
+import extension.util.log.Log;
 //GA-Exted
 
 //Static

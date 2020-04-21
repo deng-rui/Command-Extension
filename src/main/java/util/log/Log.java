@@ -1,4 +1,4 @@
-package extension.util;
+package extension.util.log;
 
 import java.util.*;
 import java.text.SimpleDateFormat;
@@ -125,7 +125,7 @@ public class Log {
 		StringBuilder sb = new StringBuilder();
 		StringBuffer error = new StringBuffer(e.toString());
 		String[] lines = error.toString().split(LINE_SEPARATOR);
-		sb.append(getLocalTimeFromUTC(0,0))
+		sb.append(getLocalTimeFromUTC(0,1))
 			.append(" UTC")
 			.append(LINE_SEPARATOR)
 			.append(tag)

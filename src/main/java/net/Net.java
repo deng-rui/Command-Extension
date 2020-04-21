@@ -8,7 +8,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 //Java
 
-import extension.util.Log;
+import extension.util.log.Exceptions;
+import extension.util.log.Log;
 //GA-Exted
 
 public class Net {
@@ -20,7 +21,8 @@ public class Net {
 			try {  
 				in = url.openStream();   
 				connect = true;
-			} catch (IOException e) {  
+			} catch (IOException e) {
+				
 			} finally {
 				try {
 					if(in != null)in.close(); 

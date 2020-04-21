@@ -1,6 +1,6 @@
 package extension.util.log;
 
-import extension.util.Log;
+import extension.util.log.Log;
 
 public class Exceptions {
 

@@ -7,12 +7,10 @@ import java.text.MessageFormat;
 
 import extension.data.global.Config;
 import extension.data.global.Data;
-import extension.util.Log;
 import extension.util.file.FileUtil;
-//GA-Exted
-
-import extension.util.Log;
 import extension.util.log.Exceptions;
+import extension.util.log.Log;
+//GA-Exted
 
 /*
  *  Config.java

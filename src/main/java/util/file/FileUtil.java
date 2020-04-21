@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.ArrayList;
 //Java
 
-import extension.util.Log;
+import extension.util.log.Log;
+//GA-Exted
 
 public class FileUtil {
 
@@ -30,7 +31,8 @@ public class FileUtil {
 		File file;
 		String filepath;
 		String to = tofile;
-		if(!String.valueOf(tofile.charAt(0)).equals("/"))to = "/"+tofile;
+		if (null!=tofile)
+			if(!String.valueOf(tofile.charAt(0)).equals("/"))to = "/"+tofile;
 		try {
 			File directory = new File("");
 			filepath=directory.getCanonicalPath()+to;

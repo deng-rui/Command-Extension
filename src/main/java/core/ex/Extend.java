@@ -27,8 +27,8 @@ import static mindustry.Vars.playerGroup;
 import extension.core.Event;
 import extension.data.global.Config;
 import extension.data.global.Maps;
-import extension.util.Log;
 import extension.data.db.PlayerData;
+import extension.util.log.Log;
 //GA-Exted
 
 import static extension.util.ExtractUtil.longToIP;
@@ -101,7 +101,7 @@ public class Extend {
         long hour = 0;
         long minute = 0;
         long second = 0;
-        if (time <= 0)
+        if(time <= 0)
             return "00:00";
         else {
             minute = time / 60;
@@ -115,7 +115,7 @@ public class Extend {
  
     private static String unitFormat(long i) {
         String retStr = null;
-        if (i >= 0 && i < 10)
+        if(i >= 0 && i < 10)
             retStr = "0" + i;
         else
             retStr = "" + i;
@@ -124,13 +124,13 @@ public class Extend {
 
     public static void addMesg_Team(String msg, Team team){
     	for (Player player : playerGroup.all())
-			if (player.getTeam().equals(team))
+			if(player.getTeam().equals(team))
 				player.sendMessage(msg);
     }
 
     public static void addMesg_Admin(String msg){
     	for (Player player : playerGroup.all())
-			if (player.isAdmin)
+			if(player.isAdmin)
 				player.sendMessage(msg);
     }
 }
