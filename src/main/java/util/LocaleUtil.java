@@ -16,7 +16,7 @@ import extension.data.global.Config;
 import extension.data.global.Maps;
 import extension.dependent.UTF8Control;
 import extension.util.file.FileUtil;
-import extension.util.Log;
+import extension.util.log.Log;
 //GA-Exted
 
 import static extension.data.json.Json.getData;
@@ -26,8 +26,6 @@ import static extension.util.IsUtil.NotBlank;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 //Json
-
-import extension.util.Log;
  
 public class LocaleUtil {
 

@@ -35,7 +35,7 @@ public class ExtractUtil {
 		return matcher.group(0);
 	}
 
-	public static String getkeys(String url,String keys,int numbero,int numbert) throws Exception {
+	public static String getkeys(String url,String keys,int numbero,int numbert) {
 		String tkk = "";
 		String result = doGet(url);
 		// 去除返回数据空格
@@ -44,7 +44,6 @@ public class ExtractUtil {
 			String matchString = findMatchString(text, keys);
 			// 提取目标
 			tkk = matchString.substring(numbero, matchString.length() - numbert);
-			
 		}
 		return tkk;
 	}
@@ -74,5 +73,29 @@ public class ExtractUtil {
 		.append(String.valueOf((longIp & 0x000000FF)));
 		return sb.toString();
 	}
+
+	public static String unicodeEncode(String string) {
+        char[] utfBytes = string.toCharArray();
+        String unicodeBytes = "";
+        for (int i = 0; i < utfBytes.length; i++) {
+            String hexB = Integer.toHexString(utfBytes[i]);
+            if (hexB.length() <= 2) {
+                hexB = "00" + hexB;
+            }
+            unicodeBytes = unicodeBytes + "\\u" + hexB;
+        }
+        return unicodeBytes;
+    }
+
+    public static String unicodeDecode(String string) {
+        Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
+        Matcher matcher = pattern.matcher(string);
+        char ch;
+        while (matcher.find()) {
+            ch = (char) Integer.parseInt(matcher.group(2), 16);
+            string = string.replace(matcher.group(1), ch + "");
+        }
+        return string;
+    }
 
 }
