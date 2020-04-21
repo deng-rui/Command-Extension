@@ -11,7 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 //Java
 
-import extension.util.Log;
+import extension.util.log.Log;
 //GA-Exted
 
 import static extension.net.HttpRequest.doGet;
@@ -79,43 +79,35 @@ public class Google {
 	 * @version 1.0
 	 */
 	public String translate(String word, String from, String to) {
+		if (Blank(word))return null;
+		String tkk = getkeys("https://translate.google.cn/","tkk:.*?',",5,2);
+		if (Blank(tkk))return null;
+		String tk = getTK(word, tkk);
 		try {
-			if (Blank(word))return null;
-			String tkk = getkeys("https://translate.google.cn/","tkk:.*?',",5,2);
-			if (Blank(tkk))return null;
-			String tk = getTK(word, tkk);
 			word = URLEncoder.encode(word, "UTF-8");
-			StringBuffer buffer = new StringBuffer("https://translate.google.cn/translate_a/single?client=t");
-			if (Blank(from)) {
-				from = "auto";
-			}
-			buffer.append("&sl=" + from);
-			buffer.append("&tl=" + to);
-			buffer.append("&hl=zh-CN&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&ie=UTF-8&oe=UTF-8&source=btn&kc=0");
-			buffer.append("&tk=" + tk);
-			buffer.append("&q=" + word);
-			String url = buffer.toString();
-			String result = doGet(url);
-			JSONArray array = (JSONArray) JSONArray.parse(result);
-			JSONArray rArray = array.getJSONArray(0);
-			StringBuffer rBuffer = new StringBuffer();
-			for (int i = 0; i < rArray.size(); i++) {
-				String r = rArray.getJSONArray(i).getString(0);
-				if (NotBlank(r)) {
-					rBuffer.append(r);
-				}
-			}
-			return rBuffer.toString();
-		//} catch (UnsupportedEncodingException e) {
-		//	Log.error("Net-Connect",e);
-		} catch (Exception e) {
-			Log.error("Net-Connect",e);
+		} catch (UnsupportedEncodingException e) {
 		}
-		return null;
-		
+		StringBuffer buffer = new StringBuffer("https://translate.google.cn/translate_a/single?client=t");
+		buffer.append("&sl=" + from);
+		buffer.append("&tl=" + to);
+		buffer.append("&hl=zh-CN&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&ie=UTF-8&oe=UTF-8&source=btn&kc=0");
+		buffer.append("&tk=" + tk);
+		buffer.append("&q=" + word);
+		String url = buffer.toString();
+		String result = doGet(url);
+		JSONArray array = (JSONArray) JSONArray.parse(result);
+		JSONArray rArray = array.getJSONArray(0);
+		StringBuffer rBuffer = new StringBuffer();
+		for (int i = 0; i < rArray.size(); i++) {
+			String r = rArray.getJSONArray(i).getString(0);
+			if (NotBlank(r)) {
+				rBuffer.append(r);
+			}
+		}
+		return rBuffer.toString();
 	}
 
 	public String translate(String word, String to) {
-		return translate(word, null, to);
+		return translate(word,"auto",to);
 	}
 }
