@@ -57,7 +57,11 @@ public class Config {
 
 	// [Help]
 	//public static boolean
-
+	
+	//
+	public static boolean Baidu_Tr;
+	public static String Baidu_ID;
+	public static String Baidu_Key;
 
 
 
@@ -112,6 +116,11 @@ public class Config {
 				Regular_Reporting_Time 							= loadint("Regular_Reporting_Time");
 				Regular_Reporting_ToMail 						= loadstring("Regular_Reporting_ToMail");
 			}
+		}
+		Baidu_Tr 												= loadboolean("Baidu_Tr");
+		if(Baidu_Tr) {
+			Baidu_ID 											= loadstring("Baidu_Tr.ID");
+			Baidu_Key 											= loadstring("Baidu_Tr.Key");
 		}
 	}
 

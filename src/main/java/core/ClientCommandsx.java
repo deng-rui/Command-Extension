@@ -62,7 +62,7 @@ import static extension.util.LocaleUtil.Language_determination;
 public class ClientCommandsx {
 
 	public void register(CommandHandler handler) {
-		//handler.removeCommand("help");
+		handler.removeCommand("help");
 		handler.removeCommand("vote");
 		handler.removeCommand("votekick");
 /*
@@ -82,17 +82,22 @@ public class ClientCommandsx {
 			}
 			StringBuilder result = new StringBuilder();
 			result.append(Strings.format("[orange]-- Commands Page[lightgray] {0}[gray]/[lightgray]{1}[orange] --\n\n", (page+1), pages));
-
+			Command command;
+			String temp;
 			for(int i = commandsPerPage * page; i < Math.min(commandsPerPage * (page + 1), clientCommands.getCommandList().size); i++){
-				Command command = clientCommands.getCommandList().get(i);
-				result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(command.description).append("\n");
+				command = clientCommands.getCommandList().get(i);
+				if("4dV#-".equals(e.message.charAt(4))) {
+					temp = 
+				} else
+					temp = command.description;
+				result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append().append("\n");
 			}
 			player.sendMessage(result.toString());
 		});
 */
-		if (Config.Login) {
+		if(Config.Login) {
 			handler.<Player>register("login", "<id> <password>", "4dV#-login", (args, player) -> {
-				if (!Authority_control(player,"login"))
+				if(!Authority_control(player,"login"))
 					player.sendMessage(getinput("authority.no"));
 				else {
 					final String id = args[0];
@@ -132,8 +137,8 @@ public class ClientCommandsx {
 								playerdata.UUID = player.uuid;
 								player.sendMessage(getinput("uuid.update"));
 							}
-							if (Config.Login_Radical) {
-								if (Vars.state.rules.pvp)
+							if(Config.Login_Radical) {
+								if(Vars.state.rules.pvp)
 									player.setTeam(netServer.assignTeam(player, playerGroup.all()));
 								else
 									player.setTeam(Team.sharded);
@@ -150,7 +155,7 @@ public class ClientCommandsx {
 			});
 
 			handler.<Player>register("register", "<new_id> <new_password> <password_repeat> [your_mail]", "Login to account", (args, player) -> {
-				if (!Authority_control(player,"register"))
+				if(!Authority_control(player,"register"))
 					player.sendMessage(getinput("authority.no"));
 				else {
 					final String newid = args[0];
@@ -184,8 +189,8 @@ public class ClientCommandsx {
 								player.sendMessage(getinput("passwd.err"));
 								return;
 							}
-							if (Config.Login_Radical) {
-								if (Vars.state.rules.pvp)
+							if(Config.Login_Radical) {
+								if(Vars.state.rules.pvp)
 									player.setTeam(netServer.assignTeam(player, playerGroup.all()));
 								else
 									player.setTeam(Team.sharded);
@@ -211,7 +216,7 @@ public class ClientCommandsx {
 			});
 
 			handler.<Player>register("ftpasswd", "<Email_at_registration> [Verification_Code]", "Forget password", (args, player) -> {
-				if (!Authority_control(player,"ftpasswd"))
+				if(!Authority_control(player,"ftpasswd"))
 					player.sendMessage(getinput("authority.no"));
 				else
 				{}
@@ -221,24 +226,24 @@ public class ClientCommandsx {
 		//
 		
 		handler.<Player>register("info",getinput("info"), (args, player) -> {
-			if (!Authority_control(player,"info")) {
+			if(!Authority_control(player,"info")) {
 				player.sendMessage(getinput("authority.no"));
 			} else 
 				Call.onInfoMessage(player.con,getinputt("info.info.1",PlayerdatatoObject(Maps.getPlayer_Data(player.uuid))));
 		});
 
 		handler.<Player>register("status",getinput("status"), (args, player) -> {
-			if (!Authority_control(player,"status"))
+			if(!Authority_control(player,"status"))
 				player.sendMessage(getinput("authority.no"));
 			else
 				player.sendMessage(getinput("status.info",playerGroup.size(),world.getMap().name(),Core.graphics.getFramesPerSecond(),Core.app.getJavaHeap()/1024/1024));
 		});
 
 		handler.<Player>register("tpp","<player> <player>",getinput("tpp"), (args, player) -> {
-			if (!Authority_control(player,"tpp")) {
+			if(!Authority_control(player,"tpp")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
-				if (player.isMobile) {
+				if(player.isMobile) {
 					player.sendMessage(getinput("mob.no"));
 					return;
 				}
@@ -254,10 +259,10 @@ public class ClientCommandsx {
 		});
 
 		handler.<Player>register("tp","<player...>",getinput("tp"), (args, player) -> {
-			if (!Authority_control(player,"tp")) {
+			if(!Authority_control(player,"tp")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
-				if (player.isMobile) {
+				if(player.isMobile) {
 					player.sendMessage(getinput("mob.no"));
 					return;
 				}
@@ -270,7 +275,7 @@ public class ClientCommandsx {
 		});
 
 		handler.<Player>register("suicide",getinput("suicide"), (args, player) -> {
-			if (!Authority_control(player,"suicide")) {
+			if(!Authority_control(player,"suicide")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				player.onPlayerDeath(player);
@@ -279,20 +284,20 @@ public class ClientCommandsx {
 		});
 
 		handler.<Player>register("team",getinput("team"), (args, player) ->{
-			if (!Authority_control(player,"team")) {
+			if(!Authority_control(player,"team")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
-				if (!state.rules.pvp){
+				if(!state.rules.pvp){
 					player.sendMessage(getinput("team.fail"));
 					return;
 				}
 				int index = player.getTeam().id+1;
 				player.sendMessage(String.valueOf(index));
 				while (index != player.getTeam().id){
-					if (index >= Team.all().length){
+					if(index >= Team.all().length){
 						index = 0;
 					}
-					if (!state.teams.get(Team.all()[index]).cores.isEmpty()){
+					if(!state.teams.get(Team.all()[index]).cores.isEmpty()){
 						player.setTeam(Team.all()[index]);
 						break;
 					}
@@ -303,7 +308,7 @@ public class ClientCommandsx {
 		});
 
 		handler.<Player>register("difficulty", "<difficulty>", getinput("difficulty"), (args, player) -> {
-			if (!Authority_control(player,"difficulty")) {
+			if(!Authority_control(player,"difficulty")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				try {
@@ -316,7 +321,7 @@ public class ClientCommandsx {
 		});
 
 		handler.<Player>register("gameover",getinput("gameover"), (args, player) -> {
-			if (!Authority_control(player,"gameover")) {
+			if(!Authority_control(player,"gameover")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				Events.fire(new GameOverEvent(Team.crux));
@@ -325,7 +330,7 @@ public class ClientCommandsx {
 
 /*
 		handler.<Player>register("host","<map_number>",getinput("host"), (args, player) -> {
-			if (Authority_control(player,"host")) {
+			if(Authority_control(player,"host")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				host(player,args[0]);
@@ -333,7 +338,7 @@ public class ClientCommandsx {
 		});
 */
 		handler.<Player>register("runwave",getinput("runwave"), (args, player) -> {
-			if (!Authority_control(player,"runwave")) {
+			if(!Authority_control(player,"runwave")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				logic.runWave();
@@ -344,26 +349,23 @@ public class ClientCommandsx {
 			player.sendMessage(getinput("time.info",getLocalTimeFromUTC(0,1)));
 		});
 
-		handler.<Player>register("tr","<text> [Output-language]",getinput("tr"), (args, player) -> {
-			if (!Authority_control(player,"tr")) {
+		handler.<Player>register("tr","<Output-language> <text...>",getinput("tr"), (args, player) -> {
+			if(!Authority_control(player,"tr")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
-				final Google googletranslation = new Google();
-				//No spaces are allowed in the input language??
 				player.sendMessage(getinput("tr.tips"));
-				player.sendMessage(getinput("tr.tips1"));
 				try {
 					Thread.currentThread().sleep(2500);
 				}catch(InterruptedException ie){
 					ie.printStackTrace();
 				}
 				// 默认EN
-				Call.sendMessage("["+player.name+"]"+"[green] : [] [white]"+googletranslation.translate(args[0].replace('_',' '),(Blank(args[1])) ? "en" : args[1])+"   -From Google Translator");
+				Call.sendMessage("["+player.name+"]"+"[green] : [] [white]"+new Google().translate(args[1],(Blank(args[0])) ? "en" : args[1] )+"   -From Google Translator");
 			}	
 		});
 
 		handler.<Player>register("maps", "[page] [mode]", getinput("maps"), (args, player) -> {
-			if (!Authority_control(player,"maps")) {
+			if(!Authority_control(player,"maps")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				if(NotisNumeric(args.length > 0?args[0]:"1")) {
@@ -397,7 +399,7 @@ public class ClientCommandsx {
 		});
 
 		handler.<Player>register("vote", "<help> [parameter]", getinput("vote"), (args, player) -> {
-			if (!Authority_control(player,"vote")) {
+			if(!Authority_control(player,"vote")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				if(!Vote.sted) {
@@ -413,7 +415,7 @@ public class ClientCommandsx {
 						Data.vote = new Vote(player,args[0]);
 						break;
 					case "kick":
-						if (args.length > 1)
+						if(args.length > 1)
 							Data.vote = new Vote(player,args[0],args[1]);
 						else
 							player.sendMessage(getinput("args.err"));
@@ -422,11 +424,11 @@ public class ClientCommandsx {
 						Data.vote = new Vote(player,args[0],player.getTeam());
 						break;
 					case "host":
-						if (args.length > 1)
+						if(args.length > 1)
 							if(NotisNumeric(args[1])) {
 								player.sendMessage(getinput("nber.err"));
 							} else
-								if (!(Lists.getMaps_List().size() >= Integer.parseInt(args[1]))) {
+								if(!(Lists.getMaps_List().size() >= Integer.parseInt(args[1]))) {
 									player.sendMessage(getinput("vote.host.maps.err",args[1]));
 								} else
 									Data.vote = new Vote(player,args[0],args[1]);
@@ -441,7 +443,7 @@ public class ClientCommandsx {
 		});
 
 		handler.<Player>register("votekick", "<player>", getinput("maps"), (args, player) -> {
-			if (!Authority_control(player,"votekick")) {
+			if(!Authority_control(player,"votekick")) {
 				player.sendMessage(getinput("authority.no"));
 			} else {
 				new Vote(player,"kick",args[0]);
@@ -450,7 +452,7 @@ public class ClientCommandsx {
 	}
 
 	private static void host(Player player, String mapss) {
-		if (!(Lists.getMaps_List().size() >= Integer.parseInt(mapss))) {
+		if(!(Lists.getMaps_List().size() >= Integer.parseInt(mapss))) {
 			player.sendMessage(getinput("vote.host.maps.err",mapss));
 			return;
 		}

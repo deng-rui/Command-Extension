@@ -55,7 +55,7 @@ import extension.data.global.Data;
 import extension.data.global.Lists;
 import extension.data.global.Maps;
 import extension.util.translation.Google;
-import extension.util.Log;
+import extension.util.log.Log;
 //GA-Exted
 
 import static extension.core.ex.Extend.loadmaps;

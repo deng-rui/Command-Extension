@@ -27,8 +27,8 @@ import extension.core.ex.Threads;
 import extension.data.json.Json;
 import extension.data.global.Lists;
 import extension.data.global.Maps;
-import extension.util.Log;
 import extension.util.file.FileUtil;
+import extension.util.log.Log;
 //GA-Exted
 
 import static extension.data.db.SQLite.InitializationSQLite;
@@ -50,20 +50,9 @@ public class Initialization {
 		//Resource();
 		//IsCN();
 		//新线程 初始化数据
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				SQL();
-				Json();
-			}
-		}).start();
+		Threads.NewThred_SE(() -> SQL());
 		// 新线程 初始化权限list
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				Player_Privilege_classification();
-			}
-		}).start();
+		Threads.NewThred_SE(() -> Player_Privilege_classification());
 		
 		new Threads();
 	}
@@ -90,18 +79,9 @@ public class Initialization {
 		}        
 	}      
 
-
-	
-
 	private void SQL() {
 		importLib("org.xerial","sqlite-jdbc","3.30.1",Data.Plugin_Lib_Path);
 		if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists())InitializationSQLite();
-	}
-
-	// 下个版本 弃用 -X
-	private void Json() {
-		//if(!Core.settings.getDataDirectory().child("mods/GA/Setting.json").exists())Json.Initialization();
-		//if(!Core.settings.getDataDirectory().child("mods/GA/Authority.json").exists())Json.Initialize_permissions();
 	}
 
 	private void Config() {
@@ -170,6 +150,7 @@ public class Initialization {
 		
 	}
 
+// RG-1
 	private void Player_Privilege_classification() {
 		String[] tempstring=loadstring("Privilege_Level").split(",");
 		int[] tempint = new int[tempstring.length];

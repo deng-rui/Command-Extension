@@ -16,7 +16,7 @@ import java.util.Properties;
 //Java
 
 import extension.util.file.FileUtil;
-import extension.util.Log;
+import extension.util.log.Log;
 //GA-Exted
 
 import static extension.net.HttpRequest.Url302;

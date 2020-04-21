@@ -14,10 +14,8 @@ import extension.core.Event;
 import extension.core.Initialization;
 import extension.core.ServerCommandsx;
 import extension.core.ex.Threads;
-import extension.util.Log;
+import extension.util.log.Log;
 //GA-Exted
-
-
 
 import java.lang.reflect.Field;
 import arc.util.CommandHandler.Command;
@@ -28,6 +26,9 @@ import java.io.*;
 import java.util.*;
 import extension.util.file.FileUtil;
 
+import extension.util.translation.Bing;
+import extension.util.translation.Baidu;
+import extension.util.translation.Google;
 
 public class Main extends Plugin {
 	//动态难度
@@ -44,6 +45,13 @@ public class Main extends Plugin {
 
 		//加载Event
 		new Event().register();
+
+/*
+		TR - TEST
+		Log.info("Bing",new Bing().translate("必应翻译","en"));
+		Log.info("Baidu",new Baidu().translate("百度翻译","en"));
+		Log.info("Google",new Google().translate("谷歌翻译","en"));
+*/
 /*
 NGROK-OK
 		Threads.NewThred_SE(() -> {
