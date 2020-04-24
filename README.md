@@ -84,7 +84,7 @@ General function
 | host          |&lt;mapsname&gt; [gamemode]                                   | Start a new game                                      |
 | runwave       |                                                              | Runwave                                               |
 | time          |                                                              | View the current time of the server                   |
-| tr            |                                                              | Google translation(Use - instead of spaces in text)   |
+| tr            |&lt;target language&gt; &lt;TEXT&gt;                          | Google translation(Use - instead of spaces in text)   |
 | maps          |[page] [mode(1)]                                              | View the map currently available to the server        |
 | vote          |&lt;gameover/kick/skipwave/host&gt; [name/number]             | VOTE                                                  |
 | ukey          |&lt;key&gt;                                                   | Use key                                               |
