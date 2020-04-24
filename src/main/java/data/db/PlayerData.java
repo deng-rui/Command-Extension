@@ -127,7 +127,7 @@ public class PlayerData {
 		data.IP 			= ipToLong(ip);
 		data.Language 		= Language_determination(data.Country);
 		data.Info 			= Maps.getLocale(data.Language);
-		data.Info..getinput("Load.Language");
+		player.sendMessage(data.Info.getinput("Load.Language"));
 	}
 }
 	
