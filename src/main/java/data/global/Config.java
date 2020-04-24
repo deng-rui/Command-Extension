@@ -17,7 +17,6 @@ public class Config {
 
 	// [登录]
 	public static boolean Login;
-	public static boolean Login_IP;
 	public static int Login_Time;
 	public static boolean Login_Radical;
 	public static boolean Permission_Passing;
@@ -56,7 +55,7 @@ public class Config {
 	public static int Maximum_Screen_Display;
 
 	// [Help]
-	//public static boolean
+	public static boolean Help_Show_unauthorize_content;
 	
 	//
 	public static boolean Baidu_Tr;
@@ -83,7 +82,7 @@ public class Config {
 		if(Vote_New_Player) 
 			Vote_New_Player_Time 								= loadint("Vote.New_Player.Time")*60;
 
-		//
+		// [昼夜变换]
 		Day_and_night 											= loadboolean("Day_and_night");
 		if(Day_and_night) {
 			Day_Time 											= loadint("Day.Time");
@@ -111,12 +110,19 @@ public class Config {
 			Mail_SMTP_Port 										= loadstring("Mail_SMTP.Port");
 			Mail_SMTP_User 										= loadstring("Mail_SMTP.User");
 			Mail_SMTP_Passwd 									= loadstring("Mail_SMTP.Passwd");
-			Regular_Reporting 									= loadboolean("Regular_Reporting");
+			Regular_Reporting 									= loadboolean("Mail_Regular_Reporting");
 			if(Regular_Reporting) {
-				Regular_Reporting_Time 							= loadint("Regular_Reporting_Time");
-				Regular_Reporting_ToMail 						= loadstring("Regular_Reporting_ToMail");
+				Regular_Reporting_Time 							= loadint("Mail_Regular_Reporting_Time");
+				Regular_Reporting_ToMail 						= loadstring("Mail_Regular_Reporting_ToMail");
 			}
 		}
+		// [显示]
+		Maximum_Screen_Display 									= loadint("Maximum_Screen_Display");
+
+		// [Help]
+		Help_Show_unauthorize_content 							= loadboolean("Help.Show_unauthorize_content");
+
+		// [百度翻译]
 		Baidu_Tr 												= loadboolean("Baidu_Tr");
 		if(Baidu_Tr) {
 			Baidu_ID 											= loadstring("Baidu_Tr.ID");
@@ -126,7 +132,7 @@ public class Config {
 
 	private static float dis(int a) {
 		DecimalFormat df=new DecimalFormat("0.00");//设置保留位数
-		return Float.parseFloat(df.format((float)1/(a*2)));
+		return Float.parseFloat(df.format(1.2f/(a*2)));
 	}
 
 }
