@@ -11,6 +11,9 @@ import java.util.ResourceBundle;
 import java.util.MissingResourceException;
 //Java
 
+import mindustry.entities.type.Player;
+//
+
 import extension.data.db.PlayerData;
 import extension.data.global.Config;
 import extension.data.global.Maps;
@@ -20,7 +23,7 @@ import extension.util.log.Log;
 //GA-Exted
 
 import static extension.data.json.Json.getData;
-import static extension.util.IsUtil.NotBlank;
+import static extension.util.IsUtil.Blank;
 //GA-Exted
 
 import com.alibaba.fastjson.JSONArray;
@@ -29,8 +32,13 @@ import com.alibaba.fastjson.JSONObject;
  
 public class LocaleUtil {
 
-	public static String language(String o,String t,String input,Object[] params) {
-		
+	private String[] lg = null;
+
+	public LocaleUtil(String lg) {
+		this.lg = lg.split("_");
+	}
+
+	public String language(String o,String t,String input,Object[] params) {
 		Locale locale = new Locale(o,t);
 		//URLClassLoader file = new URLClassLoader(new URL[] {new File(FileUtil.File(Config.Plugin_Resources_bundles_Path).getPath()).toURI().toURL()});
 		//ResourceBundle bundle = ResourceBundle.getBundle("GA", locale, file, new UTF8Control());
@@ -54,49 +62,25 @@ public class LocaleUtil {
 		
 	}
 
-	public static String getinput(String input,Object... params) {
-		if (params == null) return getinputts(null,input,null);
+	public String getinput(String input,Object... params) {
+		if (params == null) return core(input,null);
 		Object[] ps = new Object[params.length];
 		for (int i=0;i<params.length;i++) ps[i] = params[i];
-		return getinputts(null,input,ps);
+		return core(input,ps);
 	}
 
-	public static String getinputt(String input,Object[] ps) {
-		return getinputts(null,input,ps);
-	}
-
-	public static String getinputs(String uuid,String input,Object... params) {
-		if (params == null) return getinputts(null,input,null);
-		Object[] ps = new Object[params.length];
-		for (int i=0;i<params.length;i++) ps[i] = params[i];
-		return getinputts(uuid,input,ps);
+	public String getinputt(String input,Object[] ps) {
+		return core(input,ps);
 	}
 
 	// 暂时并行
 	// 我还未想好到底如何实现 help :(
-	public static String getinputts(String uuid,String input,Object[] params) {
-		String[] lang = null;
-		if(NotBlank(uuid)) {
-			PlayerData playerdata = Maps.getPlayer_Data(uuid);
-			lang = playerdata.Language.split("_");
-		} else {
+	public String core(String input,Object[] params) {
+		String[] lang = lg;
+		if(Blank(lg)) 
 			lang = Config.Server_Language.split("_");
-		}
 		if (params == null) return language(lang[0],lang[1],input,null);
 		return language(lang[0],lang[1],input,params);
 	}
-
-	public static String Language_determination(String string) {
-		switch(string){
-			case "China" :return "zh_CN";
-			case "Hong Kong" :return "zh_HK";
-			case "Macao" :return "zh_MO";
-			case "Taiwan" :return "zh_TW";
-			case "Russia" :return "ru_RU";
-			default :return "en_US";
-			//I didn't find a better way....
-		}
-	}
-
 }
 

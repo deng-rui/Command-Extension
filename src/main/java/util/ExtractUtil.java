@@ -98,4 +98,16 @@ public class ExtractUtil {
         return string;
     }
 
+    public static String Language_determination(String string) {
+		switch(string){
+			case "China" :return "zh_CN";
+			case "Hong Kong" :return "zh_HK";
+			case "Macao" :return "zh_MO";
+			case "Taiwan" :return "zh_TW";
+			case "Russia" :return "ru_RU";
+			default :return "en_US";
+			//I didn't find a better way....
+		}
+	}
+
 }
