@@ -23,7 +23,7 @@ By default, Google translator should not set the source time to 0, otherwise Goo
 
 In progress  
 
-## 注意
+## Be careful
 
 Please use custom mode map, all mode(/shuffle all) will interfere with pattern recognition (/shuffle custom)  
 
@@ -31,6 +31,8 @@ Please use custom mode map, all mode(/shuffle all) will interfere with pattern r
 PVP:  
 1.Limit the number of team generating units  
 2.Limit the accumulated building quantity of the team  
+3.Save the player team of this game - suitable for players with short retention time
+
 General function
 1.Semi automatic recognition map game mode can be changed automatically  
 2.Vote  
@@ -57,6 +59,7 @@ General function
 | gameover(replace)     |                                                    | Force end of game (prevent original gameover recovery)|
 | reloadconfig          |                                                    | Reload the this plugins config.ini                    |
 | reloadmaps(replace)   |                                                    | Reload the map (easy to re-read the mode)             |
+| toadmin               | &lt;UUID&gt; &lt;Privilege level&gt;               | Set player permission level online                    |
 | exit(replace)         |                                                    | Shut down the server (end built-in timer)             |
 
 ## Game command  
@@ -88,18 +91,18 @@ Notes:
 
 - [ ] Config
     - [ ] Log
-- [ ] Baidu translation support
+- [x] Baidu translation support
 - [ ] Dynamic difficulty
 - [ ] PVP pre limit
 - [ ] plug in segmentation
     - [ ] Google translation
     - [ ] language filtering
     - [ ] Vote
-- [ ] Internationalization
+- [x] Internationalization
     - [x] Player
-    - [ ] Help
+    - [x] Help
 - [ ] Authority
-    - [ ] Help supports permission display
+    - [x] Help supports permission display
     - [ ] Try finer authority control
 - [ ] Optimization
     - [ ] Memory usage

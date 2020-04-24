@@ -26,15 +26,16 @@ linglan512572354:https://github.com/linglan512572354
 
 ## 注意
 
-请使用custom模式地图 自带地图将会对模式识别产生干扰 (/shuffle custom)
+请使用custom模式地图 自带地图将会对模式识别产生干扰 (/shuffle custom)  
 
-最低为JAVA8! JAVA7将无法运行(java.util.Base64)
+最低为JAVA8! JAVA7将无法运行(java.util.Base64)  
 
 ## 插件可实现功能
 
 PVP :   
 1.限制每一局队伍生成单位的数量  
 2.限制每一局队伍累计建筑数量  
+3.保存本局玩家队伍-适合玩家留存时间较短
 
 通用功能  
 1.半自动识别地图游戏模式 可自动改变模式  
@@ -47,7 +48,7 @@ PVP :
 
 | 配置 		| CPU             | 内存 	| 系统 			| 硬盘大小 	| Java      |
 |:--- 		|:---             |:---     |:---           |:---       |:---       |
-| 当前配置 	| BCM2711         | 4G      | Ubuntu 19.10  | 500G HHD  | Java 8    |
+| 当前配置 	| BCM2711         | 4G      | Ubuntu 19.10  | 500G HHD  | Java 14   |
 | 建议配置 	| Intel I3-6100+  | 4G      | ubuntu 16.04+ | 500G HHD  | Java 8+   |
 
 ## 构建配置  
@@ -63,6 +64,7 @@ PVP :
 | gameover(覆盖) 		 |                                                   | 强制结束游戏(防止原gameover恢复) 		 |
 | reloadconfig           |                                                   | 热重载配置文件 						 |
 | reloadmaps(覆盖) 		 |                                                   | 重载地图(便于重新读取模式) 				 |
+| toadmin                | &lt;UUID&gt; &lt;权限级&gt; 						 | 在线设置玩家权限级       		         |
 | exit(覆盖) 			 | 													 | 关闭服务器(结束内置计时器) 				 |
 
 ## 游戏命令列表  
@@ -92,18 +94,18 @@ PVP :
 
 - [ ] Config
     - [ ] Log
-- [ ] Baidu翻译支持
+- [x] Baidu翻译支持
 - [ ] 动态难度
 - [ ] PVP前期限制
 - [ ] 插件分割
     - [ ] Google翻译
     - [ ] 语言过滤
     - [ ] Vote
-- [ ] 多语言支持
+- [x] 多语言支持
     - [x] 玩家
-    - [ ] 命令
+    - [x] 命令
 - [ ] 权限
-    - [ ] Help支持权限显示
+    - [x] Help支持权限显示
     - [ ] 尝试更精细的权限控制
 - [ ] 优化
     - [ ] 内存占用
