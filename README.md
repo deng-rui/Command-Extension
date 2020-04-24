@@ -33,7 +33,7 @@ PVP:
 2.Limit the accumulated building quantity of the team  
 3.Save the player team of this game - suitable for players with short retention time
 
-General function
+General function  
 1.Semi automatic recognition map game mode can be changed automatically  
 2.Vote  
 3.Regular status reporting (Mail)  
@@ -104,6 +104,10 @@ Notes:
 - [ ] Authority
     - [x] Help supports permission display
     - [ ] Try finer authority control
+    - [ ] KEY
+        - [ ] KEY - Effective time
+        - [ ] KEY - Reuse
+    - [ ] Permission time
 - [ ] Optimization
     - [ ] Memory usage
     - [ ] Logical processing
