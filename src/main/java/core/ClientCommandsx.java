@@ -93,11 +93,17 @@ public class ClientCommandsx {
 						result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(command.description).append("\n");
 				}
 			} else {
-				for(int i = Config.Maximum_Screen_Display * page; i < Math.min(Config.Maximum_Screen_Display * (page + 1), clientCommands.getCommandList().size); i++){
+				int count = 0;
+				for(int i = Config.Maximum_Screen_Display * page; i < clientCommands.getCommandList().size; i++){
 					command = clientCommands.getCommandList().get(i);
+					if (count == 6 ) 
+						break;
+					count++;
 					if("4dV#-".equals(command.description.substring(0,5))) {
 						if(Authority_control(player,command.text)) 
 							result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(localeUtil.getinput(command.description.substring(5,command.description.length()))).append("\n");
+						else
+							count--;
 					} else
 						result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(command.description).append("\n");
 				}
