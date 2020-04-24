@@ -1,7 +1,7 @@
 package extension.core;
 
 import java.util.List;
-import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.HashMap;
 import java.util.Set;
@@ -48,6 +48,7 @@ import static mindustry.Vars.netServer;
 import static mindustry.Vars.playerGroup;
 //Mindustry-Static
 
+import extension.core.ex.Extend;
 import extension.core.ex.Vote;
 import extension.data.db.PlayerData;
 import extension.data.global.Config;
@@ -55,10 +56,10 @@ import extension.data.global.Data;
 import extension.data.global.Lists;
 import extension.data.global.Maps;
 import extension.util.translation.Google;
+import extension.util.LocaleUtil;
 import extension.util.log.Log;
 //GA-Exted
 
-import static extension.core.ex.Extend.loadmaps;
 import static extension.core.ex.Threads.NewThred_DB;
 import static extension.core.ex.Threads.NewThred_SE;
 import static extension.data.db.Player.savePlayer;
@@ -66,7 +67,6 @@ import static extension.data.json.Json.getData;
 import static extension.net.HttpRequest.doGet;
 import static extension.util.alone.BadWord.*;
 import static extension.util.DateUtil.getLocalTimeFromUTC;
-import static extension.util.LocaleUtil.getinput;
 import static extension.util.String_filteringUtil.*;
 //Static
 
@@ -76,8 +76,8 @@ import com.alibaba.fastjson.JSONObject;
 public class Event {
 	// 
 
-	private final java.util.Map<Integer, Integer> Building_number = Collections.synchronizedMap(new HashMap<Integer, Integer>());
-	private static final java.util.Map<String, Team> Sava_Team = Collections.synchronizedMap(new HashMap<String, Team>());
+	private final java.util.Map<Integer, Integer> Building_number = new ConcurrentHashMap<Integer, Integer>();
+	private static final java.util.Map<String, Team> Sava_Team = new ConcurrentHashMap<String, Team>();
 
 	public void register() {
 
@@ -118,42 +118,42 @@ public class Event {
 			// 中英分检测  过滤屏蔽词
 			Set<String> set = (Set<String>)BadWord(removeAll_EN(e.player.name));
 			if (0 < set.size())
-				Call.onKick(e.player.con, getinput("Sensitive.Thesaurus.join.kick",set.iterator().next()));
+				Call.onKick(e.player.con,new LocaleUtil(null).getinput("Sensitive.Thesaurus.join.kick",set.iterator().next()));
 			Set<String> set1 = (Set<String>)BadWord(removeAll_CN(e.player.name));
 			if (0 < set1.size())
-				Call.onKick(e.player.con, getinput("Sensitive.Thesaurus.join.kick",set1.iterator().next()));		
+				Call.onKick(e.player.con,new LocaleUtil(null).getinput("Sensitive.Thesaurus.join.kick",set1.iterator().next()));		
 		});
 
 		// 加入服务器时
 		Events.on(PlayerJoin.class, e -> {
 			if(Config.Login && Config.Login_Radical) {
 				if(!Maps.Player_Data_boolean(e.player.uuid)) {
-					Call.onInfoToast(e.player.con,getinput("join.tourist",getLocalTimeFromUTC(0,1)),30f);
 					PlayerData playerdata = new PlayerData(e.player.uuid,e.player.name,0);
+					// 如果不需要时区 我可能会考虑db-ip.com
+					NewThred_SE(() -> PlayerData.playerip(playerdata,e.player,Vars.netServer.admins.getInfo(e.player.uuid).lastIP));
+					Call.onInfoToast(e.player.con,playerdata.Info.getinput("join.tourist",getLocalTimeFromUTC(0,1)),30f);
 					Maps.setPlayer_Data(e.player.uuid,playerdata);
-					if(Config.Login_IP) 
-						NewThred_DB(() -> PlayerData.playerip(Maps.getPlayer_Data(e.player.uuid),e.player,Vars.netServer.admins.getInfo(e.player.uuid).lastIP));
 				}
 				if(Maps.getPlayer_Data(e.player.uuid).Authority == 0) {
 					// 设置队伍 登陆
 					e.player.kill();
 					e.player.setTeam(Team.derelict);
 					return;
-				}	
+				}
 				PlayerData playerdata = Maps.getPlayer_Data(e.player.uuid);
 				if (e.player.isAdmin) playerdata.Authority = 2;
 				playerdata.Online = true;
 				playerdata.Joincount++;
 				playerdata.Jointime = getLocalTimeFromUTC();
-				Call.onInfoToast(e.player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),40f);
+				NewThred_DB(() -> savePlayer(playerdata,playerdata.User));
+				Call.onInfoToast(e.player.con,playerdata.Info.getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),40f);
 			} else {
 				if(!Maps.Player_Data_boolean(e.player.uuid)) {
 					PlayerData playerdata = new PlayerData(e.player.uuid,e.player.name,1);
+					NewThred_SE(() -> PlayerData.playerip(playerdata,e.player,Vars.netServer.admins.getInfo(e.player.uuid).lastIP));
+					Call.onInfoMessage(e.player.con,playerdata.Info.getinput("gc"));
+					//Call.onInfoPopup(e.player.con,"info",30f,3,10,1,10,10);		
 					Maps.setPlayer_Data(e.player.uuid,playerdata);
-					Call.onInfoMessage(e.player.con,getinput("gc"));
-        			//Call.onInfoPopup(e.player.con,"info",30f,3,10,1,10,10);
-        			if(Config.Login_IP) 
-						NewThred_DB(() -> PlayerData.playerip(Maps.getPlayer_Data(e.player.uuid),e.player,Vars.netServer.admins.getInfo(e.player.uuid).lastIP));
 					return;
 				}
 				PlayerData playerdata = Maps.getPlayer_Data(e.player.uuid);
@@ -161,7 +161,7 @@ public class Event {
 				playerdata.Online = true;
 				playerdata.Joincount++;
 				playerdata.Jointime = getLocalTimeFromUTC();
-				Call.onInfoToast(e.player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),40f);
+				Call.onInfoToast(e.player.con,playerdata.Info.getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),40f);
 			}
 			state.rules.playerDamageMultiplier = 0f;
 			Call.onSetRules(state.rules);
@@ -188,18 +188,18 @@ public class Event {
 				if(msg.equals("y") || msg.equals("n") || msg.equals("cy") || msg.equals("cn")) {
 					if(!Vote.sted) {
 						if (Vote.playerlist.contains(e.player.uuid))
-							e.player.sendMessage(getinput("vote.rey"));
+							e.player.sendMessage(Maps.getPlayer_Data(e.player.uuid).Info.getinput("vote.rey"));
 						else {
 							if (Vote.isteam) {
 								if (Vote.team.equals(e.player.getTeam())) 
 									Data.vote.ToVote(e.player,msg);
 								else
-									e.player.sendMessage(getinput("vote.team"));
+									e.player.sendMessage(Maps.getPlayer_Data(e.player.uuid).Info.getinput("vote.team"));
 							} else 
 								Data.vote.ToVote(e.player,msg);
 						}	
 					} else
-						e.player.sendMessage(getinput("vote.noy"));		
+						e.player.sendMessage(Maps.getPlayer_Data(e.player.uuid).Info.getinput("vote.noy"));		
 				}
 			}
 
@@ -215,7 +215,7 @@ public class Event {
 					player.kill();
 					killTiles(player.getTeam());
 					player.setTeam(Team.derelict);
-					player.sendMessage(getinput("gameover.team"));
+					player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput("Gameover.Team"));
 				}
 		});
 
@@ -258,15 +258,15 @@ public class Event {
 						if(Building_number.get(team) >= Config.Building_Reject_quantity) {
 							Call.onTileDestroyed(e.tile);
 							if (Data.ismsg) {
+								NewThred_SE(() -> Extend.addMesg_Team(e.player.getTeam(),"Building_Reject.quantity"));
 								Data.ismsg = false;
-								e.player.sendMessage(getinput("Building_Reject.quantity"));
 							}
 							return;
 						}
 						if(Building_number.get(team) >= Config.Building_Warning_quantity) 
 							if (Data.ismsg) {
+								Extend.addMesg_Team(e.player.getTeam(),"Building_Warning.quantity",Building_number.get(team));
 								Data.ismsg = false;
-								e.player.sendMessage(getinput("Building_Warning.quantity",Building_number.get(team)));
 							}
 						int temp = ((int)Building_number.get(team))+1;
 						Building_number.put(team,temp);
@@ -329,9 +329,7 @@ public class Event {
 					int count = Vars.unitGroup.count(ex -> ex.getTeam().equals(e.unit.getTeam()));
 					if (count >= Config.Soldier_Reject_quantity) {
 						if (Data.ismsg) {
-							for (Player it : Vars.playerGroup.all()) 
-								if (it.getTeam().equals(e.unit.getTeam())) 
-									it.sendMessage(getinput("Soldier_Reject.quantity"));
+							Extend.addMesg_Team(e.unit.getTeam(),"Soldier_Reject.quantity");
 							Data.ismsg = false;
 						}
 						e.unit.kill();
@@ -339,9 +337,7 @@ public class Event {
 					}
 					if (count >= Config.Soldier_Warning_quantity) 
 						if (Data.ismsg) {
-							for (Player it : Vars.playerGroup.all()) 
-								if (it.getTeam().equals(e.unit.getTeam())) 
-									it.sendMessage(getinput("Soldier_Warning.quantity",count));	
+							Extend.addMesg_Team(e.unit.getTeam(),"Soldier_Warning.quantity",count);
 							Data.ismsg = false;
 						}
 			}
@@ -351,7 +347,7 @@ public class Event {
 		Events.on(ValidateException.class, e -> {
 			Call.onWorldDataBegin(e.player.con);
 			Vars.netServer.sendWorldData(e.player);
-			e.player.sendMessage(getinput("error"));
+			e.player.sendMessage(Maps.getPlayer_Data(e.player.uuid).Info.getinput("error"));
 		});
 
 		// 游戏结束时
@@ -392,8 +388,8 @@ public class Event {
 						}catch(IllegalArgumentException ex){
 						}
 						final Gamemode gamemode = mode;
-						Call.onInfoMessage(getinput("gameover.game",data[0],data[1],data[2]));
-						loadmaps(true, () -> world.loadMap(map, map.applyRules(gamemode)),gamemode);
+						Extend.addMesg_All("Gameover.Game",data[0],data[1],data[2]);
+						Extend.loadmaps(true, () -> world.loadMap(map, map.applyRules(gamemode)),gamemode);
 					}
 				}
 			}
@@ -428,18 +424,18 @@ public class Event {
 
 	public static void syncTeam() {
 		Data.service.schedule(() -> {
-				if (playerGroup.size() > 2) 
-					if (state.rules.pvp) 
-						if(Config.Login_Radical) {
-							for (Player it : Vars.playerGroup.all()) 
-								if (!state.teams.get(Team.all()[it.getTeam().id]).cores.isEmpty()) 
-									if (Maps.getPlayer_Data(it.uuid).Authority > 0)
-										Sava_Team.put(it.uuid,it.getTeam());	
-						} else
-							for (Player it : Vars.playerGroup.all()) 
-								if (!state.teams.get(Team.all()[it.getTeam().id]).cores.isEmpty()) 
-									Sava_Team.put(it.uuid,it.getTeam());
-			},8,TimeUnit.SECONDS);
+			if (playerGroup.size() > 2) 
+				if (state.rules.pvp) 
+					if(Config.Login_Radical) {
+						for (Player it : Vars.playerGroup.all()) 
+							if (!state.teams.get(Team.all()[it.getTeam().id]).cores.isEmpty()) 
+								if (Maps.getPlayer_Data(it.uuid).Authority > 0)
+									Sava_Team.put(it.uuid,it.getTeam());	
+					} else
+						for (Player it : Vars.playerGroup.all()) 
+							if (!state.teams.get(Team.all()[it.getTeam().id]).cores.isEmpty()) 
+								Sava_Team.put(it.uuid,it.getTeam());
+		},8,TimeUnit.SECONDS);
 	}
 
 		//Call.onInfoToast(player.con,getinput("join.tourist",String.valueOf(TimeZone.getTimeZone((String)doGet("http://ip-api.com/line/"+Vars.netServer.admins.getInfo(player.uuid).lastIP+"?fields=timezone")).getRawOffset())),20f);

@@ -37,12 +37,12 @@ import extension.data.global.Data;
 import extension.data.global.Maps;
 import extension.data.global.Lists;
 import extension.util.log.Log;
+import extension.util.LocaleUtil;
 //GA-Exted
 
 import static extension.core.ex.Extend.Authority_control;
 import static extension.data.global.Lists.getMaps_List;
 import static extension.util.DateUtil.getLocalTimeFromUTC;
-import static extension.util.LocaleUtil.getinput;
 import static extension.util.IsUtil.Blank;
 //Static
 
@@ -91,6 +91,7 @@ public class Vote {
 	}
 
 	public void ToVote(Player playerplayer,String playerpick) {
+		LocaleUtil localeUtil = Maps.getPlayer_Data(playerplayer.uuid).Info;
 		switch(playerpick){
 			// 我也不像写一堆一样的啊:(
 			case "y" :
@@ -98,39 +99,40 @@ public class Vote {
 				playerlist.add(playerplayer.uuid);
 				if ("y".equals(playerpick)) {
 					playervote++;
-					playerplayer.sendMessage(getinput("vote.y"));
+					playerplayer.sendMessage(localeUtil.getinput("vote.y"));
 				}else
-					playerplayer.sendMessage(getinput("vote.n"));
+					playerplayer.sendMessage(localeUtil.getinput("vote.n"));
 				Inspect_End();
 				break;
 			// Vote Compulsory passage
 			case "cy" :
 				if (Authority_control(playerplayer,"votec")) {
 					if (isteam)
-						endyesmsg = () -> Extend.addMesg_Team(getinput("vote.cy.end",playerplayer.name,type+" "+(Blank(name)?"":name)),team);
+						endyesmsg = () -> Extend.addMesg_Team(team,"vote.cy.end",playerplayer.name,type+" "+(Blank(name)?"":name));
 					else
-						endyesmsg = () -> Call.sendMessage(getinput("vote.cy.end",playerplayer.name,type+" "+(Blank(name)?"":name)));
+						endyesmsg = () -> Extend.addMesg_All("vote.cy.end",playerplayer.name,type+" "+(Blank(name)?"":name));
 					require = 0;
 					Force_End();
 				} else
-					playerplayer.sendMessage(getinput("authority.no"));
+					playerplayer.sendMessage(localeUtil.getinput("authority.no"));
 				break;
 			// Vote Compulsory refusal
 			case "cn" :
 				if (Authority_control(playerplayer,"votec")) {
 					if (isteam)
-						endnomsg = () -> Extend.addMesg_Team(getinput("vote.cn.end",playerplayer.name,type+" "+(Blank(name)?"":name)),team);
+						endnomsg = () -> Extend.addMesg_Team(team,"vote.cn.end",playerplayer.name,type+" "+(Blank(name)?"":name));
 					else
-						endnomsg = () -> Call.sendMessage(getinput("vote.cn.end",playerplayer.name,type+" "+(Blank(name)?"":name)));
+						endnomsg = () -> Extend.addMesg_All("vote.cn.end",playerplayer.name,type+" "+(Blank(name)?"":name));
 					playervote = 0;
 					Force_End();
 				} else
-					playerplayer.sendMessage(getinput("authority.no"));
+					playerplayer.sendMessage(localeUtil.getinput("authority.no"));
 				break;
 		}
 	}
 
 	private void Preprocessing() {
+		LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
 		// 预处理
 		switch(type){
 			case "gameover" :
@@ -141,24 +143,24 @@ public class Vote {
 				break;
 			case "host" :
 				if (!(Lists.getMaps_List().size() >= Integer.parseInt(name)))
-					player.sendMessage(getinput("vote.host.maps.err",name));
+					player.sendMessage(localeUtil.getinput("vote.host.maps.err",name));
 				else
 					Normal_distribution();
 				break;
 			case "kick" :
 				target = playerGroup.find(p -> p.name.equals(name));
 				if(target == null)
-					player.sendMessage(getinput("vote.kick.err",name));
+					player.sendMessage(localeUtil.getinput("vote.kick.err",name));
 				else {
 					if (target.isAdmin)
-						player.sendMessage(getinput("vote.err.admin",name));
+						player.sendMessage(localeUtil.getinput("vote.err.admin",name));
 					else
 						Normal_distribution();
 				}	
 				break;
 			case "skipwave" :
 				if (state.rules.pvp)
-					player.sendMessage(getinput("vote.wave.fail"));
+					player.sendMessage(localeUtil.getinput("vote.wave.fail"));
 				else
 					Normal_distribution();
 				break;		
@@ -167,12 +169,12 @@ public class Vote {
 					if(player.isAdmin)
 						Management_only();
 					else
-						player.sendMessage(getinput("admin.no"));
+						player.sendMessage(localeUtil.getinput("admin.no"));
 				else
-					player.sendMessage(getinput("vote.admin.no"));
+					player.sendMessage(localeUtil.getinput("vote.admin.no"));
 				break;
 			default :
-				Call.sendMessage(getinput("vote.end.err",type+" "+(Blank(name)?"":name)));
+				player.sendMessage(localeUtil.getinput("vote.end.err",type+" "+(Blank(name)?"":name)));
 				break;
 		}
 	}
@@ -185,9 +187,9 @@ public class Vote {
 					temp++;
 		} else
 			temp = playerGroup.size();	
-		endnomsg = () -> Call.sendMessage(getinput("vote.done.no",type+" "+(Blank(name)?"":name),playervote,temp));
-		endyesmsg = () -> Call.sendMessage(getinput("vote.ok"));
-		Start(() -> Call.sendMessage(getinput("vote.start",player.name,type+" "+(Blank(name)?"":name))));
+		endnomsg = () -> Extend.addMesg_All("vote.done.no",type+" "+(Blank(name)?"":name),playervote,temp);
+		endyesmsg = () -> Extend.addMesg_All("vote.ok");
+		Start(() -> Extend.addMesg_All("vote.start",player.name,type+" "+(Blank(name)?"":name)));
 	}
 
 	// 团队投票
@@ -196,9 +198,9 @@ public class Vote {
 			if (it.getTeam().equals(team))
 				temp++;
 		require = temp;
-		endnomsg = () -> Extend.addMesg_Team(getinput("vote.done.no",type+" "+(Blank(name)?"":name),playervote,temp),team);
-		endyesmsg = () -> Extend.addMesg_Team(getinput("vote.ok"),team);
-		Start(() -> Extend.addMesg_Team(getinput("vote.start",player.name,type+" "+(Blank(name)?"":name)),team));
+		endnomsg = () -> Extend.addMesg_Team(team,"vote.done.no",type+" "+(Blank(name)?"":name),playervote,temp);
+		endyesmsg = () -> Extend.addMesg_Team(team,"vote.ok");
+		Start(() -> Extend.addMesg_Team(team,"vote.start",player.name,type+" "+(Blank(name)?"":name)));
 	}
 
 	// 管理投票
@@ -210,12 +212,12 @@ public class Vote {
 			require = temp;
 			//Start();
 		} else
-			player.sendMessage(getinput("vote.admin.no"));
+			player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput("vote.admin.no"));
 	}
 
 	private void Start(Runnable run){
 		if(temp == 1){
-			player.sendMessage(getinput("vote.no1"));
+			player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput("vote.no1"));
 			require = 1;
 		} else if(temp <= 3)
 			require = 2;
@@ -226,7 +228,7 @@ public class Vote {
 			@Override
 			public void run() {
 				reciprocal = reciprocal-10;
-				Call.sendMessage(getinput("vote.ing",reciprocal));
+				Extend.addMesg_All("vote.ing",reciprocal);
 			}
 		};
 		Count_down=Data.service.scheduleAtFixedRate(Countdown,10,10,TimeUnit.SECONDS);
@@ -288,7 +290,7 @@ public class Vote {
 	}
 
 	private void kick() {
-		Call.sendMessage(getinput("kick.done",name));
+		Extend.addMesg_All("kick.done",name);
 		target.con.kick(KickReason.kick);
 	}
 
@@ -300,11 +302,11 @@ public class Vote {
 		try{
 			mode = Gamemode.valueOf(data[2]);
 		}catch(IllegalArgumentException ex){
-			player.sendMessage(getinput("host.mode",data[2]));
+			player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput("host.mode",data[2]));
 			return;
 		}
 		final Gamemode gamemode = mode;
-		Call.sendMessage(getinput("host.re"));
+		Call.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput("host.re"));
 		Extend.loadmaps(true, () -> world.loadMap(result, result.applyRules(gamemode)),gamemode);
 	}
 
