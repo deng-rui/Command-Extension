@@ -16,7 +16,6 @@ public class Config {
 	public static String Server_Language;
 
 	// [登录]
-	public static boolean Login;
 	public static int Login_Time;
 	public static boolean Login_Radical;
 	public static boolean Permission_Passing;
@@ -69,13 +68,10 @@ public class Config {
 		Server_Language 										= loadstring("Server_Language");
 
 		// [登录]
-		Login 													= loadboolean("Login");
+		Login_Time 												= loadint("Login_Time");
+		Login_Radical 											= loadboolean("Login_Radical");
 		Permission_Passing 										= loadboolean("Permission_Passing");
-		if(Login) {
-			Login_Time 											= loadint("Login_Time");
-			Login_Radical 										= loadboolean("Login_Radical");
-		}
-
+		
 		// [投票]
 		Vote_Admin 												= loadboolean("Vote.Admin");
 		Vote_New_Player 										= loadboolean("Vote.New_Player");
