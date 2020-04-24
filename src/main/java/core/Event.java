@@ -84,7 +84,15 @@ public class Event {
 		// 服务器加载完成时
 		Events.on(ServerLoadEvent.class, e-> {
 			netServer.admins.addChatFilter((player, message) -> {
-				return replaceBadWord(message,2,"*");
+				String result = replaceBadWord(message,2,"*");
+				// 自动翻译
+				// 检查是否启用翻译
+				if (Maps.getPlayer_Data(player.uuid).Translate) {
+					boolean valid = message.matches("\\w+");
+					if (!valid) 
+						result = new Google().translate(message,"en")+"   -From Google Translator";
+				}
+				return result;
 			});
 
 			netServer.assigner = ((player, players) -> {
@@ -126,7 +134,7 @@ public class Event {
 
 		// 加入服务器时
 		Events.on(PlayerJoin.class, e -> {
-			if(Config.Login && Config.Login_Radical) {
+			if(Config.Login_Radical) {
 				if(!Maps.Player_Data_boolean(e.player.uuid)) {
 					PlayerData playerdata = new PlayerData(e.player.uuid,e.player.name,0);
 					// 如果不需要时区 我可能会考虑db-ip.com
@@ -170,18 +178,6 @@ public class Event {
 
 		// 发送消息时
 		Events.on(PlayerChatEvent.class, e -> {
-			// 自动翻译
-			if (!"/".equals(e.message.charAt(0))) {
-			boolean valid = e.message.matches("\\w+");
-			JSONObject date = getData("mods/GA/Setting.json");
-			// 检查是否启用翻译
-			boolean translateo = (boolean) date.get("translateo");
-				if (!valid && translateo) {
-					Google googletranslation = new Google();
-					Call.sendMessage("["+e.player.name+"]"+"[green] : [] "+googletranslation.translate(e.message,"en")+"   -From Google Translator");
-				}
-			}
-
 			// 去除语言检测
 			if((int)Maps.getPlayer_Data(e.player.uuid).Authority > 0) {
 				String msg = String.valueOf(e.message).toLowerCase();
