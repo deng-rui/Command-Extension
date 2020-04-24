@@ -49,11 +49,16 @@ import static extension.core.ex.Extend.PlayerdatatoObject;
 import static extension.core.ex.Threads.NewThred_DB;
 
 import static extension.data.db.Player.getSQLite;
+import static extension.data.db.Player.GetKey;
 import static extension.data.db.Player.isSQLite_User;
+import static extension.data.db.Player.isSQLite_Key;
+import static extension.data.db.Player.RmKey;
+import static extension.data.db.Player.SaveKey;
 import static extension.data.db.Player.savePlayer;
 import static extension.data.db.Player.InitializationPlayersSQLite;
 import static extension.util.alone.Password.newPasswd;
 import static extension.util.alone.Password.Passwdverify;
+import static extension.util.DateUtil.LongtoTime;
 import static extension.util.DateUtil.getLocalTimeFromUTC;
 import static extension.util.ExtractUtil.Language_determination;
 import static extension.util.IsUtil.Blank;
@@ -111,135 +116,133 @@ public class ClientCommandsx {
 			player.sendMessage(result.toString());
 		});
 
-		if(Config.Login) {
-			handler.<Player>register("login", "<id> <password>", "4dV#-login", (args, player) -> {
-				LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-				if(!Authority_control(player,"login"))
-					player.sendMessage(localeUtil.getinput("authority.no"));
-				else {
-					final String id = args[0];
-					final String pw = args[1];
-					Data.Thred_service.execute(new Runnable() {
-						@Override
-						public void run() {
-							PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
-							if(playerdata.Login) {
-								player.sendMessage(localeUtil.getinput("login.yes"));
-								return;
-							}
-							if((boolean)isSQLite_User(id)) {
-								player.sendMessage(localeUtil.getinput("login.usrno"));
-								return;
-							}
-							PlayerData temp = new PlayerData("temp","temp",0);
-							getSQLite(temp,id);
-							if(temp.Online) {
-								player.sendMessage(localeUtil.getinput("login.in"));
-								return;
-							}
-							try {
-								if(!Passwdverify(pw,temp.PasswordHash,temp.CSPRNG)) {
-								player.sendMessage(localeUtil.getinput("login.pwno"));  
-								return;
-								}
-							} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-								player.sendMessage(localeUtil.getinput("passwd.err"));
-								return;
-							}	
-							getSQLite(playerdata,id);
-							playerdata.Login=true;
-							playerdata.Online=true;							
-							playerdata.LastLogin=getLocalTimeFromUTC(playerdata.GMT);
-							if(!(playerdata.UUID).equals(player.uuid)) {
-								playerdata.UUID = player.uuid;
-								player.sendMessage(localeUtil.getinput("uuid.update"));
-							}
-							if(Config.Login_Radical) {
-								if(Vars.state.rules.pvp)
-									player.setTeam(netServer.assignTeam(player, playerGroup.all()));
-								else
-									player.setTeam(Team.sharded);
-								//Call.onPlayerDeath(player);
-								player.kill();
-							}
-							player.sendMessage(localeUtil.getinput("login.to"));
-							//Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
-							Maps.setPlayer_Data(player.uuid,playerdata);
-							NewThred_DB(() -> savePlayer(playerdata,playerdata.User));
+		handler.<Player>register("login", "<id> <password>", "4dV#-login", (args, player) -> {
+			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
+			if(!Authority_control(player,"login"))
+				player.sendMessage(localeUtil.getinput("authority.no"));
+			else {
+				final String id = args[0];
+				final String pw = args[1];
+				Data.Thred_service.execute(new Runnable() {
+					@Override
+					public void run() {
+						PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
+						if(playerdata.Login) {
+							player.sendMessage(localeUtil.getinput("login.yes"));
+							return;
 						}
-					});
-				}
-			});
-
-			handler.<Player>register("register", "<new_id> <new_password> <password_repeat> [your_mail]", "4dV#-register", (args, player) -> {
-				LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-				if(!Authority_control(player,"register"))
-					player.sendMessage(localeUtil.getinput("authority.no"));
-				else {
-					final String newid = args[0];
-					final String newpw = args[1];
-					final String renewpw = args[2];
-					final String mail = (args.length > 3) ? args[3]:"NULL";
-					Data.Thred_service.execute(new Runnable() {
-						@Override
-						public void run() {
-							PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
-							if(playerdata.Login) {
-								player.sendMessage(localeUtil.getinput("login.yes"));
-								return;
-							}
-							if(!newpw.equals(renewpw)) {
-								player.sendMessage(localeUtil.getinput("register.pawno"));
-								return;
-							}
-							if(!(boolean)isSQLite_User(newid)) {
-								player.sendMessage(localeUtil.getinput("register.usrerr"));
-								return;
-							}
-							java.util.Map<String, Object> Passwd_date;
-							try {
-								Passwd_date = (java.util.Map<String, Object>)newPasswd(newpw);
-							} catch (Exception e) {
-								player.sendMessage(localeUtil.getinput("passwd.err"));
-								return;
-							}
-							if(!(boolean)Passwd_date.get("resualt")) {
-								player.sendMessage(localeUtil.getinput("passwd.err"));
-								return;
-							}
-							if(Config.Login_Radical) {
-								if(Vars.state.rules.pvp)
-									player.setTeam(netServer.assignTeam(player, playerGroup.all()));
-								else
-									player.setTeam(Team.sharded);
-								//Call.onPlayerDeath(player);
-								player.kill();
-							}
-							InitializationPlayersSQLite(newid);	
-							playerdata.User=newid;
-							playerdata.Login=true;
-							playerdata.Authority=1;
-							playerdata.Mail=mail;
-							playerdata.PasswordHash=(String)Passwd_date.get("passwordHash");
-							playerdata.CSPRNG=(String)Passwd_date.get("salt");
-							playerdata.LastLogin=getLocalTimeFromUTC(playerdata.GMT);
-							player.sendMessage(localeUtil.getinput("register.to"));
-							//Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
-							NewThred_DB(() -> savePlayer(playerdata,playerdata.User));
+						if((boolean)isSQLite_User(id)) {
+							player.sendMessage(localeUtil.getinput("login.usrno"));
+							return;
 						}
-					});
-				}
-			});
+						PlayerData temp = new PlayerData("temp","temp",0);
+						getSQLite(temp,id);
+						if(temp.Online) {
+							player.sendMessage(localeUtil.getinput("login.in"));
+							return;
+						}
+						try {
+							if(!Passwdverify(pw,temp.PasswordHash,temp.CSPRNG)) {
+							player.sendMessage(localeUtil.getinput("login.pwno"));  
+							return;
+							}
+						} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+							player.sendMessage(localeUtil.getinput("passwd.err"));
+							return;
+						}	
+						getSQLite(playerdata,id);
+						playerdata.Login=true;
+						playerdata.Online=true;							
+						playerdata.LastLogin=getLocalTimeFromUTC(playerdata.GMT);
+						if(!(playerdata.UUID).equals(player.uuid)) {
+							playerdata.UUID = player.uuid;
+							player.sendMessage(localeUtil.getinput("uuid.update"));
+						}
+						if(Config.Login_Radical) {
+							if(Vars.state.rules.pvp)
+								player.setTeam(netServer.assignTeam(player, playerGroup.all()));
+							else
+								player.setTeam(Team.sharded);
+							//Call.onPlayerDeath(player);
+							player.kill();
+						}
+						player.sendMessage(localeUtil.getinput("login.to"));
+						//Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
+						Maps.setPlayer_Data(player.uuid,playerdata);
+						NewThred_DB(() -> savePlayer(playerdata,playerdata.User));
+					}
+				});
+			}
+		});
 
-			handler.<Player>register("ftpasswd", "<Email_at_registration> [Verification_Code]", "4dV#-ftpasswd", (args, player) -> {
-				LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-				if(!Authority_control(player,"ftpasswd"))
-					player.sendMessage(localeUtil.getinput("authority.no"));
-				else
-				{}
-					//ftpasswd(player,args[0],(args.length > 1) ? args[1] : null);
-			});
-		}
+		handler.<Player>register("register", "<new_id> <new_password> <password_repeat> [your_mail]", "4dV#-register", (args, player) -> {
+			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
+			if(!Authority_control(player,"register"))
+				player.sendMessage(localeUtil.getinput("authority.no"));
+			else {
+				final String newid = args[0];
+				final String newpw = args[1];
+				final String renewpw = args[2];
+				final String mail = (args.length > 3) ? args[3]:"NULL";
+				Data.Thred_service.execute(new Runnable() {
+					@Override
+					public void run() {
+						PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
+						if(playerdata.Login) {
+							player.sendMessage(localeUtil.getinput("login.yes"));
+							return;
+						}
+						if(!newpw.equals(renewpw)) {
+							player.sendMessage(localeUtil.getinput("register.pawno"));
+							return;
+						}
+						if(!(boolean)isSQLite_User(newid)) {
+							player.sendMessage(localeUtil.getinput("register.usrerr"));
+							return;
+						}
+						java.util.Map<String, Object> Passwd_date;
+						try {
+							Passwd_date = (java.util.Map<String, Object>)newPasswd(newpw);
+						} catch (Exception e) {
+							player.sendMessage(localeUtil.getinput("passwd.err"));
+							return;
+						}
+						if(!(boolean)Passwd_date.get("resualt")) {
+							player.sendMessage(localeUtil.getinput("passwd.err"));
+							return;
+						}
+						if(Config.Login_Radical) {
+							if(Vars.state.rules.pvp)
+								player.setTeam(netServer.assignTeam(player, playerGroup.all()));
+							else
+								player.setTeam(Team.sharded);
+							//Call.onPlayerDeath(player);
+							player.kill();
+						}
+						InitializationPlayersSQLite(newid);	
+						playerdata.User=newid;
+						playerdata.Login=true;
+						playerdata.Authority=1;
+						playerdata.Mail=mail;
+						playerdata.PasswordHash=(String)Passwd_date.get("passwordHash");
+						playerdata.CSPRNG=(String)Passwd_date.get("salt");
+						playerdata.LastLogin=getLocalTimeFromUTC(playerdata.GMT);
+						player.sendMessage(localeUtil.getinput("register.to"));
+						//Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
+						NewThred_DB(() -> savePlayer(playerdata,playerdata.User));
+					}
+				});
+			}
+		});
+
+		handler.<Player>register("ftpasswd", "<Email_at_registration> [Verification_Code]", "4dV#-ftpasswd", (args, player) -> {
+			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
+			if(!Authority_control(player,"ftpasswd"))
+				player.sendMessage(localeUtil.getinput("authority.no"));
+			else
+			{}
+				//ftpasswd(player,args[0],(args.length > 1) ? args[1] : null);
+		});
 		//
 		
 		handler.<Player>register("info","4dV#-info", (args, player) -> {
@@ -462,11 +465,43 @@ public class ClientCommandsx {
 			}
 		});
 
-		handler.<Player>register("votekick", "<player>","4dV#-maps", (args, player) -> {
+		handler.<Player>register("votekick", "<player>","4dV#-votekick", (args, player) -> {
 			if(!Authority_control(player,"votekick")) {
 				player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput("authority.no"));
 			} else {
 				new Vote(player,"kick",args[0]);
+			}
+		});
+
+		handler.<Player>register("ukey", "<key>","4dV#-ukey", (args, player) -> {
+			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
+			if(!Authority_control(player,"ukey")) {
+				player.sendMessage(localeUtil.getinput("authority.no"));
+			} else {
+				if(!isSQLite_Key(args[0])) {
+					PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
+					java.util.Map<String,Object> data = GetKey(args[0]);
+					if(Long.parseLong(data.get("Expire").toString()) < getLocalTimeFromUTC()) {
+						player.sendMessage(localeUtil.getinput("key.expire"));
+						NewThred_DB(() -> RmKey(data.get("KEY").toString()));
+						return;
+					}
+					if(Integer.parseInt(data.get("Authority").toString()) != playerdata.Authority) {
+						playerdata.Authority = Integer.parseInt(data.get("Authority").toString());
+						playerdata.Authority_effective_time = getLocalTimeFromUTC(Long.parseLong(data.get("Time").toString())*1000L);
+						player.sendMessage(localeUtil.getinput("key.use.yes",playerdata.Authority,LongtoTime(playerdata.Authority_effective_time)));
+						final int sur = Integer.parseInt(data.get("Surplus").toString())-1;
+						if(sur == 0)
+							NewThred_DB(() -> RmKey(data.get("KEY").toString()));
+						else
+							NewThred_DB(() -> SaveKey(data.get("KEY").toString(),Integer.parseInt(data.get("Authority").toString()),Integer.parseInt(data.get("Total").toString()),sur,Long.parseLong(data.get("Time").toString()),Long.parseLong(data.get("Expire").toString())));
+						// OK
+					} else {
+						player.sendMessage(localeUtil.getinput("key.use.no"));
+						// 暂时不支持同级 KEY
+					}
+				} else
+					player.sendMessage(localeUtil.getinput("key.no"));
 			}
 		});
 	}
