@@ -92,7 +92,7 @@ public class Extend {
 	}
 
 	public static Object[] PlayerdatatoObject(PlayerData d){
-		Object[] params = {d.NAME,d.UUID,longToIP(d.IP),d.Country,d.Language,	d.Level,d.Exp,d.Reqexp,d.Reqtotalexp,d.Buildcount,d.Cumulative_build,d.Pipe_build,d.Dismantledcount,d.Pvpwincount,d.Pvplosecount,d.Authority,secToTime(d.Playtime),simp(d.LastLogin*1000L,d.Time_format),simp(d.Lastchat*1000L,d.Time_format),d.Killcount,d.Deadcount,d.Joincount,d.Breakcount};
+		Object[] params = {d.NAME,d.UUID,longToIP(d.IP),d.Country,d.Language,d.Level,d.Exp,d.Reqexp,d.Reqtotalexp,d.Buildcount,d.Cumulative_build,d.Pipe_build,d.Dismantledcount,d.Pvpwincount,d.Pvplosecount,d.Authority,simp(d.Authority_effective_time*1000L,d.Time_format),secToTime(d.Playtime),simp(d.LastLogin*1000L,d.Time_format),simp(d.Lastchat*1000L,d.Time_format),d.Killcount,d.Deadcount,d.Joincount,d.Breakcount};
 		return params;
 	}
 
