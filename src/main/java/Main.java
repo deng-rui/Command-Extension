@@ -1,8 +1,5 @@
 package extension;
 
-import arc.Core;
-import arc.Events;
-import arc.math.Mathf;
 import arc.util.CommandHandler;
 //Arc
 
@@ -13,22 +10,8 @@ import extension.core.ClientCommandsx;
 import extension.core.Event;
 import extension.core.Initialization;
 import extension.core.ServerCommandsx;
-import extension.core.ex.Threads;
 import extension.util.log.Log;
 //GA-Exted
-
-import java.lang.reflect.Field;
-import arc.util.CommandHandler.Command;
-import arc.struct.Array;
-import arc.struct.ObjectMap;
-
-import java.io.*;
-import java.util.*;
-import extension.util.file.FileUtil;
-
-import extension.util.translation.Bing;
-import extension.util.translation.Baidu;
-import extension.util.translation.Google;
 
 public class Main extends Plugin {
 	//动态难度
