@@ -62,7 +62,7 @@ public class Threads {
 	private static boolean gradual_change = true;
 
 	// 定时任务 1min/S
-	static {
+	public Threads() {
 		Runnable Atime=new Runnable() {
 			@Override
 			public void run() {
@@ -178,25 +178,27 @@ public class Threads {
 			// 渐变
 			if(gradual_change) {
 				// 前半夜
-				if(current_time < 1.0f)
+				if(current_time < 1.1f)
 					current_time = current_time + Config.Night_Time;
 				else{
 					// 后半夜
 					gradual_change = false; 
 					current_time = current_time - Config.Night_Time;
 				}
-			} else if(current_time >= 0f) 
+			} else {
+				if(current_time >= 0f) 
 					current_time = current_time - Config.Night_Time;
 				else {
 					// 转白天
 					day_or_night = false;
 					status_day_night++;
-				}    
-		}else{
+				}  
+			}	  
+		} else {
 			// 白天的0-1.5f好像没有变换
 			if (status_day_night < Config.Day_Time)
 				status_day_night++;
-			else{
+			else {
 				day_or_night = true;
 				gradual_change = true;
 				status_day_night = 1;
@@ -213,6 +215,7 @@ public class Threads {
 		Call.onSetRules(state.rules);
 	}
 
+	// 写死的定时任务
 	private static void Custom() {
 		state.rules.playerDamageMultiplier = 0f;
 		Call.onSetRules(state.rules);

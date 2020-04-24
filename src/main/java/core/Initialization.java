@@ -28,6 +28,7 @@ import extension.data.json.Json;
 import extension.data.global.Lists;
 import extension.data.global.Maps;
 import extension.util.file.FileUtil;
+import extension.util.LocaleUtil;
 import extension.util.log.Log;
 //GA-Exted
 
@@ -49,12 +50,18 @@ public class Initialization {
 		Config.LaodConfig();
 		//Resource();
 		//IsCN();
+		new Threads();
 		//新线程 初始化数据
 		Threads.NewThred_SE(() -> SQL());
 		// 新线程 初始化权限list
 		Threads.NewThred_SE(() -> Player_Privilege_classification());
 		
-		new Threads();
+		Maps.setLocale("zh_CN",new LocaleUtil("zh_CN"));
+		Maps.setLocale("zh_HK",new LocaleUtil("zh_HK"));
+		Maps.setLocale("zh_MO",new LocaleUtil("zh_MO"));
+		Maps.setLocale("zh_TW",new LocaleUtil("zh_TW"));
+		Maps.setLocale("ru_RU",new LocaleUtil("ru_RU"));
+		Maps.setLocale("en_US",new LocaleUtil("en_US"));
 	}
 
 	public void Override_Initialization() {
