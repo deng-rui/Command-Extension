@@ -30,7 +30,7 @@ class VariableException extends RuntimeException {
 }
 
 // 网络
-class NetException extends RuntimeException {
+class NetException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
@@ -41,7 +41,7 @@ class NetException extends RuntimeException {
 }
 
 // 文件
-class FileException extends RuntimeException {
+class FileException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
