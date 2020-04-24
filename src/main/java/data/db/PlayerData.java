@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import mindustry.entities.type.Player;
 //
 
+import extension.data.global.Config;
 import extension.data.global.Maps;
 import extension.util.LocaleUtil;
 //
@@ -75,7 +76,7 @@ public class PlayerData {
 		IP 							= 0;
 		GMT 						= 0;
 		Country 					= "NO Login";
-		Language 					= "en_US";
+		Language 					= Config.Server_Language;
 		Time_format 				= 1;
 		LastLogin 					= 0;
 		/* */
@@ -109,7 +110,7 @@ public class PlayerData {
 		Login 						= false;
 		Jointime 					= getLocalTimeFromUTC();
 		Backtime 					= 0;
-		Info 						= Maps.getLocale("en_US");
+		Info 						= Maps.getLocale(Config.Server_Language);
 	}
 
 	public static void playerip(PlayerData data,Player player,String ip) {
