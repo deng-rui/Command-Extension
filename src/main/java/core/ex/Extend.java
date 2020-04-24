@@ -122,15 +122,20 @@ public class Extend {
         return retStr;
     }
 
-    public static void addMesg_Team(String msg, Team team){
+    public static void addMesg_Team(Team team, String msg, Object...params){
     	for (Player player : playerGroup.all())
 			if(player.getTeam().equals(team))
-				player.sendMessage(msg);
+				player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput(msg,params));
     }
 
-    public static void addMesg_Admin(String msg){
+    public static void addMesg_Admin(String msg, Object...params){
     	for (Player player : playerGroup.all())
 			if(player.isAdmin)
-				player.sendMessage(msg);
+				player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput(msg,params));
+    }
+
+    public static void addMesg_All(String msg, Object...params){
+    	for (Player player : playerGroup.all())
+			player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput(msg,params));
     }
 }
