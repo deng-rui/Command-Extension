@@ -43,7 +43,7 @@ General function
 
 | configure     | CPU             | RAM   | System        | Hard disk | Java      |
 |:---           |:---             |:---   |:---           |:---       |:---       |
-| Current use   | BCM2711         | 4G    | ubuntu 19.10  | 500G HHD  | Java 8    |
+| Current use   | BCM2711         | 4G    | ubuntu 19.10  | 500G HHD  | Java 14   |
 | Recommended   | Intel I3-6100+  | 4G    | ubuntu 16.04+ | 500G HHD  | Java 8+   |
 
 ## build configuration  
@@ -54,13 +54,17 @@ General function
 
 ## Server commands  
 
-| Command               | Parameter                                          | Description                                           |
-|:---                   |:---                                                |:---                                                   |
-| gameover(replace)     |                                                    | Force end of game (prevent original gameover recovery)|
-| reloadconfig          |                                                    | Reload the this plugins config.ini                    |
-| reloadmaps(replace)   |                                                    | Reload the map (easy to re-read the mode)             |
-| toadmin               | &lt;UUID&gt; &lt;Privilege level&gt;               | Set player permission level online                    |
-| exit(replace)         |                                                    | Shut down the server (end built-in timer)             |
+| Command               | Parameter                                                                                                     | Description                                           |
+|:---                   |:---                                                                                                           |:---                                                   |
+| gameover(replace)     |                                                                                                               | Force end of game (prevent original gameover recovery)|
+| reloadconfig          |                                                                                                               | Reload the this plugins config.ini                    |
+| reloadmaps(replace)   |                                                                                                               | Reload the map (easy to re-read the mode)             |
+| toadmin               | &lt;UUID&gt; &lt;Privilege level&gt;                                                                          | Set player permission level online                    |
+| exit(replace)         |                                                                                                               | Shut down the server (end built-in timer)             |
+| newkey                | &lt;Key length&gt; &lt;Privilege level&gt; &lt;Available_time(min)&gt; &lt;Expiration_date(min)&gt; [Total]   | new Key                                               |
+| keys                  |                                                                                                               | View the established key of the server                |
+| rmkeys                |                                                                                                               | Delete all keys                                       |
+| rmkey                 | &lt;Key&gt;                                                                                                   | Delete specified key                                  |
 
 ## Game command  
 
@@ -83,6 +87,7 @@ General function
 | tr            |                                                              | Google translation(Use - instead of spaces in text)   |
 | maps          |[page] [mode(1)]                                              | View the map currently available to the server        |
 | vote          |&lt;gameover/kick/skipwave/host&gt; [name/number]             | VOTE                                                  |
+| ukey          |&lt;key&gt;                                                   | Use key                                               |
 
 Notes:
 1: You need to view the schema abbreviation of the map for the specified schema
@@ -104,10 +109,10 @@ Notes:
 - [ ] Authority
     - [x] Help supports permission display
     - [ ] Try finer authority control
-    - [ ] KEY
-        - [ ] KEY - Effective time
-        - [ ] KEY - Reuse
-    - [ ] Permission time
+    - [x] KEY
+        - [x] KEY - Effective time
+        - [x] KEY - Reuse
+    - [x] Permission time
 - [ ] Optimization
     - [ ] Memory usage
     - [ ] Logical processing
