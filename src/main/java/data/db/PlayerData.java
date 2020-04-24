@@ -6,12 +6,17 @@ import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import mindustry.entities.type.Player;
+//
+
+import extension.data.global.Maps;
+import extension.util.LocaleUtil;
+//
 
 import static extension.net.HttpRequest.doGet;
 import static extension.util.DateUtil.getLocalTimeFromUTC;
 import static extension.util.ExtractUtil.ipToLong;
-import static extension.util.LocaleUtil.getinput;
-import static extension.util.LocaleUtil.Language_determination;
+import static extension.util.ExtractUtil.Language_determination;
+//
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -58,6 +63,7 @@ public class PlayerData {
 	public boolean Login;
 	public long Jointime;
 	public long Backtime;
+	public LocaleUtil Info;
 
 	public PlayerData(String UUID,String NAME,int Authority) {
 		this.UUID 			= UUID;
@@ -101,24 +107,27 @@ public class PlayerData {
 		Login 				= false;
 		Jointime 			= getLocalTimeFromUTC();
 		Backtime 			= 0;
+		Info 				= Maps.getLocale("en_US");
 	}
 
 	public static void playerip(PlayerData data,Player player,String ip) {
 		Pattern reg = Pattern.compile("^(127\\.0\\.0\\.1)|(localhost)|(10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|(172\\.((1[6-9])|(2\\d)|(3[01]))\\.\\d{1,3}\\.\\d{1,3})|(192\\.168\\.\\d{1,3}\\.\\d{1,3})$");
 		if(reg.matcher(ip).find()) {
 			data.Country = "Intranet";
-			player.sendMessage(getinput("register.ip.nat"));
+			player.sendMessage(data.Info.getinput("register.ip.nat"));
 		}else{
 			try {
 				JSONObject result = JSONObject.parseObject(doGet("http://ip-api.com/json/"+ip+"?fields=country,timezone"));
 				data.GMT = TimeZone.getTimeZone((String)result.get("timezone")).getRawOffset();
 				data.Country = (String)result.get("country");
 			} catch (Exception e) {
-				player.sendMessage(getinput("passwd.net"));
+				player.sendMessage(data.Info.getinput("passwd.net"));
 			}
 		}
 		data.IP 			= ipToLong(ip);
-		data.Language 		= Language_determination(data.Country);	
+		data.Language 		= Language_determination(data.Country);
+		data.Info 			= Maps.getLocale(data.Language);
+		data.Info..getinput("Load.Language");
 	}
 }
 	
