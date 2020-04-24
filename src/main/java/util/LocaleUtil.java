@@ -38,7 +38,7 @@ public class LocaleUtil {
 		this.lg = lg.split("_");
 	}
 
-	public String language(String o,String t,String input,Object[] params) {
+	private String language(String o,String t,String input,Object[] params) {
 		Locale locale = new Locale(o,t);
 		//URLClassLoader file = new URLClassLoader(new URL[] {new File(FileUtil.File(Config.Plugin_Resources_bundles_Path).getPath()).toURI().toURL()});
 		//ResourceBundle bundle = ResourceBundle.getBundle("GA", locale, file, new UTF8Control());
@@ -75,7 +75,7 @@ public class LocaleUtil {
 
 	// 暂时并行
 	// 我还未想好到底如何实现 help :(
-	public String core(String input,Object[] params) {
+	private String core(String input,Object[] params) {
 		String[] lang = lg;
 		if(Blank(lg)) 
 			lang = Config.Server_Language.split("_");
