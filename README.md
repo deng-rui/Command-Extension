@@ -96,16 +96,12 @@ Notes:
 
 - [ ] Config
     - [ ] Log
-- [x] Baidu translation support
 - [ ] Dynamic difficulty
 - [ ] PVP pre limit
 - [ ] plug in segmentation
     - [ ] Google translation
     - [ ] language filtering
     - [ ] Vote
-- [x] Internationalization
-    - [x] Player
-    - [x] Help
 - [ ] Authority
     - [x] Help supports permission display
     - [ ] Try finer authority control

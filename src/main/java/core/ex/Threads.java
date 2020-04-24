@@ -56,6 +56,8 @@ public class Threads {
 	private static int status_login = 1;
 	private static int status_mail = 1;
 	private static int status_day_night = 1;
+	//
+	private static int status_authority = 1;
 	// 夜晚渐变 => Gradual change at night
 	private static float current_time = 0f;
 	private static boolean day_or_night = true;
@@ -66,12 +68,12 @@ public class Threads {
 		Runnable Atime=new Runnable() {
 			@Override
 			public void run() {
-
 				Custom();
 				Data.ismsg = true;
 				//
-				if (Config.Login)
-					LoginStatus();
+				LoginStatus();
+				AuthorityStatus();
+
 				if (Config.Day_and_night)
 					Day_and_night_shift();
 				if (Config.Regular_Reporting)
@@ -108,11 +110,34 @@ public class Threads {
 		while(it.hasNext()){
 			Entry entry = (Entry)it.next();
 			PlayerData playerdata = (PlayerData)entry.getValue();
-			long currenttime = getLocalTimeFromUTC()-0;
 			// 防止初期登录就被刷
-			if (playerdata.Backtime != 0)
+			if (playerdata.Backtime != 0) {
+				long currenttime = getLocalTimeFromUTC();
 				if (playerdata.Backtime <= currenttime) 
 					Maps.removePlayer_Data((String)entry.getKey());
+			}
+		}
+	}
+
+	private static void AuthorityStatus() {
+		if (5 > status_authority) {
+			status_authority++;
+			return;
+		}
+		status_authority = 1;
+		Map data = Maps.getMapPlayer_Data();
+		Iterator it = data.entrySet().iterator();
+		while(it.hasNext()){
+			Entry entry = (Entry)it.next();
+			PlayerData playerdata = (PlayerData)entry.getValue();
+			// 防止初期登录就被刷
+			if (playerdata.Authority_effective_time != 0) {
+				long currenttime = getLocalTimeFromUTC();
+				if (playerdata.Authority_effective_time <= currenttime) {
+					playerdata.Authority = 1;
+					playerdata.Authority_effective_time = 0;
+				}
+			}	
 		}
 	}
 
