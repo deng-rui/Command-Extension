@@ -1,5 +1,9 @@
 package extension.core;
 
+import java.util.List;
+import java.util.Map;
+//
+
 import arc.Core;
 import arc.Events;
 import arc.util.CommandHandler;
@@ -14,12 +18,18 @@ import static mindustry.Vars.net;
 import static mindustry.Vars.maps;
 //Mindustry-Static
 
+import extension.data.db.Player;
 import extension.data.db.PlayerData;
 import extension.data.global.Maps;
-//
-
 import extension.core.Initialization;
 import extension.core.ex.Threads;
+//
+
+import static extension.core.ex.Extend.secToTime;
+import static extension.util.DateUtil.LongtoTime;
+import static extension.util.DateUtil.getLocalTimeFromUTC;
+import static extension.util.RandomUtil.generateStr;
+import static extension.util.IsUtil.NotisNumeric;
 //Static
 
 public class ServerCommandsx {
@@ -59,6 +69,7 @@ public class ServerCommandsx {
 			PlayerData playerdata = Maps.getPlayer_Data(arg[0]);
 			if (playerdata != null)
 				playerdata.Authority = Integer.parseInt(arg[1]);
+			playerdata.Translate = true;
 		});
 
 		handler.register("exit", "Exit the server application", (arg)-> {
@@ -66,6 +77,42 @@ public class ServerCommandsx {
 			net.dispose();
 			Threads.close();
 			Core.app.exit();
+		});
+
+		handler.register("newkey", "<length> <authority> <Available_time(min)> <Expiration_date(min)> [Total]","Add new key", (arg) -> {
+			if(NotisNumeric(arg[0])) 
+				info("Invalid length");
+			else if(NotisNumeric(arg[1])) 
+				info("Invalid permission");
+			else
+				Player.AddKey(generateStr(Integer.parseInt(arg[0])),Integer.parseInt(arg[1]),Long.parseLong(arg[2])*60,getLocalTimeFromUTC(Long.parseLong(arg[3])*60000L),arg.length>4 ? Integer.parseInt(arg[4]):1);
+		});
+
+		handler.register("keys","List all keys", (arg) -> {
+			List<Map<String,Object>> data = Player.GetKey();
+			info("KEY List:");
+			for(Map<String,Object> map : data) {
+				info("Authority: {0} ,KEY: {1} \n Surplus/Total : {2}/{3} \nTime: {4} Expire(UTC): {5}",map.get("Authority"),map.get("KEY"),map.get("Surplus"),map.get("Total"),secToTime((long)map.get("Time")),LongtoTime((long)map.get("Expire")));
+			}
+		});
+
+		handler.register("rmkeys","Rm all keys", (arg) -> {
+			Player.RmKey();
+			info("Delete all key");
+		});
+
+		handler.register("rmkey","<key>","rm key", (arg) -> {
+			if(!Player.isSQLite_Key(arg[0]))
+				Player.RmKey(arg[0]);
+			else
+				info("Invalid key, key:{0}",arg[0]);
+		});
+
+		handler.register("a","<length>","Rm all keys", (arg) -> {
+			Player.InitializationPlayersSQLite(arg[0]);
+			PlayerData playerdata = new PlayerData("null",null,0);
+			Player.getS(playerdata,arg[0]);
+			Player.savePlayer(playerdata,playerdata.User);
 		});
 	}
 }

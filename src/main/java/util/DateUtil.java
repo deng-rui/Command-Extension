@@ -30,6 +30,9 @@ public class DateUtil {
 	 * @param fot 目标语言喜好
 	 * @return 格式化后GMT时间
 	 */
+	public static String LongtoTime(long time){
+		return simp(Long.valueOf(time) * 1000L,1);
+	}
 
 	public static long getLocalTimeFromUTC(){
 		return Long.parseLong(getLocalTimeFromUTC(0,0,false));
