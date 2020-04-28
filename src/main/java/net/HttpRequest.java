@@ -9,10 +9,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URLConnection;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -30,27 +33,31 @@ public class HttpRequest {
 	private static final String USER_TESTS = "Mozilla/5.0 (JAVA 11; x64) HI JAVA TO WEB";
 
 	public static String doGet(String url) {
-		return doGet(url,null,null);
-	}
-
-	public static String doGet(String url, String ref, String cookie) {
 		HttpURLConnection con = null;
 		BufferedReader in = null;
-		StringBuffer response = new StringBuffer();
+		StringBuffer result = new StringBuffer();
+		String line = null;
 		try {
 			URL conn = new URL(url);
 			con = (HttpURLConnection) conn.openConnection();
+			con.setConnectTimeout(3000);
+			con.setReadTimeout(3000);
 			con.setRequestMethod("GET");
 			con.addRequestProperty("Accept-Charset", "UTF-8");
-			if(NotBlank(ref))con.setRequestProperty("Referrer", ref);
-			if(NotBlank(cookie))con.setRequestProperty("Cookie", cookie);
 			con.setRequestProperty("User-Agent", USER_AGENT);
+			con.setRequestProperty("Accept-Encoding", "gzip,deflate");
 			int responseCode = con.getResponseCode();
-			in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			String inputLine;
-			
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
+			String contentEncoding = con.getContentEncoding(); 
+			Log.info(contentEncoding);
+			if (null != contentEncoding && contentEncoding.indexOf("gzip") != -1) { 
+				GZIPInputStream gZIPInputStream = new GZIPInputStream(con.getInputStream());
+				in = new BufferedReader(new InputStreamReader(gZIPInputStream,"utf-8"));
+				while ((line = in.readLine()) != null) 
+					result.append(new String(line.getBytes("UTF-8")));
+			} else {
+				in = new BufferedReader(new InputStreamReader(con.getInputStream(),"utf-8"));
+				while ((line = in.readLine()) != null) 
+					result.append("\n"+line);
 			}
 		} catch (IOException e) {
 			Log.error("doGet!",e);
@@ -63,42 +70,40 @@ public class HttpRequest {
 				}
 			if(con != null) con.disconnect();
 		}
-		return response.toString();
+		return result.toString();
 	}
 
 	public static String doPost(String url, String param) {
-		return doPost(url,param,null,null);
-	}
-
-	public static String doPost(String url, String param, String ref, String cookie) {
 		StringBuilder result = new StringBuilder();
 		PrintWriter out = null;
 		BufferedReader in = null;
-		//打开和URL之间的连接
+		String line = null;
 		try{
 			URL realUrl = new URL(url);
 			URLConnection conn =  realUrl.openConnection();
-			//设置通用的请求属性
 			conn.setRequestProperty("accept", "*/*");
 			conn.setRequestProperty("connection", "Keep-Alive");
 			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-			if(NotBlank(ref))conn.setRequestProperty("Referrer", ref);
-			if(NotBlank(cookie))conn.setRequestProperty("Cookie", cookie);
 			conn.setRequestProperty("User-Agent",USER_AGENT);
-			//发送POST请求必须设置如下两行
+			conn.setRequestProperty("Accept-Encoding", "gzip,deflate");
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
-			//获取URLConnection对象对应的输出流
 			out = new PrintWriter(conn.getOutputStream());
-			//发送请求参数
 			out.print(param);
-			//flush输出流的缓冲
 			out.flush();
 			// 定义 BufferedReader输入流来读取URL的响应
 			in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
-			String line;
-			while ((line = in.readLine()) != null) 
-				result.append("\n"+line);
+			String contentEncoding = conn.getContentEncoding(); 
+			if (null != contentEncoding && contentEncoding.indexOf("gzip") != -1) { 
+				GZIPInputStream gZIPInputStream = new GZIPInputStream(conn.getInputStream());
+				in = new BufferedReader(new InputStreamReader(gZIPInputStream,"utf-8"));
+	            while ((line = in.readLine()) != null) 
+	                result.append(new String(line.getBytes("UTF-8")));
+			} else {
+				in = new BufferedReader(new InputStreamReader(conn.getInputStream(),"utf-8"));
+				while ((line = in.readLine()) != null) 
+					result.append("\n"+line);
+			}
 		} catch (IOException e) {
 			Log.error("doPost!",e);
 		} finally{
