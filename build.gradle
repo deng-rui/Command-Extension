@@ -36,6 +36,13 @@ dependencies{
 	 */
 	implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
 	implementation group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
+	/* WEB
+	 * 2MB 
+	 */
+	implementation group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.4.28.v20200408'
+    implementation group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.4.28.v20200408'
+    
+
 	/*
 	 * 为项目加入Tencent QQ支持
 	 * TEST - 不会投入稳定版本
