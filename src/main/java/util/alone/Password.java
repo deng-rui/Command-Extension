@@ -1,9 +1,8 @@
 package extension.util.alone;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.SecureRandom;
