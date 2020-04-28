@@ -7,4 +7,7 @@ public class Error {
 	public static String Error(String type) {
 		return ErrorCode.valueOf(type).getError();
 	}
+	public static int Code(String type) {
+		return ErrorCode.valueOf(type).getCode();
+	}
 }
