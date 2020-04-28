@@ -18,6 +18,8 @@ public class Data {
 	public static final String Plugin_Resources_bundles_Path 	= "/config/mods/GA/resources/bundles";
 	public static final String Plugin_Resources_Other_Path 		= "/config/mods/GA/resources/other";
 
+    public static final Charset UTF8 = Charset.forName("UTF-8");
+
 	// [线程]
 	public static final ScheduledExecutorService service 		= Executors.newScheduledThreadPool(5);
 	//public static final ExecutorService executorService 		= Executors.newFixedThreadPool(10);
