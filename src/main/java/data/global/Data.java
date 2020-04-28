@@ -1,5 +1,7 @@
 package extension.data.global;
 
+import java.nio.charset.Charset;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
