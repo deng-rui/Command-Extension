@@ -1,5 +1,7 @@
 package extension;
 
+import java.io.*;
+
 import arc.util.CommandHandler;
 //Arc
 
@@ -13,48 +15,46 @@ import extension.core.ServerCommandsx;
 import extension.util.log.Log;
 //GA-Exted
 
+import extension.util.file.FileUtil;
+import extension.net.server.Start;
+import extension.core.ex.Threads;
+
+
 public class Main extends Plugin {
 	//动态难度
 	//PVP限制
-	private boolean a = true;
 
 	public Main() {
 		
-		//Log 权限
+		// Log 权限
 		Log.Set("ALL");
 
-		//初始化 所需依赖
+		// 初始化 所需依赖
 		new Initialization().Start_Initialization();
 
-		//加载Event
+		// 加载Event
 		new Event().register();
 
+		// 启动WEB服务
+		Threads.NewThred_SE(() -> new Start());
+
 /*
-		TR - TEST
+		翻译测试
 		Log.info("Bing",new Bing().translate("必应翻译","en"));
 		Log.info("Baidu",new Baidu().translate("百度翻译","en"));
 		Log.info("Google",new Google().translate("谷歌翻译","en"));
 */
-/*
-NGROK-OK
+		// 内网玩家 Ngrok
 		Threads.NewThred_SE(() -> {
 			String line;
 		    Process p;
 		    BufferedReader input = null;
-
 		    try {
-		        p = Runtime.getRuntime().exec(FileUtil.File("/").getPath()+"ngrok -log="+FileUtil.File("/").getPath()+"ngrok.log -config ngrok.conf start httptun tcptun");
-
-		        input = new BufferedReader(
-		                new InputStreamReader(p.getInputStream()));
-
-		        if(a) {
-		        	while ((line = input.readLine()) != null) {
+		        p = Runtime.getRuntime().exec(FileUtil.File("/").getPath()+"start.sh");
+		        input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		        while ((line = input.readLine()) != null) {
 		            System.out.println(line);
 		        }
-		        a = false;
-		        }
-		        
 		    } catch (IOException e) {
 		        e.printStackTrace();
 		    } finally {
@@ -65,9 +65,8 @@ NGROK-OK
 		                e.printStackTrace();
 		            }
 		        }
-		       }
+		    }
 		});
-*/
 	}
 
 	@Override
