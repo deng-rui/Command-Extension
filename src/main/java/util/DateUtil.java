@@ -1,8 +1,7 @@
 package extension.util;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
 import java.text.SimpleDateFormat;
 //Java
 

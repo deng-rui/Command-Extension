@@ -14,8 +14,7 @@ public class IsUtil {
 	}
 
 	public static boolean isNumeric(String string) {
-		final Pattern pattern = Pattern.compile("[0-9]*");
-		return pattern.matcher(string).matches();
+		return Pattern.compile("[0-9]*").matcher(string).matches();
 	}
 
 	public static boolean NotisNumeric(String string) {
