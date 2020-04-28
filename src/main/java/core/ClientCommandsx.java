@@ -169,7 +169,10 @@ public class ClientCommandsx {
 						player.sendMessage(localeUtil.getinput("login.to"));
 						//Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
 						Maps.setPlayer_Data(player.uuid,playerdata);
-						NewThred_DB(() -> savePlayer(playerdata,playerdata.User));
+						NewThred_DB(() -> {
+							PlayerData.playerip(playerdata,player,Vars.netServer.admins.getInfo(player.uuid).lastIP);
+							savePlayer(playerdata,playerdata.User);
+						});
 					}
 				});
 			}
@@ -229,7 +232,10 @@ public class ClientCommandsx {
 						playerdata.LastLogin=getLocalTimeFromUTC(playerdata.GMT);
 						player.sendMessage(localeUtil.getinput("register.to"));
 						//Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
-						NewThred_DB(() -> savePlayer(playerdata,playerdata.User));
+						NewThred_DB(() -> {
+							PlayerData.playerip(playerdata,player,Vars.netServer.admins.getInfo(player.uuid).lastIP);
+							savePlayer(playerdata,playerdata.User);
+						});
 					}
 				});
 			}
@@ -447,15 +453,16 @@ public class ClientCommandsx {
 						Data.vote = new Vote(player,args[0],player.getTeam());
 						break;
 					case "host":
-						if(args.length > 1)
+						if(args.length > 1) {
 							if(NotisNumeric(args[1])) {
 								player.sendMessage(localeUtil.getinput("nber.err"));
+								return;
+							}
+							if(!(Lists.getMaps_List().size() >= Integer.parseInt(args[1]))) {
+								player.sendMessage(localeUtil.getinput("vote.host.maps.err",args[1]));
 							} else
-								if(!(Lists.getMaps_List().size() >= Integer.parseInt(args[1]))) {
-									player.sendMessage(localeUtil.getinput("vote.host.maps.err",args[1]));
-								} else
-									Data.vote = new Vote(player,args[0],args[1]);
-						else
+								Data.vote = new Vote(player,args[0],args[1]);
+						} else
 							player.sendMessage(localeUtil.getinput("args.err"));
 						break;
 					default:
@@ -488,7 +495,10 @@ public class ClientCommandsx {
 					}
 					if(Integer.parseInt(data.get("Authority").toString()) != playerdata.Authority) {
 						playerdata.Authority = Integer.parseInt(data.get("Authority").toString());
-						playerdata.Authority_effective_time = getLocalTimeFromUTC(Long.parseLong(data.get("Time").toString())*1000L);
+						if(Long.parseLong(data.get("Time").toString()) == 0) 
+							playerdata.Authority_effective_time = 0;
+						else
+							playerdata.Authority_effective_time = getLocalTimeFromUTC(Long.parseLong(data.get("Time").toString())*1000L+playerdata.GMT);
 						player.sendMessage(localeUtil.getinput("key.use.yes",playerdata.Authority,LongtoTime(playerdata.Authority_effective_time)));
 						final int sur = Integer.parseInt(data.get("Surplus").toString())-1;
 						if(sur == 0)

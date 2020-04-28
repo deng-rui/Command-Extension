@@ -109,7 +109,7 @@ public class Initialization {
 	private void Resource() {
 		try {
 			List file = (List)FileUtil.readfile(true,new InputStreamReader(Initialization.class.getResourceAsStream("/other/FileList.txt"), "UTF-8"));
-			for(int i=0;i<file.size();i++){
+			for(int i=0,len=file.size();i<len;i++){
 				//Log.info((String)file.get(i));
 				if(!FileUtil.File(Data.Plugin_Resources_Path+(String)file.get(i)).exists()) {
 					//IPR必须加上/
@@ -161,10 +161,10 @@ public class Initialization {
 	private void Player_Privilege_classification() {
 		String[] tempstring=loadstring("Privilege_Level").split(",");
 		int[] tempint = new int[tempstring.length];
-		for (int i = 0; i < tempstring.length; i++) tempint[i] = Integer.parseInt(tempstring[i]);
+		for (int i = 0,len=tempstring.length;i<len; i++) tempint[i] = Integer.parseInt(tempstring[i]);
 		int temp[] = selectionSort(tempint);	
 		if(Config.Permission_Passing) {
-			for (int i = 0; i < temp.length; i++) {
+			for (int i=0,len=temp.length;i<len;i++) {
 				final String data = loadstring("Privilege."+temp[i]);
 				if (data == null) continue;
 				if (i <= 1) {
@@ -178,7 +178,7 @@ public class Initialization {
 				Maps.setPower_Data(temp[i],filter);
 			}
 		} else {
-			for (int i = 0; i < temp.length; i++) {
+			for (int i=0,len=temp.length;i<len;i++) {
 				final String data = loadstring("Privilege."+temp[i]);
 				if (data == null) continue;
 				Maps.setPower_Data(temp[i],Arrays.asList(data.split(",")));
@@ -189,9 +189,9 @@ public class Initialization {
 	private int[] selectionSort(int[] array) {
 		if (array.length == 0)
 			return array;
-		for (int i = 0; i < array.length; i++) {
+		for (int i=0,len=array.length;i<len;i++) {
 			int minIndex = i;
-			for (int j = i; j < array.length; j++) {
+			for (int j=i,len1=array.length;j<len1;j++) {
 				if (array[j] < array[minIndex])
 					minIndex = j;
 			}

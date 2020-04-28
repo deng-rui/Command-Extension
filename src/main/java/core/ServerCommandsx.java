@@ -107,12 +107,5 @@ public class ServerCommandsx {
 			else
 				info("Invalid key, key:{0}",arg[0]);
 		});
-
-		handler.register("a","<length>","Rm all keys", (arg) -> {
-			Player.InitializationPlayersSQLite(arg[0]);
-			PlayerData playerdata = new PlayerData("null",null,0);
-			Player.getS(playerdata,arg[0]);
-			Player.savePlayer(playerdata,playerdata.User);
-		});
 	}
 }
