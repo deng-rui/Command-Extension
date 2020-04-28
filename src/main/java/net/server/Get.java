@@ -17,9 +17,11 @@ import extension.data.db.PlayerData;
 import extension.data.global.CacheData;
 import extension.data.global.Maps;
 import extension.net.HttpRequest;
+import extension.util.log.Log;
 
 import static extension.util.log.Error.Code;
 import static extension.util.RandomUtil.generateStr;
+import static extension.util.IsUtil.Blank;
 
 /*
  *Web 
@@ -37,7 +39,7 @@ public class Get {
 	protected void register(ServletContextHandler context) {
 		context.addServlet(new ServletHolder(new Info()), "/api/get/info");
 		context.addServlet(new ServletHolder(new Status()), "/api/get/status");
-		context.addServlet(new ServletHolder(new Key()), "/api/get/key");
+		//context.addServlet(new ServletHolder(new Key()), "/api/get/key");
 	}
 
 	private static boolean isGzipSupported(HttpServletRequest request) {
@@ -50,8 +52,8 @@ public class Get {
 		return((flag != null) && (!flag.equalsIgnoreCase("false")));
 	}
 
-	protected static PrintWriter getGzipWriter(HttpServletResponse response) throws IOException {
-		if (GzipUtilities.isGzipSupported(request) && !GzipUtilities.isGzipDisabled(request)) {
+	protected static PrintWriter getGzipWriter(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		if (isGzipSupported(request) && !isGzipDisabled(request)) {
 			response.setHeader("Content-Encoding", "gzip");
 			return new PrintWriter(new GZIPOutputStream(response.getOutputStream()));
 		} else 
@@ -67,7 +69,7 @@ public class Get {
 class Info extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		response.setStatus(HttpServletResponse.SC_OK);
-		PrintWriter out = Get.getGzipWriter(response);
+		PrintWriter out = Get.getGzipWriter(request,response);
 		Get.setHandler(response);
 		String user = request.getParameter("user");
 		String info = generateStr(10);
@@ -76,7 +78,7 @@ class Info extends HttpServlet {
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("state",Code("SUCCESS"));
 		result.put("result",Base64.getEncoder().encodeToString(JSON.toJSONString(data).getBytes("utf-8")));
-		out.println(result);
+		out.println(JSON.toJSONString(result));
 		out.close();
 	}
 }
@@ -85,7 +87,7 @@ class Info extends HttpServlet {
 class Status extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		response.setStatus(HttpServletResponse.SC_OK);
-		PrintWriter out = Get.getGzipWriter(response);
+		PrintWriter out = Get.getGzipWriter(request,response);
 		Get.setHandler(response);
 		Map<String,Object> map = new HashMap<>();
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -97,19 +99,35 @@ class Status extends HttpServlet {
 			result.put("state",Code("SUCCESS"));
 			result.put("result",Base64.getEncoder().encodeToString(JSON.toJSONString(map).getBytes("utf-8")));
 		} else 
-			out.println("state",Code("SERVER_CLOSE"));
-		out.println(result);
+			result.put("state",Code("SERVER_CLOSE"));
+		out.println(JSON.toJSONString(result));
 		out.close();
 	}
 }
 
+/*
+	 * 认证思路 仿照 (SSL)
+	 * 向服务器发送一个保持Key -> 服务器->>Bot返回一个RSA-Pub -> 携带Key+加密文 发送
+	 * 我认为暂时用不上 本地可以用明码 问题不大
+	 */
+// 暂未开放
 class Key extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		response.setStatus(HttpServletResponse.SC_OK);
-		PrintWriter out = Get.getGzipWriter(response);
+		PrintWriter out = Get.getGzipWriter(request,response);
 		Get.setHandler(response);
 		Map<String, Object> result = new HashMap<String, Object>();
+		String botuuid = request.getParameter("botuuid");
+		if(Blank(botuuid)) {
+			result.put("state",Code("INCOMPLETE_PARAMETERS"));
+			out.println(result);
+			out.close();
+			return;
+		}
+		if(!CacheData.isRSACache(botuuid)) 
+			//CacheData.addRSACache(botuuid);
 		result.put("state",Code("SUCCESS"));
+		result.put("result",CacheData.getRSACache_Puky(botuuid));
 		out.println(result);
 		out.close();
 	}
