@@ -27,18 +27,15 @@ dependencies{
 	 * 1.2MB 
 	 */
 	implementation group: 'com.alibaba', name: 'fastjson', version: '1.2.59'
-	/* Passwd Import
-	 * 260KB? 
-	 */
-	implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
 	/* Mail Import
 	 * 608KB 
 	 */
 	implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
 	implementation group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
 	/* WEB
-	 * 2MB 
+	 * 2.3MB 
 	 */
+	implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
 	implementation group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.4.28.v20200408'
     implementation group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.4.28.v20200408'
     

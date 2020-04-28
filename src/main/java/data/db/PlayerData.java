@@ -124,7 +124,9 @@ public class PlayerData {
 				data.GMT = TimeZone.getTimeZone((String)result.get("timezone")).getRawOffset();
 				data.Country = (String)result.get("country");
 			} catch (Exception e) {
-				player.sendMessage(data.Info.getinput("passwd.net"));
+				data.GMT 						= 0;
+				data.Country 					= Config.Server_Language;
+				player.sendMessage(data.Info.getinput("Passwd.Net",data.Country));
 			}
 		}
 		data.IP 					= ipToLong(ip);
