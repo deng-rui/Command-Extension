@@ -17,7 +17,7 @@ Warning: database data will not be migrated when the current project is in an un
   
   
 This project is open. If you have any questions, please email me or submit a question    
-By default, Google translator should not set the source time to 0, otherwise Google will blackmail your IP
+By default, Google Translate should not set the source time to 0, otherwise Google will disable your IP  
 
 Please use custom mode map, all mode(/shuffle all) will interfere with pattern recognition (/shuffle custom)  
 
@@ -29,7 +29,6 @@ At least java8! Java7 will not run!!!
 Default open web API control port = 8080  
 If you need to use for higher security, it is recommended that you close the external web port by firewall under the same network segment between Bot and server  
 If you don't need it, you can close it in config.ini (not finished yet)  
-If you need high-intensity verification, please compile the rsa4096 mode by yourself  
 
 ## Plug in can realize functions
 PVP:  
