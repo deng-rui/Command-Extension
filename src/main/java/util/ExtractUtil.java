@@ -51,12 +51,12 @@ public class ExtractUtil {
 	}
 
 
-    public static boolean InttoBoolean(int in) {
+    public static boolean inttoBoolean(int in) {
 		return (in == 1);
 	}
 
 
-    public static int BooleantoInt(boolean bl) {
+    public static int booleantoInt(boolean bl) {
 		if(bl) {
             return 1;
         }
@@ -69,7 +69,7 @@ public class ExtractUtil {
 	}
 
 
-    public static String longToIP(long longIp) {
+    public static String longToIp(long longIp) {
 		StringBuffer sb = new StringBuffer("");
 		sb.append(String.valueOf((longIp >>> 24)))
 		.append(".")
@@ -105,7 +105,7 @@ public class ExtractUtil {
     }
 
     @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
-    public static String Language_determination(String string) {
+    public static String languageDetermination(String string) {
 		switch(string){
 			case "China" :return "zh_CN";
 			case "Hong Kong" :return "zh_HK";

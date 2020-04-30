@@ -22,7 +22,7 @@ public class LoadConfig {
 
 	private static Object load(String input) throws RuntimeException{
 		Properties properties = new Properties();
-        InputStreamReader inputStream = FileUtil.File(Data.Plugin_Data_Path).toPath("/Config.ini").readconfig();
+        InputStreamReader inputStream = extension.util.file.FileUtil.File(Data.Plugin_Data_Path).toPath("/Config.ini").readconfig();
         try {
             properties.load(inputStream);
         } catch (IOException e) {
@@ -39,7 +39,7 @@ public class LoadConfig {
 	}
 
 
-    public static String CustomLoad(String input, Object[] params) {
+    public static String customLoad(String input, Object[] params) {
 		Properties properties = new Properties();
         try {
             properties.load(new InputStreamReader(LoadConfig.class.getResourceAsStream("/bundles/GA.properties"), "UTF-8"));

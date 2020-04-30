@@ -8,19 +8,19 @@ public class Lists {
 	private static List<String> Maps_List;
 
 
-    final public static void addMaps_List(String i) {
+    final public static void addMapsList(String i) {
 		Maps_List.add(i);
 	}
 	//加入
 
 
-    final public static List<String> getMaps_List() {
+    final public static List<String> getMapsList() {
 		return Maps_List;
 	}
 	//获取
 
 
-    final public static void EmptyMaps_List() {
+    final public static void EmptyMapsList() {
 		Maps_List = Collections.synchronizedList(new ArrayList<String>());
 	}
 	//清空

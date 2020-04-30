@@ -15,8 +15,9 @@ import static extension.util.DateUtil.getLocalTimeFromUTC;
  * 练手轮子? :P 
  */
 public class Log {
-	private static int LOG_GRADE = 5;
 	//默认 WARN
+	private static int LOG_GRADE = 5;
+	private final String LINE_SEPARATOR = System.getProperty("line.separator");
 
 	private enum Logg {
 		/*
@@ -34,7 +35,7 @@ public class Log {
 	}
 
 
-	public static void Set(String log) {
+	public static void set(String log) {
 		Log.LOG_GRADE=Logg.valueOf(log).getLogg();
 	}
 
@@ -126,13 +127,12 @@ public class Log {
 
 	private static void logs(int i, Object tag, Object e) {
 		if(LOG_GRADE>i) {
-            return;
-        }
-		String LINE_SEPARATOR = System.getProperty("line.separator");
+			return;
+		}
 		StringBuilder sb = new StringBuilder();
 		StringBuffer error = new StringBuffer(e.toString());
 		String[] lines = error.toString().split(LINE_SEPARATOR);
-		sb.append(getLocalTimeFromUTC(0,1))
+		sb.append(getLocalTimeFromU(0,1))
 			.append(" UTC")
 			.append(LINE_SEPARATOR)
 			.append(tag)

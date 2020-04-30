@@ -58,7 +58,7 @@ public class PlayerData {
 	/* */
     public boolean login;
     public long joinTime;
-    public long backtime;
+    public long backTime;
     public LocaleUtil info;
 	private final static Pattern REG = Pattern.compile("^(127\\.0\\.0\\.1)|(localhost)|(10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|(172\\.((1[6-9])|(2\\d)|(3[01]))\\.\\d{1,3}\\.\\d{1,3})|(192\\.168\\.\\d{1,3}\\.\\d{1,3})$");
 
@@ -104,7 +104,7 @@ public class PlayerData {
 		/* */
 		login 						= false;
 		joinTime 					= getLocalTimeFromU();
-		backtime 					= 0;
+		backTime 					= 0;
 		info 						= Maps.getLocale(Config.SERVER_LANGUAGE);
 	}
 

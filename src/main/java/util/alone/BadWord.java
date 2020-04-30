@@ -3,15 +3,13 @@ package extension.util.alone;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.*;
-//Java
 
-//DFA? Bloom Filter?
 public class BadWord {
 	public static String filePath = "/other/Sensitive_Thesaurus.txt";
 	public static Set<String> words;
 	public static Map<String,String> wordMap;
-	public static int minMatchTYpe = 1;// 最小匹配规则
-	public static int maxMatchType = 2;// 最大匹配规则
+	public static int minMatchTYpe = 1;
+	public static int maxMatchType = 2;
 	static{
 		BadWord.words = readTxtByLine(filePath);
 		addBadWordToHashMap(BadWord.words);
@@ -49,28 +47,25 @@ public class BadWord {
 	 */
 	@SuppressWarnings({ "rawtypes"})
 	public static int checkBadWord(String txt,int beginIndex,int matchType){
-		boolean  flag = false;    // 敏感词结束标识位：用于敏感词只有1位的情况
-		int matchFlag = 0;     // 匹配标识数默认为0
+		boolean  flag = false;
+		int matchFlag = 0;
 		char word = 0;
 		Map nowMap = wordMap;
 		for(int i = beginIndex; i < txt.length() ; i++){
 			word = txt.charAt(i);
-			nowMap = (Map) nowMap.get(word);     // 获取指定key
-			if(nowMap != null){     // 存在，则判断是否为最后一个
-				matchFlag++;     // 找到相应key，匹配标识+1 
-				if("1".equals(nowMap.get("isEnd"))){       // 如果为最后一个匹配规则,结束循环，返回匹配标识数
-					flag = true;       // 结束标志位为true   
-					if(minMatchTYpe == matchType){    // 最小规则，直接返回,最大规则还需继续查找
+			nowMap = (Map) nowMap.get(word);
+			if(nowMap != null){
+				matchFlag++;
+				if("1".equals(nowMap.get("isEnd"))){
+					flag = true;
+					if(minMatchTYpe == matchType){
 						break;
 					}
 				}
-			} else {     // 不存在，直接返回
+			} else {
 				break;
 			}
 		}
-		 /* if(matchFlag < 2 && !flag){     
-			matchFlag = 0;
-		}*/
 		if(!flag){     
 			matchFlag = 0;
 		}

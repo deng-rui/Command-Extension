@@ -407,9 +407,9 @@ public class Event {
 
 			Map map = maps.getNextMap(world.getMap());
 			if(map != null) {
-				List<String> MapsList = (List<String>)Lists.getMaps_List();
-				for(int i = 0; i < MapsList.size(); i++){
-					String [] data = MapsList.get(i).split("\\s+");
+				List<String> mapsList = (List<String>)Lists.getMaps_List();
+				for(int i = 0; i < mapsList.size(); i++){
+					String [] data = mapsList.get(i).split("\\s+");
 					if(map.name().equalsIgnoreCase(data[0].replace('_', ' ')) || map.name().equalsIgnoreCase(data[0])) {
 						Gamemode mode = Gamemode.survival;
 						try{

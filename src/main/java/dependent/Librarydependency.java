@@ -51,10 +51,10 @@ public class Librarydependency implements Driver {
 		if (!filepath.exists()) {
             filepath.mkdirs();
         }
-		List<File> FilePathList = FileUtil.File(savePath).getFileList();
-		
-		for(int i=0;i<FilePathList.size();i++){
-			if((name+"_"+version).equals(FilePathList.get(i).getName().replace(".jar",""))) {
+		List<File> filePathList = FileUtil.File(savePath).getFileList();
+
+		for(int i=0,len=filePathList.size();i<len;i++){
+			if((name+"_"+version).equals(filePathList.get(i).getName().replace(".jar",""))) {
 				notWork(name,version,savePath);
 				return;
 			}

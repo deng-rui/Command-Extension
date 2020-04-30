@@ -20,6 +20,8 @@ import mindustry.gen.Call;
 import mindustry.core.GameState.State;
 //
 
+import static extension.util.DateUtil.getLocalTimeFromU;
+import static extension.util.file.LoadConfig.customLoad;
 import static mindustry.Vars.state;
 //
 
@@ -52,16 +54,16 @@ import com.sun.mail.util.MailSSLSocketFactory;
 
 public class Threads {
 
-	private static ScheduledFuture Thread_Time;
-	private static int status_login = 1;
-	private static int status_mail = 1;
-	private static int status_day_night = 1;
+	private static ScheduledFuture THREAD_TIME;
+	private static int STATUS_LOGIN = 1;
+	private static int STATUS_MAIL = 1;
+	private static int STATUS_DAY_NIGHT = 1;
 	//
-	private static int status_authority = 1;
+	private static int STATUS_AUTHORITY = 1;
 	// 夜晚渐变 => Gradual change at night
-	private static float current_time = 0f;
-	private static boolean day_or_night = true;
-	private static boolean gradual_change = true;
+	private static float CURRENT_TIME = 0f;
+	private static boolean DAY_OR_NIGHT = true;
+	private static boolean GRADUAL_CHANGE = true;
 
 	// 定时任务 1min/S
 
@@ -69,57 +71,57 @@ public class Threads {
 		Runnable Atime=new Runnable() {
 			@Override
 			public void run() {
-				Custom();
+				custom();
 				Data.ismsg = true;
 				//
 				LoginStatus();
 				AuthorityStatus();
 
-				if (Config.Day_and_night) {
-                    Day_and_night_shift();
+				if (Config.DAY_AND_NIGHT) {
+                    dayAndNightShift();
                 }
 				if (Config.Regular_Reporting) {
-                    Status_Reporting();
+                    statusReporting();
                 }
 			}
 		};
-		Thread_Time=Data.service.scheduleAtFixedRate(Atime,1,1,TimeUnit.MINUTES);
+		THREAD_TIME=Data.SERVICE.scheduleAtFixedRate(Atime,1,1,TimeUnit.MINUTES);
 	}
 
 	public static void close() {
-		Thread_Time.cancel(true);
-		Data.service.shutdown();
-		Data.Thred_service.shutdown();
-		Data.Thred_DB_service.shutdown();
+		THREAD_TIME.cancel(true);
+		Data.SERVICE.shutdown();
+		Data.THRED_SERVICE.shutdown();
+		Data.THRED_DB_SERVICE.shutdown();
 	}
 
 
     public static void NewThred_DB(Runnable run) {
-		Data.Thred_DB_service.execute(run);
+		Data.THRED_DB_SERVICE.execute(run);
 	}
 
 
     public static void NewThred_SE(Runnable run) {
-		Data.Thred_service.execute(run);
+		Data.THRED_SERVICE.execute(run);
 	}
 
 	// 用户过期?
 
     private static void LoginStatus() {
-		if (Config.Login_Time > status_login) {
-			status_login++;
+		if (Config.LOGIN_TIME > STATUS_LOGIN) {
+			STATUS_LOGIN++;
 			return;
 		}
-		status_login = 1;
+		STATUS_LOGIN = 1;
 		Map data = Maps.getMapPlayer_Data();
 		Iterator it = data.entrySet().iterator();
 		while(it.hasNext()){
 			Entry entry = (Entry)it.next();
 			PlayerData playerdata = (PlayerData)entry.getValue();
 			// 防止初期登录就被刷
-			if (playerdata.Backtime != 0) {
-				long currenttime = getLocalTimeFromUTC();
-				if (playerdata.Backtime <= currenttime) {
+			if (playerdata.backTime != 0L) {
+				long currenttime = getLocalTimeFromU();
+				if (playerdata.backTime <= currenttime) {
                     Maps.removePlayer_Data((String)entry.getKey());
                 }
 			}
@@ -128,34 +130,34 @@ public class Threads {
 
 
     private static void AuthorityStatus() {
-		if (5 > status_authority) {
-			status_authority++;
+		if (5 > STATUS_AUTHORITY) {
+			STATUS_AUTHORITY++;
 			return;
 		}
-		status_authority = 1;
+		STATUS_AUTHORITY = 1;
 		Map data = Maps.getMapPlayer_Data();
 		Iterator it = data.entrySet().iterator();
 		while(it.hasNext()){
 			Entry entry = (Entry)it.next();
 			PlayerData playerdata = (PlayerData)entry.getValue();
 			// 防止初期登录就被刷
-			if (playerdata.Authority_effective_time != 0) {
-				long currenttime = getLocalTimeFromUTC();
-				if (playerdata.Authority_effective_time <= currenttime) {
-					playerdata.Authority = 1;
-					playerdata.Authority_effective_time = 0;
+			if (playerdata.authorityEffectiveTime != 0) {
+				long currenttime = getLocalTimeFromU();
+				if (playerdata.authorityEffectiveTime <= currenttime) {
+					playerdata.authority = 1;
+					playerdata.authorityEffectiveTime = 0;
 				}
 			}	
 		}
 	}
 
 
-    private static void Status_Reporting() {
-		if (Config.Regular_Reporting_Time > status_mail) {
-			status_mail++;
+    private static void statusReporting() {
+		if (Config.Regular_Reporting_Time > STATUS_MAIL) {
+			STATUS_MAIL++;
 			return;
 		}
-		status_mail = 1;
+		STATUS_MAIL = 1;
 		try {
 			Properties props = new Properties();
 			props.setProperty("mail.smtp.auth", "true");  
@@ -177,7 +179,7 @@ public class Threads {
 			long usedPhysicalMemorySize =totalPhysicalMemory - freePhysicalMemory;
 			Object[] pasm = {system.getName(),totalPhysicalMemory/MB,freePhysicalMemory/MB,usedPhysicalMemorySize/MB,Core.graphics.getFramesPerSecond(),Core.app.getJavaHeap()/MB,secToTime((long)ManagementFactory.getRuntimeMXBean().getUptime()/1000),getLocalTimeFromUTC(0,1)+" UTC"};
 			//
-			msg.setContent(CustomLoad("Mail.Report",pasm),"text/html;charset = UTF-8");
+			msg.setContent(customLoad("Mail.Report",pasm),"text/html;charset = UTF-8");
 			msg.setFrom(new InternetAddress(Config.Mail_SMTP_User));
 			Transport transport = session.getTransport();
 			transport.connect(Config.Mail_SMTP_IP,Config.Mail_SMTP_User,Config.Mail_SMTP_Passwd);
@@ -207,43 +209,43 @@ public class Threads {
 	}
 
 
-    private static void Day_and_night_shift() {
+    private static void dayAndNightShift() {
 		// 白天黑夜
-		if(day_or_night) {
+		if(DAY_OR_NIGHT) {
 			// 渐变
-			if(gradual_change) {
+			if(GRADUAL_CHANGE) {
 				// 前半夜
-				if(current_time < 1.1f) {
-                    current_time = current_time + Config.Night_Time;
+				if(CURRENT_TIME < 1.1f) {
+                    CURRENT_TIME = CURRENT_TIME + Config.NIGHT_TIME;
                 } else{
 					// 后半夜
-					gradual_change = false; 
-					current_time = current_time - Config.Night_Time;
+					GRADUAL_CHANGE = false;
+					CURRENT_TIME = CURRENT_TIME - Config.NIGHT_TIME;
 				}
 			} else {
-				if(current_time >= 0f) {
-                    current_time = current_time - Config.Night_Time;
+				if(CURRENT_TIME >= 0f) {
+                    CURRENT_TIME = CURRENT_TIME - Config.NIGHT_TIME;
                 } else {
 					// 转白天
-					day_or_night = false;
-					status_day_night++;
+					DAY_OR_NIGHT = false;
+					STATUS_DAY_NIGHT++;
 				}  
 			}	  
 		} else {
 			// 白天的0-1.5f好像没有变换
-			if (status_day_night < Config.Day_Time) {
+			if (status_day_night < Config.DAY_TIME) {
                 status_day_night++;
             } else {
-				day_or_night = true;
-				gradual_change = true;
-				status_day_night = 1;
-				current_time = current_time - Config.Night_Time;  
+				DAY_OR_NIGHT = true;
+				GRADUAL_CHANGE = true;
+				STATUS_DAY_NIGHT = 1;
+				CURRENT_TIME = CURRENT_TIME - Config.NIGHT_TIME;
 			}
 		}
 		// 夜晚设置
-		if (current_time > 0) {
+		if (CURRENT_TIME > 0) {
 			state.rules.lighting = true;
-			state.rules.ambientLight.a = current_time;
+			state.rules.ambientLight.a = CURRENT_TIME;
 		} else {
             state.rules.lighting = false;
         }
@@ -253,7 +255,7 @@ public class Threads {
 
 	// 写死的定时任务
 
-    private static void Custom() {
+    private static void custom() {
 		state.rules.playerDamageMultiplier = 0f;
 		Call.onSetRules(state.rules);
 	}

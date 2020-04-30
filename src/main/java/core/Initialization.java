@@ -28,7 +28,7 @@ import static mindustry.Vars.maps;
 
 public class Initialization {
 
-    public void Start_Initialization() {
+    public void startInitialization() {
 		// 配置文件初始化
 		Config();
 		// 初始化配置
@@ -50,18 +50,18 @@ public class Initialization {
 	}
 
 
-    public void Override_Initialization() {
-		Cover_Gameover();
+    public void overrideInitialization() {
+    	coverGameover();
 	}
 
 
-    public void ReLoadConfig() {
-		Config.LAODCONFIG();
-		Player_Privilege_classification();
+    public void reLoadConfig() {
+		Config.laodConfig();
+		playerPrivilegeClassification();
 	}
 
 
-    private void Cover_Gameover() {
+    private void coverGameover() {
 		// 覆盖掉自带的Gameover 使用自己的 便于自动更换模式
 		try {    
 			ApplicationListener sr = Core.app.getListeners().find(e -> "ServerControl".equalsIgnoreCase(e.getClass().getSimpleName()));
@@ -75,7 +75,7 @@ public class Initialization {
 	}      
 
 
-    private void SQL() {
+    private void sql() {
 		importLib("org.xerial","sqlite-jdbc","3.30.1",Data.PLUGIN_LIB_PATH);
 		if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists()) {
             InitializationSQLite();
@@ -83,12 +83,12 @@ public class Initialization {
 	}
 
 
-    private void Config() {
+    private void config() {
 		try {
 			if(!FileUtil.File(Data.PLUGIN_DATA_PATH).toPath("/Config.ini").exists()) {
 				String data = (String)FileUtil.readfile(false,new InputStreamReader(Initialization.class.getResourceAsStream("/Config.ini"), "UTF-8"));
 				FileUtil.writefile(data,false);
-				Log.info("Defect : Start creating write external Config File",Data.Plugin_Data_Path+"/Config.ini");
+				Log.info("Defect : Start creating write external Config File",Data.PLUGIN_DATA_PATH+"/Config.ini");
 			}
 		}catch(UnsupportedEncodingException e){
 			Log.fatal("File write error",e);
@@ -98,7 +98,7 @@ public class Initialization {
 	// CP出jar特定文件至硬盘
 	// 下个版本 弃用 -X
 	// 无法便于更新语言文件
-    private void Resource() {
+    private void resource() {
 		try {
 			List file = (List)FileUtil.readfile(true,new InputStreamReader(Initialization.class.getResourceAsStream("/other/FileList.txt"), "UTF-8"));
 			for(int i=0,len=file.size();i<len;i++){
@@ -115,7 +115,7 @@ public class Initialization {
 		}
 	}
 
-    public void MapList() {
+    public void mapList() {
 		Lists.EmptyMaps_List();
 		if(!maps.all().isEmpty()){
 			for(Map map : maps.all()){
@@ -144,16 +144,16 @@ public class Initialization {
 		}
 	}
 
-    private void IsNetwork() {
+    private void isNetwork() {
 		Config.SERVER_NETWORKING = Net.isConnect();
 	}
 
-    private void IsCN() {
+    private void isCN() {
 		
 	}
 
 // RG-1
-    private void Player_Privilege_classification() {
+    private void playerPrivilegeClassification() {
 		String[] tempstring=loadstring("Privilege_Level").split(",");
 		int[] tempint = new int[tempstring.length];
 		for (int i = 0,len=tempstring.length;i<len; i++) {

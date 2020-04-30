@@ -28,14 +28,10 @@ import static extension.data.global.Lists.getMaps_List;
 import static extension.util.IsUtil.Blank;
 import static mindustry.Vars.*;
 
-//Java
-//Arc
-//import mindustry.maps.Maps;
-//Mindustry
-//Mindustry-Static
-//GA-Exted
-//Static
-
+/**
+ * @author Dr
+ * @Date ?
+ */
 public class Vote {
 	private Player player;
 	private Player target;

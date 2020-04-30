@@ -53,7 +53,7 @@ public class Google {
 	}
 
 
-    private static String getTK(String word, String tkk) {
+    private static String getTk(String word, String tkk) {
 		String result = null;
 
 		try {
@@ -83,7 +83,7 @@ public class Google {
 		if (Blank(tkk)) {
             return null;
         }
-		String tk = getTK(word, tkk);
+		String tk = getTk(word, tkk);
 		try {
 			word = URLEncoder.encode(word, "UTF-8");
 		} catch (UnsupportedEncodingException e) {

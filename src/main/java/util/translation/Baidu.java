@@ -13,9 +13,11 @@ import static extension.net.HttpRequest.doPost;
 import static extension.util.ExtractUtil.unicodeDecode;
 import static extension.util.IsUtil.NotBlank;
 
-//
-//
- 
+
+/**
+ * @author Dr
+ * @Date ?
+ */
 public class Baidu {
 
 	public String translate(String query, String from, String to) {

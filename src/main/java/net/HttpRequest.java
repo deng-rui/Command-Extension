@@ -34,8 +34,8 @@ public class HttpRequest {
 			String contentEncoding = con.getContentEncoding(); 
 			Log.info(contentEncoding);
 			if (null != contentEncoding && contentEncoding.indexOf("gzip") != -1) { 
-				GZIPInputStream gZIPInputStream = new GZIPInputStream(con.getInputStream());
-				in = new BufferedReader(new InputStreamReader(gZIPInputStream,"utf-8"));
+				GZIPInputStream gzipInputStream = new GZIPInputStream(con.getInputStream());
+				in = new BufferedReader(new InputStreamReader(gzipInputStream,"utf-8"));
 				while ((line = in.readLine()) != null) {
                     result.append(new String(line.getBytes("UTF-8")));
                 }
@@ -85,8 +85,8 @@ public class HttpRequest {
 			in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
 			String contentEncoding = conn.getContentEncoding(); 
 			if (null != contentEncoding && contentEncoding.indexOf("gzip") != -1) { 
-				GZIPInputStream gZIPInputStream = new GZIPInputStream(conn.getInputStream());
-				in = new BufferedReader(new InputStreamReader(gZIPInputStream,"utf-8"));
+				GZIPInputStream gzipInputStream = new GZIPInputStream(conn.getInputStream());
+				in = new BufferedReader(new InputStreamReader(gzipInputStream,"utf-8"));
 	            while ((line = in.readLine()) != null) {
                     result.append(new String(line.getBytes("UTF-8")));
                 }
@@ -114,7 +114,7 @@ public class HttpRequest {
 	}
 
 
-    public static void Url302(String url, String file) {
+    public static void url302(String url, String file) {
 		HttpURLConnection conn = null;
 		try {
 			URL serverUrl = new URL(url);
