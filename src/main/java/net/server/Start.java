@@ -14,12 +14,13 @@ public class Start {
 			Server server = new Server(8080);   
 			ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS); 
 			context.setErrorHandler(new CustomErrorHandler()); 
-			context.setContextPath("/");   
-			server.setHandler(context); 
+			context.setContextPath("/");
+			server.setHandler(context);
 			new Get().register(context);
 			new Post().register(context);
-			server.start(); 
-			server.join(); 
+			server.start();
+			//✓
+			server.join();
 		} catch (Exception e) {
 		}
 	}

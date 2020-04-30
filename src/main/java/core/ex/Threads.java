@@ -74,10 +74,12 @@ public class Threads {
 				LoginStatus();
 				AuthorityStatus();
 
-				if (Config.Day_and_night)
-					Day_and_night_shift();
-				if (Config.Regular_Reporting)
-					Status_Reporting();
+				if (Config.Day_and_night) {
+                    Day_and_night_shift();
+                }
+				if (Config.Regular_Reporting) {
+                    Status_Reporting();
+                }
 			}
 		};
 		Thread_Time=Data.service.scheduleAtFixedRate(Atime,1,1,TimeUnit.MINUTES);
@@ -113,8 +115,9 @@ public class Threads {
 			// 防止初期登录就被刷
 			if (playerdata.Backtime != 0) {
 				long currenttime = getLocalTimeFromUTC();
-				if (playerdata.Backtime <= currenttime) 
-					Maps.removePlayer_Data((String)entry.getKey());
+				if (playerdata.Backtime <= currenttime) {
+                    Maps.removePlayer_Data((String)entry.getKey());
+                }
 			}
 		}
 	}
@@ -203,17 +206,17 @@ public class Threads {
 			// 渐变
 			if(gradual_change) {
 				// 前半夜
-				if(current_time < 1.1f)
-					current_time = current_time + Config.Night_Time;
-				else{
+				if(current_time < 1.1f) {
+                    current_time = current_time + Config.Night_Time;
+                } else{
 					// 后半夜
 					gradual_change = false; 
 					current_time = current_time - Config.Night_Time;
 				}
 			} else {
-				if(current_time >= 0f) 
-					current_time = current_time - Config.Night_Time;
-				else {
+				if(current_time >= 0f) {
+                    current_time = current_time - Config.Night_Time;
+                } else {
 					// 转白天
 					day_or_night = false;
 					status_day_night++;
@@ -221,9 +224,9 @@ public class Threads {
 			}	  
 		} else {
 			// 白天的0-1.5f好像没有变换
-			if (status_day_night < Config.Day_Time)
-				status_day_night++;
-			else {
+			if (status_day_night < Config.Day_Time) {
+                status_day_night++;
+            } else {
 				day_or_night = true;
 				gradual_change = true;
 				status_day_night = 1;
@@ -234,8 +237,9 @@ public class Threads {
 		if (current_time > 0) {
 			state.rules.lighting = true;
 			state.rules.ambientLight.a = current_time;
-		} else
-			state.rules.lighting = false;
+		} else {
+            state.rules.lighting = false;
+        }
 		// 设置规则
 		Call.onSetRules(state.rules);
 	}

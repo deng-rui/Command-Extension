@@ -5,7 +5,9 @@ import java.util.regex.Pattern;
 public class IsUtil {
 	
 	public static boolean Blank(Object string) {
-		if (string == null || "".equals(string.toString().trim())) return true;
+		if (string == null || "".equals(string.toString().trim())) {
+            return true;
+        }
 		return false;
 	}
 

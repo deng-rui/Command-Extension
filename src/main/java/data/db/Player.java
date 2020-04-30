@@ -170,7 +170,9 @@ public class Player {
 			stmt.setString(1,user);
 			rs = stmt.executeQuery();
 			rs.next();
-			if(rs.getInt(1)>0)result = false;
+			if(rs.getInt(1)>0) {
+                result = false;
+            }
 			//用户名存在 避免冲突
 		} catch (SQLException e) {
 			System.out.println(e);
@@ -281,8 +283,9 @@ public class Player {
 			if (KEY != null) {
 				key = c.prepareStatement("DELETE FROM KeyData WHERE KEY=?");
 				key.setString(1,KEY);
-			} else
-				key = c.prepareStatement("DELETE FROM KeyData");
+			} else {
+                key = c.prepareStatement("DELETE FROM KeyData");
+            }
 			key.execute();
 			c.commit();
 		} catch (SQLException e) {
@@ -301,8 +304,9 @@ public class Player {
 			key.setString(1,KEY);
 			rs = key.executeQuery();
 			rs.next();
-			if(rs.getInt(1)>0)
-				result = false;
+			if(rs.getInt(1)>0) {
+                result = false;
+            }
 		} catch (SQLException e) {
 			System.out.println(e);
 		} finally {
@@ -325,17 +329,23 @@ public class Player {
 
 	private static void close(ResultSet rs,Statement stmt,Connection conn) {
 		try {
-			if (rs != null) rs.close();
+			if (rs != null) {
+                rs.close();
+            }
 		} catch (Exception e) {  
 			rs = null;  
 		} finally {
 			try {
-				if (stmt != null) stmt.close();
+				if (stmt != null) {
+                    stmt.close();
+                }
 			} catch (Exception e) {  
 				stmt = null;  
 			} finally {
 				try {
-					if (conn != null) conn.close();
+					if (conn != null) {
+                        conn.close();
+                    }
 				} catch (Exception e) {  
 					conn = null;  
 				}

@@ -92,25 +92,29 @@ public class ClientCommandsx {
 			if(Config.Help_Show_unauthorize_content) {
 				for(int i = Config.Maximum_Screen_Display * page; i < Math.min(Config.Maximum_Screen_Display * (page + 1), clientCommands.getCommandList().size); i++){
 					command = clientCommands.getCommandList().get(i);
-					if("4dV#-".equals(command.description.substring(0,5))) 
-						result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(localeUtil.getinput(command.description.substring(5,command.description.length()))).append("\n");
-					else
-						result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(command.description).append("\n");
+					if("4dV#-".equals(command.description.substring(0,5))) {
+                        result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(localeUtil.getinput(command.description.substring(5,command.description.length()))).append("\n");
+                    } else {
+                        result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(command.description).append("\n");
+                    }
 				}
 			} else {
 				int count = 0;
 				for(int i = Config.Maximum_Screen_Display * page; i < clientCommands.getCommandList().size; i++){
 					command = clientCommands.getCommandList().get(i);
-					if (count == 6 ) 
-						break;
+					if (count == 6 ) {
+                        break;
+                    }
 					count++;
 					if("4dV#-".equals(command.description.substring(0,5))) {
-						if(Authority_control(player,command.text)) 
-							result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(localeUtil.getinput(command.description.substring(5,command.description.length()))).append("\n");
-						else
-							count--;
-					} else
-						result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(command.description).append("\n");
+						if(Authority_control(player,command.text)) {
+                            result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(localeUtil.getinput(command.description.substring(5,command.description.length()))).append("\n");
+                        } else {
+                            count--;
+                        }
+					} else {
+                        result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(command.description).append("\n");
+                    }
 				}
 			}
 			player.sendMessage(result.toString());
@@ -118,9 +122,9 @@ public class ClientCommandsx {
 
 		handler.<Player>register("login", "<id> <password>", "4dV#-login", (args, player) -> {
 			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!Authority_control(player,"login"))
-				player.sendMessage(localeUtil.getinput("authority.no"));
-			else {
+			if(!Authority_control(player,"login")) {
+                player.sendMessage(localeUtil.getinput("authority.no"));
+            } else {
 				final String id = args[0];
 				final String pw = args[1];
 				Data.Thred_service.execute(new Runnable() {
@@ -159,10 +163,11 @@ public class ClientCommandsx {
 							player.sendMessage(localeUtil.getinput("uuid.update"));
 						}
 						if(Config.Login_Radical) {
-							if(Vars.state.rules.pvp)
+							if(Vars.state.rules.pvp) {
 								player.setTeam(netServer.assignTeam(player, playerGroup.all()));
-							else
+							} else {
 								player.setTeam(Team.sharded);
+							}
 							//Call.onPlayerDeath(player);
 							player.kill();
 						}
@@ -180,9 +185,9 @@ public class ClientCommandsx {
 
 		handler.<Player>register("register", "<new_id> <new_password> <password_repeat> [your_mail]", "4dV#-register", (args, player) -> {
 			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!Authority_control(player,"register"))
-				player.sendMessage(localeUtil.getinput("authority.no"));
-			else {
+			if(!Authority_control(player,"register")) {
+                player.sendMessage(localeUtil.getinput("authority.no"));
+            } else {
 				final String newid = args[0];
 				final String newpw = args[1];
 				final String renewpw = args[2];
@@ -215,10 +220,11 @@ public class ClientCommandsx {
 							return;
 						}
 						if(Config.Login_Radical) {
-							if(Vars.state.rules.pvp)
-								player.setTeam(netServer.assignTeam(player, playerGroup.all()));
-							else
-								player.setTeam(Team.sharded);
+							if(Vars.state.rules.pvp) {
+                                player.setTeam(netServer.assignTeam(player, playerGroup.all()));
+                            } else {
+                                player.setTeam(Team.sharded);
+                            }
 							//Call.onPlayerDeath(player);
 							player.kill();
 						}
@@ -243,9 +249,9 @@ public class ClientCommandsx {
 
 		handler.<Player>register("ftpasswd", "<Email_at_registration> [Verification_Code]", "4dV#-ftpasswd", (args, player) -> {
 			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!Authority_control(player,"ftpasswd"))
-				player.sendMessage(localeUtil.getinput("authority.no"));
-			else
+			if(!Authority_control(player,"ftpasswd")) {
+                player.sendMessage(localeUtil.getinput("authority.no"));
+            } else
 			{}
 				//ftpasswd(player,args[0],(args.length > 1) ? args[1] : null);
 		});
@@ -255,16 +261,18 @@ public class ClientCommandsx {
 			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
 			if(!Authority_control(player,"info")) {
 				player.sendMessage(localeUtil.getinput("authority.no"));
-			} else 
-				Call.onInfoMessage(player.con,localeUtil.getinputt("info.info.1",PlayerdatatoObject(Maps.getPlayer_Data(player.uuid))));
+			} else {
+                Call.onInfoMessage(player.con,localeUtil.getinputt("info.info.1",PlayerdatatoObject(Maps.getPlayer_Data(player.uuid))));
+            }
 		});
 
 		handler.<Player>register("status","4dV#-status", (args, player) -> {
 			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!Authority_control(player,"status"))
-				player.sendMessage(localeUtil.getinput("authority.no"));
-			else
-				player.sendMessage(localeUtil.getinput("status.info",playerGroup.size(),world.getMap().name(),Core.graphics.getFramesPerSecond(),Core.app.getJavaHeap()/1024/1024));
+			if(!Authority_control(player,"status")) {
+                player.sendMessage(localeUtil.getinput("authority.no"));
+            } else {
+                player.sendMessage(localeUtil.getinput("status.info",playerGroup.size(),world.getMap().name(),Core.graphics.getFramesPerSecond(),Core.app.getJavaHeap()/1024/1024));
+            }
 		});
 
 		handler.<Player>register("tpp","<player> <player>","4dV#-tpp", (args, player) -> {
@@ -297,10 +305,11 @@ public class ClientCommandsx {
 					return;
 				}
 				Player other = playerGroup.find(p->p.name.equalsIgnoreCase(args[0]));
-				if(null == other)
-					player.sendMessage(localeUtil.getinput("tp.fail"));
-				else
-					player.setNet(other.x, other.y);
+				if(null == other) {
+                    player.sendMessage(localeUtil.getinput("tp.fail"));
+                } else {
+                    player.setNet(other.x, other.y);
+                }
 			}
 		});
 
@@ -309,7 +318,7 @@ public class ClientCommandsx {
 			if(!Authority_control(player,"suicide")) {
 				player.sendMessage(localeUtil.getinput("authority.no"));
 			} else {
-				player.onPlayerDeath(player);
+				Player.onPlayerDeath(player);
 				Call.sendMessage(localeUtil.getinput("suicide.tips",player.name));
 			}
 		});
@@ -414,7 +423,9 @@ public class ClientCommandsx {
 					player.sendMessage(localeUtil.getinput("maps.page",(page+1),pages));
 					for(int i = Config.Maximum_Screen_Display * page; i < Math.min(Config.Maximum_Screen_Display * (page + 1), MapsList.size()); i++){
 						String [] data = MapsList.get(i).split("\\s+");
-						if(data[3].equalsIgnoreCase(args[1]))player.sendMessage(localeUtil.getinput("maps.mode.info",String.valueOf(i),data[0],data[1]));
+						if(data[3].equalsIgnoreCase(args[1])) {
+                            player.sendMessage(localeUtil.getinput("maps.mode.info",String.valueOf(i),data[0],data[1]));
+                        }
 					}
 					return;
 				}
@@ -444,10 +455,11 @@ public class ClientCommandsx {
 						Data.vote = new Vote(player,args[0]);
 						break;
 					case "kick":
-						if(args.length > 1)
-							Data.vote = new Vote(player,args[0],args[1]);
-						else
-							player.sendMessage(localeUtil.getinput("args.err"));
+						if(args.length > 1) {
+                            Data.vote = new Vote(player,args[0],args[1]);
+                        } else {
+                            player.sendMessage(localeUtil.getinput("args.err"));
+                        }
 						break;
 					case "ff":
 						Data.vote = new Vote(player,args[0],player.getTeam());
@@ -460,10 +472,12 @@ public class ClientCommandsx {
 							}
 							if(!(Lists.getMaps_List().size() >= Integer.parseInt(args[1]))) {
 								player.sendMessage(localeUtil.getinput("vote.host.maps.err",args[1]));
-							} else
-								Data.vote = new Vote(player,args[0],args[1]);
-						} else
-							player.sendMessage(localeUtil.getinput("args.err"));
+							} else {
+                                Data.vote = new Vote(player,args[0],args[1]);
+                            }
+						} else {
+                            player.sendMessage(localeUtil.getinput("args.err"));
+                        }
 						break;
 					default:
 						player.sendMessage(localeUtil.getinput("vote.err",args[0]));
@@ -495,23 +509,26 @@ public class ClientCommandsx {
 					}
 					if(Integer.parseInt(data.get("Authority").toString()) != playerdata.Authority) {
 						playerdata.Authority = Integer.parseInt(data.get("Authority").toString());
-						if(Long.parseLong(data.get("Time").toString()) == 0) 
-							playerdata.Authority_effective_time = 0;
-						else
-							playerdata.Authority_effective_time = getLocalTimeFromUTC(Long.parseLong(data.get("Time").toString())*1000L+playerdata.GMT);
+						if(Long.parseLong(data.get("Time").toString()) == 0) {
+                            playerdata.Authority_effective_time = 0;
+                        } else {
+                            playerdata.Authority_effective_time = getLocalTimeFromUTC(Long.parseLong(data.get("Time").toString())*1000L+playerdata.GMT);
+                        }
 						player.sendMessage(localeUtil.getinput("key.use.yes",playerdata.Authority,LongtoTime(playerdata.Authority_effective_time)));
 						final int sur = Integer.parseInt(data.get("Surplus").toString())-1;
-						if(sur == 0)
-							NewThred_DB(() -> RmKey(data.get("KEY").toString()));
-						else
-							NewThred_DB(() -> SaveKey(data.get("KEY").toString(),Integer.parseInt(data.get("Authority").toString()),Integer.parseInt(data.get("Total").toString()),sur,Long.parseLong(data.get("Time").toString()),Long.parseLong(data.get("Expire").toString())));
+						if(sur == 0) {
+                            NewThred_DB(() -> RmKey(data.get("KEY").toString()));
+                        } else {
+                            NewThred_DB(() -> SaveKey(data.get("KEY").toString(),Integer.parseInt(data.get("Authority").toString()),Integer.parseInt(data.get("Total").toString()),sur,Long.parseLong(data.get("Time").toString()),Long.parseLong(data.get("Expire").toString())));
+                        }
 						// OK
 					} else {
 						player.sendMessage(localeUtil.getinput("key.use.no"));
 						// 暂时不支持同级 KEY
 					}
-				} else
-					player.sendMessage(localeUtil.getinput("key.no"));
+				} else {
+                    player.sendMessage(localeUtil.getinput("key.no"));
+                }
 			}
 		});
 	}

@@ -67,8 +67,9 @@ public class ServerCommandsx {
 
 		handler.register("toadmin", "<uuid> <id>","reload Command-Extension Config.ini", (arg)-> {
 			PlayerData playerdata = Maps.getPlayer_Data(arg[0]);
-			if (playerdata != null)
-				playerdata.Authority = Integer.parseInt(arg[1]);
+			if (playerdata != null) {
+                playerdata.Authority = Integer.parseInt(arg[1]);
+            }
 			playerdata.Translate = true;
 		});
 
@@ -80,12 +81,13 @@ public class ServerCommandsx {
 		});
 
 		handler.register("newkey", "<length> <authority> <Available_time(min)> <Expiration_date(min)> [Total]","Add new key", (arg) -> {
-			if(NotisNumeric(arg[0])) 
-				info("Invalid length");
-			else if(NotisNumeric(arg[1])) 
-				info("Invalid permission");
-			else
-				Player.AddKey(generateStr(Integer.parseInt(arg[0])),Integer.parseInt(arg[1]),Long.parseLong(arg[2])*60,getLocalTimeFromUTC(Long.parseLong(arg[3])*60000L),arg.length>4 ? Integer.parseInt(arg[4]):1);
+			if(NotisNumeric(arg[0])) {
+                info("Invalid length");
+            } else if(NotisNumeric(arg[1])) {
+                info("Invalid permission");
+            } else {
+                Player.AddKey(generateStr(Integer.parseInt(arg[0])),Integer.parseInt(arg[1]),Long.parseLong(arg[2])*60,getLocalTimeFromUTC(Long.parseLong(arg[3])*60000L),arg.length>4 ? Integer.parseInt(arg[4]):1);
+            }
 		});
 
 		handler.register("keys","List all keys", (arg) -> {
@@ -102,10 +104,11 @@ public class ServerCommandsx {
 		});
 
 		handler.register("rmkey","<key>","rm key", (arg) -> {
-			if(!Player.isSQLite_Key(arg[0]))
-				Player.RmKey(arg[0]);
-			else
-				info("Invalid key, key:{0}",arg[0]);
+			if(!Player.isSQLite_Key(arg[0])) {
+                Player.RmKey(arg[0]);
+            } else {
+                info("Invalid key, key:{0}",arg[0]);
+            }
 		});
 	}
 }

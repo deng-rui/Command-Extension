@@ -79,9 +79,13 @@ public class Google {
 	 * @version 1.0
 	 */
 	public String translate(String word, String from, String to) {
-		if (Blank(word))return null;
+		if (Blank(word)) {
+            return null;
+        }
 		String tkk = getkeys("https://translate.google.cn/","tkk:.*?',",5,2);
-		if (Blank(tkk))return null;
+		if (Blank(tkk)) {
+            return null;
+        }
 		String tk = getTK(word, tkk);
 		try {
 			word = URLEncoder.encode(word, "UTF-8");

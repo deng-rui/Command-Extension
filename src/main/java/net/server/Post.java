@@ -35,8 +35,9 @@ public class Post {
 			request.setCharacterEncoding("UTF-8");
 			br = new BufferedReader(new InputStreamReader(request.getInputStream()));
 			String line = "";
-			while ((line = br.readLine()) != null) 
-				buf.append(line);
+			while ((line = br.readLine()) != null) {
+                buf.append(line);
+            }
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -59,7 +60,7 @@ public class Post {
   
 	private static boolean isGzipDisabled(HttpServletRequest request) {
 		String flag = request.getParameter("disableGzip");
-		return((flag != null) && (!flag.equalsIgnoreCase("false")));
+		return((flag != null) && (!"false".equalsIgnoreCase(flag)));
 	}
 
   
@@ -67,8 +68,9 @@ public class Post {
 		if (isGzipSupported(request) && !isGzipDisabled(request)) {
 			response.setHeader("Content-Encoding", "gzip");
 			return new PrintWriter(new GZIPOutputStream(response.getOutputStream()));
-		} else 
-			return response.getWriter();
+		} else {
+            return response.getWriter();
+        }
 	}
 
 	protected static void setHandler(HttpServletResponse response) {
@@ -78,6 +80,7 @@ public class Post {
 }
 
 class Bind extends HttpServlet {
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		response.setStatus(HttpServletResponse.SC_OK);
 		PrintWriter out = Get.getGzipWriter(request,response);

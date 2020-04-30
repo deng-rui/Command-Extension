@@ -1,19 +1,10 @@
 package extension.util.file;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.util.*;
-//Java
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import extension.util.log.Log;
+//Java
 //GA-Exted
 
 public class FileUtil {
@@ -22,34 +13,41 @@ public class FileUtil {
 	private static String filepath;
 
 	public FileUtil(String filepath){
-		this.filepath = filepath;
-		this.file = new File(filepath);
+		FileUtil.filepath = filepath;
+		file = new File(filepath);
 	}
 
 	public FileUtil(File file, String filepath){
-		this.file = file;
-		this.filepath = filepath;
+		FileUtil.file = file;
+		FileUtil.filepath = filepath;
 	}
 
-	public synchronized static FileUtil File(String tofile) {
-		File file;
-		String filepath;
-		String to = tofile;
-		if (null!=tofile)
-			if(!String.valueOf(tofile.charAt(0)).equals("/"))to = "/"+tofile;
-		try {
-			File directory = new File("");
-			filepath=directory.getCanonicalPath()+to;
-			file = new File(filepath);
-			if (null==tofile)
-				file = new File(directory.getCanonicalPath());
-		} catch (Exception e) {	
-			filepath=System.getProperty("user.dir")+to;
-			file = new File(filepath);
-			if (null==tofile)
-				file = new File(System.getProperty("user.dir"));
+	public static FileUtil File(String tofile) {
+		synchronized (FileUtil.class) {
+			File file;
+			String filepath;
+			String to = tofile;
+			if (null != tofile) {
+				if (!"/".equals(String.valueOf(tofile.charAt(0)))) {
+					to = "/" + tofile;
+				}
+			}
+			try {
+				File directory = new File("");
+				filepath = directory.getCanonicalPath() + to;
+				file = new File(filepath);
+				if (null == tofile) {
+					file = new File(directory.getCanonicalPath());
+				}
+			} catch (Exception e) {
+				filepath = System.getProperty("user.dir") + to;
+				file = new File(filepath);
+				if (null == tofile) {
+					file = new File(System.getProperty("user.dir"));
+				}
+			}
+			return new FileUtil(file, filepath);
 		}
-		return new FileUtil(file,filepath);
 	}
 
 	public static boolean exists() {
@@ -74,7 +72,11 @@ public class FileUtil {
 		File[] array = file.listFiles();
 		List<File> filelist = new ArrayList<File>();
 		for(int i=0;i<array.length;i++){
-			if(!array[i].isDirectory())if(array[i].isFile())filelist.add(array[i]);
+			if(!array[i].isDirectory()) {
+                if(array[i].isFile()) {
+                    filelist.add(array[i]);
+                }
+            }
 		}
 		return filelist;
 	}
@@ -83,8 +85,12 @@ public class FileUtil {
 		OutputStreamWriter osw = null;
 		try {
 			File parent = file.getParentFile();
-			if(!parent.exists())parent.mkdirs();
-			if(!file.exists())file.createNewFile();
+			if(!parent.exists()) {
+                parent.mkdirs();
+            }
+			if(!file.exists()) {
+                file.createNewFile();
+            }
 			FileOutputStream write = new FileOutputStream(file,cover);
 			osw = new OutputStreamWriter(write, "UTF-8"); 
 			osw.write(log.toString());
@@ -92,11 +98,12 @@ public class FileUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			if (null == osw) return;
-			try {
-				osw.flush();
-			} catch (IOException e) {
-				throw new RuntimeException("");
+			if (null != osw) {
+				try {
+					osw.flush();
+				} catch (IOException e) {
+					throw new RuntimeException("");
+				}
 			}
 		}
 	}

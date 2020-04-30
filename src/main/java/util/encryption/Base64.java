@@ -9,14 +9,16 @@ public class Base64 {
 		//对字符串的长度进行计算
 		int length = code.length();
 		//判断长度的合法性
-		if(length == 0 || length % 4 != 0)
-			return null;
+		if(length == 0 || length % 4 != 0) {
+            return null;
+        }
 		//获取字符串末尾的'='号数目
 		int endEqualNum = 0;
-		if(code.endsWith("=="))
-			endEqualNum = 2;
-		else if(code.endsWith("="))
-			endEqualNum = 1;
+		if(code.endsWith("==")) {
+            endEqualNum = 2;
+        } else if(code.endsWith("=")) {
+            endEqualNum = 1;
+        }
 		//对末尾的=号进行替换
 		code.replace('=','0');
 		StringBuilder sb = new StringBuilder(length);
@@ -35,8 +37,9 @@ public class Base64 {
 	// 加密
 	public String encode(String code){
 		//初始化判断
-		if (code == null || code.equals(""))
-			return null;
+		if (code == null || "".equals(code)) {
+            return null;
+        }
 		//获取需编码字符串的长度
 		int length = code.length();
 		StringBuilder sb = new StringBuilder(length * 2);
@@ -74,8 +77,9 @@ public class Base64 {
 
 	private String decodeDetail(String str){
 		int len = str.length();
-		if(len != 4)
-			return null;
+		if(len != 4) {
+            return null;
+        }
 		char[] b = new char[3];
 		int a1 = getIndex(str.charAt(0));
 		int a2 = getIndex(str.charAt(1));
@@ -89,8 +93,9 @@ public class Base64 {
 
 	private int getIndex(char c){
 		for(int i = 0;i < str.length;i++){
-			if(str[i] == c)
-				return i;
+			if(str[i] == c) {
+                return i;
+            }
 		}
 		return -1;
 	}

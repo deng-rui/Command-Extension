@@ -1,39 +1,36 @@
 package extension.data.global;
 
 import java.text.DecimalFormat;
-
-import static extension.util.file.LoadConfig.loadint;
-import static extension.util.file.LoadConfig.loadstring;
-import static extension.util.file.LoadConfig.loadboolean;
+import static extension.util.file.LoadConfig.*;
 
 public class Config {
 
 	// [服务器]
-	public static boolean Server_Networking 					= true;
-	public static boolean Server_Country_CN 					= false;
+	public static boolean Server_Networking = true;
+	public static boolean Server_Country_CN = false;
 
 	// [服务器语言]
-	public static String Server_Language;
+	public static String Server_Language = "en_US";
 
 	// [登录]
-	public static int Login_Time;
-	public static boolean Login_Radical;
-	public static boolean Permission_Passing;
+	public static int Login_Time = 0;
+	public static boolean Login_Radical = false;
+	public static boolean Permission_Passing = false;
 
 	// [投票]
-	public static boolean Vote_Admin;
-	public static boolean Vote_New_Player;
-	public static int Vote_New_Player_Time;
+	public static boolean Vote_Admin = false;
+	public static boolean Vote_New_Player = false;
+	public static int Vote_New_Player_Time = 0;
 
 	//
-	public static boolean Day_and_night;
-	public static int Day_Time;
-	public static float Night_Time;
+	public static boolean Day_and_night = false;
+	public static int Day_Time = 0;
+	public static float Night_Time = 0;
 
 	// [建造限制]
-	public static boolean Building_Restriction;
-	public static int Building_Warning_quantity;
-	public static int Building_Reject_quantity;
+	public static boolean Building_Restriction = false;
+	public static int Building_Warning_quantity = 0;
+	public static int Building_Reject_quantity = 0;
 
 	// [单位限制]
 	public static boolean Soldier_Restriction;
@@ -41,7 +38,7 @@ public class Config {
 	public static int Soldier_Reject_quantity;
 
 	// [邮件]
-	public static boolean Mail_Use;
+	private static boolean Mail_Use;
 	public static String Mail_SMTP_IP;
 	public static String Mail_SMTP_Port;
 	public static String Mail_SMTP_User;
@@ -75,8 +72,9 @@ public class Config {
 		// [投票]
 		Vote_Admin 												= loadboolean("Vote.Admin");
 		Vote_New_Player 										= loadboolean("Vote.New_Player");
-		if(Vote_New_Player) 
-			Vote_New_Player_Time 								= loadint("Vote.New_Player.Time")*60;
+		if(Vote_New_Player) {
+            Vote_New_Player_Time 								= loadint("Vote.New_Player.Time")*60;
+        }
 
 		// [昼夜变换]
 		Day_and_night 											= loadboolean("Day_and_night");

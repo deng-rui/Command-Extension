@@ -26,9 +26,8 @@ linglan512572354:https://github.com/linglan512572354
 ## 安全
 
 默认已开放Web-Api控制 Port=8080  
-如需使用 为了更高的安全性 建议您将Bot与Server在一个网段下 防火墙关闭对外的Web-Port
-如果不需要 您可以在Config.ini内关闭(还未完成)  
-如果需要高强度验证 请自行编译RSA4096模式    
+如需使用 为了更高的安全性 建议您将Bot与Server在一个网段下 防火墙关闭对外的Web-Port  
+如果不需要 您可以在Config.ini内关闭(还未完成)   
 
 ## 插件可实现功能
 

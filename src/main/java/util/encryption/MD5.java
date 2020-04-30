@@ -15,8 +15,9 @@ public class MD5 {
 	private static final char[] hexDigits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd','e', 'f' };
 
 	public static String md5(String input) {
-		if (input == null)
-			return null;
+		if (input == null) {
+            return null;
+        }
 		try {
 			byte[] resultByteArray = MessageDigest.getInstance("MD5").digest(input.getBytes("UTF-8"));
 			return byteArrayToHex(resultByteArray);
@@ -30,8 +31,9 @@ public class MD5 {
 
 	public static String md5(File file) {
 		try {
-			if (!file.isFile())
-				return null;
+			if (!file.isFile()) {
+                return null;
+            }
 			FileInputStream in = new FileInputStream(file);
 			String result = md5(in);
 			in.close();
@@ -50,8 +52,9 @@ public class MD5 {
 			MessageDigest messagedigest = MessageDigest.getInstance("MD5");
 			byte[] buffer = new byte[1024];
 			int read = 0;
-			while ((read = in.read(buffer)) != -1) 
-				messagedigest.update(buffer, 0, read);
+			while ((read = in.read(buffer)) != -1) {
+                messagedigest.update(buffer, 0, read);
+            }
 			in.close();
 			return byteArrayToHex(messagedigest.digest());
 		} catch (NoSuchAlgorithmException e) {

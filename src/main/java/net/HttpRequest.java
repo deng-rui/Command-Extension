@@ -52,23 +52,28 @@ public class HttpRequest {
 			if (null != contentEncoding && contentEncoding.indexOf("gzip") != -1) { 
 				GZIPInputStream gZIPInputStream = new GZIPInputStream(con.getInputStream());
 				in = new BufferedReader(new InputStreamReader(gZIPInputStream,"utf-8"));
-				while ((line = in.readLine()) != null) 
-					result.append(new String(line.getBytes("UTF-8")));
+				while ((line = in.readLine()) != null) {
+                    result.append(new String(line.getBytes("UTF-8")));
+                }
 			} else {
 				in = new BufferedReader(new InputStreamReader(con.getInputStream(),"utf-8"));
-				while ((line = in.readLine()) != null) 
-					result.append("\n"+line);
+				while ((line = in.readLine()) != null) {
+                    result.append("\n"+line);
+                }
 			}
 		} catch (IOException e) {
 			Log.error("doGet!",e);
 		} finally{
-			if(in != null) 
-				try {
-					in.close();
-				} catch (IOException e) {
-					in = null;
-				}
-			if(con != null) con.disconnect();
+			if(in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    in = null;
+                }
+            }
+			if(con != null) {
+                con.disconnect();
+            }
 		}
 		return result.toString();
 	}
@@ -97,23 +102,28 @@ public class HttpRequest {
 			if (null != contentEncoding && contentEncoding.indexOf("gzip") != -1) { 
 				GZIPInputStream gZIPInputStream = new GZIPInputStream(conn.getInputStream());
 				in = new BufferedReader(new InputStreamReader(gZIPInputStream,"utf-8"));
-	            while ((line = in.readLine()) != null) 
-	                result.append(new String(line.getBytes("UTF-8")));
+	            while ((line = in.readLine()) != null) {
+                    result.append(new String(line.getBytes("UTF-8")));
+                }
 			} else {
 				in = new BufferedReader(new InputStreamReader(conn.getInputStream(),"utf-8"));
-				while ((line = in.readLine()) != null) 
-					result.append("\n"+line);
+				while ((line = in.readLine()) != null) {
+                    result.append("\n"+line);
+                }
 			}
 		} catch (IOException e) {
 			Log.error("doPost!",e);
 		} finally{
-			if(out != null) out.close();
-			if(in != null) 
-				try{
-					in.close();
-				} catch (IOException e) {
-					in = null;
-				}
+			if(out != null) {
+                out.close();
+            }
+			if(in != null) {
+                try{
+                    in.close();
+                } catch (IOException e) {
+                    in = null;
+                }
+            }
 		}
 		return result.toString();
 	}
@@ -135,7 +145,9 @@ public class HttpRequest {
 		} catch (IOException e) {
 			Log.error("Url302",e);
 		} finally{
-			if(conn != null) conn.disconnect();
+			if(conn != null) {
+                conn.disconnect();
+            }
 		}
 	}
 
@@ -147,7 +159,9 @@ public class HttpRequest {
 		BufferedOutputStream bos = null;
 		try{
 			File filepath=new File(file).getParentFile();
-			if(!filepath.exists())filepath.mkdirs();
+			if(!filepath.exists()) {
+                filepath.mkdirs();
+            }
 			URL httpUrl=new URL(url);
 			conn=(HttpURLConnection) httpUrl.openConnection();
 			conn.setDoInput(true);  
@@ -168,20 +182,23 @@ public class HttpRequest {
 		} catch (IOException e) {
 			Log.error("downUrl",e);
 		} finally{
-			if(conn != null) 
-				conn.disconnect();
-			if(bos != null) 
-				try {
-					bos.close();
-				} catch (Exception e) {
-					bos = null;
-				}	
-			if(bis != null) 
-				try {
-					bis.close();
-				} catch (Exception e) {
-					bis = null;
-				}
+			if(conn != null) {
+                conn.disconnect();
+            }
+			if(bos != null) {
+                try {
+                    bos.close();
+                } catch (Exception e) {
+                    bos = null;
+                }
+            }
+			if(bis != null) {
+                try {
+                    bis.close();
+                } catch (Exception e) {
+                    bis = null;
+                }
+            }
 		}	 
 	}
 

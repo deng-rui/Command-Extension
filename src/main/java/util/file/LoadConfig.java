@@ -29,8 +29,9 @@ public class LoadConfig {
 		Object result = properties.get(input);
 		//防止使读取无效 CALL..
 		
-		if (result != null)
-			return result;
+		if (result != null) {
+            return result;
+        }
 		Log.warn("NO KEY- Please check the file",input);
 		throw Exceptions.Variable("INVALID_PARAMETER");
 	}
@@ -60,8 +61,9 @@ public class LoadConfig {
 
 	public static boolean loadboolean(String input) {
 		Object  str = load(input);
-		if(str.toString().equalsIgnoreCase("on") || str.toString().equalsIgnoreCase("true")) 
-			return true;
+		if("on".equalsIgnoreCase(str.toString()) || "true".equalsIgnoreCase(str.toString())) {
+            return true;
+        }
 		return false;
 	}
 

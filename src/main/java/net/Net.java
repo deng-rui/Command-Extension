@@ -25,7 +25,9 @@ public class Net {
 				
 			} finally {
 				try {
-					if(in != null)in.close(); 
+					if(in != null) {
+                        in.close();
+                    }
 				} catch (IOException e) {
 					in = null;
 				}

@@ -49,15 +49,16 @@ public class Get {
 
 	private static boolean isGzipDisabled(HttpServletRequest request) {
 		String flag = request.getParameter("disableGzip");
-		return((flag != null) && (!flag.equalsIgnoreCase("false")));
+		return((flag != null) && (!"false".equalsIgnoreCase(flag)));
 	}
 
 	protected static PrintWriter getGzipWriter(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		if (isGzipSupported(request) && !isGzipDisabled(request)) {
 			response.setHeader("Content-Encoding", "gzip");
 			return new PrintWriter(new GZIPOutputStream(response.getOutputStream()));
-		} else 
-			return response.getWriter();
+		} else {
+            return response.getWriter();
+        }
 	}
 
 	protected static void setHandler(HttpServletResponse response) {
@@ -67,6 +68,7 @@ public class Get {
 
 // result Json
 class Info extends HttpServlet {
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		response.setStatus(HttpServletResponse.SC_OK);
 		PrintWriter out = Get.getGzipWriter(request,response);
@@ -85,6 +87,7 @@ class Info extends HttpServlet {
 
 // result Json
 class Status extends HttpServlet {
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		response.setStatus(HttpServletResponse.SC_OK);
 		PrintWriter out = Get.getGzipWriter(request,response);
@@ -98,8 +101,9 @@ class Status extends HttpServlet {
 			map.put("map", world.getMap().name());
 			result.put("state",Code("SUCCESS"));
 			result.put("result",Base64.getEncoder().encodeToString(JSON.toJSONString(map).getBytes("utf-8")));
-		} else 
-			result.put("state",Code("SERVER_CLOSE"));
+		} else {
+            result.put("state",Code("SERVER_CLOSE"));
+        }
 		out.println(JSON.toJSONString(result));
 		out.close();
 	}
@@ -112,6 +116,7 @@ class Status extends HttpServlet {
 	 */
 // 暂未开放
 class Key extends HttpServlet {
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		response.setStatus(HttpServletResponse.SC_OK);
 		PrintWriter out = Get.getGzipWriter(request,response);
@@ -126,7 +131,9 @@ class Key extends HttpServlet {
 		}
 		if(!CacheData.isRSACache(botuuid)) 
 			//CacheData.addRSACache(botuuid);
-		result.put("state",Code("SUCCESS"));
+        {
+            result.put("state",Code("SUCCESS"));
+        }
 		result.put("result",CacheData.getRSACache_Puky(botuuid));
 		out.println(result);
 		out.close();

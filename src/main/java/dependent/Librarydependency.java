@@ -1,26 +1,21 @@
 package extension.dependent;
 
+import extension.util.file.FileUtil;
+import extension.util.log.Log;
+
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.DriverPropertyInfo;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.util.ArrayList;
-import java.util.logging.Logger;
+import java.sql.*;
 import java.util.List;
 import java.util.Properties;
-//Java
-
-import extension.util.file.FileUtil;
-import extension.util.log.Log;
-//GA-Exted
+import java.util.logging.Logger;
 
 import static extension.net.HttpRequest.Url302;
 import static extension.net.HttpRequest.downUrl;
+
+//Java
+//GA-Exted
 //Static
 
 public class Librarydependency implements Driver {
@@ -29,7 +24,7 @@ public class Librarydependency implements Driver {
 	private static Driver driver;
 
 	Librarydependency(Driver d) {
-		this.driver = d;
+		driver = d;
 	}
 
 	private static void downLoadFromUrl(String str, String name, String version, String country, String savePath) {
@@ -52,7 +47,9 @@ public class Librarydependency implements Driver {
 
 	public static void importLib(String str, String name, String version, String savePath) {
 		File filepath=new File(FileUtil.File(savePath).getPath());
-		if (!filepath.exists())filepath.mkdirs();
+		if (!filepath.exists()) {
+            filepath.mkdirs();
+        }
 		List<File> FilePathList = FileUtil.File(savePath).getFileList();
 		
 		for(int i=0;i<FilePathList.size();i++){
@@ -78,32 +75,39 @@ public class Librarydependency implements Driver {
 		}
 	}
 
+	@Override
 	public Connection connect(String u, Properties p) throws SQLException {
-		return this.driver.connect(u, p);
+		return driver.connect(u, p);
 	}
 
+	@Override
 	public boolean acceptsURL(String u) throws SQLException {
-		return this.driver.acceptsURL(u);
+		return driver.acceptsURL(u);
 	}
 
+	@Override
 	public DriverPropertyInfo[] getPropertyInfo(String u, Properties p) throws SQLException {
-		return this.driver.getPropertyInfo(u, p);
+		return driver.getPropertyInfo(u, p);
 	}
 
+	@Override
 	public int getMajorVersion() {
-		return this.driver.getMajorVersion();
+		return driver.getMajorVersion();
 	}
 
+	@Override
 	public int getMinorVersion() {
-		return this.driver.getMinorVersion();
+		return driver.getMinorVersion();
 	}
 
+	@Override
 	public boolean jdbcCompliant() {
-		return this.driver.jdbcCompliant();
+		return driver.jdbcCompliant();
 	}
 
+	@Override
 	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-		return this.driver.getParentLogger();
+		return driver.getParentLogger();
 	}
 	/*动态加载指定类
 		File file=new File("D:/test");//类路径(包文件上一层)

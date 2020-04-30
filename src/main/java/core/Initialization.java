@@ -76,7 +76,7 @@ public class Initialization {
 	private void Cover_Gameover() { 
 		// 覆盖掉自带的Gameover 使用自己的 便于自动更换模式
 		try {    
-			ApplicationListener sr = Core.app.getListeners().find(e -> e.getClass().getSimpleName().equalsIgnoreCase("ServerControl"));
+			ApplicationListener sr = Core.app.getListeners().find(e -> "ServerControl".equalsIgnoreCase(e.getClass().getSimpleName()));
 			Field field = sr.getClass().getDeclaredField("inExtraRound");      
 			field.setAccessible(true);      
 			field.setBoolean(sr, true);      
@@ -88,7 +88,9 @@ public class Initialization {
 
 	private void SQL() {
 		importLib("org.xerial","sqlite-jdbc","3.30.1",Data.Plugin_Lib_Path);
-		if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists())InitializationSQLite();
+		if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists()) {
+            InitializationSQLite();
+        }
 	}
 
 	private void Config() {
@@ -161,12 +163,16 @@ public class Initialization {
 	private void Player_Privilege_classification() {
 		String[] tempstring=loadstring("Privilege_Level").split(",");
 		int[] tempint = new int[tempstring.length];
-		for (int i = 0,len=tempstring.length;i<len; i++) tempint[i] = Integer.parseInt(tempstring[i]);
+		for (int i = 0,len=tempstring.length;i<len; i++) {
+            tempint[i] = Integer.parseInt(tempstring[i]);
+        }
 		int temp[] = selectionSort(tempint);	
 		if(Config.Permission_Passing) {
 			for (int i=0,len=temp.length;i<len;i++) {
 				final String data = loadstring("Privilege."+temp[i]);
-				if (data == null) continue;
+				if (data == null) {
+                    continue;
+                }
 				if (i <= 1) {
 					Maps.setPower_Data(i,Arrays.asList(data.split(",")));
 					continue;
@@ -180,20 +186,24 @@ public class Initialization {
 		} else {
 			for (int i=0,len=temp.length;i<len;i++) {
 				final String data = loadstring("Privilege."+temp[i]);
-				if (data == null) continue;
+				if (data == null) {
+                    continue;
+                }
 				Maps.setPower_Data(temp[i],Arrays.asList(data.split(",")));
 			}
 		}
 	}
 
 	private int[] selectionSort(int[] array) {
-		if (array.length == 0)
-			return array;
+		if (array.length == 0) {
+            return array;
+        }
 		for (int i=0,len=array.length;i<len;i++) {
 			int minIndex = i;
 			for (int j=i,len1=array.length;j<len1;j++) {
-				if (array[j] < array[minIndex])
-					minIndex = j;
+				if (array[j] < array[minIndex]) {
+                    minIndex = j;
+                }
 			}
 			int temp = array[minIndex];
 			array[minIndex] = array[i];

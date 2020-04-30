@@ -53,7 +53,9 @@ public class ExtractUtil {
 	}
 
 	public static int BooleantoInt(boolean bl) {
-		if(bl) return 1;
+		if(bl) {
+            return 1;
+        }
 		return 0;
 	}
 

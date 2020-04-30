@@ -51,7 +51,9 @@ public class DateUtil {
 		// UTC时间加上偏移量 即取得目标时间
 		UTC = UTC + GMT;
 		// UTC/1000 毫秒转换
-		if (format) return simp((Long.valueOf(UTC) * 1000L) / 1000,fot);
+		if (format) {
+            return simp((Long.valueOf(UTC) * 1000L) / 1000,fot);
+        }
 		// 去除末尾
 		// 1584377312921
 		// 1584377312

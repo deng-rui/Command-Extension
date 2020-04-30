@@ -120,7 +120,9 @@ public class Log {
 	}
 
 	private static void logs(int i, Object tag, Object e) {
-		if(LOG_GRADE>i)return;
+		if(LOG_GRADE>i) {
+            return;
+        }
 		String LINE_SEPARATOR = System.getProperty("line.separator");
 		StringBuilder sb = new StringBuilder();
 		StringBuffer error = new StringBuffer(e.toString());

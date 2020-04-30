@@ -38,7 +38,9 @@ public class Bing {
 	 * ELSE : https://www.bing.com/
 	 */
 	public String translate(String word, String from, String to) {
-		if (Blank(word))return null;
+		if (Blank(word)) {
+            return null;
+        }
 		StringBuffer result = new StringBuffer();
 		String IG = getkeys("https://cn.bing.com/translator","IG:.*?,",4,2);
 		// 我遇上假Bing了????
@@ -60,8 +62,9 @@ public class Bing {
 		for (int i = 0; i < arrayy.size(); i++) {
 		JSONObject re = arrayy.getJSONObject(i);
 		String r = re.getString("text");
-			if (NotBlank(r)) 
+			if (NotBlank(r)) {
 				result.append(r);
+			}
 		}
 		return result.toString();
 			

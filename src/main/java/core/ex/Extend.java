@@ -48,10 +48,13 @@ public class Extend {
 			Array<Player> players = new Array<>();
 			Array<Player> playerspvp = new Array<>();
 			for(Player p : playerGroup.all()){
-				if(p.con == null) continue;
+				if(p.con == null) {
+                    continue;
+                }
 				players.add(p);
-				if(Maps.getPlayer_Data(p.uuid).Authority > 0)
-					playerspvp.add(p);
+				if(Maps.getPlayer_Data(p.uuid).Authority > 0) {
+                    playerspvp.add(p);
+                }
 				p.setDead(true);
 			}		
 			logic.reset();
@@ -62,8 +65,9 @@ public class Extend {
 			for(Player p : players){
 				p.reset();
 				if(Maps.getPlayer_Data(p.uuid).Authority > 0) {
-					if(state.rules.pvp) 
-						p.setTeam(netServer.assignTeam(p, new ArrayIterable<>(playerspvp)));
+					if(state.rules.pvp) {
+                        p.setTeam(netServer.assignTeam(p, new ArrayIterable<>(playerspvp)));
+                    }
 				} else {
 					p.setTeam(Team.derelict);
 				}
@@ -73,6 +77,7 @@ public class Extend {
 
 		if(wait){
 			final Task lastTask = new Task(){
+				@Override
 				public void run(){
 					try{
 						r.run();
@@ -101,9 +106,9 @@ public class Extend {
         long hour = 0;
         long minute = 0;
         long second = 0;
-        if(time <= 0)
+        if(time <= 0) {
             return "00:00";
-        else {
+        } else {
             minute = time / 60;
             hour = minute / 60;
             minute = minute % 60;
@@ -115,27 +120,33 @@ public class Extend {
  
     private static String unitFormat(long i) {
         String retStr = null;
-        if(i >= 0 && i < 10)
+        if(i >= 0 && i < 10) {
             retStr = "0" + i;
-        else
+        } else {
             retStr = "" + i;
+        }
         return retStr;
     }
 
     public static void addMesg_Team(Team team, String msg, Object...params){
-    	for (Player player : playerGroup.all())
-			if(player.getTeam().equals(team))
-				player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput(msg,params));
+    	for (Player player : playerGroup.all()) {
+            if(player.getTeam().equals(team)) {
+                player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput(msg, params));
+            }
+        }
     }
 
     public static void addMesg_Admin(String msg, Object...params){
-    	for (Player player : playerGroup.all())
-			if(player.isAdmin)
-				player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput(msg,params));
+    	for (Player player : playerGroup.all()) {
+            if(player.isAdmin) {
+                player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput(msg, params));
+            }
+        }
     }
 
     public static void addMesg_All(String msg, Object...params){
-    	for (Player player : playerGroup.all())
-			player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput(msg,params));
+    	for (Player player : playerGroup.all()) {
+            player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput(msg,params));
+        }
     }
 }
