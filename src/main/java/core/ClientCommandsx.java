@@ -1,46 +1,40 @@
 package extension.core;
 
-import java.lang.Math;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.List;
 import arc.Core;
 import arc.Events;
 import arc.math.Mathf;
 import arc.util.CommandHandler;
 import arc.util.CommandHandler.Command;
-import mindustry.entities.type.Player;
-import mindustry.gen.Call;
-import mindustry.game.EventType.GameOverEvent;
-import mindustry.game.Difficulty;
-import mindustry.game.Gamemode;
-import mindustry.game.Team;
-import mindustry.maps.Map;
-import mindustry.Vars;
-import static extension.core.ex.Extend.*;
-import static extension.core.ex.Threads.newThredDb;
-import static extension.data.db.Player.getSqlite;
-import static extension.data.db.Player.isSqliteUser;
-import static extension.util.DateUtil.*;
-import static extension.util.ExtractUtil.booleantoInt;
-import static extension.util.IsUtil.*;
-import static extension.util.alone.Password.*;
-import static mindustry.Vars.logic;
-import static mindustry.Vars.maps;
-import static mindustry.Vars.netServer;
-import static mindustry.Vars.playerGroup;
-import static mindustry.Vars.state;
-import static mindustry.Vars.world;
 import extension.core.ex.Vote;
 import extension.data.db.PlayerData;
 import extension.data.global.Config;
 import extension.data.global.Data;
 import extension.data.global.Lists;
 import extension.data.global.Maps;
-import extension.util.translation.Bing;
-import extension.util.translation.Google;
 import extension.util.LocaleUtil;
-import extension.util.log.Log;
+import extension.util.translation.Google;
+import mindustry.Vars;
+import mindustry.entities.type.Player;
+import mindustry.game.Difficulty;
+import mindustry.game.EventType.GameOverEvent;
+import mindustry.game.Team;
+import mindustry.gen.Call;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.List;
+
+import static extension.core.ex.Extend.authorityControl;
+import static extension.core.ex.Extend.playerdatatoObject;
+import static extension.core.ex.Threads.newThredDb;
+import static extension.data.db.Player.*;
+import static extension.util.DateUtil.getLocalTimeFromU;
+import static extension.util.DateUtil.longtoTime;
+import static extension.util.IsUtil.isBlank;
+import static extension.util.IsUtil.notisNumeric;
+import static extension.util.alone.Password.isPasswdVerify;
+import static extension.util.alone.Password.newPasswd;
+import static mindustry.Vars.*;
 
 /**
  * @author Dr
@@ -72,8 +66,8 @@ public class ClientCommandsx {
 			StringBuilder result = new StringBuilder();
 			result.append("[orange]-- Commands Page[lightgray] "+(page+1)+" [gray]/[lightgray] "+pages+" [orange] --\n\n");
 			Command command;
-			if (Config.Help_Show_unauthorize_content) {
-				for (int i = Config.Maximum_Screen_Display * page; i < Math.min(Config.Maximum_Screen_Display * (page + 1), clientCommands.getCommandList().size); i++){
+			if (Config.HELP_SHOW_UNAUTHORIZE_CONTENT) {
+				for (int i = Config.MAXIMUM_SCREEN_DISPLAY * page; i < Math.min(Config.MAXIMUM_SCREEN_DISPLAY * (page + 1), clientCommands.getCommandList().size); i++){
 					command = clientCommands.getCommandList().get(i);
 					if ("4dV#-".equals(command.description.substring(0,5))) {
                         result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(localeUtil.getinput(command.description.substring(5,command.description.length()))).append("\n");
@@ -83,7 +77,7 @@ public class ClientCommandsx {
 				}
 			} else {
 				int count = 0;
-				for (int i = Config.Maximum_Screen_Display * page; i < clientCommands.getCommandList().size; i++){
+				for (int i = Config.MAXIMUM_SCREEN_DISPLAY * page; i < clientCommands.getCommandList().size; i++){
 					command = clientCommands.getCommandList().get(i);
 					if (count == 6 ) {
                         break;
@@ -150,11 +144,9 @@ public class ClientCommandsx {
 							} else {
 								player.setTeam(Team.sharded);
 							}
-							//Call.onPlayerDeath(player);
 							player.kill();
 						}
 						player.sendMessage(localeUtil.getinput("login.to"));
-						//Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
 						Maps.setPlayerData(player.uuid, playerdata);
 						newThredDb(() -> {
 							PlayerData.playerip(playerdata, player, Vars.netServer.admins.getInfo(player.uuid).lastIP);
@@ -168,7 +160,7 @@ public class ClientCommandsx {
 		});
 
 		handler.<Player>register("register", "<new_id> <new_password> <password_repeat> [your_mail]", "4dV#-register", (args, player) -> {
-			LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).Info;
+			LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).info;
 			final String commid = "register";
 			if (authorityControl(player, commid)) {
 				final String newid = args[0];
@@ -187,7 +179,7 @@ public class ClientCommandsx {
 							player.sendMessage(localeUtil.getinput("register.pawno"));
 							return;
 						}
-						if (!(boolean) isSQLite_User(newid)) {
+						if (!(boolean) isSqliteUser(newid)) {
 							player.sendMessage(localeUtil.getinput("register.usrerr"));
 							return;
 						}
@@ -206,10 +198,9 @@ public class ClientCommandsx {
 								} else {
 									player.setTeam(Team.sharded);
 								}
-								//Call.onPlayerDeath(player);
 								player.kill();
 							}
-							InitializationPlayersSQLite(newid);
+							initPlayersSqlite(newid);
 							playerdata.user = newid;
 							playerdata.login = true;
 							playerdata.authority = 1;
@@ -413,7 +404,7 @@ public class ClientCommandsx {
 				if (0 < args.length) {
 					page = Integer.parseInt(args[0]);
 				}
-				int pages = Mathf.ceil((float) mapsList.size() / Config.Maximum_Screen_Display);
+				int pages = Mathf.ceil((float) mapsList.size() / Config.MAXIMUM_SCREEN_DISPLAY);
 				page--;
 				if (page >= pages || 0 > page) {
 					player.sendMessage(localeUtil.getinput("maps.page.err", pages));
@@ -422,7 +413,7 @@ public class ClientCommandsx {
 				final int triggerMode = 2;
 				if (triggerMode == args.length) {
 					player.sendMessage(localeUtil.getinput("maps.page", (page + 1), pages));
-					for (int i = Config.Maximum_Screen_Display * page; i < Math.min(Config.Maximum_Screen_Display * (page + 1), mapsList.size()); i++) {
+					for (int i = Config.MAXIMUM_SCREEN_DISPLAY * page; i < Math.min(Config.MAXIMUM_SCREEN_DISPLAY * (page + 1), mapsList.size()); i++) {
 						String[] data = mapsList.get(i).split("\\s+");
 						if (data[3].equalsIgnoreCase(args[1])) {
 							player.sendMessage(localeUtil.getinput("maps.mode.info", String.valueOf(i), data[0], data[1]));
@@ -431,7 +422,7 @@ public class ClientCommandsx {
 					return;
 				}
 				player.sendMessage(localeUtil.getinput("maps.page", (page + 1), pages));
-				for (int i = Config.Maximum_Screen_Display * page; i < Math.min(Config.Maximum_Screen_Display * (page + 1), mapsList.size()); i++) {
+				for (int i = Config.MAXIMUM_SCREEN_DISPLAY * page; i < Math.min(Config.MAXIMUM_SCREEN_DISPLAY * (page + 1), mapsList.size()); i++) {
 					String[] data = mapsList.get(i).split("\\s+");
 					player.sendMessage(localeUtil.getinput("maps.info", String.valueOf(i), data[0], data[1], data[2]));
 				}
@@ -454,17 +445,17 @@ public class ClientCommandsx {
 						break;
 					case "gameover":
 					case "skipwave":
-						Data.vote = new Vote(player, args[0]);
+						Data.VOTE = new Vote(player, args[0]);
 						break;
 					case "kick":
 						if (1 < args.length) {
-							Data.vote = new Vote(player, args[0], args[1]);
+							Data.VOTE = new Vote(player, args[0], args[1]);
 						} else {
 							player.sendMessage(localeUtil.getinput("args.err"));
 						}
 						break;
 					case "ff":
-						Data.vote = new Vote(player, args[0], player.getTeam());
+						Data.VOTE = new Vote(player, args[0], player.getTeam());
 						break;
 					case "host":
 						if (1 < args.length) {
@@ -503,15 +494,15 @@ public class ClientCommandsx {
 			LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).info;
 			final String commid = "ukey";
 			if (authorityControl(player, commid)) {
-				if (isSQLite_Key(args[0])) {
+				if (isSqliteKey(args[0])) {
 					player.sendMessage(localeUtil.getinput("key.no"));
 				} else {
 					PlayerData playerdata = Maps.getPlayerData(player.uuid);
-					java.util.Map<String, Object> data = GetKey(args[0]);
+					java.util.Map<String, Object> data = getKey(args[0]);
 					long leftTime = Long.parseLong(data.get("Expire").toString());
 					if (leftTime < getLocalTimeFromU()) {
 						player.sendMessage(localeUtil.getinput("key.expire"));
-						newThredDb(() -> RmKey(data.get("KEY").toString()));
+						newThredDb(() -> rmKey(data.get("KEY").toString()));
 						return;
 					}
 					int resultAuthority = Integer.parseInt(data.get("Authority").toString());
@@ -528,9 +519,9 @@ public class ClientCommandsx {
 						player.sendMessage(localeUtil.getinput("key.use.yes", playerdata.authority, longtoTime(playerdata.authorityEffectiveTime)));
 						final int sur = Integer.parseInt(data.get("Surplus").toString()) - 1;
 						if (sur == 0) {
-							newThredDb(() -> RmKey(data.get("KEY").toString()));
+							newThredDb(() -> rmKey(data.get("KEY").toString()));
 						} else {
-							newThredDb(() -> SaveKey(data.get("KEY").toString(), Integer.parseInt(data.get("Authority").toString()), Integer.parseInt(data.get("Total").toString()), sur, Long.parseLong(data.get("Time").toString()), Long.parseLong(data.get("Expire").toString())));
+							newThredDb(() -> saveKey(data.get("KEY").toString(), Integer.parseInt(data.get("Authority").toString()), Integer.parseInt(data.get("Total").toString()), sur, Long.parseLong(data.get("Time").toString()), Long.parseLong(data.get("Expire").toString())));
 						}
 						// OK
 					}

@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
-import static extension.util.log.Error.Code;
+import static extension.util.log.Error.code;
 
 public class Post {
 	protected void register(ServletContextHandler context) {
@@ -81,7 +81,7 @@ class Bind extends HttpServlet {
 		PrintWriter out = extension.net.server.Get.getGzipWriter(request,response);
 		extension.net.server.Get.setHandler(response);
 		Map<String,Object> result = new HashMap<String,Object>(8);
-		result.put("state",Code("SUCCESS"));
+		result.put("state",code("SUCCESS"));
 		result.put("result",null);
 		out.println(result);
 		out.close();

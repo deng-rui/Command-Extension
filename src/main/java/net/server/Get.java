@@ -1,39 +1,33 @@
 package extension.net.server;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.GZIPOutputStream;
-
-import java.security.*;
-
 import arc.Core;
-import mindustry.core.GameState.State;
-import static mindustry.Vars.playerGroup;
-import static mindustry.Vars.state;
-import static mindustry.Vars.world;
-
+import com.alibaba.fastjson.JSON;
 import extension.data.db.Player;
 import extension.data.db.PlayerData;
 import extension.data.global.CacheData;
-import extension.data.global.Maps;
-import extension.net.HttpRequest;
-import extension.util.log.Log;
-
-import static extension.util.log.Error.Code;
-import static extension.util.RandomUtil.generateStr;
-import static extension.util.IsUtil.isBlank;
-
-/*
- *Web 
- */
+import mindustry.core.GameState.State;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServlet; 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.zip.GZIPOutputStream;
 
-import com.alibaba.fastjson.JSON;
+import static extension.util.IsUtil.isBlank;
+import static extension.util.RandomUtil.generateStr;
+import static extension.util.log.Error.code;
+import static mindustry.Vars.*;
+
+/*
+ *Web
+ */
 
 public class Get {
 	protected void register(ServletContextHandler context) {
@@ -76,9 +70,9 @@ class Info extends HttpServlet {
 		String user = request.getParameter("user");
 		String info = generateStr(10);
 		PlayerData data = new PlayerData(info,info,0);
-		Player.getSQLite(data,user);
+		Player.getSqlite(data,user);
 		Map<String, Object> result = new HashMap<String, Object>();
-		result.put("state",Code("SUCCESS"));
+		result.put("state",code("SUCCESS"));
 		result.put("result",Base64.getEncoder().encodeToString(JSON.toJSONString(data).getBytes("utf-8")));
 		out.println(JSON.toJSONString(result));
 		out.close();
@@ -99,10 +93,10 @@ class Status extends HttpServlet {
 			map.put("mob", Core.app.getJavaHeap()/1024/1024);
 			map.put("player", playerGroup.size());
 			map.put("map", world.getMap().name());
-			result.put("state",Code("SUCCESS"));
+			result.put("state",code("SUCCESS"));
 			result.put("result",Base64.getEncoder().encodeToString(JSON.toJSONString(map).getBytes("utf-8")));
 		} else {
-            result.put("state",Code("SERVER_CLOSE"));
+            result.put("state",code("SERVER_CLOSE"));
         }
 		out.println(JSON.toJSONString(result));
 		out.close();
@@ -124,17 +118,17 @@ class Key extends HttpServlet {
 		Map<String, Object> result = new HashMap<String, Object>();
 		String botuuid = request.getParameter("botuuid");
 		if(isBlank(botuuid)) {
-			result.put("state",Code("INCOMPLETE_PARAMETERS"));
+			result.put("state",code("INCOMPLETE_PARAMETERS"));
 			out.println(result);
 			out.close();
 			return;
 		}
-		if(!CacheData.isRSACache(botuuid)) 
+		if(!CacheData.isRsaCache(botuuid))
 			//CacheData.addRSACache(botuuid);
         {
-            result.put("state",Code("SUCCESS"));
+            result.put("state",code("SUCCESS"));
         }
-		result.put("result",CacheData.getRSACache_Puky(botuuid));
+		result.put("result",CacheData.getRsaCachePuky(botuuid));
 		out.println(result);
 		out.close();
 	}

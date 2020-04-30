@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 import static extension.net.HttpRequest.doGet;
 import static extension.util.DateUtil.getLocalTimeFromU;
-import static extension.util.ExtractUtil.Language_determination;
+import static extension.util.ExtractUtil.languageDetermination;
 import static extension.util.ExtractUtil.ipToLong;
 
 public class PlayerData {
@@ -124,7 +124,7 @@ public class PlayerData {
 			}
 		}
 		data.ip 					= ipToLong(ip);
-		data.language 				= Language_determination(data.country);
+		data.language 				= languageDetermination(data.country);
 		data.info 					= Maps.getLocale(data.language);
 		player.sendMessage(data.info.getinput("Load.Language",data.language));
 	}

@@ -1,7 +1,6 @@
 package extension.util.file;
 
 import extension.data.global.Data;
-import extension.util.log.Exceptions;
 import extension.util.log.Log;
 
 import java.io.IOException;
@@ -20,9 +19,9 @@ import java.util.Properties;
  */
 public class LoadConfig {
 
-	private static Object load(String input) throws RuntimeException{
+	private static Object load(String input) throws RuntimeException, extension.util.log.VariableException {
 		Properties properties = new Properties();
-        InputStreamReader inputStream = extension.util.file.FileUtil.File(Data.Plugin_Data_Path).toPath("/Config.ini").readconfig();
+        InputStreamReader inputStream = extension.util.file.FileUtil.File(Data.PLUGIN_DATA_PATH).toPath("/Config.ini").readconfig();
         try {
             properties.load(inputStream);
         } catch (IOException e) {
@@ -35,7 +34,7 @@ public class LoadConfig {
             return result;
         }
 		Log.warn("NO KEY- Please check the file",input);
-		throw Exceptions.Variable("INVALID_PARAMETER");
+		throw new extension.util.log.VariableException("INVALID_PARAMETER");
 	}
 
 

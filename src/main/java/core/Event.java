@@ -1,51 +1,8 @@
 package extension.core;
 
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.Set;
-
 import arc.Events;
 import arc.math.Mathf;
 import arc.util.Time;
-//Arc
-
-import mindustry.content.Blocks;
-import mindustry.entities.type.Player;
-import mindustry.game.Team;
-import mindustry.game.Teams;
-import mindustry.game.Gamemode;
-import mindustry.game.EventType.BlockBuildEndEvent;
-import mindustry.game.EventType.BuildSelectEvent;
-import mindustry.game.EventType.PlayerConnect;
-import mindustry.game.EventType.GameOverEvent;
-import mindustry.game.EventType.ServerLoadEvent;
-import mindustry.game.EventType.PlayerChatEvent;
-import mindustry.game.EventType.PlayerJoin;
-import mindustry.game.EventType.PlayerLeave;
-import mindustry.game.EventType.UnitDestroyEvent;
-import mindustry.game.EventType.UnitCreateEvent;
-import mindustry.game.EventType.Trigger;
-import mindustry.gen.Call;
-import mindustry.maps.Map;
-import mindustry.net.Administration.PlayerInfo;
-import mindustry.net.Packets.KickReason;
-import mindustry.net.NetConnection;
-import mindustry.net.ValidateException;
-import mindustry.Vars;
-import mindustry.world.Block;
-import mindustry.world.Tile;
-//Mindustry
-
-import static arc.util.Log.info;
-import static extension.util.DateUtil.getLocalTimeFromU;
-import static mindustry.Vars.maps;
-import static mindustry.Vars.state;
-import static mindustry.Vars.world;
-import static mindustry.Vars.netServer;
-import static mindustry.Vars.playerGroup;
-//Mindustry-Static
-
 import extension.core.ex.Extend;
 import extension.core.ex.Vote;
 import extension.data.db.PlayerData;
@@ -53,21 +10,42 @@ import extension.data.global.Config;
 import extension.data.global.Data;
 import extension.data.global.Lists;
 import extension.data.global.Maps;
-import extension.util.translation.Google;
 import extension.util.LocaleUtil;
-import extension.util.log.Log;
-//GA-Exted
+import extension.util.translation.Google;
+import mindustry.Vars;
+import mindustry.content.Blocks;
+import mindustry.entities.type.Player;
+import mindustry.game.EventType.*;
+import mindustry.game.Gamemode;
+import mindustry.game.Team;
+import mindustry.game.Teams;
+import mindustry.gen.Call;
+import mindustry.maps.Map;
+import mindustry.net.ValidateException;
+import mindustry.world.Block;
+import mindustry.world.Tile;
 
-import static extension.core.ex.Threads.NewThred_DB;
-import static extension.core.ex.Threads.NewThred_SE;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+
+import static arc.util.Log.info;
+import static extension.core.ex.Threads.newThredDb;
+import static extension.core.ex.Threads.newThredSe;
 import static extension.data.db.Player.savePlayer;
-import static extension.data.json.Json.getData;
-import static extension.net.HttpRequest.doGet;
-import static extension.util.alone.BadWord.*;
-import static extension.util.String_filteringUtil.*;
-//Static
+import static extension.util.DateUtil.getLocalTimeFromU;
+import static extension.util.StringFilteringUtil.removeAllCn;
+import static extension.util.StringFilteringUtil.removeAllEn;
+import static extension.util.alone.BadWord.badWord;
+import static extension.util.alone.BadWord.replaceBadWord;
+import static mindustry.Vars.*;
 
-import com.alibaba.fastjson.JSONObject;
+//Arc
+//Mindustry
+//Mindustry-Static
+//GA-Exted
+//Static
 
 public class Event {
 	// 
@@ -83,7 +61,7 @@ public class Event {
 				String result = replaceBadWord(message,2,"*");
 				// 自动翻译
 				// 检查是否启用翻译
-				if (Maps.getPlayer_Data(player.uuid).translate) {
+				if (Maps.getPlayerData(player.uuid).translate) {
 					boolean valid = message.matches("\\w+");
 					if (!valid) {
                         result = new Google().translate(message,"en")+"   -From Google Translator";
@@ -98,7 +76,7 @@ public class Event {
 					if (Sava_Team.containsKey(player.uuid)) {
                         return Sava_Team.get(player.uuid);
                     }
-					Teams.TeamData re = (Teams.TeamData)Vars.state.teams.getActive().min(data -> {
+					Teams.TeamData re = (Teams.TeamData) state.teams.getActive().min(data -> {
 						int count = 0;
 						for (final Player other : players) {
                             if (other.getTeam() == data.team && other != player) {
@@ -119,7 +97,7 @@ public class Event {
 							//*/
 					return (null == re) ? null : re.team;
 				}
-				return Vars.state.rules.defaultTeam;
+				return state.rules.defaultTeam;
 			});
 			// linglan
 		});
@@ -127,11 +105,11 @@ public class Event {
 		// 连接时
 		Events.on(PlayerConnect.class, e -> {
 			// 中英分检测  过滤屏蔽词
-			Set<String> set = (Set<String>)badWord(removeAll_EN(e.player.name));
+			Set<String> set = (Set<String>)badWord(removeAllEn(e.player.name));
 			if (0 < set.size()) {
                 Call.onKick(e.player.con,new LocaleUtil(null).getinput("Sensitive.Thesaurus.join.kick",set.iterator().next()));
             }
-			Set<String> set1 = (Set<String>)badWord(removeAll_CN(e.player.name));
+			Set<String> set1 = (Set<String>)badWord(removeAllCn(e.player.name));
 			if (0 < set1.size()) {
                 Call.onKick(e.player.con,new LocaleUtil(null).getinput("Sensitive.Thesaurus.join.kick",set1.iterator().next()));
             }
@@ -140,37 +118,37 @@ public class Event {
 		// 加入服务器时
 		Events.on(PlayerJoin.class, e -> {
 			if(Config.LOGIN_RADICAL) {
-				if(!Maps.Player_Data_boolean(e.player.uuid)) {
+				if(!Maps.isPlayerData(e.player.uuid)) {
 					PlayerData playerdata = new PlayerData(e.player.uuid,e.player.name,0);
 					// 如果不需要时区 我可能会考虑db-ip.com
-					NewThred_SE(() -> PlayerData.playerip(playerdata,e.player,Vars.netServer.admins.getInfo(e.player.uuid).lastIP));
+					newThredSe(() -> PlayerData.playerip(playerdata,e.player, netServer.admins.getInfo(e.player.uuid).lastIP));
 					Call.onInfoToast(e.player.con,playerdata.info.getinput("join.tourist",getLocalTimeFromU(0,1)),30f);
-					Maps.setPlayer_Data(e.player.uuid,playerdata);
+					Maps.setPlayerData(e.player.uuid,playerdata);
 				}
-				if(Maps.getPlayer_Data(e.player.uuid).authority == 0) {
+				if(Maps.getPlayerData(e.player.uuid).authority == 0) {
 					// 设置队伍 登陆
 					e.player.kill();
 					e.player.setTeam(Team.derelict);
 					return;
 				}
-				PlayerData playerdata = Maps.getPlayer_Data(e.player.uuid);
+				PlayerData playerdata = Maps.getPlayerData(e.player.uuid);
 				if (e.player.isAdmin) {
                     playerdata.authority = 2;
                 }
 				playerdata.online = true;
 				playerdata.joinCount++;
 				playerdata.joinTime = getLocalTimeFromU();
-				NewThred_DB(() -> savePlayer(playerdata,playerdata.user));
+				newThredDb(() -> savePlayer(playerdata,playerdata.user));
 				Call.onInfoToast(e.player.con,playerdata.info.getinput("join.start",getLocalTimeFromU(playerdata.gmt,playerdata.timeFormat)),40f);
 			} else {
-				if(!Maps.Player_Data_boolean(e.player.uuid)) {
+				if(!Maps.isPlayerData(e.player.uuid)) {
 					PlayerData playerdata = new PlayerData(e.player.uuid,e.player.name,1);
-					NewThred_SE(() -> PlayerData.playerip(playerdata,e.player,Vars.netServer.admins.getInfo(e.player.uuid).lastIP));
+					newThredSe(() -> PlayerData.playerip(playerdata,e.player, netServer.admins.getInfo(e.player.uuid).lastIP));
 					Call.onInfoMessage(e.player.con,playerdata.info.getinput("gc"));
-					Maps.setPlayer_Data(e.player.uuid,playerdata);
+					Maps.setPlayerData(e.player.uuid,playerdata);
 					return;
 				}
-				PlayerData playerdata = Maps.getPlayer_Data(e.player.uuid);
+				PlayerData playerdata = Maps.getPlayerData(e.player.uuid);
 				if (e.player.isAdmin) {
                     playerdata.authority = 2;
                 }
@@ -185,30 +163,30 @@ public class Event {
 
 		// 发送消息时
 		Events.on(PlayerChatEvent.class, e -> {
-			if((int)Maps.getPlayer_Data(e.player.uuid).Authority > 0) {
+			if((int)Maps.getPlayerData(e.player.uuid).authority > 0) {
 				String msg = String.valueOf(e.message).toLowerCase();
 				if("y".equals(msg) || "n".equals(msg) || "cy".equals(msg) || "cn".equals(msg)) {
 					if(!Vote.sted) {
 						if (Vote.playerList.contains(e.player.uuid)) {
-                            e.player.sendMessage(Maps.getPlayer_Data(e.player.uuid).info.getinput("vote.rey"));
+                            e.player.sendMessage(Maps.getPlayerData(e.player.uuid).info.getinput("vote.rey"));
                         } else {
 							if (Vote.isteam) {
 								if (Vote.team.equals(e.player.getTeam())) {
-                                    Data.vote.ToVote(e.player,msg);
+                                    Data.VOTE.toVote(e.player,msg);
                                 } else {
-                                    e.player.sendMessage(Maps.getPlayer_Data(e.player.uuid).info.getinput("vote.team"));
+                                    e.player.sendMessage(Maps.getPlayerData(e.player.uuid).info.getinput("vote.team"));
                                 }
 							} else {
-                                Data.vote.ToVote(e.player,msg);
+                                Data.VOTE.toVote(e.player,msg);
                             }
 						}	
 					} else {
-                        e.player.sendMessage(Maps.getPlayer_Data(e.player.uuid).info.getinput("vote.noy"));
+                        e.player.sendMessage(Maps.getPlayerData(e.player.uuid).info.getinput("vote.noy"));
                     }
 				}
 			}
 
-			PlayerData playerdata = Maps.getPlayer_Data(e.player.uuid);
+			PlayerData playerdata = Maps.getPlayerData(e.player.uuid);
 			playerdata.lastChat = getLocalTimeFromU(playerdata.gmt);
 		});
 
@@ -220,7 +198,7 @@ public class Event {
                     player.kill();
                     killTiles(player.getTeam());
                     player.setTeam(Team.derelict);
-                    player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput("Gameover.Team"));
+                    player.sendMessage(Maps.getPlayerData(player.uuid).info.getinput("Gameover.Team"));
                 }
             }
 		});
@@ -228,20 +206,20 @@ public class Event {
 		// 建造时
 		Events.on(BlockBuildEndEvent.class, e -> {
 
-			if (!e.breaking && e.player != null && e.player.buildRequest() != null && !Vars.state.teams.get(e.player.getTeam()).cores.isEmpty() && e.tile != null && e.player.buildRequest() != null) {
+			if (!e.breaking && e.player != null && e.player.buildRequest() != null && !state.teams.get(e.player.getTeam()).cores.isEmpty() && e.tile != null && e.player.buildRequest() != null) {
 				// 桥
 				Block block = e.player.buildRequest().block;
 				if (block == Blocks.itemBridge || block == Blocks.phaseConveyor || block == Blocks.bridgeConduit || block == Blocks.phaseConduit) {
                     return;
                 }
-				PlayerData playerdata = Maps.getPlayer_Data(e.player.uuid);
+				PlayerData playerdata = Maps.getPlayerData(e.player.uuid);
 				// 传送带
 				if (block == Blocks.conveyor || block == Blocks.titaniumConveyor || block == Blocks.armoredConveyor) {
-					playerdata.Cumulative_build++;
+					playerdata.cumulativeBuild++;
 				}
 				// 管道
 				else if (block == Blocks.conduit || block == Blocks.pulseConduit || block == Blocks.platedConduit) {
-					playerdata.Pipe_build++;
+					playerdata.pipeBuild++;
 				}
 				// 刷? 连接 路由 分配 分类 反向分类 溢流 反向溢流
 				else if (block == Blocks.junction || block == Blocks.router || block == Blocks.distributor || block == Blocks.sorter || block == Blocks.invertedSorter || block == Blocks.overflowGate || block == Blocks.underflowGate) {
@@ -257,30 +235,30 @@ public class Event {
 				}
 				// 其他建筑
 				else {
-					if(Config.Building_Restriction) {
+					if(Config.BUILDING_RESTRICTION) {
 						int team = e.player.getTeam().id;
 						if(!Building_number.containsKey(team)) {
 							Building_number.put(team,1);
 							return;
 						}
-						if(Building_number.get(team) >= Config.Building_Reject_quantity) {
+						if(Building_number.get(team) >= Config.BUILDING_REJECT_QUANTITY) {
 							Call.onTileDestroyed(e.tile);
-							if (Data.ismsg) {
-								NewThred_SE(() -> Extend.addMesg_Team(e.player.getTeam(),"Building_Reject.quantity"));
+							if (Data.ISMSG) {
+								newThredSe(() -> Extend.addMesgTeam(e.player.getTeam(),"Building_Reject.quantity"));
 								Data.ismsg = false;
 							}
 							return;
 						}
-						if(Building_number.get(team) >= Config.Building_Warning_quantity) {
-                            if (Data.ismsg) {
-                                Extend.addMesg_Team(e.player.getTeam(),"Building_Warning.quantity",Building_number.get(team));
+						if(Building_number.get(team) >= Config.BUILDING_WARNING_QUANTITY) {
+                            if (Data.ISMSG) {
+                                Extend.addMesgTeam(e.player.getTeam(),"Building_Warning.quantity",Building_number.get(team));
                                 Data.ismsg = false;
                             }
                         }
 						int temp = ((int)Building_number.get(team))+1;
 						Building_number.put(team,temp);
 					}
-					playerdata.Buildcount++;
+					playerdata.breakCount++;
 				}
 				
 			}
@@ -309,9 +287,9 @@ public class Event {
 				if (block == Blocks.battery || block == Blocks.batteryLarge || block == Blocks.powerNode || block == Blocks.powerNodeLarge || block == Blocks.surgeTower || block == Blocks.diode) {
                     return;
                 }
-				PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
-				playerdata.Dismantledcount++;
-				if(Config.Building_Restriction) {
+				PlayerData playerdata = Maps.getPlayerData(player.uuid);
+				playerdata.dismantledCount++;
+				if(Config.BUILDING_RESTRICTION) {
 					int team = player.getTeam().id;
 					if(!Building_number.containsKey(team)) {
                         return;
@@ -327,44 +305,44 @@ public class Event {
 		Events.on(UnitDestroyEvent.class, e -> {
 			if (e.unit instanceof Player) {
 				Player player = (Player) e.unit;
-				PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
+				PlayerData playerdata = Maps.getPlayerData(player.uuid);
 				if (!state.teams.get(player.getTeam()).cores.isEmpty()){
-					if(playerdata.Authority == 0) {
+					if(playerdata.authority == 0) {
                         return;
                     }
-					playerdata.Deadcount++;
+					playerdata.deadCount++;
 				}
 			}
 
 			if (playerGroup != null && playerGroup.size() > 0) {
 				for (int i = 0; i < playerGroup.size(); i++) {
 					Player player = playerGroup.all().get(i);
-					PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
+					PlayerData playerdata = Maps.getPlayerData(player.uuid);
 					if (!state.teams.get(player.getTeam()).cores.isEmpty()){
-						if(playerdata.Authority == 0) {
+						if(playerdata.authority == 0) {
                             return;
                         }
-						playerdata.Killcount++;
+						playerdata.killCount++;
 					}
 				}
 			}
 		});
 
 		Events.on(UnitCreateEvent.class, e-> {	
-			if (Config.Soldier_Restriction) {
+			if (Config.SOLDIER_RESTRICTION) {
 					int count = Vars.unitGroup.count(ex -> ex.getTeam().equals(e.unit.getTeam()));
-					if (count >= Config.Soldier_Reject_quantity) {
-						if (Data.ismsg) {
-							Extend.addMesg_Team(e.unit.getTeam(),"Soldier_Reject.quantity");
-							Data.ismsg = false;
+					if (count >= Config.SOLDIER_REJECT_QUANTITY) {
+						if (Data.ISMSG) {
+							Extend.addMesgTeam(e.unit.getTeam(),"Soldier_Reject.quantity");
+							Data.ISMSG = false;
 						}
 						e.unit.kill();
 						return;
 					}
-					if (count >= Config.Soldier_Warning_quantity) {
-                        if (Data.ismsg) {
-                            Extend.addMesg_Team(e.unit.getTeam(),"Soldier_Warning.quantity",count);
-                            Data.ismsg = false;
+					if (count >= Config.SOLDIER_WARNING_QUANTITY) {
+                        if (Data.ISMSG) {
+                            Extend.addMesgTeam(e.unit.getTeam(),"Soldier_Warning.quantity",count);
+                            Data.ISMSG = false;
                         }
                     }
 			}
@@ -373,8 +351,8 @@ public class Event {
 		// EXPION
 		Events.on(ValidateException.class, e -> {
 			Call.onWorldDataBegin(e.player.con);
-			Vars.netServer.sendWorldData(e.player);
-			e.player.sendMessage(Maps.getPlayer_Data(e.player.uuid).Info.getinput("error"));
+			netServer.sendWorldData(e.player);
+			e.player.sendMessage(Maps.getPlayerData(e.player.uuid).info.getinput("error"));
 		});
 
 		// 游戏结束时
@@ -389,14 +367,14 @@ public class Event {
 				if (index == 1) {
 					for (int i = 0; i < playerGroup.size(); i++) {
 						Player player = playerGroup.all().get(i);
-						PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
+						PlayerData playerdata = Maps.getPlayerData(player.uuid);
 						if (player.getTeam().name.equals(e.winner.name)) {
-							if(playerdata.Authority>0) {
-                                playerdata.Pvpwincount++;
+							if(playerdata.authority>0) {
+                                playerdata.pvpwinCount++;
                             }
 						} else {
-							if(playerdata.Authority>0) {
-                                playerdata.Pvplosecount++;
+							if(playerdata.authority>0) {
+                                playerdata.pvploseCount++;
                             }
 						}
 					}
@@ -407,7 +385,7 @@ public class Event {
 
 			Map map = maps.getNextMap(world.getMap());
 			if(map != null) {
-				List<String> mapsList = (List<String>)Lists.getMaps_List();
+				List<String> mapsList = (List<String>)Lists.getMapsList();
 				for(int i = 0; i < mapsList.size(); i++){
 					String [] data = mapsList.get(i).split("\\s+");
 					if(map.name().equalsIgnoreCase(data[0].replace('_', ' ')) || map.name().equalsIgnoreCase(data[0])) {
@@ -417,7 +395,7 @@ public class Event {
 						}catch(IllegalArgumentException ex){
 						}
 						final Gamemode gamemode = mode;
-						Extend.addMesg_All("Gameover.Game",data[0],data[1],data[2]);
+						Extend.addMesgAll("Gameover.Game",data[0],data[1],data[2]);
 						Extend.loadmaps(true, () -> world.loadMap(map, map.applyRules(gamemode)),gamemode);
 					}
 				}
@@ -430,14 +408,14 @@ public class Event {
 
 		// 退出时
 		Events.on(PlayerLeave.class, e -> {
-			final PlayerData playerdata = Maps.getPlayer_Data(e.player.uuid);
-			playerdata.Backtime = getLocalTimeFromUTC();
-			playerdata.Breakcount++;
-			playerdata.Online = false;
-			final long time = playerdata.Backtime-playerdata.Jointime;
-			playerdata.Playtime = playerdata.Playtime+time;
-			if (playerdata.Login) {
-                NewThred_DB(() -> savePlayer(playerdata,playerdata.User));
+			final PlayerData playerdata = Maps.getPlayerData(e.player.uuid);
+			playerdata.backTime = getLocalTimeFromU();
+			playerdata.breakCount++;
+			playerdata.online= false;
+			final long time = playerdata.backTime-playerdata.joinTime;
+			playerdata.playTime += time;
+			if (playerdata.login) {
+                newThredDb(() -> savePlayer(playerdata,playerdata.user));
             }
 		});
 	}
@@ -454,13 +432,13 @@ public class Event {
 	}
 
 	public static void syncTeam() {
-		Data.service.schedule(() -> {
+		Data.SERVICE.schedule(() -> {
 			if (playerGroup.size() > 2) {
                 if (state.rules.pvp) {
-                    if (Config.Login_Radical) {
+                    if (Config.LOGIN_RADICAL) {
                         for (Player it : Vars.playerGroup.all()) {
                             if (!state.teams.get(Team.all()[it.getTeam().id]).cores.isEmpty()) {
-                                if (Maps.getPlayer_Data(it.uuid).Authority > 0) {
+                                if (Maps.getPlayerData(it.uuid).authority > 0) {
                                     Sava_Team.put(it.uuid, it.getTeam());
                                 }
                             }

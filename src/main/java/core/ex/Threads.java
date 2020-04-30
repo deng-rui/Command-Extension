@@ -1,55 +1,45 @@
 package extension.core.ex;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-//Java 
-
 import arc.Core;
-import arc.util.Time;
-//
-
-import mindustry.gen.Call;
-import mindustry.core.GameState.State;
-//
-
-import static extension.util.DateUtil.getLocalTimeFromU;
-import static extension.util.file.LoadConfig.customLoad;
-import static mindustry.Vars.state;
-//
-
+import com.sun.mail.util.MailSSLSocketFactory;
 import extension.data.db.PlayerData;
 import extension.data.global.Config;
 import extension.data.global.Data;
 import extension.data.global.Maps;
-import extension.util.log.Log;
-//GA-Exted
+import mindustry.gen.Call;
 
-import static extension.core.ex.Extend.secToTime;
-import static extension.util.file.LoadConfig.CustomLoad;
-import static extension.util.DateUtil.getLocalTimeFromUTC;
-//Static
-
-
-//import javax.mail.NoSuchProviderException;
-//import javax.mail.internet.AddressException;
+import javax.mail.Address;
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.mail.Session;
-import javax.mail.Message;
-//import javax.mail.MessagingException;
-import javax.mail.Transport;
-import javax.mail.Address;
-import javax.activation.*;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
+import static extension.core.ex.Extend.secToTime;
+import static extension.util.DateUtil.getLocalTimeFromU;
+import static extension.util.file.LoadConfig.customLoad;
+import static mindustry.Vars.state;
+
+//Java
 //
-import com.sun.mail.util.MailSSLSocketFactory;
+//
+//
+//GA-Exted
+//Static
+//import javax.mail.NoSuchProviderException;
+//import javax.mail.internet.AddressException;
+//import javax.mail.MessagingException;
+//
 //
 
 public class Threads {
@@ -72,7 +62,7 @@ public class Threads {
 			@Override
 			public void run() {
 				custom();
-				Data.ismsg = true;
+				Data.ISMSG = true;
 				//
 				loginStatus();
 				authorityStatus();
@@ -80,7 +70,7 @@ public class Threads {
 				if (Config.DAY_AND_NIGHT) {
                     dayAndNightShift();
                 }
-				if (Config.Regular_Reporting) {
+				if (Config.REGULAR_REPORTING) {
                     statusReporting();
                 }
 			}
@@ -153,7 +143,7 @@ public class Threads {
 
 
     private static void statusReporting() {
-		if (Config.Regular_Reporting_Time > STATUS_MAIL) {
+		if (Config.REGULAR_REPORTING_TIME > STATUS_MAIL) {
 			STATUS_MAIL++;
 			return;
 		}
@@ -161,8 +151,8 @@ public class Threads {
 		try {
 			Properties props = new Properties();
 			props.setProperty("mail.smtp.auth", "true");  
-			props.setProperty("mail.host", Config.Mail_SMTP_IP);
-			props.setProperty("mail.smtp.port", Config.Mail_SMTP_Port);
+			props.setProperty("mail.host", Config.MAIL_SMTP_IP);
+			props.setProperty("mail.smtp.port", Config.MAIL_SMTP_PORT);
 			props.setProperty("mail.transport.protocol", "smtp");
 			MailSSLSocketFactory sf = new MailSSLSocketFactory();
 			sf.setTrustAllHosts(true);
@@ -177,13 +167,13 @@ public class Threads {
 			long totalPhysicalMemory = getLongFromOperatingSystem(system,"getTotalPhysicalMemorySize");
 			long freePhysicalMemory = getLongFromOperatingSystem(system, "getFreePhysicalMemorySize");
 			long usedPhysicalMemorySize =totalPhysicalMemory - freePhysicalMemory;
-			Object[] pasm = {system.getName(),totalPhysicalMemory/MB,freePhysicalMemory/MB,usedPhysicalMemorySize/MB,Core.graphics.getFramesPerSecond(),Core.app.getJavaHeap()/mb,secToTime((long)ManagementFactory.getRuntimeMXBean().getUptime()/1000),getLocalTimeFromU(0,1)+" UTC"};
+			Object[] pasm = {system.getName(),totalPhysicalMemory/mb,freePhysicalMemory/mb,usedPhysicalMemorySize/mb,Core.graphics.getFramesPerSecond(),Core.app.getJavaHeap()/mb,secToTime((long)ManagementFactory.getRuntimeMXBean().getUptime()/1000),getLocalTimeFromU(0,1)+" UTC"};
 			//
 			msg.setContent(customLoad("Mail.Report",pasm),"text/html;charset = UTF-8");
-			msg.setFrom(new InternetAddress(Config.Mail_SMTP_User));
+			msg.setFrom(new InternetAddress(Config.MAIL_SMTP_USER));
 			Transport transport = session.getTransport();
-			transport.connect(Config.Mail_SMTP_IP,Config.Mail_SMTP_User,Config.Mail_SMTP_Passwd);
-			transport.sendMessage(msg, new Address[] { new InternetAddress(Config.Regular_Reporting_ToMail)});
+			transport.connect(Config.MAIL_SMTP_IP,Config.MAIL_SMTP_USER,Config.MAIL_SMTP_PASSWD);
+			transport.sendMessage(msg, new Address[] { new InternetAddress(Config.REGULAR_REPORTING_TOMAIL)});
 			transport.close();
 		} catch (Exception e) {
 			// 暂时不捕获

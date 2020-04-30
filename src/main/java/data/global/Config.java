@@ -28,100 +28,100 @@ public class Config {
 	public static float NIGHT_TIME = 0;
 
 	// [建造限制]
-	public static boolean Building_Restriction = false;
-	public static int Building_Warning_quantity = 0;
-	public static int Building_Reject_quantity = 0;
+	public static boolean BUILDING_RESTRICTION = false;
+	public static int BUILDING_WARNING_QUANTITY = 0;
+	public static int BUILDING_REJECT_QUANTITY = 0;
 
 	// [单位限制]
-	public static boolean Soldier_Restriction = false;
-	public static int Soldier_Warning_quantity = 0;
-	public static int Soldier_Reject_quantity = 0;
+	public static boolean SOLDIER_RESTRICTION = false;
+	public static int SOLDIER_WARNING_QUANTITY = 0;
+	public static int SOLDIER_REJECT_QUANTITY = 0;
 
 	// [邮件]
-	private static boolean Mail_Use = false;
-	public static String Mail_SMTP_IP = null;
-	public static String Mail_SMTP_Port = null;
-	public static String Mail_SMTP_User = null;
-	public static String Mail_SMTP_Passwd = null;
-	public static boolean Regular_Reporting = false;
-	public static int Regular_Reporting_Time = 0;
-	public static String Regular_Reporting_ToMail = null;
+	private static boolean MAIL_USE = false;
+	public static String MAIL_SMTP_IP = null;
+	public static String MAIL_SMTP_PORT = null;
+	public static String MAIL_SMTP_USER = null;
+	public static String MAIL_SMTP_PASSWD = null;
+	public static boolean REGULAR_REPORTING = false;
+	public static int REGULAR_REPORTING_TIME = 0;
+	public static String REGULAR_REPORTING_TOMAIL = null;
 
 	// [Display]
-	public static int Maximum_Screen_Display = 0;
+	public static int MAXIMUM_SCREEN_DISPLAY = 0;
 
 	// [Help]
-	public static boolean Help_Show_unauthorize_content = false;
+	public static boolean HELP_SHOW_UNAUTHORIZE_CONTENT = false;
 	
 	//
-	public static boolean Baidu_Tr = false;
-	public static String Baidu_ID = null;
-	public static String Baidu_Key = null;
+	public static boolean BAIDU_TR = false;
+	public static String BAIDU_ID = null;
+	public static String BAIDU_KEY = null;
 
 
 
 
     public static void laodConfig() {
 		// [服务器]
-		Server_Language 										= loadstring("Server_Language");
+		SERVER_LANGUAGE 										= loadstring("Server_Language");
 
 		// [登录]
-		Login_Time 												= loadint("Login_Time");
-		Login_Radical 											= loadboolean("Login_Radical");
-		Permission_Passing 										= loadboolean("Permission_Passing");
+		LOGIN_TIME 												= loadint("Login_Time");
+		LOGIN_RADICAL 											= loadboolean("Login_Radical");
+		PERMISSION_PASSING 										= loadboolean("Permission_Passing");
 		
 		// [投票]
-		Vote_Admin 												= loadboolean("Vote.Admin");
-		Vote_New_Player 										= loadboolean("Vote.New_Player");
-		if(Vote_New_Player) {
-            Vote_New_Player_Time 								= loadint("Vote.New_Player.Time")*60;
+		VOTE_ADMIN 												= loadboolean("Vote.Admin");
+		VOTE_NEW_PLAYER 										= loadboolean("Vote.New_Player");
+		if(VOTE_NEW_PLAYER) {
+            VOTE_NEW_PLAYER_TIME 								= loadint("Vote.New_Player.Time")*60;
         }
 
 		// [昼夜变换]
-		Day_and_night 											= loadboolean("Day_and_night");
-		if(Day_and_night) {
-			Day_Time 											= loadint("Day.Time");
-			Night_Time 											= dis(loadint("Night.Time"));
+		DAY_AND_NIGHT 											= loadboolean("Day_and_night");
+		if(DAY_AND_NIGHT) {
+			DAY_TIME 											= loadint("Day.Time");
+			NIGHT_TIME 											= dis(loadint("Night.Time"));
 		}
 
 		// [建造限制]
-		Building_Restriction 									= loadboolean("Building_Restriction");
-		if(Building_Restriction) {
-			Building_Warning_quantity 							= loadint("Building_Wan_Construction");
-			Building_Reject_quantity 							= loadint("Building_Max_Construction");
+		BUILDING_RESTRICTION 									= loadboolean("Building_Restriction");
+		if(BUILDING_RESTRICTION) {
+			BUILDING_WARNING_QUANTITY 							= loadint("Building_Wan_Construction");
+			BUILDING_REJECT_QUANTITY 							= loadint("Building_Max_Construction");
 		}
 
 		// [单位限制]
-		Soldier_Restriction 									= loadboolean("Soldier_Restriction");
-		if(Soldier_Restriction) {
-			Soldier_Warning_quantity 							= loadint("Soldier_Wan_Construction");
-			Soldier_Reject_quantity 							= loadint("Soldier_Max_Construction");
+		SOLDIER_RESTRICTION 									= loadboolean("Soldier_Restriction");
+		if(SOLDIER_RESTRICTION) {
+			SOLDIER_WARNING_QUANTITY 							= loadint("Soldier_Wan_Construction");
+			SOLDIER_REJECT_QUANTITY 							= loadint("Soldier_Max_Construction");
 		}
 
 		// [邮件]
-		Mail_Use 												= loadboolean("Mail_Use");
-		if(Mail_Use) {
-			Mail_SMTP_IP 										= loadstring("Mail_SMTP.IP");
-			Mail_SMTP_Port 										= loadstring("Mail_SMTP.Port");
-			Mail_SMTP_User 										= loadstring("Mail_SMTP.User");
-			Mail_SMTP_Passwd 									= loadstring("Mail_SMTP.Passwd");
-			Regular_Reporting 									= loadboolean("Mail_Regular_Reporting");
-			if(Regular_Reporting) {
-				Regular_Reporting_Time 							= loadint("Mail_Regular_Reporting_Time");
-				Regular_Reporting_ToMail 						= loadstring("Mail_Regular_Reporting_ToMail");
+		MAIL_USE 												= loadboolean("Mail_Use");
+		if(MAIL_USE) {
+			MAIL_SMTP_IP 										= loadstring("Mail_SMTP.IP");
+			MAIL_SMTP_PORT 										= loadstring("Mail_SMTP.Port");
+			MAIL_SMTP_USER 										= loadstring("Mail_SMTP.User");
+			MAIL_SMTP_PASSWD 									= loadstring("Mail_SMTP.Passwd");
+			REGULAR_REPORTING 									= loadboolean("Mail_Regular_Reporting");
+			if(REGULAR_REPORTING) {
+				REGULAR_REPORTING_TIME 							= loadint("Mail_Regular_Reporting_Time");
+				REGULAR_REPORTING_TOMAIL 						= loadstring("Mail_Regular_Reporting_ToMail");
 			}
 		}
 		// [显示]
-		Maximum_Screen_Display 									= loadint("Maximum_Screen_Display");
+		MAXIMUM_SCREEN_DISPLAY 									= loadint("Maximum_Screen_Display");
 
 		// [Help]
-		Help_Show_unauthorize_content 							= loadboolean("Help.Show_unauthorize_content");
+		HELP_SHOW_UNAUTHORIZE_CONTENT 							= loadboolean("Help.Show_unauthorize_content");
 
 		// [百度翻译]
-		Baidu_Tr 												= loadboolean("Baidu_Tr");
-		if(Baidu_Tr) {
-			Baidu_ID 											= loadstring("Baidu_Tr.ID");
-			Baidu_Key 											= loadstring("Baidu_Tr.Key");
+		BAIDU_TR 												= loadboolean("Baidu_Tr");
+		if(BAIDU_TR) {
+			BAIDU_ID 											= loadstring("Baidu_Tr.ID");
+			BAIDU_KEY 											= loadstring("Baidu_Tr.Key");
 		}
 	}
 

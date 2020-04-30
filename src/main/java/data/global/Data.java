@@ -27,7 +27,7 @@ public final class Data {
 
 	// [Cache]
 
-	public static Vote vote;
-	public static boolean ismsg = true;
+	public static Vote VOTE;
+	public static boolean ISMSG = true;
 
 }

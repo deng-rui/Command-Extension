@@ -10,7 +10,7 @@ import java.net.URLEncoder;
 import static extension.net.HttpRequest.doPost;
 import static extension.util.ExtractUtil.getkeys;
 import static extension.util.IsUtil.isBlank;
-import static extension.util.IsUtil.NotisBlank;
+import static extension.util.IsUtil.notisBlank;
 
 //Java
 //GA-Exted
@@ -58,7 +58,7 @@ public class Bing {
 		for (int i = 0; i < arrayy.size(); i++) {
 		JSONObject re = arrayy.getJSONObject(i);
 		String r = re.getString("text");
-			if (NotisBlank(r)) {
+			if (notisBlank(r)) {
 				result.append(r);
 			}
 		}

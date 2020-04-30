@@ -44,7 +44,7 @@ public class Vote {
 	private int temp = 0;
 	private Runnable endYesMsg;
 	private Runnable endNoMsg;
-	public static team team;
+	public static Team team;
 	// 投票状态
 	public static boolean sted = true;
 	// 队伍锁定 /ff
@@ -78,7 +78,7 @@ public class Vote {
 
 
 	public void toVote(Player playerplayer, String playerpick) {
-		LocaleUtil localeUtil = Maps.getPlayer_Data(playerplayer.uuid).info;
+		LocaleUtil localeUtil = Maps.getPlayerData(playerplayer.uuid).info;
 		switch(playerpick){
 			// 我也不像写一堆一样的啊:(
 			case "y" :
@@ -127,7 +127,7 @@ public class Vote {
 
 
 	private void preprocessing() {
-		LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
+		LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).info;
 		// 预处理
 		switch(type){
 			case "gameover" :
@@ -140,7 +140,7 @@ public class Vote {
 				if (Lists.getMapsList().size() >= Integer.parseInt(name)) {
 					normalDistribution();
                 } else {
-					layer.sendMessage(localeUtil.getinput("vote.host.maps.err",name));
+					player.sendMessage(localeUtil.getinput("vote.host.maps.err",name));
 				}
 				break;
 			case "kick" :
@@ -184,7 +184,7 @@ public class Vote {
 	private void normalDistribution() {
 		if(Config.LOGIN_RADICAL) {
 			for (Player it : Vars.playerGroup.all()) {
-                if (Maps.getPlayer_Data(it.uuid).authority > 0) {
+                if (Maps.getPlayerData(it.uuid).authority > 0) {
                     temp++;
                 }
             }
@@ -222,14 +222,14 @@ public class Vote {
 			require = temp;
 			//Start();
 		} else {
-            player.sendMessage(Maps.getPlayer_Data(player.uuid).info.getinput("vote.admin.no"));
+            player.sendMessage(Maps.getPlayerData(player.uuid).info.getinput("vote.admin.no"));
         }
 	}
 
 
 	private void start(Runnable run){
 		if(temp == 1){
-			player.sendMessage(Maps.getPlayer_Data(player.uuid).info.getinput("vote.no1"));
+			player.sendMessage(Maps.getPlayerData(player.uuid).info.getinput("vote.no1"));
 			require = 1;
 		} else if(temp <= 3) {
             require = 2;
@@ -300,11 +300,11 @@ public class Vote {
 		temp = 0;
 		playervote = 0;
 		// 释放内存
-		NAME = null;
+		name = null;
 		endNoMsg = null;
 		endYesMsg = null;
 		countDown=null;
-		votetime=null;
+		voteTime=null;
 		Data.VOTE = null;
 	}
 
@@ -322,11 +322,11 @@ public class Vote {
 		try{
 			mode = Gamemode.valueOf(data[2]);
 		}catch(IllegalArgumentException ex){
-			player.sendMessage(Maps.getPlayer_Data(player.uuid).info.getinput("host.mode",data[2]));
+			player.sendMessage(Maps.getPlayerData(player.uuid).info.getinput("host.mode",data[2]));
 			return;
 		}
 		final Gamemode gamemode = mode;
-		Call.sendMessage(Maps.getPlayer_Data(player.uuid).info.getinput("host.re"));
+		Call.sendMessage(Maps.getPlayerData(player.uuid).info.getinput("host.re"));
 		extension.core.ex.Extend.loadmaps(true, () -> world.loadMap(result, result.applyRules(gamemode)),gamemode);
 	}
 

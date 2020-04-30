@@ -1,33 +1,20 @@
 package extension.util;
 
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.net.MalformedURLException;
-import java.io.File;
-import java.io.IOException;
+import extension.data.global.Config;
+import extension.dependent.UTF8Control;
+import extension.util.log.Log;
+
 import java.text.MessageFormat;
 import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.MissingResourceException;
-//Java
+import java.util.ResourceBundle;
 
-import mindustry.entities.type.Player;
-//
-
-import extension.data.db.PlayerData;
-import extension.data.global.Config;
-import extension.data.global.Maps;
-import extension.dependent.UTF8Control;
-import extension.util.file.FileUtil;
-import extension.util.log.Log;
-//GA-Exted
-
-import static extension.data.json.Json.getData;
 import static extension.util.IsUtil.isBlank;
-//GA-Exted
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+//Java
+//
+//GA-Exted
+//GA-Exted
 //Json
  
 public class LocaleUtil {
@@ -82,7 +69,7 @@ public class LocaleUtil {
 	private String core(String input,Object[] params) {
 		String[] lang = lg;
 		if(isBlank(lg)) {
-            lang = Config.Server_Language.split("_");
+            lang = Config.SERVER_LANGUAGE.split("_");
         }
 		if (params == null) {
             return language(lang[0],lang[1],input,null);

@@ -12,7 +12,7 @@ import java.net.URLEncoder;
 import static extension.net.HttpRequest.doGet;
 import static extension.util.ExtractUtil.getkeys;
 import static extension.util.IsUtil.isBlank;
-import static extension.util.IsUtil.NotisBlank;
+import static extension.util.IsUtil.notisBlank;
 
 //Java
 //GA-Exted
@@ -101,7 +101,7 @@ public class Google {
 		StringBuffer rBuffer = new StringBuffer();
 		for (int i = 0; i < rArray.size(); i++) {
 			String r = rArray.getJSONArray(i).getString(0);
-			if (NotisBlank(r)) {
+			if (notisBlank(r)) {
 				rBuffer.append(r);
 			}
 		}

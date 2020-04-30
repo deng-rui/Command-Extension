@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import static extension.net.HttpRequest.Url302;
+import static extension.net.HttpRequest.url302;
 import static extension.net.HttpRequest.downUrl;
 
 //Java
@@ -37,7 +37,7 @@ public class Librarydependency implements Driver {
 		if("China".equalsIgnoreCase(country)) {
 			url = "https://maven.aliyun.com/nexus/content/groups/public"+uurl.toString()+name+"/"+version+"/"+name+"-"+version+".jar";
 			// 解决aliyun 302跳转
-			Url302(url,savePath);
+			url302(url,savePath);
 			Log.debug("CN-ALI");
 		}else{
 			url = "https://repo1.maven.org/maven2"+uurl.toString()+name+"/"+version+"/"+name+"-"+version+".jar";

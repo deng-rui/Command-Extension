@@ -20,7 +20,7 @@ public class Sqlite {
     public static void initSqlite() {
 		try {
 			String sql;
-			Connection c = DriverManager.getConnection("jdbc:sqlite:"+FileUtil.File(Data.Plugin_Data_Path).getPath("Data.db"));
+			Connection c = DriverManager.getConnection("jdbc:sqlite:"+FileUtil.File(Data.PLUGIN_DATA_PATH).getPath("Data.db"));
 			Statement stmt = c.createStatement();
 			// 时间可以改成BUGINT
 			sql = "CREATE TABLE PlayerData (" +

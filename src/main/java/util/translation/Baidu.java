@@ -7,11 +7,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import extension.data.global.Config;
-import extension.util.encryption.MD5;
+import extension.util.encryption.Md5;
 
 import static extension.net.HttpRequest.doPost;
 import static extension.util.ExtractUtil.unicodeDecode;
-import static extension.util.IsUtil.NotisBlank;
+import static extension.util.IsUtil.notisBlank;
 
 
 /**
@@ -27,16 +27,16 @@ public class Baidu {
 		sb.append("q=" + query)
 			.append("&from=" + from)
 			.append("&to=" + to)
-			.append("&appid=" + Config.Baidu_ID)
+			.append("&appid=" + Config.BAIDU_ID)
 		// 随机数
 		.append("&salt=" + salt)
 		// 签名
-		.append("&sign=" + MD5.md5(Config.Baidu_ID + query + salt + Config.Baidu_Key));
+		.append("&sign=" + Md5.md5(Config.BAIDU_ID + query + salt + Config.BAIDU_KEY));
 		JSONObject json = JSON.parseObject(doPost("https://api.fanyi.baidu.com/api/trans/vip/translate",sb.toString()));
 		JSONArray rArray = json.getJSONArray("trans_result");
 		for (int i = 0; i < rArray.size(); i++) {
 			JSONObject r = (JSONObject)rArray.get(i);
-			if (NotisBlank(r)) {
+			if (notisBlank(r)) {
                 result = r.getString("dst");
             }
 		}

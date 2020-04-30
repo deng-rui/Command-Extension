@@ -1,39 +1,22 @@
 package extension.core.ex;
 
-import java.util.List;
-//Java
-
 import arc.struct.Array;
 import arc.struct.Array.ArrayIterable;
 import arc.util.Timer;
-import arc.util.Timer.*;
-//Arc
-
+import arc.util.Timer.Task;
+import extension.core.Event;
+import extension.data.db.PlayerData;
+import extension.data.global.Maps;
+import extension.util.log.Log;
+import mindustry.entities.type.Player;
 import mindustry.game.Gamemode;
 import mindustry.game.Team;
 import mindustry.gen.Call;
 import mindustry.maps.MapException;
-import mindustry.entities.type.Player;
-//Mindustry
 
-import static mindustry.Vars.logic;
-import static mindustry.Vars.state;
-import static mindustry.Vars.world;
-import static mindustry.Vars.net;
-import static mindustry.Vars.netServer;
-import static mindustry.Vars.playerGroup;
-//Mindustry-Static
-
-import extension.core.Event;
-import extension.data.global.Config;
-import extension.data.global.Maps;
-import extension.data.db.PlayerData;
-import extension.util.log.Log;
-//GA-Exted
-
-import static extension.util.ExtractUtil.longToIP;
 import static extension.util.DateUtil.simp;
-//Static
+import static extension.util.ExtractUtil.longToIp;
+import static mindustry.Vars.*;
 
 public class Extend {
 
@@ -41,7 +24,7 @@ public class Extend {
 		// 未开启登录 直接抢答结果
 		// 逻辑有问题:(
 		//if(!Config.Login) return true;
-		return (boolean)Maps.getPower_Data((int)Maps.getPlayer_Data(player.uuid).Authority).contains(a);
+		return (boolean)Maps.getPowerData((int)Maps.getPlayerData(player.uuid).authority).contains(a);
 	}
 
 	public static void loadmaps(boolean wait, Runnable run, Gamemode mode){
@@ -53,7 +36,7 @@ public class Extend {
                     continue;
                 }
 				players.add(p);
-				if(Maps.getPlayer_Data(p.uuid).Authority > 0) {
+				if(0 < Maps.getPlayerData(p.uuid).authority) {
                     playerspvp.add(p);
                 }
 				p.setDead(true);
@@ -65,7 +48,7 @@ public class Extend {
 			logic.play();
 			for(Player p : players){
 				p.reset();
-				if(Maps.getPlayer_Data(p.uuid).Authority > 0) {
+				if(Maps.getPlayerData(p.uuid).authority > 0) {
 					if(state.rules.pvp) {
                         p.setTeam(netServer.assignTeam(p, new ArrayIterable<>(playerspvp)));
                     }
@@ -99,7 +82,7 @@ public class Extend {
 
 
     public static Object[] playerdatatoObject(PlayerData d){
-		Object[] params = {d.NAME,d.UUID,longToIP(d.IP),d.Country,d.Language,d.Level,d.Exp,d.Reqexp,d.Reqtotalexp,d.Buildcount,d.Cumulative_build,d.Pipe_build,d.Dismantledcount,d.Pvpwincount,d.Pvplosecount,d.Authority,simp(d.Authority_effective_time*1000L,d.Time_format),secToTime(d.Playtime),simp(d.LastLogin*1000L,d.Time_format),simp(d.Lastchat*1000L,d.Time_format),d.Killcount,d.Deadcount,d.Joincount,d.Breakcount};
+		Object[] params = {d.name,d.uuid,longToIp(d.ip),d.country,d.language,d.level,d.exp,d.reqexp,d.reqtotalExp,d.buildCount,d.cumulativeBuild,d.pipeBuild,d.dismantledCount,d.pvpwinCount,d.pvploseCount,d.authority,simp(d.authorityEffectiveTime*1000l,d.timeFormat),secToTime(d.playTime),simp(d.lastLogin*1000l,d.timeFormat),simp(d.lastChat*1000l,d.timeFormat),d.killCount,d.deadCount,d.joinCount,d.breakCount};
 		return params;
 	}
 
@@ -113,7 +96,7 @@ public class Extend {
         } else {
             minute = time / 60;
             hour = minute / 60;
-            minute = minute % 60;
+			minute = minute % 60;
             second = time - hour * 3600 - minute * 60;
             timeStr = unitFormat(hour) + ":" + unitFormat(minute) + ":" + unitFormat(second);
         }
@@ -134,7 +117,7 @@ public class Extend {
     public static void addMesgTeam(Team team, String msg, Object...params){
     	for (Player player : playerGroup.all()) {
             if(player.getTeam().equals(team)) {
-                player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput(msg, params));
+                player.sendMessage(Maps.getPlayerData(player.uuid).info.getinput(msg, params));
             }
         }
     }
@@ -143,7 +126,7 @@ public class Extend {
     public static void addMesgAdmin(String msg, Object...params){
     	for (Player player : playerGroup.all()) {
             if(player.isAdmin) {
-                player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput(msg, params));
+                player.sendMessage(Maps.getPlayerData(player.uuid).info.getinput(msg, params));
             }
         }
     }
@@ -151,7 +134,7 @@ public class Extend {
     @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
     public static void addMesgAll(String msg, Object...params){
     	for (Player player : playerGroup.all()) {
-            player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput(msg,params));
+            player.sendMessage(Maps.getPlayerData(player.uuid).info.getinput(msg,params));
         }
     }
 }

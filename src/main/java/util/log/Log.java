@@ -3,7 +3,7 @@ package extension.util.log;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import static extension.util.DateUtil.getLocalTimeFromUTC;
+import static extension.util.DateUtil.getLocalTimeFromU;
 
 //Java
 //Static
@@ -17,7 +17,7 @@ import static extension.util.DateUtil.getLocalTimeFromUTC;
 public class Log {
 	//默认 WARN
 	private static int LOG_GRADE = 5;
-	private final String LINE_SEPARATOR = System.getProperty("line.separator");
+	private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
 	private enum Logg {
 		/*

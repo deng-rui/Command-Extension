@@ -1,6 +1,6 @@
 package extension.data.global;
 
-import extension.util.encryption.RSA;
+import extension.util.encryption.Rsa;
 
 import java.io.IOException;
 import java.security.KeyPair;
@@ -12,19 +12,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static extension.util.DateUtil.getLocalTimeFromUTC;
-
+import static extension.util.DateUtil.getLocalTimeFromU;
 public class CacheData {
 
 	private static final Map<String, Data> CACHEDATA = new ConcurrentHashMap<String, Data>();
 
     final public static void addRsaCache(String botuuid) throws NoSuchAlgorithmException {
-		Data data = new Data(RSA.buildKeyPair());
+		Data data = new Data(Rsa.buildKeyPair());
 		CACHEDATA.put(botuuid,data);
 	}
 
     final public static String getRsaCachePuky(String botuuid) throws IOException {
-		return RSA.getPublicKey(Cache.get(botuuid).puky);
+		return Rsa.getPublicKey(CACHEDATA.get(botuuid).puky);
 	}
 
     final public static PrivateKey getRsaCachePrky(String botuuid) {
@@ -40,7 +39,7 @@ public class CacheData {
 		while(it.hasNext()){
 			Entry entry = (Entry)it.next();
 			Data data = (Data)entry.getValue();
-			final long time = getLocalTimeFromUTC();
+			final long time = getLocalTimeFromU();
 			if (data.endtime < time) {
 				CACHEDATA.remove((String)entry.getKey());
 			}
@@ -55,7 +54,7 @@ public class CacheData {
 		public Data(KeyPair key) {
 			PublicKey puky = key.getPublic();
 	    	PrivateKey prky = key.getPrivate();
-			this.endtime = getLocalTimeFromUTC()+300;
+			this.endtime = getLocalTimeFromU()+300;
 		}
 	}
 }

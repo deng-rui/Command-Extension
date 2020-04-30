@@ -81,7 +81,7 @@ public class FileUtil {
 		return filelist;
 	}
 
-	public synchronized void writefile(Object log, boolean cover) {
+	public synchronized static void writefile(Object log, boolean cover) {
 		OutputStreamWriter osw = null;
 		try {
 			File parent = file.getParentFile();
@@ -108,7 +108,7 @@ public class FileUtil {
 		}
 	}
 
-	public InputStreamReader readconfig() {
+	public static InputStreamReader readconfig() {
 		try {
 			return new InputStreamReader(new FileInputStream(file), "UTF-8");
 		} catch (IOException e) { 
@@ -127,7 +127,7 @@ public class FileUtil {
 	}
 
 
-	public Object readfile(boolean list, InputStreamReader isr) {
+	public static Object readfile(boolean list, InputStreamReader isr) {
 		try { 
 			BufferedReader br = new BufferedReader(isr); 
 			String line = null; 

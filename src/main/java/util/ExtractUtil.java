@@ -2,13 +2,12 @@ package extension.util;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-//Java
 
 import static extension.net.HttpRequest.doGet;
-import static extension.util.IsUtil.NotisBlank;
-import static extension.util.String_filteringUtil.removeAllisBlank;
-import static extension.util.String_filteringUtil.trim;
-//Static
+
+import static extension.util.IsUtil.notisBlank;
+import static extension.util.StringFilteringUtil.removeAllisBlank;
+import static extension.util.StringFilteringUtil.trim;
 
 public class ExtractUtil {
 
@@ -42,7 +41,7 @@ public class ExtractUtil {
 		String result = doGet(url);
 		// 去除返回数据空格
 		String text = removeAllisBlank(result);
-		if (NotisBlank(result)) {
+		if (notisBlank(result)) {
 			String matchString = findMatchString(text, keys);
 			// 提取目标
 			tkk = matchString.substring(numbero, matchString.length() - numbert);

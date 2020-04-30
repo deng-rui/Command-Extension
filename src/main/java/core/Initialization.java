@@ -12,7 +12,6 @@ import extension.util.LocaleUtil;
 import extension.util.file.FileUtil;
 import extension.util.log.Log;
 import mindustry.maps.Map;
-
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -20,9 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-
-import static extension.data.db.SQLite.InitializationSQLite;
-import static extension.data.db.SQLite.initSqlite;
+import static extension.data.db.Sqlite.initSqlite;
 import static extension.dependent.Librarydependency.importLib;
 import static extension.util.file.LoadConfig.loadstring;
 import static mindustry.Vars.maps;
@@ -31,7 +28,7 @@ public class Initialization {
 
     public void startInitialization() {
 		// 配置文件初始化
-		Config();
+		config();
 		// 初始化配置
 		Config.laodConfig();
 		//Resource();
@@ -116,7 +113,7 @@ public class Initialization {
 	}
 
     public void mapList() {
-		Lists.EmptyMaps_List();
+		Lists.emptyMapsList();
 		if(!maps.all().isEmpty()){
 			for(Map map : maps.all()){
 				// 只会加载自定义地图
@@ -124,15 +121,15 @@ public class Initialization {
 					switch(String.valueOf(map.file.name().charAt(0))){
 						case "P" :
 						case "p" :
-							Lists.addMaps_List(map.name().replace(' ', '_')+" "+map.width+"x"+map.height+" pvp"+" P");
+							Lists.addMapsList(map.name().replace(' ', '_')+" "+map.width+"x"+map.height+" pvp"+" P");
 							break;
 						case "S" :
 						case "s" :
-							Lists.addMaps_List(map.name().replace(' ', '_')+" "+map.width+"x"+map.height+" survival"+" S");
+							Lists.addMapsList(map.name().replace(' ', '_')+" "+map.width+"x"+map.height+" survival"+" S");
 							break;
 						case "A" :
 						case "a" :
-							Lists.addMaps_List(map.name().replace(' ', '_')+" "+map.width+"x"+map.height+" attack"+" A");
+							Lists.addMapsList(map.name().replace(' ', '_')+" "+map.width+"x"+map.height+" attack"+" A");
 							break;
 						default:
 							break;
@@ -140,7 +137,7 @@ public class Initialization {
 				}
 			}
 		} else {
-			Lists.addMaps_List("The map is empty");
+			Lists.addMapsList("The map is empty");
 		}
 	}
 
@@ -167,14 +164,14 @@ public class Initialization {
                     continue;
                 }
 				if (i <= 1) {
-					Maps.setPower_Data(i,Arrays.asList(data.split(",")));
+					Maps.setPowerData(i,Arrays.asList(data.split(",")));
 					continue;
 				}
 				List<String> power = new ArrayList<String>(Arrays.asList(data.split(",")));
-				power.addAll(Maps.getPower_Data(temp[i-1]));
+				power.addAll(Maps.getPowerData(temp[i-1]));
 				List<String> filter = new ArrayList<String>();
 				filter.addAll(new HashSet<String>(power));
-				Maps.setPower_Data(temp[i],filter);
+				Maps.setPowerData(temp[i],filter);
 			}
 		} else {
 			for (int i=0,len=temp.length;i<len;i++) {
@@ -182,7 +179,7 @@ public class Initialization {
 				if (data == null) {
                     continue;
                 }
-				Maps.setPower_Data(temp[i],Arrays.asList(data.split(",")));
+				Maps.setPowerData(temp[i],Arrays.asList(data.split(",")));
 			}
 		}
 	}

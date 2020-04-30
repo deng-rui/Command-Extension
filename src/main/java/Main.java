@@ -24,19 +24,19 @@ public class Main extends Plugin {
 	public Main() {
 
 		// Log 权限
-		Log.Set("ALL");
+		Log.set("ALL");
 
 		// 初始化 所需依赖
-		new Initialization().Start_Initialization();
+		new Initialization().startInitialization();
 
 		// 加载Event
 		new Event().register();
 
 		// 启动WEB服务
-		Threads.NewThred_SE(() -> new Start());
+		Threads.newThredSe(() -> new Start());
 
 		// 内网玩家 Ngrok
-		Threads.NewThred_SE(() -> {
+		Threads.newThredSe(() -> {
 			String line;
 			Process p;
 			BufferedReader input = null;
@@ -65,9 +65,9 @@ public class Main extends Plugin {
 
 	@Override
 	public void init(){
-		new Initialization().Override_Initialization();
+		new Initialization().overrideInitialization();
 		// 部分加载需要服务器加载完毕 例如maps
-		new Initialization().MapList();
+		new Initialization().mapList();
 	}	
 
 	@Override
