@@ -11,7 +11,7 @@ import static extension.util.StringFilteringUtil.trim;
 
 public class ExtractUtil {
 
-	final static Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
+	final static Pattern PATTERN = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
 
 	public static String extractByStartAndEnd(String str, String startStr, String endStr) {
 		String regEx = startStr + ".*?"+endStr;
@@ -49,8 +49,7 @@ public class ExtractUtil {
 		return tkk;
 	}
 
-
-    public static boolean inttoBoolean(int in) {
+	public static boolean inttoBoolean(int in) {
 		return (in == 1);
 	}
 
@@ -94,7 +93,7 @@ public class ExtractUtil {
     }
 
     public static String unicodeDecode(String string) {
-        Matcher matcher = pattern.matcher(string);
+        Matcher matcher = PATTERN.matcher(string);
         char ch;
         while (matcher.find()) {
             ch = (char) Integer.parseInt(matcher.group(2), 16);
@@ -103,7 +102,6 @@ public class ExtractUtil {
         return string;
     }
 
-    @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
     public static String languageDetermination(String string) {
 		switch(string){
 			case "China" :return "zh_CN";
@@ -115,5 +113,4 @@ public class ExtractUtil {
 			//I didn't find a better way....
 		}
 	}
-
 }

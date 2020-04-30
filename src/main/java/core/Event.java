@@ -50,8 +50,8 @@ import static mindustry.Vars.*;
 public class Event {
 	// 
 
-	private final java.util.Map<Integer, Integer> Building_number = new ConcurrentHashMap<Integer, Integer>();
-	private static final java.util.Map<String, Team> Sava_Team = new ConcurrentHashMap<String, Team>();
+	private final java.util.Map<Integer, Integer> BUILDING_NUMBER = new ConcurrentHashMap<Integer, Integer>();
+	private static final java.util.Map<String, Team> SAVA_TEAM = new ConcurrentHashMap<String, Team>();
 
 	public void register() {
 
@@ -73,8 +73,8 @@ public class Event {
 			netServer.assigner = ((player, players) -> {
 				if (state.rules.pvp) {
 					// 若存在 直接读取队伍
-					if (Sava_Team.containsKey(player.uuid)) {
-                        return Sava_Team.get(player.uuid);
+					if (SAVA_TEAM.containsKey(player.uuid)) {
+                        return SAVA_TEAM.get(player.uuid);
                     }
 					Teams.TeamData re = (Teams.TeamData) state.teams.getActive().min(data -> {
 						int count = 0;
@@ -91,7 +91,7 @@ public class Event {
 					// 查询核心死否存在 防止无核心队伍锁定
 					if (!state.teams.get(Team.all()[re.team.id]).cores.isEmpty()) {
                         if (playerGroup.size() >= 1) {
-                            Sava_Team.put(player.uuid, re.team);
+                            SAVA_TEAM.put(player.uuid, re.team);
                         }
                     }
 							//*/
@@ -194,7 +194,7 @@ public class Event {
 		Events.on(Trigger.update, () -> {
 			for(Player player : playerGroup.all()) {
                 if (player.getTeam() != Team.derelict && player.getTeam().cores().isEmpty()) {
-                    Sava_Team.remove(player.uuid);
+                    SAVA_TEAM.remove(player.uuid);
                     player.kill();
                     killTiles(player.getTeam());
                     player.setTeam(Team.derelict);
@@ -237,11 +237,11 @@ public class Event {
 				else {
 					if(Config.BUILDING_RESTRICTION) {
 						int team = e.player.getTeam().id;
-						if(!Building_number.containsKey(team)) {
-							Building_number.put(team,1);
+						if(!BUILDING_NUMBER.containsKey(team)) {
+							BUILDING_NUMBER.put(team,1);
 							return;
 						}
-						if(Building_number.get(team) >= Config.BUILDING_REJECT_QUANTITY) {
+						if(BUILDING_NUMBER.get(team) >= Config.BUILDING_REJECT_QUANTITY) {
 							Call.onTileDestroyed(e.tile);
 							if (Data.ISMSG) {
 								newThredSe(() -> Extend.addMesgTeam(e.player.getTeam(),"Building_Reject.quantity"));
@@ -249,14 +249,14 @@ public class Event {
 							}
 							return;
 						}
-						if(Building_number.get(team) >= Config.BUILDING_WARNING_QUANTITY) {
+						if(BUILDING_NUMBER.get(team) >= Config.BUILDING_WARNING_QUANTITY) {
                             if (Data.ISMSG) {
-                                Extend.addMesgTeam(e.player.getTeam(),"Building_Warning.quantity",Building_number.get(team));
+                                Extend.addMesgTeam(e.player.getTeam(),"Building_Warning.quantity",BUILDING_NUMBER.get(team));
                                 Data.ISMSG = false;
                             }
                         }
-						int temp = ((int)Building_number.get(team))+1;
-						Building_number.put(team,temp);
+						int temp = ((int)BUILDING_NUMBER.get(team))+1;
+						BUILDING_NUMBER.put(team,temp);
 					}
 					playerdata.breakCount++;
 				}
@@ -291,11 +291,11 @@ public class Event {
 				playerdata.dismantledCount++;
 				if(Config.BUILDING_RESTRICTION) {
 					int team = player.getTeam().id;
-					if(!Building_number.containsKey(team)) {
+					if(!BUILDING_NUMBER.containsKey(team)) {
                         return;
                     }
-					int temp = ((int)Building_number.get(team))-1;
-					Building_number.put(team,temp);
+					int temp = ((int)BUILDING_NUMBER.get(team))-1;
+					BUILDING_NUMBER.put(team,temp);
 				}
 			}
 			
@@ -381,7 +381,7 @@ public class Event {
 				}
 			}
 
-			Sava_Team.clear();
+			SAVA_TEAM.clear();
 
 			Map map = maps.getNextMap(world.getMap());
 			if(map != null) {
@@ -402,7 +402,7 @@ public class Event {
 			}
 			info("Selected next map to be {0}.", map.name());	
 
-			Building_number.clear();
+			BUILDING_NUMBER.clear();
 			
 		});
 
@@ -439,14 +439,14 @@ public class Event {
                         for (Player it : Vars.playerGroup.all()) {
                             if (!state.teams.get(Team.all()[it.getTeam().id]).cores.isEmpty()) {
                                 if (Maps.getPlayerData(it.uuid).authority > 0) {
-                                    Sava_Team.put(it.uuid, it.getTeam());
+                                    SAVA_TEAM.put(it.uuid, it.getTeam());
                                 }
                             }
                         }
                     } else {
                         for (Player it : Vars.playerGroup.all()) {
                             if (!state.teams.get(Team.all()[it.getTeam().id]).cores.isEmpty()) {
-                                Sava_Team.put(it.uuid, it.getTeam());
+                                SAVA_TEAM.put(it.uuid, it.getTeam());
                             }
                         }
                     }

@@ -3,9 +3,7 @@ package extension.util.file;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-
 //Java
-//GA-Exted
 
 public class FileUtil {
 
@@ -13,41 +11,39 @@ public class FileUtil {
 	private static String filepath;
 
 	public FileUtil(String filepath){
-		FileUtil.filepath = filepath;
-		file = new File(filepath);
+		this.filepath = filepath;
+		this.file = new File(filepath);
 	}
 
 	public FileUtil(File file, String filepath){
-		FileUtil.file = file;
-		FileUtil.filepath = filepath;
+		this.file = file;
+		this.filepath = filepath;
 	}
 
-	public static FileUtil File(String tofile) {
-		synchronized (FileUtil.class) {
-			File file;
-			String filepath;
-			String to = tofile;
-			if (null != tofile) {
-				if (!"/".equals(String.valueOf(tofile.charAt(0)))) {
-					to = "/" + tofile;
-				}
-			}
-			try {
-				File directory = new File("");
-				filepath = directory.getCanonicalPath() + to;
-				file = new File(filepath);
-				if (null == tofile) {
-					file = new File(directory.getCanonicalPath());
-				}
-			} catch (Exception e) {
-				filepath = System.getProperty("user.dir") + to;
-				file = new File(filepath);
-				if (null == tofile) {
-					file = new File(System.getProperty("user.dir"));
-				}
-			}
-			return new FileUtil(file, filepath);
+	public synchronized static FileUtil File(String tofile) {
+		File file;
+		String filepath;
+		String to = tofile;
+		if (null!=tofile) {
+            if(!"/".equals(String.valueOf(tofile.charAt(0)))) {
+                to = "/" + tofile;
+            }
+        }
+		try {
+			File directory = new File("");
+			filepath=directory.getCanonicalPath()+to;
+			file = new File(filepath);
+			if (null==tofile) {
+                file = new File(directory.getCanonicalPath());
+            }
+		} catch (Exception e) {	
+			filepath=System.getProperty("user.dir")+to;
+			file = new File(filepath);
+			if (null==tofile) {
+                file = new File(System.getProperty("user.dir"));
+            }
 		}
+		return new FileUtil(file,filepath);
 	}
 
 	public boolean exists() {
@@ -99,12 +95,13 @@ public class FileUtil {
 			e.printStackTrace();
 		} finally {
 			if (null != osw) {
-				try {
+                try {
 					osw.flush();
 				} catch (IOException e) {
 					throw new RuntimeException("");
 				}
-			}
+            }
+
 		}
 	}
 
@@ -117,7 +114,7 @@ public class FileUtil {
 		return null;
 	}
 
-	public Object readfile(boolean list) {
+	public static Object readfile(boolean list) {
 		try {
 			return readfile(list,new InputStreamReader(new FileInputStream(file), "UTF-8"));
 		} catch (IOException e) { 
@@ -125,7 +122,6 @@ public class FileUtil {
 		}
 		return null;
 	}
-
 
 	public static Object readfile(boolean list, InputStreamReader isr) {
 		try { 

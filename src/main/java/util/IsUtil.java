@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 public class IsUtil {
 
-	private final static Pattern pattern = Pattern.compile("[0-9]*");
+	private final static Pattern PATTERN = Pattern.compile("[0-9]*");
 	
 
     public static boolean isBlank(Object string) {
@@ -20,7 +20,7 @@ public class IsUtil {
 	}
 
 	public static boolean isNumeric(String string) {
-		return pattern.matcher(string).matches();
+		return PATTERN.matcher(string).matches();
 	}
 
 

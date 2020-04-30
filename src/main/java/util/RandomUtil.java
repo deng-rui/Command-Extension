@@ -3,9 +3,9 @@ package extension.util;
 import java.util.Random;
 
 public class RandomUtil {
-    public static final String allChar = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    public static final String letterChar = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    public static final String numberChar = "0123456789";
+    public static final String ALLCHAR = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    public static final String LETTERCHAR = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    public static final String NUMBERCHAR = "0123456789";
 
     /**
      * 产生len长度的随机字符串
@@ -16,7 +16,7 @@ public class RandomUtil {
         StringBuffer sb = new StringBuffer();
         Random random = new Random();
         for (int i = 0; i <len ; i++) {
-            sb.append(allChar.charAt(random.nextInt(allChar.length())));
+            sb.append(ALLCHAR.charAt(random.nextInt(ALLCHAR.length())));
         }
         return  sb.toString();
     }
@@ -30,7 +30,7 @@ public class RandomUtil {
         StringBuffer sb = new StringBuffer();
         Random random = new Random();
         for (int i = 0; i < length; i++) {
-            sb.append(letterChar.charAt(random.nextInt(letterChar.length())));
+            sb.append(LETTERCHAR.charAt(random.nextInt(LETTERCHAR.length())));
         }
         return sb.toString();
     }
