@@ -245,14 +245,14 @@ public class Event {
 							Call.onTileDestroyed(e.tile);
 							if (Data.ISMSG) {
 								newThredSe(() -> Extend.addMesgTeam(e.player.getTeam(),"Building_Reject.quantity"));
-								Data.ismsg = false;
+								Data.ISMSG = false;
 							}
 							return;
 						}
 						if(Building_number.get(team) >= Config.BUILDING_WARNING_QUANTITY) {
                             if (Data.ISMSG) {
                                 Extend.addMesgTeam(e.player.getTeam(),"Building_Warning.quantity",Building_number.get(team));
-                                Data.ismsg = false;
+                                Data.ISMSG = false;
                             }
                         }
 						int temp = ((int)Building_number.get(team))+1;

@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import extension.core.ex.Extend;
 
 import static extension.core.ex.Extend.authorityControl;
 import static extension.util.IsUtil.isBlank;
@@ -96,9 +95,9 @@ public class Vote {
 			case "cy" :
 				if (authorityControl(playerplayer,"votec")) {
 					if (isteam) {
-						endYesMsg = () -> Extend.addMesgTeam(team,"vote.cy.end",playerplayer.name,type+" "+(isBlank(name)?"":name));
+						endYesMsg = () -> extension.core.ex.Extend.addMesgTeam(team,"vote.cy.end",playerplayer.name,type+" "+(isBlank(name)?"":name));
                     } else {
-                        endYesMsg = () -> Extend.addMesgAll("vote.cy.end",playerplayer.name,type+" "+(isBlank(name)?"":name));
+                        endYesMsg = () -> extension.core.ex.Extend.addMesgAll("vote.cy.end",playerplayer.name,type+" "+(isBlank(name)?"":name));
                     }
 					require = 0;
 					forceEnd();
@@ -110,9 +109,9 @@ public class Vote {
 			case "cn" :
 				if (authorityControl(playerplayer,"votec")) {
 					if (isteam) {
-                        endNoMsg = () -> Extend.addMesgTeam(team,"vote.cn.end",playerplayer.name,type+" "+(isBlank(name)?"":name));
+                        endNoMsg = () -> extension.core.ex.Extend.addMesgTeam(team,"vote.cn.end",playerplayer.name,type+" "+(isBlank(name)?"":name));
                     } else {
-                        endNoMsg = () -> Extend.addMesgAll("vote.cn.end",playerplayer.name,type+" "+(isBlank(name)?"":name));
+                        endNoMsg = () -> extension.core.ex.Extend.addMesgAll("vote.cn.end",playerplayer.name,type+" "+(isBlank(name)?"":name));
                     }
 					playervote = 0;
 					forceEnd();
@@ -191,9 +190,9 @@ public class Vote {
 		} else {
             temp = playerGroup.size();
         }
-		endNoMsg = () -> Extend.addMesgAll("vote.done.no",type+" "+(isBlank(name)?"":name),playervote,temp);
-		endYesMsg = () -> Extend.addMesgAll("vote.ok");
-		start(() -> Extend.addMesgAll("vote.start",player.name,type+" "+(isBlank(name)?"":name)));
+		endNoMsg = () -> extension.core.ex.Extend.addMesgAll("vote.done.no",type+" "+(isBlank(name)?"":name),playervote,temp);
+		endYesMsg = () -> extension.core.ex.Extend.addMesgAll("vote.ok");
+		start(() -> extension.core.ex.Extend.addMesgAll("vote.start",player.name,type+" "+(isBlank(name)?"":name)));
 	}
 
 	// 团队投票
@@ -205,9 +204,9 @@ public class Vote {
             }
         }
 		require = temp;
-		endNoMsg = () -> Extend.addMesgTeam(team,"vote.done.no",type+" "+(isBlank(name)?"":name),playervote,temp);
-		endYesMsg = () -> Extend.addMesgTeam(team,"vote.ok");
-		start(() -> Extend.addMesgTeam(team,"vote.start",player.name,type+" "+(isBlank(name)?"":name)));
+		endNoMsg = () -> extension.core.ex.Extend.addMesgTeam(team,"vote.done.no",type+" "+(isBlank(name)?"":name),playervote,temp);
+		endYesMsg = () -> extension.core.ex.Extend.addMesgTeam(team,"vote.ok");
+		start(() -> extension.core.ex.Extend.addMesgTeam(team,"vote.start",player.name,type+" "+(isBlank(name)?"":name)));
 	}
 
 	// 管理投票
@@ -242,7 +241,7 @@ public class Vote {
 			@Override
 			public void run() {
 				reciprocal = reciprocal-10;
-				Extend.addMesgAll("vote.ing",reciprocal);
+				extension.core.ex.Extend.addMesgAll("vote.ing",reciprocal);
 			}
 		},10,10,TimeUnit.SECONDS);
 
@@ -288,7 +287,7 @@ public class Vote {
 					ff();
 					break;
 				default:
-					break;;
+					break;
 			}
 		} else {
             endNoMsg.run();
@@ -309,7 +308,7 @@ public class Vote {
 	}
 
 	private void kick() {
-		Extend.addMesgAll("kick.done",name);
+		extension.core.ex.Extend.addMesgAll("kick.done",name);
 		target.con.kick(KickReason.kick);
 	}
 

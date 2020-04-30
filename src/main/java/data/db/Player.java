@@ -19,7 +19,7 @@ import static extension.util.ExtractUtil.inttoBoolean;
  */
 public class Player {
 
-	private static final Connection C;
+	private static Connection C;
 
 	static {
 		try {

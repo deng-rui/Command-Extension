@@ -1,35 +1,32 @@
 package extension.core;
 
-import java.util.List;
-import java.util.Map;
-//
-
 import arc.Core;
 import arc.Events;
 import arc.util.CommandHandler;
-//Arc
-
-import mindustry.game.Team;
-import mindustry.game.EventType.GameOverEvent;
-//Mindustry
-
-import static arc.util.Log.info;
-import static mindustry.Vars.net;
-import static mindustry.Vars.maps;
-//Mindustry-Static
-
+import extension.core.ex.Threads;
 import extension.data.db.Player;
 import extension.data.db.PlayerData;
 import extension.data.global.Maps;
-import extension.core.Initialization;
-import extension.core.ex.Threads;
-//
+import mindustry.game.EventType.GameOverEvent;
+import mindustry.game.Team;
 
+import java.util.List;
+import java.util.Map;
+
+import static arc.util.Log.info;
 import static extension.core.ex.Extend.secToTime;
-import static extension.util.DateUtil.LongtoTime;
-import static extension.util.DateUtil.getLocalTimeFromUTC;
+import static extension.util.DateUtil.getLocalTimeFromU;
+import static extension.util.DateUtil.longtoTime;
+import static extension.util.IsUtil.notisNumeric;
 import static extension.util.RandomUtil.generateStr;
-import static extension.util.IsUtil.NotisNumeric;
+import static mindustry.Vars.maps;
+import static mindustry.Vars.net;
+
+//
+//Arc
+//Mindustry
+//Mindustry-Static
+//
 //Static
 
 public class ServerCommandsx {
@@ -52,7 +49,7 @@ public class ServerCommandsx {
 			}else{
 				info("&lyMaps reloaded.");
 			}
-			new Initialization().MapList();
+			new extension.core.Initialization().mapList();
 		});
 
 		handler.register("gameover", "Force a game over", (arg)-> {
@@ -62,15 +59,15 @@ public class ServerCommandsx {
 
 		handler.register("reloadconfig", "reload Command-Extension Config.ini", (arg)-> {
 			info("&lyReLoad Config.ini End.");
-			new Initialization().ReLoadConfig();
+			new extension.core.Initialization().reLoadConfig();
 		});
 
 		handler.register("toadmin", "<uuid> <id>","reload Command-Extension Config.ini", (arg)-> {
-			PlayerData playerdata = Maps.getPlayer_Data(arg[0]);
+			PlayerData playerdata = Maps.getPlayerData(arg[0]);
 			if (playerdata != null) {
-                playerdata.Authority = Integer.parseInt(arg[1]);
+                playerdata.authority = Integer.parseInt(arg[1]);
             }
-			playerdata.Translate = true;
+			playerdata.translate = true;
 		});
 
 		handler.register("exit", "Exit the server application", (arg)-> {
@@ -81,31 +78,31 @@ public class ServerCommandsx {
 		});
 
 		handler.register("newkey", "<length> <authority> <Available_time(min)> <Expiration_date(min)> [Total]","Add new key", (arg) -> {
-			if(NotisNumeric(arg[0])) {
+			if(notisNumeric(arg[0])) {
                 info("Invalid length");
-            } else if(NotisNumeric(arg[1])) {
+            } else if(notisNumeric(arg[1])) {
                 info("Invalid permission");
             } else {
-                Player.AddKey(generateStr(Integer.parseInt(arg[0])),Integer.parseInt(arg[1]),Long.parseLong(arg[2])*60,getLocalTimeFromUTC(Long.parseLong(arg[3])*60000L),arg.length>4 ? Integer.parseInt(arg[4]):1);
+                Player.addKey(generateStr(Integer.parseInt(arg[0])),Integer.parseInt(arg[1]),Long.parseLong(arg[2])*60,getLocalTimeFromU(Long.parseLong(arg[3])*60000L),arg.length>4 ? Integer.parseInt(arg[4]):1);
             }
 		});
 
 		handler.register("keys","List all keys", (arg) -> {
-			List<Map<String,Object>> data = Player.GetKey();
+			List<Map<String,Object>> data = Player.getKey();
 			info("KEY List:");
 			for(Map<String,Object> map : data) {
-				info("Authority: {0} ,KEY: {1} \n Surplus/Total : {2}/{3} \nTime: {4} Expire(UTC): {5}",map.get("Authority"),map.get("KEY"),map.get("Surplus"),map.get("Total"),secToTime((long)map.get("Time")),LongtoTime((long)map.get("Expire")));
+				info("Authority: {0} ,KEY: {1} \n Surplus/Total : {2}/{3} \nTime: {4} Expire(UTC): {5}",map.get("Authority"),map.get("Key"),map.get("Surplus"),map.get("Total"),secToTime((long)map.get("Time")),longtoTime((long)map.get("Expire")));
 			}
 		});
 
 		handler.register("rmkeys","Rm all keys", (arg) -> {
-			Player.RmKey();
+			Player.rmKey();
 			info("Delete all key");
 		});
 
 		handler.register("rmkey","<key>","rm key", (arg) -> {
-			if(!Player.isSQLite_Key(arg[0])) {
-                Player.RmKey(arg[0]);
+			if(!Player.isSqliteKey(arg[0])) {
+                Player.rmKey(arg[0]);
             } else {
                 info("Invalid key, key:{0}",arg[0]);
             }

@@ -1,34 +1,28 @@
 package extension.testmode.net;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Writer;
-import java.util.*;
-import java.nio.charset.StandardCharsets;
-
 import arc.Core;
-import static mindustry.Vars.playerGroup;
-import static mindustry.Vars.world;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet; 
-import org.eclipse.jetty.server.*; 
-import org.eclipse.jetty.servlet.ServletContextHandler; 
-import org.eclipse.jetty.servlet.ServletHolder; 
-import org.eclipse.jetty.server.handler.*;
-
+import com.alibaba.fastjson.JSON;
 import extension.data.db.Player;
 import extension.data.db.PlayerData;
-import extension.data.global.Maps;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ErrorHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 
-import com.alibaba.fastjson.JSON;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
-import static extension.util.alone.Password.Passwdverify;
 import static extension.util.RandomUtil.generateStr;
+import static extension.util.alone.Password.isPasswdVerify;
+import static mindustry.Vars.playerGroup;
+import static mindustry.Vars.world;
 
 
 public class HttpServlett {
@@ -66,19 +60,19 @@ class A1 extends HttpServlet {
 				//正常
 				String info = generateStr(10);
 				data = new PlayerData(info,info,0);
-				Player.getSQLite(data,user);
+				Player.getSqlite(data,user);
 				text = Base64.getEncoder().encodeToString(JSON.toJSONString(data).getBytes("utf-8"));
 				response.getWriter().println(text);
 				break;
 			case "bind" :
-				if(Player.isSQLite_User(user)) {
+				if(Player.isSqliteUser(user)) {
 					response.getWriter().println("2");
 				} else {
 					String bind = generateStr(10);
 					data = new PlayerData(bind,bind,0);
-					Player.getSQLite(data,user);
+					Player.getSqlite(data,user);
 					try {
-						if(!Passwdverify(passwd,data.PasswordHash,data.CSPRNG)) {
+						if(!isPasswdVerify(passwd,data.passwordHash,data.csprng)) {
 						response.getWriter().println("1");
 						return;
 						}

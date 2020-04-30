@@ -57,7 +57,7 @@ public class ClientCommandsx {
 				return;
 			}
 			int page = args.length > 0 ? Integer.parseInt(args[0]) : 1;
-			int pages = Mathf.ceil((float)clientCommands.getCommandList().size / Config.Maximum_Screen_Display);
+			int pages = Mathf.ceil((float)clientCommands.getCommandList().size / Config.MAXIMUM_SCREEN_DISPLAY);
 			page --;
 			if (page >= pages || page < 0){
 				player.sendMessage("[scarlet]'page' must be a number between[orange] 1[] and[orange] " + pages + "[scarlet].");
@@ -464,7 +464,7 @@ public class ClientCommandsx {
 								return;
 							}
 							if (Lists.getMapsList().size() >= Integer.parseInt(args[1])) {
-								Data.vote = new Vote(player, args[0], args[1]);
+								Data.VOTE = new Vote(player, args[0], args[1]);
 							} else {
 								player.sendMessage(localeUtil.getinput("vote.host.maps.err", args[1]));
 							}
