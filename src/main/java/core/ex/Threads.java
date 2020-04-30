@@ -64,7 +64,8 @@ public class Threads {
 	private static boolean gradual_change = true;
 
 	// 定时任务 1min/S
-	public Threads() {
+
+    public Threads() {
 		Runnable Atime=new Runnable() {
 			@Override
 			public void run() {
@@ -92,16 +93,19 @@ public class Threads {
 		Data.Thred_DB_service.shutdown();
 	}
 
-	public static void NewThred_DB(Runnable run) {
+
+    public static void NewThred_DB(Runnable run) {
 		Data.Thred_DB_service.execute(run);
 	}
 
-	public static void NewThred_SE(Runnable run) {
+
+    public static void NewThred_SE(Runnable run) {
 		Data.Thred_service.execute(run);
 	}
 
 	// 用户过期?
-	private static void LoginStatus() {
+
+    private static void LoginStatus() {
 		if (Config.Login_Time > status_login) {
 			status_login++;
 			return;
@@ -122,7 +126,8 @@ public class Threads {
 		}
 	}
 
-	private static void AuthorityStatus() {
+
+    private static void AuthorityStatus() {
 		if (5 > status_authority) {
 			status_authority++;
 			return;
@@ -144,7 +149,8 @@ public class Threads {
 		}
 	}
 
-	private static void Status_Reporting() {
+
+    private static void Status_Reporting() {
 		if (Config.Regular_Reporting_Time > status_mail) {
 			status_mail++;
 			return;
@@ -200,7 +206,8 @@ public class Threads {
 		}
 	}
 
-	private static void Day_and_night_shift() {
+
+    private static void Day_and_night_shift() {
 		// 白天黑夜
 		if(day_or_night) {
 			// 渐变
@@ -245,7 +252,8 @@ public class Threads {
 	}
 
 	// 写死的定时任务
-	private static void Custom() {
+
+    private static void Custom() {
 		state.rules.playerDamageMultiplier = 0f;
 		Call.onSetRules(state.rules);
 	}

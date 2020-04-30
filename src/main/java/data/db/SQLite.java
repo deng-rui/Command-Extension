@@ -1,26 +1,23 @@
 package extension.data.db;
 
-import java.util.*;
-import java.sql.*;
-//Java
-
-import arc.Core;
-//Arc
-
-import extension.data.global.Config;
 import extension.data.global.Data;
 import extension.util.file.FileUtil;
 import extension.util.log.Log;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+
+//Java
+//Arc
 //GA-Exted
-
 //Static
-
-import com.alibaba.fastjson.JSONObject;
 //Json
 
 public class SQLite {
 
-	public static void InitializationSQLite() {
+
+    public static void InitializationSQLite() {
 		try {
 			String sql;
 			Connection c = DriverManager.getConnection("jdbc:sqlite:"+FileUtil.File(Data.Plugin_Data_Path).getPath("Data.db"));

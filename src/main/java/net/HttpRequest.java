@@ -1,38 +1,22 @@
 package extension.net;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URLConnection;
+import extension.util.log.Log;
+
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
-import javax.net.ssl.HttpsURLConnection;
-
-import extension.data.global.Config;
-import extension.util.file.FileUtil;
-import extension.util.log.Exceptions;
-import extension.util.log.Log;
 //GA-Exted
-
-import static extension.util.IsUtil.NotBlank;
 
 public class HttpRequest {
 
 	private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36";
 	private static final String USER_TESTS = "Mozilla/5.0 (JAVA 11; x64) HI JAVA TO WEB";
 
-	public static String doGet(String url) {
+
+    public static String doGet(String url) {
 		HttpURLConnection con = null;
 		BufferedReader in = null;
 		StringBuffer result = new StringBuffer();
@@ -78,7 +62,8 @@ public class HttpRequest {
 		return result.toString();
 	}
 
-	public static String doPost(String url, String param) {
+
+    public static String doPost(String url, String param) {
 		StringBuilder result = new StringBuilder();
 		PrintWriter out = null;
 		BufferedReader in = null;
@@ -128,7 +113,8 @@ public class HttpRequest {
 		return result.toString();
 	}
 
-	public static void Url302(String url,String file) {
+
+    public static void Url302(String url, String file) {
 		HttpURLConnection conn = null;
 		try {
 			URL serverUrl = new URL(url);

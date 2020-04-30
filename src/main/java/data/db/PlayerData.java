@@ -1,138 +1,132 @@
 package extension.data.db;
 
-import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime;
-import java.util.TimeZone;
-import java.util.regex.Pattern;
-
-import mindustry.entities.type.Player;
-//
-
+import com.alibaba.fastjson.JSONObject;
 import extension.data.global.Config;
 import extension.data.global.Maps;
 import extension.util.LocaleUtil;
-//
+import mindustry.entities.type.Player;
+
+import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 import static extension.net.HttpRequest.doGet;
-import static extension.util.DateUtil.getLocalTimeFromUTC;
-import static extension.util.ExtractUtil.ipToLong;
+import static extension.util.DateUtil.getLocalTimeFromU;
 import static extension.util.ExtractUtil.Language_determination;
-//
-
-import com.alibaba.fastjson.JSONObject;
+import static extension.util.ExtractUtil.ipToLong;
 
 public class PlayerData {
 	// 奇怪的public
-	public String UUID;
-	public String User;
-	public String NAME;
-	public String Mail;
-	//
-	public long IP;
-	public int GMT;
-	public String Country;
-	public byte Time_format;
-	public String Language;
-	public long LastLogin;
-	public int Kickcount;
-	//int Sensitive;
-	public boolean Translate;
-	public int Level;
-	// MAX = 32767
-	public short Exp;
-	public long Reqexp;
-	public long Reqtotalexp;
-	public long Playtime;
-	public int Pvpwincount;
-	public int Pvplosecount;
-	public int Authority;
-	public long Authority_effective_time;
-	public long Lastchat;
-	public int Deadcount;
-	public int Killcount;
-	public int Joincount;
-	public int Breakcount;
-	//
-	public int Buildcount;
-	public int Dismantledcount;
-	public int Cumulative_build;
-	public int Pipe_build;
-	/* */
-	public boolean Online;
-	public String PasswordHash;
-	public String CSPRNG;
-	/* */
-	public boolean Login;
-	public long Jointime;
-	public long Backtime;
-	public LocaleUtil Info;
 
-	public PlayerData(String UUID,String NAME,int Authority) {
-		this.UUID 					= UUID;
-		this.User 					= "NO Login";
-		this.NAME 					= NAME;
-		this.Mail 					= "NO Login";
+    public String uuid;
+    public String user;
+    public String name;
+    public String mail;
+	//
+    public long ip;
+    public int gmt;
+    public String country;
+    public byte timeFormat;
+    public String language;
+    public long lastLogin;
+    public int kickCount;
+	//int Sensitive;
+    public boolean translate;
+    public int level;
+	// MAX = 32767
+    public short exp;
+    public long reqexp;
+    public long reqtotalExp;
+    public long playTime;
+    public int pvpwinCount;
+    public int pvploseCount;
+    public int authority;
+    public long authorityEffectiveTime;
+    public long lastChat;
+    public int deadCount;
+    public int killCount;
+    public int joinCount;
+    public int breakCount;
+	//
+    public int buildCount;
+    public int dismantledCount;
+    public int cumulativeBuild;
+    public int pipeBuild;
+	/* */
+    public boolean online;
+    public String passwordHash;
+    public String csprng;
+	/* */
+    public boolean login;
+    public long joinTime;
+    public long backtime;
+    public LocaleUtil info;
+	private final static Pattern REG = Pattern.compile("^(127\\.0\\.0\\.1)|(localhost)|(10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|(172\\.((1[6-9])|(2\\d)|(3[01]))\\.\\d{1,3}\\.\\d{1,3})|(192\\.168\\.\\d{1,3}\\.\\d{1,3})$");
+
+    public playerData(String uuid, String nae, int authority) {
+		this.uuid 					= uuid;
+		user 						= "NO Login";
+		this.name 					= name;
+		mail 						= "NO Login";
 		//
-		IP 							= 0;
-		GMT 						= 0;
-		Country 					= "NO Login";
-		Language 					= Config.Server_Language;
-		Time_format 				= 1;
-		LastLogin 					= 0;
+		ip 							= 0;
+		gmt 						= 0;
+		country 					= "NO Login";
+		language 					= Config.SERVER_LANGUAGE;
+		timeFormat 					= 1;
+		lastLogin 					= 0;
 		/* */
-		Kickcount 					= 0;
-		//int Sensitive;
-		Translate 					= false;
-		Level 						= 0;
-		Exp 						= 0;
-		Reqexp 						= 0;
-		Reqtotalexp 				= 0;
-		Playtime 					= 0;
-		Pvpwincount 				= 0;
-		Pvplosecount 				= 0;
-		this.Authority 				= Authority;
-		Authority_effective_time 	= 0;
-		Lastchat 					= 0;
-		Deadcount 					= 0;
-		Killcount 					= 0;
-		Joincount 					= 1;
-		Breakcount 					= 0;
+		kickCount 					= 0;
+		//int sensitive;
+		translate 					= false;
+		level 						= 0;
+		exp 						= 0;
+		reqexp 						= 0;
+		reqtotalExp 				= 0;
+		playTime 					= 0;
+		pvpwinCount 				= 0;
+		pvploseCount 				= 0;
+		this.authority 				= authority;
+		authorityEffectiveTime 		= 0;
+		lastChat 					= 0;
+		deadCount 					= 0;
+		killCount 					= 0;
+		joinCount 					= 1;
+		breakCount 					= 0;
 		//
-		Buildcount 					= 0;
-		Dismantledcount 			= 0;
-		Cumulative_build 			= 0;
-		Pipe_build 					= 0;
+		buildCount 					= 0;
+		dismantledCount 			= 0;
+		cumulativeBuild 			= 0;
+		pipeBuild 					= 0;
 		/* */
-		Online 						= true;
-		PasswordHash 				= null;
-		CSPRNG 						= null;
+		online 						= true;
+		passwordHash 				= null;
+		csprng 						= null;
 		/* */
-		Login 						= false;
-		Jointime 					= getLocalTimeFromUTC();
-		Backtime 					= 0;
-		Info 						= Maps.getLocale(Config.Server_Language);
+		login 						= false;
+		joinTime 					= getLocalTimeFromU();
+		backtime 					= 0;
+		info 						= Maps.getLocale(Config.SERVER_LANGUAGE);
 	}
 
 	public static void playerip(PlayerData data,Player player,String ip) {
-		Pattern reg = Pattern.compile("^(127\\.0\\.0\\.1)|(localhost)|(10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|(172\\.((1[6-9])|(2\\d)|(3[01]))\\.\\d{1,3}\\.\\d{1,3})|(192\\.168\\.\\d{1,3}\\.\\d{1,3})$");
-		if(reg.matcher(ip).find()) {
-			data.Country = "Intranet";
-			player.sendMessage(data.Info.getinput("register.ip.nat"));
+		if(REG.matcher(ip).find()) {
+			data.country = "Intranet";
+			player.sendMessage(data.info.getinput("register.ip.nat"));
 		}else{
 			try {
 				JSONObject result = JSONObject.parseObject(doGet("http://ip-api.com/json/"+ip+"?fields=country,timezone"));
-				data.GMT = TimeZone.getTimeZone((String)result.get("timezone")).getRawOffset();
-				data.Country = (String)result.get("country");
+				data.gmt = TimeZone.getTimeZone((String)result.get("timezone")).getRawOffset();
+				data.country = (String)result.get("country");
 			} catch (Exception e) {
-				data.GMT 						= 0;
-				data.Country 					= Config.Server_Language;
-				player.sendMessage(data.Info.getinput("Passwd.Net",data.Country));
+				data.gmt 						= 0;
+				data.country 					= Config.SERVER_LANGUAGE;
+				player.sendMessage(data.info.getinput("Passwd.Net",data.country));
 			}
 		}
-		data.IP 					= ipToLong(ip);
-		data.Language 				= Language_determination(data.Country);
-		data.Info 					= Maps.getLocale(data.Language);
-		player.sendMessage(data.Info.getinput("Load.Language",data.Language));
+		data.ip 					= ipToLong(ip);
+		data.language 				= Language_determination(data.country);
+		data.info 					= Maps.getLocale(data.language);
+		player.sendMessage(data.info.getinput("Load.Language",data.language));
 	}
 }
 	

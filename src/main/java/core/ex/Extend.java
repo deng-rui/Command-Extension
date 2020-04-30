@@ -36,7 +36,8 @@ import static extension.util.DateUtil.simp;
 //Static
 
 public class Extend {
-	public static boolean Authority_control(Player player, String a) {
+
+    public static boolean Authority_control(Player player, String a) {
 		// 未开启登录 直接抢答结果
 		// 逻辑有问题:(
 		//if(!Config.Login) return true;
@@ -96,7 +97,8 @@ public class Extend {
 		Event.syncTeam();
 	}
 
-	public static Object[] PlayerdatatoObject(PlayerData d){
+
+    public static Object[] PlayerdatatoObject(PlayerData d){
 		Object[] params = {d.NAME,d.UUID,longToIP(d.IP),d.Country,d.Language,d.Level,d.Exp,d.Reqexp,d.Reqtotalexp,d.Buildcount,d.Cumulative_build,d.Pipe_build,d.Dismantledcount,d.Pvpwincount,d.Pvplosecount,d.Authority,simp(d.Authority_effective_time*1000L,d.Time_format),secToTime(d.Playtime),simp(d.LastLogin*1000L,d.Time_format),simp(d.Lastchat*1000L,d.Time_format),d.Killcount,d.Deadcount,d.Joincount,d.Breakcount};
 		return params;
 	}
@@ -128,6 +130,7 @@ public class Extend {
         return retStr;
     }
 
+    @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
     public static void addMesg_Team(Team team, String msg, Object...params){
     	for (Player player : playerGroup.all()) {
             if(player.getTeam().equals(team)) {
@@ -136,6 +139,7 @@ public class Extend {
         }
     }
 
+    @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
     public static void addMesg_Admin(String msg, Object...params){
     	for (Player player : playerGroup.all()) {
             if(player.isAdmin) {
@@ -144,6 +148,7 @@ public class Extend {
         }
     }
 
+    @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
     public static void addMesg_All(String msg, Object...params){
     	for (Player player : playerGroup.all()) {
             player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput(msg,params));

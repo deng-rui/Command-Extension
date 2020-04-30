@@ -3,6 +3,7 @@ package extension.util.translation;
 // 需要KEY+ID
 // 无法白嫖
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import extension.data.global.Config;
@@ -29,7 +30,7 @@ public class Baidu {
 		.append("&salt=" + salt)
 		// 签名
 		.append("&sign=" + MD5.md5(Config.Baidu_ID + query + salt + Config.Baidu_Key));
-		JSONObject json = new JSONObject().parseObject(doPost("https://api.fanyi.baidu.com/api/trans/vip/translate",sb.toString()));
+		JSONObject json = JSON.parseObject(doPost("https://api.fanyi.baidu.com/api/trans/vip/translate",sb.toString()));
 		JSONArray rArray = json.getJSONArray("trans_result");
 		for (int i = 0; i < rArray.size(); i++) {
 			JSONObject r = (JSONObject)rArray.get(i);

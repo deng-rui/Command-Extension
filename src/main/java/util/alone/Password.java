@@ -40,12 +40,14 @@ public class Password {
 		return Base64.getEncoder().encodeToString(salt);
 	}
 	
-	public static boolean Passwdverify(String password, String passHash, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
+
+    public static boolean Passwdverify(String password, String passHash, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		String hash = genPasswordHash(password, salt);
 		return hash.equals(passHash);
 	}
 
-	public static Map<String, Object> newPasswd(String pw) throws NoSuchAlgorithmException, InvalidKeySpecException {
+
+    public static Map<String, Object> newPasswd(String pw) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		Map<String, Object> Password = new HashMap<String, Object>();
 		String salt = genRandomSalt();
 		// 经过加盐后的密码摘要

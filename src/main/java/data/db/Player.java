@@ -31,7 +31,8 @@ public class Player {
 		}
 	}
 
-	public static void InitializationPlayersSQLite(String User) {
+
+    public static void InitializationPlayersSQLite(String User) {
 		PreparedStatement playerdata = null;
 		PreparedStatement playerpriv = null;
 		try {	
@@ -102,7 +103,8 @@ public class Player {
 		}
 	}
 
-	public static void getSQLite(PlayerData data, String user) {
+
+    public static void getSQLite(PlayerData data, String user) {
 		PreparedStatement playerdata = null;
 		PreparedStatement playerpriv = null;
 		ResultSet rs = null;
@@ -160,7 +162,8 @@ public class Player {
 		}
 	}
 
-	public static boolean isSQLite_User(String user) {
+
+    public static boolean isSQLite_User(String user) {
 		boolean result = true;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -185,7 +188,8 @@ public class Player {
 	//
 	// 		KEY START
 	//
-	public static void AddKey(String KEY,int Authority,long Time,long Expire,int Total) {
+
+    public static void AddKey(String KEY, int Authority, long Time, long Expire, int Total) {
 		PreparedStatement key = null;
 		try {	
 			key = c.prepareStatement("INSERT INTO KeyData VALUES (?,?,?,?,?,?)");
@@ -204,7 +208,8 @@ public class Player {
 		}
 	}
 
-	public static void SaveKey(String KEY,int Authority,int Total,int Surplus,long Time,long Expire) {
+
+    public static void SaveKey(String KEY, int Authority, int Total, int Surplus, long Time, long Expire) {
 		PreparedStatement key = null;
 		try {
 			key = c.prepareStatement("UPDATE KeyData SET KEY=?,Authority=?,Total=?,Surplus=?,Time=?,Expire=? WHERE KEY=?");
@@ -224,7 +229,8 @@ public class Player {
 		}
 	}
 
-	public static List<Map<String,Object>> GetKey() {
+
+    public static List<Map<String,Object>> GetKey() {
 		PreparedStatement key = null;
 		ResultSet rs = null;
 		List<Map<String,Object>> result = new ArrayList<Map<String,Object>>();
@@ -249,7 +255,8 @@ public class Player {
 		return result;
 	}
 
-	public static Map<String,Object> GetKey(String KEY) {
+
+    public static Map<String,Object> GetKey(String KEY) {
 		PreparedStatement key = null;
 		ResultSet rs = null;
 		Map<String,Object> result = new HashMap<String,Object>();
@@ -273,11 +280,13 @@ public class Player {
 		return result;
 	}
 
-	public static void RmKey() {
+
+    public static void RmKey() {
 		RmKey(null);
 	}
 
-	public static void RmKey(String KEY) {
+
+    public static void RmKey(String KEY) {
 		PreparedStatement key = null;
 		try {
 			if (KEY != null) {
@@ -295,7 +304,8 @@ public class Player {
 		}
 	}
 
-	public static boolean isSQLite_Key(String KEY) {
+
+    public static boolean isSQLite_Key(String KEY) {
 		boolean result = true;
 		PreparedStatement key = null;
 		ResultSet rs = null;

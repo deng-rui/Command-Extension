@@ -1,15 +1,17 @@
 package extension.util.file;
 
-import java.io.*;
-import java.util.*;
-import java.text.MessageFormat;
-//Java
-
-import extension.data.global.Config;
 import extension.data.global.Data;
-import extension.util.file.FileUtil;
 import extension.util.log.Exceptions;
 import extension.util.log.Log;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.text.MessageFormat;
+import java.util.MissingResourceException;
+import java.util.Properties;
+
+//Java
 //GA-Exted
 
 /*
@@ -36,7 +38,8 @@ public class LoadConfig {
 		throw Exceptions.Variable("INVALID_PARAMETER");
 	}
 
-	public static String CustomLoad(String input,Object[] params) {
+
+    public static String CustomLoad(String input, Object[] params) {
 		Properties properties = new Properties();
         try {
             properties.load(new InputStreamReader(LoadConfig.class.getResourceAsStream("/bundles/GA.properties"), "UTF-8"));

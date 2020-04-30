@@ -1,25 +1,20 @@
 package extension.util.translation;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-//Java
 
-import extension.util.log.Log;
-//GA-Exted
-
-import static extension.net.HttpRequest.doGet;
 import static extension.net.HttpRequest.doPost;
 import static extension.util.ExtractUtil.getkeys;
 import static extension.util.IsUtil.Blank;
 import static extension.util.IsUtil.NotBlank;
-//Static
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONArray;
+//Java
+//GA-Exted
+//Static
 //Json
 
 public class Bing {
@@ -37,12 +32,13 @@ public class Bing {
 	 * CN : https://cn.bing.com/
 	 * ELSE : https://www.bing.com/
 	 */
-	public String translate(String word, String from, String to) {
+
+    public String translate(String word, String from, String to) {
 		if (Blank(word)) {
             return null;
         }
 		StringBuffer result = new StringBuffer();
-		String IG = getkeys("https://cn.bing.com/translator","IG:.*?,",4,2);
+		String lg = getkeys("https://cn.bing.com/translator","IG:.*?,",4,2);
 		// 我遇上假Bing了????
 		try {
 			word = URLEncoder.encode(word, "UTF-8");
@@ -50,15 +46,15 @@ public class Bing {
 		}
 		StringBuffer url = new StringBuffer("https://cn.bing.com/ttranslatev3?isVertical=1");
 		StringBuffer post = new StringBuffer();
-		url.append("&&IG=" + IG);
+		url.append("&&IG=" + lg);
 		url.append("&IID=translator.5028.2");
 		post.append("fromLang=" + from);
 		post.append("&text=" + word);
 		post.append("&to=" + to);
 		String urll = url.toString();
-		String PostResult = doPost(urll,post.toString());
-		JSONArray array = (JSONArray) JSONArray.parse(PostResult);
-		JSONArray arrayy = (JSONArray) JSONArray.parse(array.getJSONObject(0).getString("translations"));
+		String postResult = doPost(urll,post.toString());
+		JSONArray array = (JSONArray) JSON.parse(postResult);
+		JSONArray arrayy = (JSONArray) JSON.parse(array.getJSONObject(0).getString("translations"));
 		for (int i = 0; i < arrayy.size(); i++) {
 		JSONObject re = arrayy.getJSONObject(i);
 		String r = re.getString("text");

@@ -17,7 +17,8 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 
 public class Json {
 
-	public static void Initialization() {
+
+    public static void Initialization() {
 		/*
 		add.put("languageO", "en");
 		add.put("languageT", "US");
@@ -37,7 +38,8 @@ public class Json {
 		return object;
 	}
 
-	public static void Initialize_permissions() {
+
+    public static void Initialize_permissions() {
 		Map<String, List<String>> date = Collections.synchronizedMap(new HashMap<String, List<String>>());
 		List<String> a = Collections.synchronizedList(new ArrayList<String>());
 		date.put("0", Arrays.asList("login", "register"));

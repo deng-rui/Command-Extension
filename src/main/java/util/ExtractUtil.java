@@ -12,6 +12,8 @@ import static extension.util.String_filteringUtil.trim;
 
 public class ExtractUtil {
 
+	final static Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
+
 	public static String extractByStartAndEnd(String str, String startStr, String endStr) {
 		String regEx = startStr + ".*?"+endStr;
 		String group = findMatchString(str, regEx);
@@ -48,11 +50,13 @@ public class ExtractUtil {
 		return tkk;
 	}
 
-	public static boolean InttoBoolean(int in) {
+
+    public static boolean InttoBoolean(int in) {
 		return (in == 1);
 	}
 
-	public static int BooleantoInt(boolean bl) {
+
+    public static int BooleantoInt(boolean bl) {
 		if(bl) {
             return 1;
         }
@@ -64,7 +68,8 @@ public class ExtractUtil {
 		return (Long.parseLong(ip[0]) << 24) + (Long.parseLong(ip[1]) << 16) + (Long.parseLong(ip[2]) << 8) + Long.parseLong(ip[3]);
 	}
 
-	public static String longToIP(long longIp) {
+
+    public static String longToIP(long longIp) {
 		StringBuffer sb = new StringBuffer("");
 		sb.append(String.valueOf((longIp >>> 24)))
 		.append(".")
@@ -90,7 +95,6 @@ public class ExtractUtil {
     }
 
     public static String unicodeDecode(String string) {
-        Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
         Matcher matcher = pattern.matcher(string);
         char ch;
         while (matcher.find()) {
@@ -100,6 +104,7 @@ public class ExtractUtil {
         return string;
     }
 
+    @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
     public static String Language_determination(String string) {
 		switch(string){
 			case "China" :return "zh_CN";

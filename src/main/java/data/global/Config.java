@@ -6,26 +6,26 @@ import static extension.util.file.LoadConfig.*;
 public class Config {
 
 	// [服务器]
-	public static boolean Server_Networking = true;
-	public static boolean Server_Country_CN = false;
+	public static boolean SERVER_NETWORKING = true;
+	public static boolean SERVER_COUNTRY_CN = false;
 
 	// [服务器语言]
-	public static String Server_Language = "en_US";
+	public static String SERVER_LANGUAGE = "en_US";
 
 	// [登录]
-	public static int Login_Time = 0;
-	public static boolean Login_Radical = false;
-	public static boolean Permission_Passing = false;
+	public static int LOGIN_TIME = 0;
+	public static boolean LOGIN_RADICAL = false;
+	public static boolean PERMISSION_PASSING = false;
 
 	// [投票]
-	public static boolean Vote_Admin = false;
-	public static boolean Vote_New_Player = false;
-	public static int Vote_New_Player_Time = 0;
+	public static boolean VOTE_ADMIN = false;
+	public static boolean VOTE_NEW_PLAYER = false;
+	public static int VOTE_NEW_PLAYER_TIME = 0;
 
 	//
-	public static boolean Day_and_night = false;
-	public static int Day_Time = 0;
-	public static float Night_Time = 0;
+	public static boolean DAY_AND_NIGHT = false;
+	public static int DAY_TIME = 0;
+	public static float NIGHT_TIME = 0;
 
 	// [建造限制]
 	public static boolean Building_Restriction = false;
@@ -33,34 +33,35 @@ public class Config {
 	public static int Building_Reject_quantity = 0;
 
 	// [单位限制]
-	public static boolean Soldier_Restriction;
-	public static int Soldier_Warning_quantity;
-	public static int Soldier_Reject_quantity;
+	public static boolean Soldier_Restriction = false;
+	public static int Soldier_Warning_quantity = 0;
+	public static int Soldier_Reject_quantity = 0;
 
 	// [邮件]
-	private static boolean Mail_Use;
-	public static String Mail_SMTP_IP;
-	public static String Mail_SMTP_Port;
-	public static String Mail_SMTP_User;
-	public static String Mail_SMTP_Passwd;
-	public static boolean Regular_Reporting;
-	public static int Regular_Reporting_Time;
-	public static String Regular_Reporting_ToMail;
+	private static boolean Mail_Use = false;
+	public static String Mail_SMTP_IP = null;
+	public static String Mail_SMTP_Port = null;
+	public static String Mail_SMTP_User = null;
+	public static String Mail_SMTP_Passwd = null;
+	public static boolean Regular_Reporting = false;
+	public static int Regular_Reporting_Time = 0;
+	public static String Regular_Reporting_ToMail = null;
 
 	// [Display]
-	public static int Maximum_Screen_Display;
+	public static int Maximum_Screen_Display = 0;
 
 	// [Help]
-	public static boolean Help_Show_unauthorize_content;
+	public static boolean Help_Show_unauthorize_content = false;
 	
 	//
-	public static boolean Baidu_Tr;
-	public static String Baidu_ID;
-	public static String Baidu_Key;
+	public static boolean Baidu_Tr = false;
+	public static String Baidu_ID = null;
+	public static String Baidu_Key = null;
 
 
 
-	public static void LaodConfig() {
+
+    public static void laodConfig() {
 		// [服务器]
 		Server_Language 										= loadstring("Server_Language");
 

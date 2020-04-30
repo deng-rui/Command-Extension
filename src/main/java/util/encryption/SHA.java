@@ -5,15 +5,18 @@ import java.security.NoSuchAlgorithmException;
 
 public class SHA {
 
-	public String SHA256(final String strText) {
+
+    public String SHA256(final String strText) {
 		return SHA(strText, "SHA-256");
 	}
 
-	public String SHA512(final String strText) {
+
+    public String SHA512(final String strText) {
 		return SHA(strText, "SHA-512");
 	}
 
-	private String SHA(final String strText, final String strType) {
+
+    private String SHA(final String strText, final String strType) {
 		// 返回值
 		String strResult = null;
 
@@ -22,7 +25,7 @@ public class SHA {
 			try {
 				MessageDigest messageDigest = MessageDigest.getInstance(strType);
 				messageDigest.update(strText.getBytes());
-				byte byteBuffer[] = messageDigest.digest();
+				byte[] byteBuffer = messageDigest.digest();
 				StringBuffer strHexString = new StringBuffer();
 				for (int i = 0; i < byteBuffer.length; i++) {
 					String hex = Integer.toHexString(0xff & byteBuffer[i]);

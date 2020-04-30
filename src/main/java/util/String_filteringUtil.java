@@ -26,7 +26,8 @@ public class String_filteringUtil {
 		return result;
 	}
 
-	public static String removeAll_EN(String s){
+
+    public static String removeAll_EN(String s){
 		String result = "";
 		if(null!=s && !"".equals(s)){
 			result = s.replaceAll("[^(A-Za-z)]", "");
@@ -34,7 +35,8 @@ public class String_filteringUtil {
 		return result;
 	}
 
-	public static String removeAll_CN(String s){
+
+    public static String removeAll_CN(String s){
 		String result = "";
 		if(null!=s && !"".equals(s)){
 			result = s.replaceAll("[^(\\u4e00-\\u9fa5)]", "");

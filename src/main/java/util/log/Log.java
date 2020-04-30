@@ -1,12 +1,11 @@
 package extension.util.log;
 
-import java.util.*;
-import java.text.SimpleDateFormat;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-//Java
 
 import static extension.util.DateUtil.getLocalTimeFromUTC;
+
+//Java
 //Static
 
 /**
@@ -20,6 +19,10 @@ public class Log {
 	//默认 WARN
 
 	private enum Logg {
+		/*
+		 * Log等级 默认为WARN
+		 * 开发时为ALL
+		 */
 		OFF(8),FATAL(7),ERROR(6),WARN(5),INFO(4),DEBUG(3),TRACE(2),ALL(1);
 		private int num;
 		private Logg(int num) {
@@ -29,6 +32,7 @@ public class Log {
 			return num;
 		}
 	}
+
 
 	public static void Set(String log) {
 		Log.LOG_GRADE=Logg.valueOf(log).getLogg();
@@ -118,6 +122,7 @@ public class Log {
 		e.printStackTrace(printWriter);
 		logs(i,tag,stringWriter.getBuffer());
 	}
+
 
 	private static void logs(int i, Object tag, Object e) {
 		if(LOG_GRADE>i) {

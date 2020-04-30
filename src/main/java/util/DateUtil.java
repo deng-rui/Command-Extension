@@ -6,7 +6,8 @@ import java.text.SimpleDateFormat;
 //Java
 
 public class DateUtil {
-	private static long getUTCTimeStr() {
+
+    private static long getUtcTimeStr() {
 		// 获取JDK当前时间
 		Calendar cal = Calendar.getInstance();
 		// 取得时间偏移量  
@@ -18,9 +19,9 @@ public class DateUtil {
 		return cal.getTimeInMillis();
 	}
 
-	public static String simp(long GMT,int fot){
+    public static String simp(long gmt, int fot){
 		String[] ft=new String[]{"yyyy-MM-dd","yyyy-MM-dd HH:mm:ss","yyyy-MM-dd'T'HH:mm:ss'Z'","dd-MM-yyyy HH:mm:ss","MM-dd-yyyy HH:mm:ss"};
-		return new SimpleDateFormat(ft[fot]).format(new Date(GMT));
+		return new SimpleDateFormat(ft[fot]).format(new Date(gmt));
 	}
 
 	/**
@@ -29,34 +30,33 @@ public class DateUtil {
 	 * @param fot 目标语言喜好
 	 * @return 格式化后GMT时间
 	 */
-	public static String LongtoTime(long time){
+    public static String longtoTime(long time){
 		return simp(Long.valueOf(time) * 1000L,1);
 	}
 
-	public static long getLocalTimeFromUTC(){
-		return Long.parseLong(getLocalTimeFromUTC(0,0,false));
+    public static long getLocalTimeFromU(){
+		return Long.parseLong(getLocalTimeFromU(0,0,false));
 	}
 
-	public static long getLocalTimeFromUTC(long GMT){
-		return Long.parseLong(getLocalTimeFromUTC(GMT,0,false));
+    public static long getLocalTimeFromU(long gmt){
+		return Long.parseLong(getLocalTimeFromU(gmt,0,false));
 	}
 
-	// 获取格式化后的指定GMT
-	public static String getLocalTimeFromUTC(long GMT, int fot){
-		return getLocalTimeFromUTC(GMT,fot,true);
+    public static String getLocalTimeFromU(long gmt, int fot){
+		return getLocalTimeFromU(gmt,fot,true);
 	}
 
-	public static String getLocalTimeFromUTC(long GMT, int fot, boolean format){
-		long UTC = getUTCTimeStr();
-		// UTC时间加上偏移量 即取得目标时间
-		UTC = UTC + GMT;
-		// UTC/1000 毫秒转换
+	/**
+	 * GMT = 偏移量
+	 * FOT = 输出格式
+	 * FOR-BOL = 是否格式化
+	 */
+    public static String getLocalTimeFromU(long gmt, int fot, boolean format){
+		long utc = getUtcTimeStr();
+		utc = utc + gmt;
 		if (format) {
-            return simp((Long.valueOf(UTC) * 1000L) / 1000,fot);
+            return simp((Long.valueOf(utc) * 1000L) / 1000,fot);
         }
-		// 去除末尾
-		// 1584377312921
-		// 1584377312
-		return String.valueOf((Long.valueOf(UTC) / 1000));
+		return String.valueOf((Long.valueOf(utc) / 1000));
 	}
 }

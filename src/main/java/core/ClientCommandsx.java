@@ -67,7 +67,8 @@ import static extension.util.IsUtil.NotisNumeric;
 
 public class ClientCommandsx {
 
-	public void register(CommandHandler handler) {
+
+    public void register(CommandHandler handler) {
 		handler.removeCommand("help");
 		handler.removeCommand("vote");
 		handler.removeCommand("votekick");
@@ -193,7 +194,8 @@ public class ClientCommandsx {
 				final String renewpw = args[2];
 				final String mail = (args.length > 3) ? args[3]:"NULL";
 				Data.Thred_service.execute(new Runnable() {
-					@Override
+
+                    @Override
 					public void run() {
 						PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
 						if(playerdata.Login) {
@@ -208,14 +210,14 @@ public class ClientCommandsx {
 							player.sendMessage(localeUtil.getinput("register.usrerr"));
 							return;
 						}
-						java.util.Map<String, Object> Passwd_date;
+						java.util.Map<String, Object> passwdDate;
 						try {
 							Passwd_date = (java.util.Map<String, Object>)newPasswd(newpw);
 						} catch (Exception e) {
 							player.sendMessage(localeUtil.getinput("passwd.err"));
 							return;
 						}
-						if(!(boolean)Passwd_date.get("resualt")) {
+						if(!(boolean)passwdDate.get("resualt")) {
 							player.sendMessage(localeUtil.getinput("passwd.err"));
 							return;
 						}
@@ -233,8 +235,8 @@ public class ClientCommandsx {
 						playerdata.Login=true;
 						playerdata.Authority=1;
 						playerdata.Mail=mail;
-						playerdata.PasswordHash=(String)Passwd_date.get("passwordHash");
-						playerdata.CSPRNG=(String)Passwd_date.get("salt");
+						playerdata.PasswordHash=(String)passwdDate.get("passwordHash");
+						playerdata.CSPRNG=(String)passwdDate.get("salt");
 						playerdata.LastLogin=getLocalTimeFromUTC(playerdata.GMT);
 						player.sendMessage(localeUtil.getinput("register.to"));
 						//Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
@@ -411,9 +413,9 @@ public class ClientCommandsx {
 					player.sendMessage(localeUtil.getinput("nber.err"));
 					return;
 				}
-				List<String> MapsList = (List<String>)Lists.getMaps_List();
+				List<String> mapsList = (List<String>)Lists.getMaps_List();
 				int page = args.length > 0 ? Integer.parseInt(args[0]):1;
-				int pages = Mathf.ceil((float)MapsList.size() / Config.Maximum_Screen_Display);
+				int pages = Mathf.ceil((float)mapsList.size() / Config.Maximum_Screen_Display);
 				page --;
 				if(page >= pages || page < 0){
 					player.sendMessage(localeUtil.getinput("maps.page.err",pages));
@@ -421,8 +423,8 @@ public class ClientCommandsx {
 				}
 				if(args.length == 2) {
 					player.sendMessage(localeUtil.getinput("maps.page",(page+1),pages));
-					for(int i = Config.Maximum_Screen_Display * page; i < Math.min(Config.Maximum_Screen_Display * (page + 1), MapsList.size()); i++){
-						String [] data = MapsList.get(i).split("\\s+");
+					for(int i = Config.Maximum_Screen_Display * page; i < Math.min(Config.Maximum_Screen_Display * (page + 1), mapsList.size()); i++){
+						String [] data = mapsList.get(i).split("\\s+");
 						if(data[3].equalsIgnoreCase(args[1])) {
                             player.sendMessage(localeUtil.getinput("maps.mode.info",String.valueOf(i),data[0],data[1]));
                         }
@@ -430,8 +432,8 @@ public class ClientCommandsx {
 					return;
 				}
 				player.sendMessage(localeUtil.getinput("maps.page",(page+1),pages));
-				for(int i = Config.Maximum_Screen_Display * page; i < Math.min(Config.Maximum_Screen_Display * (page + 1), MapsList.size()); i++){
-					String [] data = MapsList.get(i).split("\\s+");
+				for(int i = Config.Maximum_Screen_Display * page; i < Math.min(Config.Maximum_Screen_Display * (page + 1), mapsList.size()); i++){
+					String [] data = mapsList.get(i).split("\\s+");
 					player.sendMessage(localeUtil.getinput("maps.info",String.valueOf(i),data[0],data[1],data[2]));
 				}
 			}

@@ -1,26 +1,22 @@
 package extension.util.translation;
 
+import com.alibaba.fastjson.JSONArray;
+import extension.util.log.Log;
+
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLEncoder;
-//Java
-
-import extension.util.log.Log;
-//GA-Exted
 
 import static extension.net.HttpRequest.doGet;
 import static extension.util.ExtractUtil.getkeys;
 import static extension.util.IsUtil.Blank;
 import static extension.util.IsUtil.NotBlank;
-//Static
 
-import com.alibaba.fastjson.JSONArray;
+//Java
+//GA-Exted
+//Static
 //Json
 
 public class Google {
@@ -56,7 +52,8 @@ public class Google {
 		}
 	}
 
-	private static String getTK(String word, String tkk) {
+
+    private static String getTK(String word, String tkk) {
 		String result = null;
 
 		try {

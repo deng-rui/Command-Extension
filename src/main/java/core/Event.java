@@ -3,10 +3,7 @@ package extension.core;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.HashMap;
 import java.util.Set;
-import java.util.TimeZone;
-//Java
 
 import arc.Events;
 import arc.math.Mathf;
@@ -41,6 +38,7 @@ import mindustry.world.Tile;
 //Mindustry
 
 import static arc.util.Log.info;
+import static extension.util.DateUtil.getLocalTimeFromU;
 import static mindustry.Vars.maps;
 import static mindustry.Vars.state;
 import static mindustry.Vars.world;
@@ -66,12 +64,10 @@ import static extension.data.db.Player.savePlayer;
 import static extension.data.json.Json.getData;
 import static extension.net.HttpRequest.doGet;
 import static extension.util.alone.BadWord.*;
-import static extension.util.DateUtil.getLocalTimeFromUTC;
 import static extension.util.String_filteringUtil.*;
 //Static
 
 import com.alibaba.fastjson.JSONObject;
-//Json
 
 public class Event {
 	// 
@@ -87,7 +83,7 @@ public class Event {
 				String result = replaceBadWord(message,2,"*");
 				// 自动翻译
 				// 检查是否启用翻译
-				if (Maps.getPlayer_Data(player.uuid).Translate) {
+				if (Maps.getPlayer_Data(player.uuid).translate) {
 					boolean valid = message.matches("\\w+");
 					if (!valid) {
                         result = new Google().translate(message,"en")+"   -From Google Translator";
@@ -131,11 +127,11 @@ public class Event {
 		// 连接时
 		Events.on(PlayerConnect.class, e -> {
 			// 中英分检测  过滤屏蔽词
-			Set<String> set = (Set<String>)BadWord(removeAll_EN(e.player.name));
+			Set<String> set = (Set<String>)badWord(removeAll_EN(e.player.name));
 			if (0 < set.size()) {
                 Call.onKick(e.player.con,new LocaleUtil(null).getinput("Sensitive.Thesaurus.join.kick",set.iterator().next()));
             }
-			Set<String> set1 = (Set<String>)BadWord(removeAll_CN(e.player.name));
+			Set<String> set1 = (Set<String>)badWord(removeAll_CN(e.player.name));
 			if (0 < set1.size()) {
                 Call.onKick(e.player.con,new LocaleUtil(null).getinput("Sensitive.Thesaurus.join.kick",set1.iterator().next()));
             }
@@ -143,15 +139,15 @@ public class Event {
 
 		// 加入服务器时
 		Events.on(PlayerJoin.class, e -> {
-			if(Config.Login_Radical) {
+			if(Config.LOGIN_RADICAL) {
 				if(!Maps.Player_Data_boolean(e.player.uuid)) {
 					PlayerData playerdata = new PlayerData(e.player.uuid,e.player.name,0);
 					// 如果不需要时区 我可能会考虑db-ip.com
 					NewThred_SE(() -> PlayerData.playerip(playerdata,e.player,Vars.netServer.admins.getInfo(e.player.uuid).lastIP));
-					Call.onInfoToast(e.player.con,playerdata.Info.getinput("join.tourist",getLocalTimeFromUTC(0,1)),30f);
+					Call.onInfoToast(e.player.con,playerdata.info.getinput("join.tourist",getLocalTimeFromU(0,1)),30f);
 					Maps.setPlayer_Data(e.player.uuid,playerdata);
 				}
-				if(Maps.getPlayer_Data(e.player.uuid).Authority == 0) {
+				if(Maps.getPlayer_Data(e.player.uuid).authority == 0) {
 					// 设置队伍 登陆
 					e.player.kill();
 					e.player.setTeam(Team.derelict);
@@ -159,64 +155,61 @@ public class Event {
 				}
 				PlayerData playerdata = Maps.getPlayer_Data(e.player.uuid);
 				if (e.player.isAdmin) {
-                    playerdata.Authority = 2;
+                    playerdata.authority = 2;
                 }
-				playerdata.Online = true;
-				playerdata.Joincount++;
-				playerdata.Jointime = getLocalTimeFromUTC();
-				NewThred_DB(() -> savePlayer(playerdata,playerdata.User));
-				Call.onInfoToast(e.player.con,playerdata.Info.getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),40f);
+				playerdata.online = true;
+				playerdata.joinCount++;
+				playerdata.joinTime = getLocalTimeFromU();
+				NewThred_DB(() -> savePlayer(playerdata,playerdata.user));
+				Call.onInfoToast(e.player.con,playerdata.info.getinput("join.start",getLocalTimeFromU(playerdata.gmt,playerdata.timeFormat)),40f);
 			} else {
 				if(!Maps.Player_Data_boolean(e.player.uuid)) {
 					PlayerData playerdata = new PlayerData(e.player.uuid,e.player.name,1);
 					NewThred_SE(() -> PlayerData.playerip(playerdata,e.player,Vars.netServer.admins.getInfo(e.player.uuid).lastIP));
-					Call.onInfoMessage(e.player.con,playerdata.Info.getinput("gc"));
-					//Call.onInfoPopup(e.player.con,"info",30f,3,10,1,10,10);		
+					Call.onInfoMessage(e.player.con,playerdata.info.getinput("gc"));
 					Maps.setPlayer_Data(e.player.uuid,playerdata);
 					return;
 				}
 				PlayerData playerdata = Maps.getPlayer_Data(e.player.uuid);
 				if (e.player.isAdmin) {
-                    playerdata.Authority = 2;
+                    playerdata.authority = 2;
                 }
-				playerdata.Online = true;
-				playerdata.Joincount++;
-				playerdata.Jointime = getLocalTimeFromUTC();
-				Call.onInfoToast(e.player.con,playerdata.Info.getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),40f);
+				playerdata.online = true;
+				playerdata.joinCount++;
+				playerdata.joinTime = getLocalTimeFromU();
+				Call.onInfoToast(e.player.con,playerdata.info.getinput("join.start",getLocalTimeFromU(playerdata.gmt,playerdata.timeFormat)),40f);
 			}
 			state.rules.playerDamageMultiplier = 0f;
 			Call.onSetRules(state.rules);
-			//Call.onPlayerDeath(e.player);
 		});
 
 		// 发送消息时
 		Events.on(PlayerChatEvent.class, e -> {
-			// 去除语言检测
 			if((int)Maps.getPlayer_Data(e.player.uuid).Authority > 0) {
 				String msg = String.valueOf(e.message).toLowerCase();
 				if("y".equals(msg) || "n".equals(msg) || "cy".equals(msg) || "cn".equals(msg)) {
 					if(!Vote.sted) {
-						if (Vote.playerlist.contains(e.player.uuid)) {
-                            e.player.sendMessage(Maps.getPlayer_Data(e.player.uuid).Info.getinput("vote.rey"));
+						if (Vote.playerList.contains(e.player.uuid)) {
+                            e.player.sendMessage(Maps.getPlayer_Data(e.player.uuid).info.getinput("vote.rey"));
                         } else {
 							if (Vote.isteam) {
 								if (Vote.team.equals(e.player.getTeam())) {
                                     Data.vote.ToVote(e.player,msg);
                                 } else {
-                                    e.player.sendMessage(Maps.getPlayer_Data(e.player.uuid).Info.getinput("vote.team"));
+                                    e.player.sendMessage(Maps.getPlayer_Data(e.player.uuid).info.getinput("vote.team"));
                                 }
 							} else {
                                 Data.vote.ToVote(e.player,msg);
                             }
 						}	
 					} else {
-                        e.player.sendMessage(Maps.getPlayer_Data(e.player.uuid).Info.getinput("vote.noy"));
+                        e.player.sendMessage(Maps.getPlayer_Data(e.player.uuid).info.getinput("vote.noy"));
                     }
 				}
 			}
 
 			PlayerData playerdata = Maps.getPlayer_Data(e.player.uuid);
-			playerdata.Lastchat = getLocalTimeFromUTC(playerdata.GMT);
+			playerdata.lastChat = getLocalTimeFromU(playerdata.gmt);
 		});
 
 		// :(

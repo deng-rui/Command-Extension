@@ -1,14 +1,8 @@
 package extension.util.alone;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 //Java
 
 //DFA? Bloom Filter?
@@ -149,7 +143,8 @@ public class BadWord {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static void addBadWordToHashMap(Set<String> keyWordSet) {
-		wordMap = new HashMap(keyWordSet.size());     //初始化敏感词容器，减少扩容操作
+		//初始化敏感词容器，减少扩容操作
+		wordMap = new HashMap(keyWordSet.size());
 		String key = null;  
 		Map nowMap = null;
 		Map<String, String> newWorMap = null;
@@ -177,9 +172,8 @@ public class BadWord {
 			}
 		}
 	}
-	
-	
-	public static Set<String> BadWord(String text) {
+
+    public static Set<String> badWord(String text) {
 		Set<String> s = BadWord.words;
 		Map<String,String> map = BadWord.wordMap;
 		long beginTime = System.currentTimeMillis();

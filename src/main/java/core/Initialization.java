@@ -1,53 +1,38 @@
 package extension.core;
 
-import java.io.*;
+import arc.ApplicationListener;
+import arc.Core;
+import extension.core.ex.Threads;
+import extension.data.global.Config;
+import extension.data.global.Data;
+import extension.data.global.Lists;
+import extension.data.global.Maps;
+import extension.net.Net;
+import extension.util.LocaleUtil;
+import extension.util.file.FileUtil;
+import extension.util.log.Log;
+import mindustry.maps.Map;
+
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.HashSet;
-
-//Java
-
-import arc.ApplicationListener;
-import arc.Core;
-//Arc
-
-import mindustry.maps.Map;
-import mindustry.maps.Maps.*;
-//Mindustry
-
-import static mindustry.Vars.maps;
-//Mindustry-Static
-
-import extension.data.global.Data;
-import extension.data.global.Config;
-import extension.net.Net;
-import extension.core.ex.Threads;
-import extension.data.json.Json;
-import extension.data.global.Lists;
-import extension.data.global.Maps;
-import extension.util.file.FileUtil;
-import extension.util.LocaleUtil;
-import extension.util.log.Log;
-//GA-Exted
+import java.util.List;
 
 import static extension.data.db.SQLite.InitializationSQLite;
 import static extension.dependent.Librarydependency.importLib;
-import static extension.data.json.Json.getData;
-import static extension.util.file.LoadConfig.loadint;
 import static extension.util.file.LoadConfig.loadstring;
-//Static
-
-import com.alibaba.fastjson.JSONObject;
-//Json
+import static mindustry.Vars.maps;
 
 public class Initialization {
-	public void Start_Initialization() {
+
+    public void Start_Initialization() {
 		// 配置文件初始化
 		Config();
 		// 初始化配置
-		Config.LaodConfig();
+		Config.laodConfig();
 		//Resource();
 		//IsCN();
 		new Threads();
@@ -64,16 +49,19 @@ public class Initialization {
 		Maps.setLocale("en_US",new LocaleUtil("en_US"));
 	}
 
-	public void Override_Initialization() {
+
+    public void Override_Initialization() {
 		Cover_Gameover();
 	}
 
-	public void ReLoadConfig() {
-		Config.LaodConfig();
+
+    public void ReLoadConfig() {
+		Config.LAODCONFIG();
 		Player_Privilege_classification();
 	}
 
-	private void Cover_Gameover() { 
+
+    private void Cover_Gameover() {
 		// 覆盖掉自带的Gameover 使用自己的 便于自动更换模式
 		try {    
 			ApplicationListener sr = Core.app.getListeners().find(e -> "ServerControl".equalsIgnoreCase(e.getClass().getSimpleName()));
@@ -86,16 +74,18 @@ public class Initialization {
 		}        
 	}      
 
-	private void SQL() {
-		importLib("org.xerial","sqlite-jdbc","3.30.1",Data.Plugin_Lib_Path);
+
+    private void SQL() {
+		importLib("org.xerial","sqlite-jdbc","3.30.1",Data.PLUGIN_LIB_PATH);
 		if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists()) {
             InitializationSQLite();
         }
 	}
 
-	private void Config() {
+
+    private void Config() {
 		try {
-			if(!FileUtil.File(Data.Plugin_Data_Path).toPath("/Config.ini").exists()) {
+			if(!FileUtil.File(Data.PLUGIN_DATA_PATH).toPath("/Config.ini").exists()) {
 				String data = (String)FileUtil.readfile(false,new InputStreamReader(Initialization.class.getResourceAsStream("/Config.ini"), "UTF-8"));
 				FileUtil.writefile(data,false);
 				Log.info("Defect : Start creating write external Config File",Data.Plugin_Data_Path+"/Config.ini");
@@ -108,16 +98,16 @@ public class Initialization {
 	// CP出jar特定文件至硬盘
 	// 下个版本 弃用 -X
 	// 无法便于更新语言文件
-	private void Resource() {
+    private void Resource() {
 		try {
 			List file = (List)FileUtil.readfile(true,new InputStreamReader(Initialization.class.getResourceAsStream("/other/FileList.txt"), "UTF-8"));
 			for(int i=0,len=file.size();i<len;i++){
 				//Log.info((String)file.get(i));
-				if(!FileUtil.File(Data.Plugin_Resources_Path+(String)file.get(i)).exists()) {
+				if(!FileUtil.File(Data.PLUGIN_RESOURCES_PATH+(String)file.get(i)).exists()) {
 					//IPR必须加上/
 					String a = (String)FileUtil.readfile(false,new InputStreamReader(Initialization.class.getResourceAsStream((String)file.get(i)), "UTF-8"));
 					FileUtil.writefile(a,false);
-					Log.info("Defect : Start creating write external resource File",Data.Plugin_Resources_Path+(String)file.get(i));
+					Log.info("Defect : Start creating write external resource File",Data.PLUGIN_RESOURCES_PATH+(String)file.get(i));
 				}
 			}
 		}catch(UnsupportedEncodingException e){
@@ -125,7 +115,7 @@ public class Initialization {
 		}
 	}
 
-	public void MapList() {
+    public void MapList() {
 		Lists.EmptyMaps_List();
 		if(!maps.all().isEmpty()){
 			for(Map map : maps.all()){
@@ -144,6 +134,8 @@ public class Initialization {
 						case "a" :
 							Lists.addMaps_List(map.name().replace(' ', '_')+" "+map.width+"x"+map.height+" attack"+" A");
 							break;
+						default:
+							break;
 					}			
 				}
 			}
@@ -152,22 +144,23 @@ public class Initialization {
 		}
 	}
 
-	private void IsNetwork() {
-		Config.Server_Networking = Net.isConnect();
+    private void IsNetwork() {
+		Config.SERVER_NETWORKING = Net.isConnect();
 	}
-	private void IsCN() {
+
+    private void IsCN() {
 		
 	}
 
 // RG-1
-	private void Player_Privilege_classification() {
+    private void Player_Privilege_classification() {
 		String[] tempstring=loadstring("Privilege_Level").split(",");
 		int[] tempint = new int[tempstring.length];
 		for (int i = 0,len=tempstring.length;i<len; i++) {
             tempint[i] = Integer.parseInt(tempstring[i]);
         }
-		int temp[] = selectionSort(tempint);	
-		if(Config.Permission_Passing) {
+		int[] temp = selectionSort(tempint);
+		if(Config.PERMISSION_PASSING) {
 			for (int i=0,len=temp.length;i<len;i++) {
 				final String data = loadstring("Privilege."+temp[i]);
 				if (data == null) {
