@@ -29,17 +29,18 @@ public class Librarydependency implements Driver {
 
 	private static void downLoadFromUrl(String str, String name, String version, String country, String savePath) {
 		String[] temp=str.split("\\.");
-		url = "/";
+		StringBuilder uurl = new StringBuilder(64);
+		uurl.append("/");
 		for (int i = 0; i < temp.length; i++) {
-			url = url+temp[i]+"/";
+			uurl.append(temp[i]+"/");
 		}
 		if("China".equalsIgnoreCase(country)) {
-			url = "https://maven.aliyun.com/nexus/content/groups/public"+url+name+"/"+version+"/"+name+"-"+version+".jar";
+			url = "https://maven.aliyun.com/nexus/content/groups/public"+uurl.toString()+name+"/"+version+"/"+name+"-"+version+".jar";
 			// 解决aliyun 302跳转
 			Url302(url,savePath);
 			Log.debug("CN-ALI");
 		}else{
-			url = "https://repo1.maven.org/maven2"+url+name+"/"+version+"/"+name+"-"+version+".jar";
+			url = "https://repo1.maven.org/maven2"+uurl.toString()+name+"/"+version+"/"+name+"-"+version+".jar";
 			downUrl(url,savePath);
 			Log.debug("NO CN-MAVEN");
 		}

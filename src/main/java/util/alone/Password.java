@@ -1,15 +1,15 @@
 package extension.util.alone;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.SecureRandom;
-//Java
 
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
+//Java
 //Javax
 
 public class Password {
@@ -41,25 +41,25 @@ public class Password {
 	}
 	
 
-    public static boolean Passwdverify(String password, String passHash, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public static boolean passwdverify(String password, String passHash, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		String hash = genPasswordHash(password, salt);
 		return hash.equals(passHash);
 	}
 
 
     public static Map<String, Object> newPasswd(String pw) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		Map<String, Object> Password = new HashMap<String, Object>();
+		Map<String, Object> password = new HashMap<String, Object>(4);
 		String salt = genRandomSalt();
 		// 经过加盐后的密码摘要
 		String passwordHash = genPasswordHash(pw, salt);
 		// 同时储存密码hash和盐
-		Password.put("passwordHash",passwordHash);
-		Password.put("salt",salt);
-		boolean resualt = Passwdverify(pw, passwordHash, salt);
+		password.put("passwordHash",passwordHash);
+		password.put("salt",salt);
+		boolean resualt = passwdverify(pw, passwordHash, salt);
 		// 验证密码
-		Password.put("resualt",resualt);
+		password.put("resualt",resualt);
 		
-		return Password;
+		return password;
 	}
 
 }

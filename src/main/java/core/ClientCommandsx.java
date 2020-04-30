@@ -43,7 +43,7 @@ import extension.util.LocaleUtil;
 import extension.util.log.Log;
 //GA-Exted
 
-import static extension.core.ex.Extend.Authority_control;
+import static extension.core.ex.Extend.authorityControl;
 import static extension.core.ex.Extend.loadmaps;
 import static extension.core.ex.Extend.PlayerdatatoObject;
 import static extension.core.ex.Threads.NewThred_DB;
@@ -61,7 +61,7 @@ import static extension.util.alone.Password.Passwdverify;
 import static extension.util.DateUtil.LongtoTime;
 import static extension.util.DateUtil.getLocalTimeFromUTC;
 import static extension.util.ExtractUtil.Language_determination;
-import static extension.util.IsUtil.Blank;
+import static extension.util.IsUtil.isBlank;
 import static extension.util.IsUtil.NotisNumeric;
 //Static
 
@@ -112,7 +112,7 @@ public class ClientCommandsx {
                     }
 					count++;
 					if("4dV#-".equals(command.description.substring(0,5))) {
-						if(Authority_control(player,command.text)) {
+						if(authorityControl(player,command.text)) {
                             result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(localeUtil.getinput(command.description.substring(5,command.description.length()))).append("\n");
                         } else {
                             count--;
@@ -127,7 +127,7 @@ public class ClientCommandsx {
 
 		handler.<Player>register("login", "<id> <password>", "4dV#-login", (args, player) -> {
 			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!Authority_control(player,"login")) {
+			if(!authorityControl(player,"login")) {
                 player.sendMessage(localeUtil.getinput("authority.no"));
             } else {
 				final String id = args[0];
@@ -190,7 +190,7 @@ public class ClientCommandsx {
 
 		handler.<Player>register("register", "<new_id> <new_password> <password_repeat> [your_mail]", "4dV#-register", (args, player) -> {
 			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!Authority_control(player,"register")) {
+			if(!authorityControl(player,"register")) {
                 player.sendMessage(localeUtil.getinput("authority.no"));
             } else {
 				final String newid = args[0];
@@ -255,7 +255,7 @@ public class ClientCommandsx {
 
 		handler.<Player>register("ftpasswd", "<Email_at_registration> [Verification_Code]", "4dV#-ftpasswd", (args, player) -> {
 			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!Authority_control(player,"ftpasswd")) {
+			if(!authorityControl(player,"ftpasswd")) {
                 player.sendMessage(localeUtil.getinput("authority.no"));
             } else
 			{}
@@ -265,7 +265,7 @@ public class ClientCommandsx {
 		
 		handler.<Player>register("info","4dV#-info", (args, player) -> {
 			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!Authority_control(player,"info")) {
+			if(!authorityControl(player,"info")) {
 				player.sendMessage(localeUtil.getinput("authority.no"));
 			} else {
                 Call.onInfoMessage(player.con,localeUtil.getinputt("info.info.1",PlayerdatatoObject(Maps.getPlayer_Data(player.uuid))));
@@ -274,7 +274,7 @@ public class ClientCommandsx {
 
 		handler.<Player>register("status","4dV#-status", (args, player) -> {
 			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!Authority_control(player,"status")) {
+			if(!authorityControl(player,"status")) {
                 player.sendMessage(localeUtil.getinput("authority.no"));
             } else {
                 player.sendMessage(localeUtil.getinput("status.info",playerGroup.size(),world.getMap().name(),Core.graphics.getFramesPerSecond(),Core.app.getJavaHeap()/1024/1024));
@@ -283,7 +283,7 @@ public class ClientCommandsx {
 
 		handler.<Player>register("tpp","<player> <player>","4dV#-tpp", (args, player) -> {
 			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!Authority_control(player,"tpp")) {
+			if(!authorityControl(player,"tpp")) {
 				player.sendMessage(localeUtil.getinput("authority.no"));
 			} else {
 				if(player.isMobile) {
@@ -303,7 +303,7 @@ public class ClientCommandsx {
 
 		handler.<Player>register("tp","<player...>","4dV#-tp", (args, player) -> {
 			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!Authority_control(player,"tp")) {
+			if(!authorityControl(player,"tp")) {
 				player.sendMessage(localeUtil.getinput("authority.no"));
 			} else {
 				if(player.isMobile) {
@@ -321,7 +321,7 @@ public class ClientCommandsx {
 
 		handler.<Player>register("suicide","4dV#-suicide", (args, player) -> {
 			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!Authority_control(player,"suicide")) {
+			if(!authorityControl(player,"suicide")) {
 				player.sendMessage(localeUtil.getinput("authority.no"));
 			} else {
 				Player.onPlayerDeath(player);
@@ -331,7 +331,7 @@ public class ClientCommandsx {
 
 		handler.<Player>register("team","4dV#-team", (args, player) ->{
 			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!Authority_control(player,"team")) {
+			if(!authorityControl(player,"team")) {
 				player.sendMessage(localeUtil.getinput("authority.no"));
 			} else {
 				if(!state.rules.pvp){
@@ -356,7 +356,7 @@ public class ClientCommandsx {
 
 		handler.<Player>register("difficulty", "<difficulty>","4dV#-difficulty", (args, player) -> {
 			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!Authority_control(player,"difficulty")) {
+			if(!authorityControl(player,"difficulty")) {
 				player.sendMessage(localeUtil.getinput("authority.no"));
 			} else {
 				try {
@@ -369,7 +369,7 @@ public class ClientCommandsx {
 		});
 
 		handler.<Player>register("gameover","4dV#-gameover", (args, player) -> {
-			if(!Authority_control(player,"gameover")) {
+			if(!authorityControl(player,"gameover")) {
 				player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput("authority.no"));
 			} else {
 				Events.fire(new GameOverEvent(Team.crux));
@@ -378,7 +378,7 @@ public class ClientCommandsx {
 
 /*
 		handler.<Player>register("host","<map_number>",getinput("host"), (args, player) -> {
-			if(Authority_control(player,"host")) {
+			if(authorityControl(player,"host")) {
 				player.sendMessage(localeUtil.getinput("authority.no"));
 			} else {
 				host(player,args[0]);
@@ -386,7 +386,7 @@ public class ClientCommandsx {
 		});
 */
 		handler.<Player>register("runwave","4dV#-runwave", (args, player) -> {
-			if(!Authority_control(player,"runwave")) {
+			if(!authorityControl(player,"runwave")) {
 				player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput("authority.no"));
 			} else {
 				logic.runWave();
@@ -399,18 +399,18 @@ public class ClientCommandsx {
 
 		handler.<Player>register("tr","<Output-language> <text...>","4dV#-tr", (args, player) -> {
 			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!Authority_control(player,"tr")) {
+			if(!authorityControl(player,"tr")) {
 				player.sendMessage(localeUtil.getinput("authority.no"));
 			} else {
 				player.sendMessage(localeUtil.getinput("tr.tips"));
 				// 默认EN
-				Call.sendMessage("["+player.name+"]"+"[green] : [] [white]"+new Google().translate(args[1],(Blank(args[0])) ? "en" : args[1] )+"   -From Google Translator");
+				Call.sendMessage("["+player.name+"]"+"[green] : [] [white]"+new Google().translate(args[1],(isBlank(args[0])) ? "en" : args[1] )+"   -From Google Translator");
 			}	
 		});
 
 		handler.<Player>register("maps", "[page] [mode]","4dV#-maps", (args, player) -> {
 			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!Authority_control(player,"maps")) {
+			if(!authorityControl(player,"maps")) {
 				player.sendMessage(localeUtil.getinput("authority.no"));
 			} else {
 				if(NotisNumeric(args.length > 0?args[0]:"1")) {
@@ -445,7 +445,7 @@ public class ClientCommandsx {
 
 		handler.<Player>register("vote", "<help> [parameter]","4dV#-vote", (args, player) -> {
 			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!Authority_control(player,"vote")) {
+			if(!authorityControl(player,"vote")) {
 				player.sendMessage(localeUtil.getinput("authority.no"));
 			} else {
 				if(!Vote.sted) {
@@ -493,7 +493,7 @@ public class ClientCommandsx {
 		});
 
 		handler.<Player>register("votekick", "<player>","4dV#-votekick", (args, player) -> {
-			if(!Authority_control(player,"votekick")) {
+			if(!authorityControl(player,"votekick")) {
 				player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput("authority.no"));
 			} else {
 				new Vote(player,"kick",args[0]);
@@ -502,7 +502,7 @@ public class ClientCommandsx {
 
 		handler.<Player>register("ukey", "<key>","4dV#-ukey", (args, player) -> {
 			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!Authority_control(player,"ukey")) {
+			if(!authorityControl(player,"ukey")) {
 				player.sendMessage(localeUtil.getinput("authority.no"));
 			} else {
 				if(!isSQLite_Key(args[0])) {

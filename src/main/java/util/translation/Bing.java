@@ -9,8 +9,8 @@ import java.net.URLEncoder;
 
 import static extension.net.HttpRequest.doPost;
 import static extension.util.ExtractUtil.getkeys;
-import static extension.util.IsUtil.Blank;
-import static extension.util.IsUtil.NotBlank;
+import static extension.util.IsUtil.isBlank;
+import static extension.util.IsUtil.NotisBlank;
 
 //Java
 //GA-Exted
@@ -34,7 +34,7 @@ public class Bing {
 	 */
 
     public String translate(String word, String from, String to) {
-		if (Blank(word)) {
+		if (isBlank(word)) {
             return null;
         }
 		StringBuffer result = new StringBuffer();
@@ -58,7 +58,7 @@ public class Bing {
 		for (int i = 0; i < arrayy.size(); i++) {
 		JSONObject re = arrayy.getJSONObject(i);
 		String r = re.getString("text");
-			if (NotBlank(r)) {
+			if (NotisBlank(r)) {
 				result.append(r);
 			}
 		}

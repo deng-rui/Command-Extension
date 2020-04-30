@@ -3,20 +3,20 @@ package extension.util.encryption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class SHA {
+public class Sha {
 
 
-    public String SHA256(final String strText) {
-		return SHA(strText, "SHA-256");
+    public String sha256(final String strText) {
+		return toSha(strText, "SHA-256");
 	}
 
 
-    public String SHA512(final String strText) {
-		return SHA(strText, "SHA-512");
+    public String sha512(final String strText) {
+		return toSha(strText, "SHA-512");
 	}
 
 
-    private String SHA(final String strText, final String strType) {
+    private String toSha(final String strText, final String strType) {
 		// 返回值
 		String strResult = null;
 

@@ -5,8 +5,8 @@ import java.util.regex.Pattern;
 //Java
 
 import static extension.net.HttpRequest.doGet;
-import static extension.util.IsUtil.NotBlank;
-import static extension.util.String_filteringUtil.removeAllBlank;
+import static extension.util.IsUtil.NotisBlank;
+import static extension.util.String_filteringUtil.removeAllisBlank;
 import static extension.util.String_filteringUtil.trim;
 //Static
 
@@ -41,8 +41,8 @@ public class ExtractUtil {
 		String tkk = "";
 		String result = doGet(url);
 		// 去除返回数据空格
-		String text = removeAllBlank(result);
-		if (NotBlank(result)) {
+		String text = removeAllisBlank(result);
+		if (NotisBlank(result)) {
 			String matchString = findMatchString(text, keys);
 			// 提取目标
 			tkk = matchString.substring(numbero, matchString.length() - numbert);

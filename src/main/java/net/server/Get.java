@@ -21,7 +21,7 @@ import extension.util.log.Log;
 
 import static extension.util.log.Error.Code;
 import static extension.util.RandomUtil.generateStr;
-import static extension.util.IsUtil.Blank;
+import static extension.util.IsUtil.isBlank;
 
 /*
  *Web 
@@ -123,7 +123,7 @@ class Key extends HttpServlet {
 		Get.setHandler(response);
 		Map<String, Object> result = new HashMap<String, Object>();
 		String botuuid = request.getParameter("botuuid");
-		if(Blank(botuuid)) {
+		if(isBlank(botuuid)) {
 			result.put("state",Code("INCOMPLETE_PARAMETERS"));
 			out.println(result);
 			out.close();

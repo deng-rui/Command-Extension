@@ -1,27 +1,22 @@
 
 package extension.net.server;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.GZIPOutputStream;
-
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.handler.AbstractHandler;
-
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet; 
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import extension.net.HttpRequest;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.zip.GZIPOutputStream;
 
 import static extension.util.log.Error.Code;
-import static extension.util.RandomUtil.generateStr;
-
-import com.alibaba.fastjson.JSON;
 
 public class Post {
 	protected void register(ServletContextHandler context) {
@@ -83,9 +78,9 @@ class Bind extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		response.setStatus(HttpServletResponse.SC_OK);
-		PrintWriter out = Get.getGzipWriter(request,response);
-		Get.setHandler(response);
-		Map<String,Object> result = new HashMap<>();
+		PrintWriter out = extension.net.server.Get.getGzipWriter(request,response);
+		extension.net.server.Get.setHandler(response);
+		Map<String,Object> result = new HashMap<String,Object>(8);
 		result.put("state",Code("SUCCESS"));
 		result.put("result",null);
 		out.println(result);

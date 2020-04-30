@@ -68,14 +68,14 @@ public class Threads {
 	// 定时任务 1min/S
 
     public Threads() {
-		Runnable Atime=new Runnable() {
+		Runnable atime=new Runnable() {
 			@Override
 			public void run() {
 				custom();
 				Data.ismsg = true;
 				//
-				LoginStatus();
-				AuthorityStatus();
+				loginStatus();
+				authorityStatus();
 
 				if (Config.DAY_AND_NIGHT) {
                     dayAndNightShift();
@@ -85,7 +85,7 @@ public class Threads {
                 }
 			}
 		};
-		THREAD_TIME=Data.SERVICE.scheduleAtFixedRate(Atime,1,1,TimeUnit.MINUTES);
+		THREAD_TIME=Data.SERVICE.scheduleAtFixedRate(atime,1,1,TimeUnit.MINUTES);
 	}
 
 	public static void close() {
@@ -96,24 +96,24 @@ public class Threads {
 	}
 
 
-    public static void NewThred_DB(Runnable run) {
+    public static void newThredDb(Runnable run) {
 		Data.THRED_DB_SERVICE.execute(run);
 	}
 
 
-    public static void NewThred_SE(Runnable run) {
+    public static void newThredSe(Runnable run) {
 		Data.THRED_SERVICE.execute(run);
 	}
 
 	// 用户过期?
 
-    private static void LoginStatus() {
+    private static void loginStatus() {
 		if (Config.LOGIN_TIME > STATUS_LOGIN) {
 			STATUS_LOGIN++;
 			return;
 		}
 		STATUS_LOGIN = 1;
-		Map data = Maps.getMapPlayer_Data();
+		Map data = Maps.getMapPlayerData();
 		Iterator it = data.entrySet().iterator();
 		while(it.hasNext()){
 			Entry entry = (Entry)it.next();
@@ -122,20 +122,20 @@ public class Threads {
 			if (playerdata.backTime != 0L) {
 				long currenttime = getLocalTimeFromU();
 				if (playerdata.backTime <= currenttime) {
-                    Maps.removePlayer_Data((String)entry.getKey());
+                    Maps.removePlayerData((String)entry.getKey());
                 }
 			}
 		}
 	}
 
 
-    private static void AuthorityStatus() {
+    private static void authorityStatus() {
 		if (5 > STATUS_AUTHORITY) {
 			STATUS_AUTHORITY++;
 			return;
 		}
 		STATUS_AUTHORITY = 1;
-		Map data = Maps.getMapPlayer_Data();
+		Map data = Maps.getMapPlayerData();
 		Iterator it = data.entrySet().iterator();
 		while(it.hasNext()){
 			Entry entry = (Entry)it.next();
@@ -173,11 +173,11 @@ public class Threads {
 			msg.setSubject("Server current status");
 			//
 			OperatingSystemMXBean system = ManagementFactory.getOperatingSystemMXBean();
-			final long MB = 1024 * 1024;
+			final long mb = 1024 * 1024;
 			long totalPhysicalMemory = getLongFromOperatingSystem(system,"getTotalPhysicalMemorySize");
 			long freePhysicalMemory = getLongFromOperatingSystem(system, "getFreePhysicalMemorySize");
 			long usedPhysicalMemorySize =totalPhysicalMemory - freePhysicalMemory;
-			Object[] pasm = {system.getName(),totalPhysicalMemory/MB,freePhysicalMemory/MB,usedPhysicalMemorySize/MB,Core.graphics.getFramesPerSecond(),Core.app.getJavaHeap()/MB,secToTime((long)ManagementFactory.getRuntimeMXBean().getUptime()/1000),getLocalTimeFromUTC(0,1)+" UTC"};
+			Object[] pasm = {system.getName(),totalPhysicalMemory/MB,freePhysicalMemory/MB,usedPhysicalMemorySize/MB,Core.graphics.getFramesPerSecond(),Core.app.getJavaHeap()/mb,secToTime((long)ManagementFactory.getRuntimeMXBean().getUptime()/1000),getLocalTimeFromU(0,1)+" UTC"};
 			//
 			msg.setContent(customLoad("Mail.Report",pasm),"text/html;charset = UTF-8");
 			msg.setFrom(new InternetAddress(Config.Mail_SMTP_User));
@@ -233,8 +233,8 @@ public class Threads {
 			}	  
 		} else {
 			// 白天的0-1.5f好像没有变换
-			if (status_day_night < Config.DAY_TIME) {
-                status_day_night++;
+			if (STATUS_DAY_NIGHT < Config.DAY_TIME) {
+                STATUS_DAY_NIGHT++;
             } else {
 				DAY_OR_NIGHT = true;
 				GRADUAL_CHANGE = true;

@@ -10,7 +10,7 @@ public class String_filteringUtil {
 		return matcher.group(0);
 	}
 
-	public static String removeAllBlank(String s){
+	public static String removeAllisBlank(String s){
 		String result = "";
 		if(null!=s && !"".equals(s)){
 			result = s.replaceAll("[　*| *| *|//s*]*", "");
@@ -27,7 +27,7 @@ public class String_filteringUtil {
 	}
 
 
-    public static String removeAll_EN(String s){
+    public static String removeAllEn(String s){
 		String result = "";
 		if(null!=s && !"".equals(s)){
 			result = s.replaceAll("[^(A-Za-z)]", "");
@@ -36,7 +36,7 @@ public class String_filteringUtil {
 	}
 
 
-    public static String removeAll_CN(String s){
+    public static String removeAllCn(String s){
 		String result = "";
 		if(null!=s && !"".equals(s)){
 			result = s.replaceAll("[^(\\u4e00-\\u9fa5)]", "");

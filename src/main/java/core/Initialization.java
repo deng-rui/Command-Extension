@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import static extension.data.db.SQLite.InitializationSQLite;
+import static extension.data.db.SQLite.initSqlite;
 import static extension.dependent.Librarydependency.importLib;
 import static extension.util.file.LoadConfig.loadstring;
 import static mindustry.Vars.maps;
@@ -37,9 +38,9 @@ public class Initialization {
 		//IsCN();
 		new Threads();
 		//新线程 初始化数据
-		Threads.NewThred_SE(() -> SQL());
+		Threads.newThredSe(() -> sql());
 		// 新线程 初始化权限list
-		Threads.NewThred_SE(() -> Player_Privilege_classification());
+		Threads.newThredSe(() -> playerPrivilegeClassification());
 		
 		Maps.setLocale("zh_CN",new LocaleUtil("zh_CN"));
 		Maps.setLocale("zh_HK",new LocaleUtil("zh_HK"));
@@ -78,7 +79,7 @@ public class Initialization {
     private void sql() {
 		importLib("org.xerial","sqlite-jdbc","3.30.1",Data.PLUGIN_LIB_PATH);
 		if(!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists()) {
-            InitializationSQLite();
+            initSqlite();
         }
 	}
 
@@ -102,7 +103,6 @@ public class Initialization {
 		try {
 			List file = (List)FileUtil.readfile(true,new InputStreamReader(Initialization.class.getResourceAsStream("/other/FileList.txt"), "UTF-8"));
 			for(int i=0,len=file.size();i<len;i++){
-				//Log.info((String)file.get(i));
 				if(!FileUtil.File(Data.PLUGIN_RESOURCES_PATH+(String)file.get(i)).exists()) {
 					//IPR必须加上/
 					String a = (String)FileUtil.readfile(false,new InputStreamReader(Initialization.class.getResourceAsStream((String)file.get(i)), "UTF-8"));
@@ -148,7 +148,7 @@ public class Initialization {
 		Config.SERVER_NETWORKING = Net.isConnect();
 	}
 
-    private void isCN() {
+    private void isCn() {
 		
 	}
 

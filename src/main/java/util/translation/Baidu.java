@@ -11,7 +11,7 @@ import extension.util.encryption.MD5;
 
 import static extension.net.HttpRequest.doPost;
 import static extension.util.ExtractUtil.unicodeDecode;
-import static extension.util.IsUtil.NotBlank;
+import static extension.util.IsUtil.NotisBlank;
 
 
 /**
@@ -36,7 +36,7 @@ public class Baidu {
 		JSONArray rArray = json.getJSONArray("trans_result");
 		for (int i = 0; i < rArray.size(); i++) {
 			JSONObject r = (JSONObject)rArray.get(i);
-			if (NotBlank(r)) {
+			if (NotisBlank(r)) {
                 result = r.getString("dst");
             }
 		}

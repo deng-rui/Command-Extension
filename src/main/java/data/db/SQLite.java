@@ -17,7 +17,7 @@ import java.sql.Statement;
 public class SQLite {
 
 
-    public static void InitializationSQLite() {
+    public static void initSqlite() {
 		try {
 			String sql;
 			Connection c = DriverManager.getConnection("jdbc:sqlite:"+FileUtil.File(Data.Plugin_Data_Path).getPath("Data.db"));

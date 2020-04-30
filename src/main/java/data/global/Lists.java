@@ -20,7 +20,7 @@ public class Lists {
 	//获取
 
 
-    final public static void EmptyMapsList() {
+    final public static void emptyMapsList() {
 		Maps_List = Collections.synchronizedList(new ArrayList<String>());
 	}
 	//清空

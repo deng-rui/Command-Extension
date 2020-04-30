@@ -126,7 +126,8 @@ public class Config {
 	}
 
 	private static float dis(int a) {
-		DecimalFormat df=new DecimalFormat("0.00");//设置保留位数
+    	//设置保留位数
+		DecimalFormat df=new DecimalFormat("0.00");
 		return Float.parseFloat(df.format(1.2f/(a*2)));
 	}
 

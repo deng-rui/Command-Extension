@@ -23,7 +23,7 @@ import extension.util.log.Log;
 //GA-Exted
 
 import static extension.data.json.Json.getData;
-import static extension.util.IsUtil.Blank;
+import static extension.util.IsUtil.isBlank;
 //GA-Exted
 
 import com.alibaba.fastjson.JSONArray;
@@ -81,7 +81,7 @@ public class LocaleUtil {
 	// 我还未想好到底如何实现 help :(
 	private String core(String input,Object[] params) {
 		String[] lang = lg;
-		if(Blank(lg)) {
+		if(isBlank(lg)) {
             lang = Config.Server_Language.split("_");
         }
 		if (params == null) {

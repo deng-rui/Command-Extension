@@ -11,8 +11,8 @@ import java.net.URLEncoder;
 
 import static extension.net.HttpRequest.doGet;
 import static extension.util.ExtractUtil.getkeys;
-import static extension.util.IsUtil.Blank;
-import static extension.util.IsUtil.NotBlank;
+import static extension.util.IsUtil.isBlank;
+import static extension.util.IsUtil.NotisBlank;
 
 //Java
 //GA-Exted
@@ -76,11 +76,11 @@ public class Google {
 	 * @version 1.0
 	 */
 	public String translate(String word, String from, String to) {
-		if (Blank(word)) {
+		if (isBlank(word)) {
             return null;
         }
 		String tkk = getkeys("https://translate.google.cn/","tkk:.*?',",5,2);
-		if (Blank(tkk)) {
+		if (isBlank(tkk)) {
             return null;
         }
 		String tk = getTk(word, tkk);
@@ -101,7 +101,7 @@ public class Google {
 		StringBuffer rBuffer = new StringBuffer();
 		for (int i = 0; i < rArray.size(); i++) {
 			String r = rArray.getJSONArray(i).getString(0);
-			if (NotBlank(r)) {
+			if (NotisBlank(r)) {
 				rBuffer.append(r);
 			}
 		}

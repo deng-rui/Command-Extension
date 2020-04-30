@@ -155,7 +155,7 @@ public class BadWord {
 					nowMap = (Map) wordMap;
 				}
 				else{
-					newWorMap = new HashMap<String,String>();
+					newWorMap = new HashMap<String,String>(256);
 					newWorMap.put("isEnd", "0");
 					nowMap.put(keyChar, newWorMap);
 					nowMap = newWorMap;

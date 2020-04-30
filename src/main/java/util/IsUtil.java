@@ -7,7 +7,7 @@ public class IsUtil {
 	private final static Pattern pattern = Pattern.compile("[0-9]*");
 	
 
-    public static boolean isblank(Object string) {
+    public static boolean isBlank(Object string) {
 		if (string == null || "".equals(string.toString().trim())) {
             return true;
         }
@@ -15,8 +15,8 @@ public class IsUtil {
 	}
 
 
-    public static boolean notBlank(Object string) {
-		return !isblank(string);
+    public static boolean notisBlank(Object string) {
+		return !isBlank(string);
 	}
 
 	public static boolean isNumeric(String string) {

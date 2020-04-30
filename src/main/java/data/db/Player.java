@@ -1,21 +1,21 @@
 package extension.data.db;
 
-import java.util.*;
-import java.sql.*;
-//Java
-
-import arc.*;
-import arc.Core;
-//Arc
-
-import extension.data.global.Config;
 import extension.data.global.Data;
 import extension.util.file.FileUtil;
 import extension.util.log.Log;
-//GA-Exted
 
-import static extension.util.ExtractUtil.InttoBoolean;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static extension.util.ExtractUtil.BooleantoInt;
+import static extension.util.ExtractUtil.InttoBoolean;
+
+//Java
+//Arc
+//GA-Exted
 //Static
 
 public class Player {
@@ -51,7 +51,7 @@ public class Player {
 		}
 	}
 
-	public static void savePlayer(PlayerData data, String user) {
+	public static void savePlayer(extension.data.db.PlayerData data, String user) {
 		PreparedStatement playerdata = null;
 		PreparedStatement playerpriv = null;
 		try {
@@ -104,7 +104,7 @@ public class Player {
 	}
 
 
-    public static void getSQLite(PlayerData data, String user) {
+    public static void getSQLite(extension.data.db.PlayerData data, String user) {
 		PreparedStatement playerdata = null;
 		PreparedStatement playerpriv = null;
 		ResultSet rs = null;
@@ -238,7 +238,7 @@ public class Player {
 			key = c.prepareStatement("SELECT * FROM KeyData");
 			rs = key.executeQuery();
 			while (rs.next()) {
-				Map<String,Object> data = new HashMap<String,Object>();
+				Map<String,Object> data = new HashMap<String,Object>(8);
 				data.put("KEY",rs.getString("KEY"));
 				data.put("Authority",rs.getInt("Authority"));
 				data.put("Total",rs.getInt("Total"));
@@ -259,7 +259,7 @@ public class Player {
     public static Map<String,Object> GetKey(String KEY) {
 		PreparedStatement key = null;
 		ResultSet rs = null;
-		Map<String,Object> result = new HashMap<String,Object>();
+		Map<String,Object> result = new HashMap<String,Object>(8);
 		try {
 			key = c.prepareStatement("SELECT * FROM KeyData WHERE KEY=?");
 			key.setString(1,KEY);
