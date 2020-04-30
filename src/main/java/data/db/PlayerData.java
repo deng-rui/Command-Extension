@@ -62,7 +62,7 @@ public class PlayerData {
     public LocaleUtil info;
 	private final static Pattern REG = Pattern.compile("^(127\\.0\\.0\\.1)|(localhost)|(10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|(172\\.((1[6-9])|(2\\d)|(3[01]))\\.\\d{1,3}\\.\\d{1,3})|(192\\.168\\.\\d{1,3}\\.\\d{1,3})$");
 
-    public playerData(String uuid, String nae, int authority) {
+    public PlayerData(String uuid, String nae, int authority) {
 		this.uuid 					= uuid;
 		user 						= "NO Login";
 		this.name 					= name;

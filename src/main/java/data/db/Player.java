@@ -10,44 +10,43 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static extension.util.ExtractUtil.BooleantoInt;
-import static extension.util.ExtractUtil.InttoBoolean;
+import static extension.util.ExtractUtil.booleantoInt;
+import static extension.util.ExtractUtil.inttoBoolean;
 
-//Java
-//Arc
-//GA-Exted
-//Static
-
+/**
+ * @author Dr
+ * @Date 2020.4.30 14:40:28
+ */
 public class Player {
 
-	private static Connection c;
+	private static final Connection C;
 
 	static {
 		try {
-			c = DriverManager.getConnection("jdbc:sqlite:"+FileUtil.File(Data.Plugin_Data_Path).getPath("Data.db"));
-			c.setAutoCommit(false);
+			C = DriverManager.getConnection("jdbc:sqlite:"+FileUtil.File(Data.PLUGIN_DATA_PATH).getPath("Data.db"));
+			C.setAutoCommit(false);
 		} catch (Exception e) {
 			Log.fatal(e);
 		}
 	}
 
 
-    public static void InitializationPlayersSQLite(String User) {
+    public static void initPlayersSqlite(String user) {
 		PreparedStatement playerdata = null;
 		PreparedStatement playerpriv = null;
 		try {	
-			playerdata = c.prepareStatement("INSERT INTO PlayerData VALUES ('0',?,'0','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','0','0','0','0')");
-			playerpriv = c.prepareStatement("INSERT INTO PlayerPrivate VALUES (?,'0','1','0','0')");
-			playerdata.setString(1,User);
-			playerpriv.setString(1,User);
+			playerdata = C.prepareStatement("INSERT INTO PlayerData VALUES ('0',?,'0','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','0','0','0','0')");
+			playerpriv = C.prepareStatement("INSERT INTO PlayerPrivate VALUES (?,'0','1','0','0')");
+			playerdata.setString(1,user);
+			playerpriv.setString(1,user);
 			playerdata.execute();
 			playerpriv.execute();
-			c.commit();
+			C.commit();
 		} catch (Exception e) {
 			Log.fatal(e);
 		} finally {
-			close(playerdata);
-			close(playerpriv);
+			Player.close(playerdata);
+			Player.close(playerpriv);
 		}
 	}
 
@@ -55,120 +54,119 @@ public class Player {
 		PreparedStatement playerdata = null;
 		PreparedStatement playerpriv = null;
 		try {
-			playerdata = c.prepareStatement("UPDATE PlayerData SET UUID=?,User=?,IP=?,GMT=?,Country=?,Time_format=?,Language=?,LastLogin=?,Buildcount=?,Dismantledcount=?,Cumulative_build=?,Pipe_build=?,Kickcount=?,Translate=?,Level=?,Exp=?,Reqexp=?,Reqtotalexp=?,Playtime=?,Pvpwincount=?,Pvplosecount=?,Authority=?,Authority_effective_time=?,Lastchat=?,Deadcount=?,Killcount=?,Joincount=?,Breakcount=? WHERE User=?");
-			playerpriv = c.prepareStatement("UPDATE PlayerPrivate SET User=?,Mail=?,Online=?,PasswordHash=?,CSPRNG=? WHERE User=?");
-			playerdata.setString(1,data.UUID);
-			playerdata.setString(2,data.User);
-			playerdata.setLong(3,data.IP);
-			playerdata.setInt(4,data.GMT);
-			playerdata.setString(5,data.Country);
-			playerdata.setByte(6,data.Time_format);
-			playerdata.setString(7,data.Language);
-			playerdata.setLong(8,data.LastLogin);
-			playerdata.setInt(9,data.Buildcount);
-			playerdata.setInt(10,data.Dismantledcount);
-			playerdata.setInt(11,data.Cumulative_build);
-			playerdata.setInt(12,data.Pipe_build);
-			playerdata.setInt(13,data.Kickcount);
-			playerdata.setInt(14,BooleantoInt(data.Translate));
-			playerdata.setInt(15,data.Level);
-			playerdata.setShort(16,data.Exp);
-			playerdata.setLong(17,data.Reqexp);
-			playerdata.setLong(18,data.Reqtotalexp);
-			playerdata.setLong(19,data.Playtime);
-			playerdata.setInt(20,data.Pvpwincount);
-			playerdata.setInt(21,data.Pvplosecount);
-			playerdata.setInt(22,data.Authority);
-			playerdata.setLong(23,data.Authority_effective_time);
-			playerdata.setLong(24,data.Lastchat);
-			playerdata.setInt(25,data.Deadcount);
-			playerdata.setInt(26,data.Killcount);
-			playerdata.setInt(27,data.Joincount);
-			playerdata.setInt(28,data.Breakcount);
+			playerdata = C.prepareStatement("UPDATE PlayerData SET UUID=?,User=?,IP=?,GMT=?,Country=?,Time_format=?,Language=?,LastLogin=?,Buildcount=?,Dismantledcount=?,Cumulative_build=?,Pipe_build=?,Kickcount=?,Translate=?,Level=?,Exp=?,Reqexp=?,Reqtotalexp=?,Playtime=?,Pvpwincount=?,Pvplosecount=?,Authority=?,Authority_effective_time=?,Lastchat=?,Deadcount=?,Killcount=?,Joincount=?,Breakcount=? WHERE User=?");
+			playerpriv = C.prepareStatement("UPDATE PlayerPrivate SET User=?,Mail=?,Online=?,PasswordHash=?,CSPRNG=? WHERE User=?");
+			playerdata.setString(1,data.uuid);
+			playerdata.setString(2,data.user);
+			playerdata.setLong(3,data.ip);
+			playerdata.setInt(4,data.gmt);
+			playerdata.setString(5,data.country);
+			playerdata.setByte(6,data.timeFormat);
+			playerdata.setString(7,data.language);
+			playerdata.setLong(8,data.lastLogin);
+			playerdata.setInt(9,data.buildCount);
+			playerdata.setInt(10,data.dismantledCount);
+			playerdata.setInt(11,data.cumulativeBuild);
+			playerdata.setInt(12,data.pipeBuild);
+			playerdata.setInt(13,data.kickCount);
+			playerdata.setInt(14,booleantoInt(data.translate));
+			playerdata.setInt(15,data.level);
+			playerdata.setShort(16,data.exp);
+			playerdata.setLong(17,data.reqexp);
+			playerdata.setLong(18,data.reqtotalExp);
+			playerdata.setLong(19,data.playTime);
+			playerdata.setInt(20,data.pvpwinCount);
+			playerdata.setInt(21,data.pvploseCount);
+			playerdata.setInt(22,data.authority);
+			playerdata.setLong(23,data.authorityEffectiveTime);
+			playerdata.setLong(24,data.lastChat);
+			playerdata.setInt(25,data.deadCount);
+			playerdata.setInt(26,data.killCount);
+			playerdata.setInt(27,data.joinCount);
+			playerdata.setInt(28,data.breakCount);
 			playerdata.setString(29,user);
 			playerdata.execute();
-			playerpriv.setString(1,data.User);
-			playerpriv.setString(2,data.Mail);
-			playerpriv.setInt(3,BooleantoInt(data.Online));
-			playerpriv.setString(4,data.PasswordHash);
-			playerpriv.setString(5,data.CSPRNG);
+			playerpriv.setString(1,data.user);
+			playerpriv.setString(2,data.mail);
+			playerpriv.setInt(3,booleantoInt(data.online));
+			playerpriv.setString(4,data.passwordHash);
+			playerpriv.setString(5,data.csprng);
 			playerpriv.setString(6,user);
 			playerpriv.execute();
-			c.commit();
+			C.commit();
 		} catch (SQLException e) {
 			Log.error(e);
 		} finally {
-			close(playerdata);
-			close(playerpriv);
+			Player.close(playerdata);
+			Player.close(playerpriv);
 		}
 	}
 
 
-    public static void getSQLite(extension.data.db.PlayerData data, String user) {
+    public static void getSqlite(extension.data.db.PlayerData data, String user) {
 		PreparedStatement playerdata = null;
 		PreparedStatement playerpriv = null;
 		ResultSet rs = null;
 		ResultSet rss = null;
 		try {
-			playerdata = c.prepareStatement("SELECT * FROM PlayerData WHERE User=?");
+			playerdata = C.prepareStatement("SELECT * FROM PlayerData WHERE User=?");
 			playerdata.setString(1,user);
 			rs = playerdata.executeQuery();
 			while ( rs.next() ) {
 				// 防止游戏玩一半登录 导致数据飞天
-				data.UUID 						= rs.getString("UUID");
-				data.User 						= rs.getString("User");
-				data.IP 						= rs.getLong("IP");
-				data.GMT 						= rs.getInt("GMT");
-				data.Country 					= rs.getString("Country");
-				data.Time_format 				= rs.getByte("Time_format");
-				data.Language 					= rs.getString("Language");
-				data.LastLogin 					= rs.getLong("LastLogin");
-				//data.Online 					= rs.getInt("Online");
-				data.Buildcount 				= data.Buildcount + rs.getInt("Buildcount");
-				data.Dismantledcount 			= data.Dismantledcount + rs.getInt("Dismantledcount");
-				data.Cumulative_build 			= data.Cumulative_build + rs.getInt("Cumulative_build");
-				data.Pipe_build					= data.Pipe_build + rs.getInt("Pipe_build");
-				data.Kickcount 					= data.Kickcount + rs.getInt("Kickcount");
-				data.Translate 					= InttoBoolean(rs.getInt("Translate"));
-				data.Level 						= rs.getInt("Level");
-				data.Exp 						= rs.getShort("Exp");
-				data.Reqexp 					= rs.getLong("Reqexp");
-				data.Reqtotalexp 				= rs.getLong("Reqtotalexp");
-				data.Playtime 					= data.Playtime + rs.getLong("Playtime");
-				data.Pvpwincount 				= data.Pvpwincount + rs.getInt("Pvpwincount");
-				data.Pvplosecount 				= data.Pvplosecount + rs.getInt("Pvplosecount");
-				data.Authority 					= rs.getInt("Authority");
-				data.Authority_effective_time 	= rs.getLong("Authority_effective_time");
-				data.Lastchat 					= rs.getLong("Lastchat");
-				data.Deadcount 					= data.Deadcount + rs.getInt("Deadcount");
-				data.Killcount 					= data.Killcount + rs.getInt("Killcount");
-				data.Joincount 					= data.Joincount + rs.getInt("Joincount");
-				data.Breakcount 				= data.Breakcount + rs.getInt("Breakcount");
+				data.uuid 						= rs.getString("UUID");
+				data.user 						= rs.getString("User");
+				data.ip 						= rs.getLong("IP");
+				data.gmt 						= rs.getInt("GMT");
+				data.country 					= rs.getString("Country");
+				data.timeFormat 				= rs.getByte("Time_format");
+				data.language 					= rs.getString("Language");
+				data.lastLogin 					= rs.getLong("LastLogin");
+				data.buildCount 				+=rs.getInt("Buildcount");
+				data.dismantledCount 			+=rs.getInt("Dismantledcount");
+				data.cumulativeBuild 			+=rs.getInt("Cumulative_build");
+				data.pipeBuild					+=rs.getInt("Pipe_build");
+				data.kickCount 					+=rs.getInt("Kickcount");
+				data.translate 					= inttoBoolean(rs.getInt("Translate"));
+				data.level 						= rs.getInt("Level");
+				data.exp 						= rs.getShort("Exp");
+				data.reqexp 					= rs.getLong("Reqexp");
+				data.reqtotalExp 				= rs.getLong("Reqtotalexp");
+				data.playTime 					+=rs.getLong("Playtime");
+				data.pvpwinCount 				+=rs.getInt("Pvpwincount");
+				data.pvploseCount 				+=rs.getInt("Pvplosecount");
+				data.authority 					= rs.getInt("Authority");
+				data.authorityEffectiveTime 	= rs.getLong("Authority_effective_time");
+				data.lastChat 					= rs.getLong("Lastchat");
+				data.deadCount 					+= rs.getInt("Deadcount");
+				data.killCount 					+= rs.getInt("Killcount");
+				data.joinCount 					+= rs.getInt("Joincount");
+				data.breakCount 				+= rs.getInt("Breakcount");
 			}
-			playerpriv = c.prepareStatement("SELECT * FROM PlayerPrivate WHERE User=?");
+			playerpriv = C.prepareStatement("SELECT * FROM PlayerPrivate WHERE User=?");
 			playerpriv.setString(1,user);
 			rss = playerpriv.executeQuery();
 			while (rss.next()) {
-				data.Mail 						= rss.getString("Mail");
-				data.Online 					= InttoBoolean(rss.getInt("Online"));
-				data.PasswordHash 				= rss.getString("PasswordHash");
-				data.CSPRNG 					= rss.getString("CSPRNG");
+				data.mail 						= rss.getString("Mail");
+				data.online 					= inttoBoolean(rss.getInt("Online"));
+				data.passwordHash 				= rss.getString("PasswordHash");
+				data.csprng 					= rss.getString("CSPRNG");
 			}
 		} catch (SQLException e) {
 			Log.error(e);
 		} finally {
-			close(rs,playerdata);
-			close(rss,playerpriv);
+			Player.close(rs,playerdata);
+			Player.close(rss,playerpriv);
 		}
 	}
 
 
-    public static boolean isSQLite_User(String user) {
+    public static boolean isSqliteUser(String user) {
 		boolean result = true;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
-			stmt = c.prepareStatement("SELECT COUNT(User) FROM PlayerPrivate where User=?");
+			stmt = C.prepareStatement("SELECT COUNT(User) FROM PlayerPrivate where User=?");
 			// 真的奇怪?
 			stmt.setString(1,user);
 			rs = stmt.executeQuery();
@@ -180,7 +178,7 @@ public class Player {
 		} catch (SQLException e) {
 			System.out.println(e);
 		} finally {
-			close(rs,stmt);
+			Player.close(rs,stmt);
 		}
 		return result;
 	}
@@ -189,57 +187,57 @@ public class Player {
 	// 		KEY START
 	//
 
-    public static void AddKey(String KEY, int Authority, long Time, long Expire, int Total) {
+    public static void addKey(String keys, int authority, long time, long expire, int total) {
 		PreparedStatement key = null;
 		try {	
-			key = c.prepareStatement("INSERT INTO KeyData VALUES (?,?,?,?,?,?)");
-			key.setString(1,KEY);
-			key.setInt(2,Authority);
-			key.setInt(3,Total);
-			key.setInt(4,Total);
-			key.setLong(5,Time);
-			key.setLong(6,Expire);
+			key = C.prepareStatement("INSERT INTO KeyData VALUES (?,?,?,?,?,?)");
+			key.setString(1,keys);
+			key.setInt(2,authority);
+			key.setInt(3,total);
+			key.setInt(4,total);
+			key.setLong(5,time);
+			key.setLong(6,expire);
 			key.execute();
-			c.commit();
+			C.commit();
 		} catch (Exception e) {
 			Log.fatal(e);
 		} finally {
-			close(key);
+			Player.close(key);
 		}
 	}
 
 
-    public static void SaveKey(String KEY, int Authority, int Total, int Surplus, long Time, long Expire) {
+    public static void saveKey(String keys, int authority, int total, int surplus, long time, long expire) {
 		PreparedStatement key = null;
 		try {
-			key = c.prepareStatement("UPDATE KeyData SET KEY=?,Authority=?,Total=?,Surplus=?,Time=?,Expire=? WHERE KEY=?");
-			key.setString(1,KEY);
-			key.setInt(2,Authority);
-			key.setInt(3,Total);
-			key.setInt(4,Surplus);
-			key.setLong(5,Time);
-			key.setLong(6,Expire);
-			key.setString(7,KEY);
+			key = C.prepareStatement("UPDATE KeyData SET KEY=?,Authority=?,Total=?,Surplus=?,Time=?,Expire=? WHERE KEY=?");
+			key.setString(1,keys);
+			key.setInt(2,authority);
+			key.setInt(3,total);
+			key.setInt(4,surplus);
+			key.setLong(5,time);
+			key.setLong(6,expire);
+			key.setString(7,keys);
 			key.execute();
-			c.commit();
+			C.commit();
 		} catch (SQLException e) {
 			Log.error(e);
 		} finally {
-			close(key);
+			Player.close(key);
 		}
 	}
 
 
-    public static List<Map<String,Object>> GetKey() {
+    public static List<Map<String,Object>> getKey() {
 		PreparedStatement key = null;
 		ResultSet rs = null;
 		List<Map<String,Object>> result = new ArrayList<Map<String,Object>>();
 		try {
-			key = c.prepareStatement("SELECT * FROM KeyData");
+			key = C.prepareStatement("SELECT * FROM KeyData");
 			rs = key.executeQuery();
 			while (rs.next()) {
 				Map<String,Object> data = new HashMap<String,Object>(8);
-				data.put("KEY",rs.getString("KEY"));
+				data.put("Key",rs.getString("KEY"));
 				data.put("Authority",rs.getInt("Authority"));
 				data.put("Total",rs.getInt("Total"));
 				data.put("Surplus",rs.getInt("Surplus"));
@@ -256,16 +254,16 @@ public class Player {
 	}
 
 
-    public static Map<String,Object> GetKey(String KEY) {
+    public static Map<String,Object> getKey(String keys) {
 		PreparedStatement key = null;
 		ResultSet rs = null;
 		Map<String,Object> result = new HashMap<String,Object>(8);
 		try {
-			key = c.prepareStatement("SELECT * FROM KeyData WHERE KEY=?");
-			key.setString(1,KEY);
+			key = C.prepareStatement("SELECT * FROM KeyData WHERE KEY=?");
+			key.setString(1,keys);
 			rs = key.executeQuery();
 			while (rs.next()) {
-				result.put("KEY",rs.getString("KEY"));
+				result.put("Key",rs.getString("KEY"));
 				result.put("Authority",rs.getInt("Authority"));
 				result.put("Total",rs.getInt("Total"));
 				result.put("Surplus",rs.getInt("Surplus"));
@@ -275,43 +273,43 @@ public class Player {
 		} catch (SQLException e) {
 			Log.error(e);
 		} finally {
-			close(rs,key);
+			Player.close(rs,key);
 		}
 		return result;
 	}
 
 
-    public static void RmKey() {
-		RmKey(null);
+    public static void rmKey() {
+		rmKey(null);
 	}
 
 
-    public static void RmKey(String KEY) {
+    public static void rmKey(String keys) {
 		PreparedStatement key = null;
 		try {
-			if (KEY != null) {
-				key = c.prepareStatement("DELETE FROM KeyData WHERE KEY=?");
-				key.setString(1,KEY);
+			if (keys != null) {
+				key = C.prepareStatement("DELETE FROM KeyData WHERE KEY=?");
+				key.setString(1,keys);
 			} else {
-                key = c.prepareStatement("DELETE FROM KeyData");
+                key = C.prepareStatement("DELETE FROM KeyData");
             }
 			key.execute();
-			c.commit();
+			C.commit();
 		} catch (SQLException e) {
 			Log.error(e);
 		} finally {
-			close(key);
+			Player.close(key);
 		}
 	}
 
 
-    public static boolean isSQLite_Key(String KEY) {
+    public static boolean isSqliteKey(String keys) {
 		boolean result = true;
 		PreparedStatement key = null;
 		ResultSet rs = null;
 		try {
-			key = c.prepareStatement("SELECT COUNT(KEY) FROM KeyData WHERE KEY=?");
-			key.setString(1,KEY);
+			key = C.prepareStatement("SELECT COUNT(KEY) FROM KeyData WHERE KEY=?");
+			key.setString(1,keys);
 			rs = key.executeQuery();
 			rs.next();
 			if(rs.getInt(1)>0) {
@@ -320,7 +318,7 @@ public class Player {
 		} catch (SQLException e) {
 			System.out.println(e);
 		} finally {
-			close(rs,key);
+			Player.close(rs,key);
 		}
 		return result;
 	}

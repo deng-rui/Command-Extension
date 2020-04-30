@@ -50,25 +50,25 @@ public class FileUtil {
 		}
 	}
 
-	public static boolean exists() {
+	public boolean exists() {
 		return (file.exists());
 	}
 
-	public static String getPath() {
+	public String getPath() {
 		return filepath;
 	}
 
-	public static String getPath(String filename) {
+	public String getPath(String filename) {
 		String temp = filepath;
 		new FileUtil(temp+"/"+filename);
 		return temp+"/"+filename;
 	} 
 
-	public static FileUtil toPath(String filename) {
+	public FileUtil toPath(String filename) {
 		return new FileUtil(filepath+"/"+filename);
 	}
 
-	public static List<File> getFileList() {
+	public List<File> getFileList() {
 		File[] array = file.listFiles();
 		List<File> filelist = new ArrayList<File>();
 		for(int i=0;i<array.length;i++){
@@ -81,7 +81,7 @@ public class FileUtil {
 		return filelist;
 	}
 
-	public synchronized static void writefile(Object log, boolean cover) {
+	public synchronized void writefile(Object log, boolean cover) {
 		OutputStreamWriter osw = null;
 		try {
 			File parent = file.getParentFile();
@@ -108,7 +108,7 @@ public class FileUtil {
 		}
 	}
 
-	public static InputStreamReader readconfig() {
+	public InputStreamReader readconfig() {
 		try {
 			return new InputStreamReader(new FileInputStream(file), "UTF-8");
 		} catch (IOException e) { 
@@ -117,7 +117,7 @@ public class FileUtil {
 		return null;
 	}
 
-	public static Object readfile(boolean list) {
+	public Object readfile(boolean list) {
 		try {
 			return readfile(list,new InputStreamReader(new FileInputStream(file), "UTF-8"));
 		} catch (IOException e) { 
@@ -127,7 +127,7 @@ public class FileUtil {
 	}
 
 
-	public static Object readfile(boolean list, InputStreamReader isr) {
+	public Object readfile(boolean list, InputStreamReader isr) {
 		try { 
 			BufferedReader br = new BufferedReader(isr); 
 			String line = null; 

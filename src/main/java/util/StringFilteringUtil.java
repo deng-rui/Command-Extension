@@ -3,7 +3,10 @@ package extension.util;
 import java.util.regex.Matcher;
 //Java
 
-public class String_filteringUtil {
+/**
+ * @author Dr
+ */
+public class StringFilteringUtil {
 
 	private static String findFristGroup(Matcher matcher) {
 		matcher.find();

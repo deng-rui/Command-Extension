@@ -138,7 +138,7 @@ public class Vote {
 				break;
 			case "host" :
 				if (Lists.getMapsList().size() >= Integer.parseInt(name)) {
-					normalDistribution();p
+					normalDistribution();
                 } else {
 					layer.sendMessage(localeUtil.getinput("vote.host.maps.err",name));
 				}

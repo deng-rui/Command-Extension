@@ -4,15 +4,11 @@ import java.lang.Math;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
-//Java
-
 import arc.Core;
 import arc.Events;
 import arc.math.Mathf;
 import arc.util.CommandHandler;
 import arc.util.CommandHandler.Command;
-//Arc
-
 import mindustry.entities.type.Player;
 import mindustry.gen.Call;
 import mindustry.game.EventType.GameOverEvent;
@@ -21,16 +17,20 @@ import mindustry.game.Gamemode;
 import mindustry.game.Team;
 import mindustry.maps.Map;
 import mindustry.Vars;
-//Mindustry
-
+import static extension.core.ex.Extend.*;
+import static extension.core.ex.Threads.newThredDb;
+import static extension.data.db.Player.getSqlite;
+import static extension.data.db.Player.isSqliteUser;
+import static extension.util.DateUtil.*;
+import static extension.util.ExtractUtil.booleantoInt;
+import static extension.util.IsUtil.*;
+import static extension.util.alone.Password.*;
 import static mindustry.Vars.logic;
 import static mindustry.Vars.maps;
 import static mindustry.Vars.netServer;
 import static mindustry.Vars.playerGroup;
 import static mindustry.Vars.state;
 import static mindustry.Vars.world;
-//Mindustry-Static
-
 import extension.core.ex.Vote;
 import extension.data.db.PlayerData;
 import extension.data.global.Config;
@@ -41,29 +41,6 @@ import extension.util.translation.Bing;
 import extension.util.translation.Google;
 import extension.util.LocaleUtil;
 import extension.util.log.Log;
-//GA-Exted
-
-import static extension.core.ex.Extend.authorityControl;
-import static extension.core.ex.Extend.loadmaps;
-import static extension.core.ex.Extend.PlayerdatatoObject;
-import static extension.core.ex.Threads.NewThred_DB;
-
-import static extension.data.db.Player.getSQLite;
-import static extension.data.db.Player.GetKey;
-import static extension.data.db.Player.isSQLite_User;
-import static extension.data.db.Player.isSQLite_Key;
-import static extension.data.db.Player.RmKey;
-import static extension.data.db.Player.SaveKey;
-import static extension.data.db.Player.savePlayer;
-import static extension.data.db.Player.InitializationPlayersSQLite;
-import static extension.util.alone.Password.newPasswd;
-import static extension.util.alone.Password.Passwdverify;
-import static extension.util.DateUtil.LongtoTime;
-import static extension.util.DateUtil.getLocalTimeFromUTC;
-import static extension.util.ExtractUtil.Language_determination;
-import static extension.util.IsUtil.isBlank;
-import static extension.util.IsUtil.NotisNumeric;
-//Static
 
 /**
  * @author Dr
@@ -79,25 +56,26 @@ public class ClientCommandsx {
 
 		handler.<Player>register("help", "[page]", "Displays this command list !", (args, player) -> {
 			CommandHandler clientCommands = Vars.netServer.clientCommands;
-			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(NotisNumeric(args.length > 0?args[0]:"1")) {
+			LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).info;
+			final String def = "1";
+			if (notisNumeric(args.length > 0?args[0]:def)) {
 				player.sendMessage(localeUtil.getinput("nber.err"));
 				return;
 			}
 			int page = args.length > 0 ? Integer.parseInt(args[0]) : 1;
 			int pages = Mathf.ceil((float)clientCommands.getCommandList().size / Config.Maximum_Screen_Display);
 			page --;
-			if(page >= pages || page < 0){
+			if (page >= pages || page < 0){
 				player.sendMessage("[scarlet]'page' must be a number between[orange] 1[] and[orange] " + pages + "[scarlet].");
 				return;
 			}
 			StringBuilder result = new StringBuilder();
 			result.append("[orange]-- Commands Page[lightgray] "+(page+1)+" [gray]/[lightgray] "+pages+" [orange] --\n\n");
 			Command command;
-			if(Config.Help_Show_unauthorize_content) {
-				for(int i = Config.Maximum_Screen_Display * page; i < Math.min(Config.Maximum_Screen_Display * (page + 1), clientCommands.getCommandList().size); i++){
+			if (Config.Help_Show_unauthorize_content) {
+				for (int i = Config.Maximum_Screen_Display * page; i < Math.min(Config.Maximum_Screen_Display * (page + 1), clientCommands.getCommandList().size); i++){
 					command = clientCommands.getCommandList().get(i);
-					if("4dV#-".equals(command.description.substring(0,5))) {
+					if ("4dV#-".equals(command.description.substring(0,5))) {
                         result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(localeUtil.getinput(command.description.substring(5,command.description.length()))).append("\n");
                     } else {
                         result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(command.description).append("\n");
@@ -105,14 +83,14 @@ public class ClientCommandsx {
 				}
 			} else {
 				int count = 0;
-				for(int i = Config.Maximum_Screen_Display * page; i < clientCommands.getCommandList().size; i++){
+				for (int i = Config.Maximum_Screen_Display * page; i < clientCommands.getCommandList().size; i++){
 					command = clientCommands.getCommandList().get(i);
 					if (count == 6 ) {
                         break;
                     }
 					count++;
-					if("4dV#-".equals(command.description.substring(0,5))) {
-						if(authorityControl(player,command.text)) {
+					if ("4dV#-".equals(command.description.substring(0,5))) {
+						if (authorityControl(player,command.text)) {
                             result.append("[orange] /").append(command.text).append("[white] ").append(command.paramText).append("[lightgray] - ").append(localeUtil.getinput(command.description.substring(5,command.description.length()))).append("\n");
                         } else {
                             count--;
@@ -126,49 +104,48 @@ public class ClientCommandsx {
 		});
 
 		handler.<Player>register("login", "<id> <password>", "4dV#-login", (args, player) -> {
-			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!authorityControl(player,"login")) {
-                player.sendMessage(localeUtil.getinput("authority.no"));
-            } else {
+			LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).info;
+			final String commid = "login";
+			if (authorityControl(player, commid)) {
 				final String id = args[0];
 				final String pw = args[1];
-				Data.Thred_service.execute(new Runnable() {
+				Data.THRED_SERVICE.execute(new Runnable() {
 					@Override
 					public void run() {
-						PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
-						if(playerdata.Login) {
+						PlayerData playerdata = Maps.getPlayerData(player.uuid);
+						if (playerdata.login) {
 							player.sendMessage(localeUtil.getinput("login.yes"));
 							return;
 						}
-						if((boolean)isSQLite_User(id)) {
+						if ((boolean) isSqliteUser(id)) {
 							player.sendMessage(localeUtil.getinput("login.usrno"));
 							return;
 						}
-						PlayerData temp = new PlayerData("temp","temp",0);
-						getSQLite(temp,id);
-						if(temp.Online) {
+						PlayerData temp = new PlayerData("temp", "temp", 0);
+						getSqlite(temp, id);
+						if (temp.online) {
 							player.sendMessage(localeUtil.getinput("login.in"));
 							return;
 						}
 						try {
-							if(!Passwdverify(pw,temp.PasswordHash,temp.CSPRNG)) {
-							player.sendMessage(localeUtil.getinput("login.pwno"));  
-							return;
+							if (!isPasswdVerify(pw, temp.passwordHash, temp.csprng)) {
+								player.sendMessage(localeUtil.getinput("login.pwno"));
+								return;
 							}
 						} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
 							player.sendMessage(localeUtil.getinput("passwd.err"));
 							return;
-						}	
-						getSQLite(playerdata,id);
-						playerdata.Login=true;
-						playerdata.Online=true;							
-						playerdata.LastLogin=getLocalTimeFromUTC(playerdata.GMT);
-						if(!(playerdata.UUID).equals(player.uuid)) {
-							playerdata.UUID = player.uuid;
+						}
+						getSqlite(playerdata, id);
+						playerdata.login = true;
+						playerdata.online = true;
+						playerdata.lastLogin = getLocalTimeFromU(playerdata.gmt);
+						if (!(playerdata.uuid).equals(player.uuid)) {
+							playerdata.uuid = player.uuid;
 							player.sendMessage(localeUtil.getinput("uuid.update"));
 						}
-						if(Config.Login_Radical) {
-							if(Vars.state.rules.pvp) {
+						if (Config.LOGIN_RADICAL) {
+							if (Vars.state.rules.pvp) {
 								player.setTeam(netServer.assignTeam(player, playerGroup.all()));
 							} else {
 								player.setTeam(Team.sharded);
@@ -178,201 +155,213 @@ public class ClientCommandsx {
 						}
 						player.sendMessage(localeUtil.getinput("login.to"));
 						//Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
-						Maps.setPlayer_Data(player.uuid,playerdata);
-						NewThred_DB(() -> {
-							PlayerData.playerip(playerdata,player,Vars.netServer.admins.getInfo(player.uuid).lastIP);
-							savePlayer(playerdata,playerdata.User);
+						Maps.setPlayerData(player.uuid, playerdata);
+						newThredDb(() -> {
+							PlayerData.playerip(playerdata, player, Vars.netServer.admins.getInfo(player.uuid).lastIP);
+							savePlayer(playerdata, playerdata.user);
 						});
 					}
 				});
+			} else {
+				player.sendMessage(localeUtil.getinput("authority.no"));
 			}
 		});
 
 		handler.<Player>register("register", "<new_id> <new_password> <password_repeat> [your_mail]", "4dV#-register", (args, player) -> {
-			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!authorityControl(player,"register")) {
-                player.sendMessage(localeUtil.getinput("authority.no"));
-            } else {
+			LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).Info;
+			final String commid = "register";
+			if (authorityControl(player, commid)) {
 				final String newid = args[0];
 				final String newpw = args[1];
 				final String renewpw = args[2];
-				final String mail = (args.length > 3) ? args[3]:"NULL";
-				Data.Thred_service.execute(new Runnable() {
-
-                    @Override
+				final String mail = (args.length > 3) ? args[3] : "NULL";
+				Data.THRED_SERVICE.execute(new Runnable() {
+					@Override
 					public void run() {
-						PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
-						if(playerdata.Login) {
+						PlayerData playerdata = Maps.getPlayerData(player.uuid);
+						if (playerdata.login) {
 							player.sendMessage(localeUtil.getinput("login.yes"));
 							return;
 						}
-						if(!newpw.equals(renewpw)) {
+						if (!newpw.equals(renewpw)) {
 							player.sendMessage(localeUtil.getinput("register.pawno"));
 							return;
 						}
-						if(!(boolean)isSQLite_User(newid)) {
+						if (!(boolean) isSQLite_User(newid)) {
 							player.sendMessage(localeUtil.getinput("register.usrerr"));
 							return;
 						}
 						java.util.Map<String, Object> passwdDate;
 						try {
-							Passwd_date = (java.util.Map<String, Object>)newPasswd(newpw);
+							passwdDate = (java.util.Map<String, Object>) newPasswd(newpw);
 						} catch (Exception e) {
 							player.sendMessage(localeUtil.getinput("passwd.err"));
 							return;
 						}
-						if(!(boolean)passwdDate.get("resualt")) {
+						boolean result = (boolean)passwdDate.get("resualt");
+						if (result) {
+							if (Config.LOGIN_RADICAL) {
+								if (Vars.state.rules.pvp) {
+									player.setTeam(netServer.assignTeam(player, playerGroup.all()));
+								} else {
+									player.setTeam(Team.sharded);
+								}
+								//Call.onPlayerDeath(player);
+								player.kill();
+							}
+							InitializationPlayersSQLite(newid);
+							playerdata.user = newid;
+							playerdata.login = true;
+							playerdata.authority = 1;
+							playerdata.mail = mail;
+							playerdata.passwordHash = (String) passwdDate.get("passwordHash");
+							playerdata.csprng = (String) passwdDate.get("salt");
+							playerdata.lastLogin = getLocalTimeFromU(playerdata.gmt);
+							player.sendMessage(localeUtil.getinput("register.to"));
+							newThredDb(() -> {
+								PlayerData.playerip(playerdata, player, Vars.netServer.admins.getInfo(player.uuid).lastIP);
+								savePlayer(playerdata, playerdata.user);
+							});
+						} else {
 							player.sendMessage(localeUtil.getinput("passwd.err"));
 							return;
 						}
-						if(Config.Login_Radical) {
-							if(Vars.state.rules.pvp) {
-                                player.setTeam(netServer.assignTeam(player, playerGroup.all()));
-                            } else {
-                                player.setTeam(Team.sharded);
-                            }
-							//Call.onPlayerDeath(player);
-							player.kill();
-						}
-						InitializationPlayersSQLite(newid);	
-						playerdata.User=newid;
-						playerdata.Login=true;
-						playerdata.Authority=1;
-						playerdata.Mail=mail;
-						playerdata.PasswordHash=(String)passwdDate.get("passwordHash");
-						playerdata.CSPRNG=(String)passwdDate.get("salt");
-						playerdata.LastLogin=getLocalTimeFromUTC(playerdata.GMT);
-						player.sendMessage(localeUtil.getinput("register.to"));
-						//Call.onInfoToast(player.con,getinput("join.start",getLocalTimeFromUTC(playerdata.GMT,playerdata.Time_format)),20f);
-						NewThred_DB(() -> {
-							PlayerData.playerip(playerdata,player,Vars.netServer.admins.getInfo(player.uuid).lastIP);
-							savePlayer(playerdata,playerdata.User);
-						});
 					}
 				});
+			} else {
+				player.sendMessage(localeUtil.getinput("authority.no"));
 			}
 		});
 
 		handler.<Player>register("ftpasswd", "<Email_at_registration> [Verification_Code]", "4dV#-ftpasswd", (args, player) -> {
-			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!authorityControl(player,"ftpasswd")) {
-                player.sendMessage(localeUtil.getinput("authority.no"));
-            } else
-			{}
+			LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).info;
+			final String commid = "ftpasswd";
+			if (authorityControl(player, commid)) {
+			} else {
+				player.sendMessage(localeUtil.getinput("authority.no"));
+			}
 				//ftpasswd(player,args[0],(args.length > 1) ? args[1] : null);
 		});
 		//
 		
 		handler.<Player>register("info","4dV#-info", (args, player) -> {
-			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!authorityControl(player,"info")) {
-				player.sendMessage(localeUtil.getinput("authority.no"));
+			LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).info;
+			final String commid = "info";
+			if (authorityControl(player, commid)) {
+				Call.onInfoMessage(player.con, localeUtil.getinputt("info.info.1", playerdatatoObject(Maps.getPlayerData(player.uuid))));
 			} else {
-                Call.onInfoMessage(player.con,localeUtil.getinputt("info.info.1",PlayerdatatoObject(Maps.getPlayer_Data(player.uuid))));
-            }
+				player.sendMessage(localeUtil.getinput("authority.no"));
+			}
 		});
 
 		handler.<Player>register("status","4dV#-status", (args, player) -> {
-			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!authorityControl(player,"status")) {
-                player.sendMessage(localeUtil.getinput("authority.no"));
-            } else {
-                player.sendMessage(localeUtil.getinput("status.info",playerGroup.size(),world.getMap().name(),Core.graphics.getFramesPerSecond(),Core.app.getJavaHeap()/1024/1024));
-            }
+			LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).info;
+			final String commid = "status";
+			if (authorityControl(player, commid)) {
+				player.sendMessage(localeUtil.getinput("status.info", playerGroup.size(), world.getMap().name(), Core.graphics.getFramesPerSecond(), Core.app.getJavaHeap() / 1024 / 1024));
+			} else {
+				player.sendMessage(localeUtil.getinput("authority.no"));
+			}
 		});
 
 		handler.<Player>register("tpp","<player> <player>","4dV#-tpp", (args, player) -> {
-			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!authorityControl(player,"tpp")) {
-				player.sendMessage(localeUtil.getinput("authority.no"));
-			} else {
-				if(player.isMobile) {
+			LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).info;
+			final String commid = "tpp";
+			if (authorityControl(player, commid)) {
+				if (player.isMobile) {
 					player.sendMessage(localeUtil.getinput("mob.no"));
 					return;
 				}
 				try {
-					int x = Integer.parseInt(args[0])*8;
-					int y = Integer.parseInt(args[1])*8;
-					player.setNet((float)x, (float)y);
-					player.set((float)x, (float)y);
-				} catch (Exception e){
+					int x = Integer.parseInt(args[0]) << 3;
+					int y = Integer.parseInt(args[1]) << 3;
+					player.setNet((float) x, (float) y);
+					player.set((float) x, (float) y);
+				} catch (Exception e) {
 					player.sendMessage(localeUtil.getinput("tpp.fail"));
 				}
+			} else {
+				player.sendMessage(localeUtil.getinput("authority.no"));
 			}
 		});
 
 		handler.<Player>register("tp","<player...>","4dV#-tp", (args, player) -> {
-			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!authorityControl(player,"tp")) {
-				player.sendMessage(localeUtil.getinput("authority.no"));
-			} else {
-				if(player.isMobile) {
+			LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).info;
+			final String commid = "tp";
+			if (authorityControl(player, commid)) {
+				if (player.isMobile) {
 					player.sendMessage(localeUtil.getinput("mob.no"));
 					return;
 				}
-				Player other = playerGroup.find(p->p.name.equalsIgnoreCase(args[0]));
-				if(null == other) {
-                    player.sendMessage(localeUtil.getinput("tp.fail"));
-                } else {
-                    player.setNet(other.x, other.y);
-                }
+				Player other = playerGroup.find(p -> p.name.equalsIgnoreCase(args[0]));
+				if (null == other) {
+					player.sendMessage(localeUtil.getinput("tp.fail"));
+				} else {
+					player.setNet(other.x, other.y);
+				}
+			} else {
+				player.sendMessage(localeUtil.getinput("authority.no"));
 			}
 		});
 
 		handler.<Player>register("suicide","4dV#-suicide", (args, player) -> {
-			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!authorityControl(player,"suicide")) {
-				player.sendMessage(localeUtil.getinput("authority.no"));
-			} else {
+			LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).info;
+			final String commid = "suicide";
+			if (authorityControl(player, commid)) {
 				Player.onPlayerDeath(player);
-				Call.sendMessage(localeUtil.getinput("suicide.tips",player.name));
+				Call.sendMessage(localeUtil.getinput("suicide.tips", player.name));
+			} else {
+				player.sendMessage(localeUtil.getinput("authority.no"));
 			}
 		});
 
 		handler.<Player>register("team","4dV#-team", (args, player) ->{
-			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!authorityControl(player,"team")) {
-				player.sendMessage(localeUtil.getinput("authority.no"));
-			} else {
-				if(!state.rules.pvp){
+			LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).info;
+			final String commid = "team";
+			if (authorityControl(player, commid)) {
+				if (!state.rules.pvp) {
 					player.sendMessage(localeUtil.getinput("team.fail"));
 					return;
 				}
-				int index = player.getTeam().id+1;
+				int index = player.getTeam().id + 1;
 				player.sendMessage(String.valueOf(index));
-				while (index != player.getTeam().id){
-					if(index >= Team.all().length){
+				while (index != player.getTeam().id) {
+					if (index >= Team.all().length) {
 						index = 0;
 					}
-					if(!state.teams.get(Team.all()[index]).cores.isEmpty()){
+					if (!state.teams.get(Team.all()[index]).cores.isEmpty()) {
 						player.setTeam(Team.all()[index]);
 						break;
 					}
 					index++;
 				}
 				player.kill();
+			} else {
+				player.sendMessage(localeUtil.getinput("authority.no"));
 			}
 		});
 
 		handler.<Player>register("difficulty", "<difficulty>","4dV#-difficulty", (args, player) -> {
-			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!authorityControl(player,"difficulty")) {
-				player.sendMessage(localeUtil.getinput("authority.no"));
-			} else {
+			LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).info;
+			final String commid = "difficulty";
+			if (authorityControl(player, commid)) {
 				try {
 					Difficulty.valueOf(args[0]);
-					player.sendMessage(localeUtil.getinput("difficulty.success",args[0]));
-				}catch(IllegalArgumentException e) {
-					player.sendMessage(localeUtil.getinput("difficulty.fail",args[0]));
+					player.sendMessage(localeUtil.getinput("difficulty.success", args[0]));
+				} catch (IllegalArgumentException e) {
+					player.sendMessage(localeUtil.getinput("difficulty.fail", args[0]));
 				}
+			} else {
+				player.sendMessage(localeUtil.getinput("authority.no"));
 			}
 		});
 
 		handler.<Player>register("gameover","4dV#-gameover", (args, player) -> {
-			if(!authorityControl(player,"gameover")) {
-				player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput("authority.no"));
-			} else {
+			final String commid = "gameover";
+			if (authorityControl(player, commid)) {
 				Events.fire(new GameOverEvent(Team.crux));
+			} else {
+				player.sendMessage(Maps.getPlayerData(player.uuid).info.getinput("authority.no"));
 			}
 		});
 
@@ -386,155 +375,168 @@ public class ClientCommandsx {
 		});
 */
 		handler.<Player>register("runwave","4dV#-runwave", (args, player) -> {
-			if(!authorityControl(player,"runwave")) {
-				player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput("authority.no"));
-			} else {
+			final String commid = "runwave";
+			if (authorityControl(player, commid)) {
 				logic.runWave();
+			} else {
+				player.sendMessage(Maps.getPlayerData(player.uuid).info.getinput("authority.no"));
 			}
 		});
 
 		handler.<Player>register("time","4dV#-time", (args, player) -> {
-			player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput("time.info",getLocalTimeFromUTC(0,1)));
+			player.sendMessage(Maps.getPlayerData(player.uuid).info.getinput("time.info",getLocalTimeFromU(0,1)));
 		});
 
 		handler.<Player>register("tr","<Output-language> <text...>","4dV#-tr", (args, player) -> {
-			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!authorityControl(player,"tr")) {
-				player.sendMessage(localeUtil.getinput("authority.no"));
-			} else {
+			LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).info;
+			final String commid = "tr";
+			if (authorityControl(player, commid)) {
 				player.sendMessage(localeUtil.getinput("tr.tips"));
 				// 默认EN
-				Call.sendMessage("["+player.name+"]"+"[green] : [] [white]"+new Google().translate(args[1],(isBlank(args[0])) ? "en" : args[1] )+"   -From Google Translator");
+				Call.sendMessage("[" + player.name + "]" + "[green] : [] [white]" + new Google().translate(args[1], (isBlank(args[0])) ? "en" : args[1]) + "   -From Google Translator");
+			} else {
+				player.sendMessage(localeUtil.getinput("authority.no"));
 			}	
 		});
 
 		handler.<Player>register("maps", "[page] [mode]","4dV#-maps", (args, player) -> {
-			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!authorityControl(player,"maps")) {
-				player.sendMessage(localeUtil.getinput("authority.no"));
-			} else {
-				if(NotisNumeric(args.length > 0?args[0]:"1")) {
+			LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).info;
+			final String commid = "maps";
+			if (authorityControl(player, commid)) {
+				final String def = "1";
+				if (notisNumeric((0 < args.length)?args[0]:def)) {
 					player.sendMessage(localeUtil.getinput("nber.err"));
 					return;
 				}
-				List<String> mapsList = (List<String>)Lists.getMaps_List();
-				int page = args.length > 0 ? Integer.parseInt(args[0]):1;
-				int pages = Mathf.ceil((float)mapsList.size() / Config.Maximum_Screen_Display);
-				page --;
-				if(page >= pages || page < 0){
-					player.sendMessage(localeUtil.getinput("maps.page.err",pages));
+				List<String> mapsList = (List<String>) Lists.getMapsList();
+				int page = 1;
+				if (0 < args.length) {
+					page = Integer.parseInt(args[0]);
+				}
+				int pages = Mathf.ceil((float) mapsList.size() / Config.Maximum_Screen_Display);
+				page--;
+				if (page >= pages || 0 > page) {
+					player.sendMessage(localeUtil.getinput("maps.page.err", pages));
 					return;
 				}
-				if(args.length == 2) {
-					player.sendMessage(localeUtil.getinput("maps.page",(page+1),pages));
-					for(int i = Config.Maximum_Screen_Display * page; i < Math.min(Config.Maximum_Screen_Display * (page + 1), mapsList.size()); i++){
-						String [] data = mapsList.get(i).split("\\s+");
-						if(data[3].equalsIgnoreCase(args[1])) {
-                            player.sendMessage(localeUtil.getinput("maps.mode.info",String.valueOf(i),data[0],data[1]));
-                        }
+				final int triggerMode = 2;
+				if (triggerMode == args.length) {
+					player.sendMessage(localeUtil.getinput("maps.page", (page + 1), pages));
+					for (int i = Config.Maximum_Screen_Display * page; i < Math.min(Config.Maximum_Screen_Display * (page + 1), mapsList.size()); i++) {
+						String[] data = mapsList.get(i).split("\\s+");
+						if (data[3].equalsIgnoreCase(args[1])) {
+							player.sendMessage(localeUtil.getinput("maps.mode.info", String.valueOf(i), data[0], data[1]));
+						}
 					}
 					return;
 				}
-				player.sendMessage(localeUtil.getinput("maps.page",(page+1),pages));
-				for(int i = Config.Maximum_Screen_Display * page; i < Math.min(Config.Maximum_Screen_Display * (page + 1), mapsList.size()); i++){
-					String [] data = mapsList.get(i).split("\\s+");
-					player.sendMessage(localeUtil.getinput("maps.info",String.valueOf(i),data[0],data[1],data[2]));
+				player.sendMessage(localeUtil.getinput("maps.page", (page + 1), pages));
+				for (int i = Config.Maximum_Screen_Display * page; i < Math.min(Config.Maximum_Screen_Display * (page + 1), mapsList.size()); i++) {
+					String[] data = mapsList.get(i).split("\\s+");
+					player.sendMessage(localeUtil.getinput("maps.info", String.valueOf(i), data[0], data[1], data[2]));
 				}
+			} else {
+				player.sendMessage(localeUtil.getinput("authority.no"));
 			}
 		});
 
 		handler.<Player>register("vote", "<help> [parameter]","4dV#-vote", (args, player) -> {
-			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!authorityControl(player,"vote")) {
-				player.sendMessage(localeUtil.getinput("authority.no"));
-			} else {
-				if(!Vote.sted) {
+			LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).info;
+			final String commid = "vote";
+			if (authorityControl(player, commid)) {
+				if (!Vote.sted) {
 					player.sendMessage(localeUtil.getinput("vote.already_begun"));
 					return;
 				}
-				switch(args[0].toLowerCase()) {
+				switch (args[0].toLowerCase()) {
 					case "help":
-						Call.onInfoToast(player.con,localeUtil.getinput("vote.help"),40f);
+						Call.onInfoToast(player.con, localeUtil.getinput("vote.help"), 40f);
 						break;
 					case "gameover":
 					case "skipwave":
-						Data.vote = new Vote(player,args[0]);
+						Data.vote = new Vote(player, args[0]);
 						break;
 					case "kick":
-						if(args.length > 1) {
-                            Data.vote = new Vote(player,args[0],args[1]);
-                        } else {
-                            player.sendMessage(localeUtil.getinput("args.err"));
-                        }
+						if (1 < args.length) {
+							Data.vote = new Vote(player, args[0], args[1]);
+						} else {
+							player.sendMessage(localeUtil.getinput("args.err"));
+						}
 						break;
 					case "ff":
-						Data.vote = new Vote(player,args[0],player.getTeam());
+						Data.vote = new Vote(player, args[0], player.getTeam());
 						break;
 					case "host":
-						if(args.length > 1) {
-							if(NotisNumeric(args[1])) {
+						if (1 < args.length) {
+							if (notisNumeric(args[1])) {
 								player.sendMessage(localeUtil.getinput("nber.err"));
 								return;
 							}
-							if(!(Lists.getMaps_List().size() >= Integer.parseInt(args[1]))) {
-								player.sendMessage(localeUtil.getinput("vote.host.maps.err",args[1]));
+							if (Lists.getMapsList().size() >= Integer.parseInt(args[1])) {
+								Data.vote = new Vote(player, args[0], args[1]);
 							} else {
-                                Data.vote = new Vote(player,args[0],args[1]);
-                            }
+								player.sendMessage(localeUtil.getinput("vote.host.maps.err", args[1]));
+							}
 						} else {
-                            player.sendMessage(localeUtil.getinput("args.err"));
-                        }
+							player.sendMessage(localeUtil.getinput("args.err"));
+						}
 						break;
 					default:
-						player.sendMessage(localeUtil.getinput("vote.err",args[0]));
+						player.sendMessage(localeUtil.getinput("vote.err", args[0]));
 						break;
 				}
+			} else {
+				player.sendMessage(localeUtil.getinput("authority.no"));
 			}
 		});
 
 		handler.<Player>register("votekick", "<player>","4dV#-votekick", (args, player) -> {
-			if(!authorityControl(player,"votekick")) {
-				player.sendMessage(Maps.getPlayer_Data(player.uuid).Info.getinput("authority.no"));
+			final String commid = "votekick";
+			if (authorityControl(player, commid)) {
+				new Vote(player, "kick", args[0]);
 			} else {
-				new Vote(player,"kick",args[0]);
+				player.sendMessage(Maps.getPlayerData(player.uuid).info.getinput("authority.no"));
 			}
 		});
 
 		handler.<Player>register("ukey", "<key>","4dV#-ukey", (args, player) -> {
-			LocaleUtil localeUtil = Maps.getPlayer_Data(player.uuid).Info;
-			if(!authorityControl(player,"ukey")) {
-				player.sendMessage(localeUtil.getinput("authority.no"));
-			} else {
-				if(!isSQLite_Key(args[0])) {
-					PlayerData playerdata = Maps.getPlayer_Data(player.uuid);
-					java.util.Map<String,Object> data = GetKey(args[0]);
-					if(Long.parseLong(data.get("Expire").toString()) < getLocalTimeFromUTC()) {
+			LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).info;
+			final String commid = "ukey";
+			if (authorityControl(player, commid)) {
+				if (isSQLite_Key(args[0])) {
+					player.sendMessage(localeUtil.getinput("key.no"));
+				} else {
+					PlayerData playerdata = Maps.getPlayerData(player.uuid);
+					java.util.Map<String, Object> data = GetKey(args[0]);
+					long leftTime = Long.parseLong(data.get("Expire").toString());
+					if (leftTime < getLocalTimeFromU()) {
 						player.sendMessage(localeUtil.getinput("key.expire"));
-						NewThred_DB(() -> RmKey(data.get("KEY").toString()));
+						newThredDb(() -> RmKey(data.get("KEY").toString()));
 						return;
 					}
-					if(Integer.parseInt(data.get("Authority").toString()) != playerdata.Authority) {
-						playerdata.Authority = Integer.parseInt(data.get("Authority").toString());
-						if(Long.parseLong(data.get("Time").toString()) == 0) {
-                            playerdata.Authority_effective_time = 0;
-                        } else {
-                            playerdata.Authority_effective_time = getLocalTimeFromUTC(Long.parseLong(data.get("Time").toString())*1000L+playerdata.GMT);
-                        }
-						player.sendMessage(localeUtil.getinput("key.use.yes",playerdata.Authority,LongtoTime(playerdata.Authority_effective_time)));
-						final int sur = Integer.parseInt(data.get("Surplus").toString())-1;
-						if(sur == 0) {
-                            NewThred_DB(() -> RmKey(data.get("KEY").toString()));
-                        } else {
-                            NewThred_DB(() -> SaveKey(data.get("KEY").toString(),Integer.parseInt(data.get("Authority").toString()),Integer.parseInt(data.get("Total").toString()),sur,Long.parseLong(data.get("Time").toString()),Long.parseLong(data.get("Expire").toString())));
-                        }
-						// OK
-					} else {
+					int resultAuthority = Integer.parseInt(data.get("Authority").toString());
+					if (resultAuthority == playerdata.authority) {
 						player.sendMessage(localeUtil.getinput("key.use.no"));
 						// 暂时不支持同级 KEY
+					} else {
+						playerdata.authority = Integer.parseInt(data.get("Authority").toString());
+						if (Long.parseLong(data.get("Time").toString()) == 0) {
+							playerdata.authorityEffectiveTime = 0;
+						} else {
+							playerdata.authorityEffectiveTime = getLocalTimeFromU(Long.parseLong(data.get("Time").toString()) * 1000L + playerdata.gmt);
+						}
+						player.sendMessage(localeUtil.getinput("key.use.yes", playerdata.authority, longtoTime(playerdata.authorityEffectiveTime)));
+						final int sur = Integer.parseInt(data.get("Surplus").toString()) - 1;
+						if (sur == 0) {
+							newThredDb(() -> RmKey(data.get("KEY").toString()));
+						} else {
+							newThredDb(() -> SaveKey(data.get("KEY").toString(), Integer.parseInt(data.get("Authority").toString()), Integer.parseInt(data.get("Total").toString()), sur, Long.parseLong(data.get("Time").toString()), Long.parseLong(data.get("Expire").toString())));
+						}
+						// OK
 					}
-				} else {
-                    player.sendMessage(localeUtil.getinput("key.no"));
-                }
+				}
+			} else {
+				player.sendMessage(localeUtil.getinput("authority.no"));
 			}
 		});
 	}

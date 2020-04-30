@@ -41,7 +41,7 @@ public class Password {
 	}
 	
 
-    public static boolean passwdverify(String password, String passHash, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public static boolean isPasswdVerify(String password, String passHash, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		String hash = genPasswordHash(password, salt);
 		return hash.equals(passHash);
 	}
@@ -55,7 +55,7 @@ public class Password {
 		// 同时储存密码hash和盐
 		password.put("passwordHash",passwordHash);
 		password.put("salt",salt);
-		boolean resualt = passwdverify(pw, passwordHash, salt);
+		boolean resualt = isPasswdVerify(pw, passwordHash, salt);
 		// 验证密码
 		password.put("resualt",resualt);
 		
