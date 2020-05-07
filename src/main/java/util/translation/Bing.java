@@ -8,14 +8,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import static extension.net.HttpRequest.doPost;
-import static extension.util.ExtractUtil.getkeys;
 import static extension.util.IsUtil.isBlank;
 import static extension.util.IsUtil.notisBlank;
-
-//Java
-//GA-Exted
-//Static
-//Json
+import static extension.util.StringFilteringUtil.getkeys;
 
 public class Bing {
 

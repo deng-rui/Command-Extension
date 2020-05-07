@@ -41,7 +41,7 @@ public class Data {
 
 	public static Vote VOTE = null;
 	public static boolean ISMSG = true;
-	
+
 	public static PrivateKey PRIVATEKEY = null;
 
 }

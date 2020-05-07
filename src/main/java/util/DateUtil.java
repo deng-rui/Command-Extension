@@ -3,8 +3,10 @@ package extension.util;
 import java.util.Calendar;
 import java.util.Date;
 import java.text.SimpleDateFormat;
-//Java
 
+/**
+ * @author Dr
+ */
 public class DateUtil {
 
     private static long getUtcTimeStr() {
