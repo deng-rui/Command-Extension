@@ -13,6 +13,10 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static extension.util.DateUtil.getLocalTimeFromU;
+
+/**
+ * @author Dr
+ */
 public class CacheData {
 
 	private static final Map<String, Data> CACHEDATA = new ConcurrentHashMap<String, Data>();

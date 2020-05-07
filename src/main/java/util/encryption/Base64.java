@@ -2,7 +2,7 @@ package extension.util.encryption;
 
 public class Base64 {
 
-	private final static char[] str = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9','+','/'};
+	private final static char[] STR = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9','+','/'};
 
 	// 解密
 	public String decode(String code){
@@ -68,10 +68,10 @@ public class Base64 {
 
 	private String encodeDetail(char a1,char a2,char a3){
 		char[] b = new char[4];
-		b[0] = str[((a1 & 0xFC) >> 2)];
-		b[1] = str[(a1 & 0x03) << 4 | (a2 & 0xF0) >> 4];
-		b[2] = str[(a2 & 0x0F) << 2 | (a3 & 0xC0) >> 6];
-		b[3] = str[(a3 & 0x3F)];
+		b[0] = STR[((a1 & 0xFC) >> 2)];
+		b[1] = STR[(a1 & 0x03) << 4 | (a2 & 0xF0) >> 4];
+		b[2] = STR[(a2 & 0x0F) << 2 | (a3 & 0xC0) >> 6];
+		b[3] = STR[(a3 & 0x3F)];
 		return String.copyValueOf(b);
 	}
 
@@ -92,8 +92,8 @@ public class Base64 {
 	}
 
 	private int getIndex(char c){
-		for(int i = 0;i < str.length;i++){
-			if(str[i] == c) {
+		for(int i = 0;i < STR.length;i++){
+			if(STR[i] == c) {
                 return i;
             }
 		}
