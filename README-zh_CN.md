@@ -25,7 +25,7 @@ linglan512572354:https://github.com/linglan512572354
 
 ## 安全
 
-默认已开放Web-Api控制 Port=8080  
+默认已开放Web-Api控制 强制使用HTTPS Port=8443  
 如需使用 为了更高的安全性 建议您将Bot与Server在一个网段下 防火墙关闭对外的Web-Port  
 如果不需要 您可以在Config.ini内关闭(还未完成)   
 

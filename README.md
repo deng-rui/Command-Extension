@@ -26,7 +26,7 @@ At least java8! Java7 will not run!!!
 
 ## Security
 
-Default open web API control port = 8080  
+Default open web API control  Force HTTPS!! port = 8443  
 If you need to use for higher security, it is recommended that you close the external web port by firewall under the same network segment between Bot and server  
 If you don't need it, you can close it in config.ini (not finished yet)  
 
