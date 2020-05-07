@@ -119,7 +119,9 @@ Notes:
     - [ ] DB
 - [ ] WEB-API
     - [ ] QQ-Bot
-    - [ ] WEB
+    - [ ] WEB-USER
+    - [ ] HTTPS
+    - [ ] WEB-API(Bot)
 - [ ] No tab
     - [ ] Test comm (java/core/testmode)
 

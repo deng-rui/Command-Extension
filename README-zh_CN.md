@@ -120,7 +120,9 @@ PVP :
     - [ ] 数据库
 - [ ] WEB-API
     - [ ] QQ-Bot
-    - [ ] WEB
+    - [ ] WEB-USER
+    - [ ] HTTPS
+    - [ ] WEB-API(Bot)
 - [ ] 个人
     - [ ] 测试命令 (java/core/testmode)
 
