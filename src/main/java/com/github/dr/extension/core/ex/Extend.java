@@ -113,7 +113,6 @@ public class Extend {
         return retStr;
     }
 
-    @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
     public static void addMesgTeam(Team team, String msg, Object...params){
     	for (Player player : playerGroup.all()) {
             if(player.getTeam().equals(team)) {
@@ -122,7 +121,6 @@ public class Extend {
         }
     }
 
-    @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
     public static void addMesgAdmin(String msg, Object...params){
     	for (Player player : playerGroup.all()) {
             if(player.isAdmin) {
@@ -131,7 +129,6 @@ public class Extend {
         }
     }
 
-    @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
     public static void addMesgAll(String msg, Object...params){
     	for (Player player : playerGroup.all()) {
             player.sendMessage(Maps.getPlayerData(player.uuid).info.getinput(msg,params));

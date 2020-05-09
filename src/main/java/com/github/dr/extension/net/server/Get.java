@@ -28,6 +28,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import static com.github.dr.extension.util.ExtractUtil.stringToUtf8;
+import static com.github.dr.extension.util.IsUtil.isBlank;
 import static com.github.dr.extension.util.IsUtil.notisBlank;
 import static com.github.dr.extension.util.RandomUtil.generateStr;
 import static com.github.dr.extension.util.log.Error.code;
@@ -164,15 +165,20 @@ public class Get {
             setHandler(response);
             Map<String, Object> result = new HashMap<String, Object>(4);
             if (notisBlank(data)) {
-                if (true) {
+                if (isBlank(Data.PRIVATEKEY)) {
+                    if (true) {
 
+                    }
+                    try {
+                        KeyPair keyPair = new Rsa().buildKeyPair();
+                        result.put("state", code("SUCCESS"));
+                    } catch (NoSuchAlgorithmException e) {
+                        Log.error(error("UNSUPPORTED_ENCRYPTION"),e);
+                    }
+                } else {
+                    
                 }
-                try {
-                    KeyPair keyPair = new Rsa().buildKeyPair();
-                    result.put("state", code("SUCCESS"));
-                } catch (NoSuchAlgorithmException e) {
-                    Log.error(error("UNSUPPORTED_ENCRYPTION"),e);
-                }
+
             } else {
                 result.put("state", code("INCOMPLETE_PARAMETERS"));
             }

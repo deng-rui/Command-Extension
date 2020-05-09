@@ -58,8 +58,8 @@ public class Start {
 			 */
 			SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
 			sslContextFactory.setKeyStorePath("/mnt/l/web/web-mindustry-top.jks");
-			sslContextFactory.setKeyStorePassword("");
-			sslContextFactory.setKeyManagerPassword("");
+			sslContextFactory.setKeyStorePassword("dengrui@dr");
+			sslContextFactory.setKeyManagerPassword("dengrui@dr");
 			/**
 			 * SSL-HTTP 1.1 不想支持2(需要新依赖 org.eclipse.jetty.http2)
 			 */
@@ -82,6 +82,7 @@ public class Start {
 		public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
 			response.setHeader("Server", "Mindustry-Server-Web");
 			response.getWriter().println(String.valueOf(response.getStatus()));
+			response.getWriter().println(target);
 		}
 	}
 }
