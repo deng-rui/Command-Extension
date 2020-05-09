@@ -21,11 +21,11 @@ public class Topt {
      */
 
     /**
-     * 时间步长 单位:毫秒 作为口令变化的时间周期
-     * 15S存活
+     * 时间步长 单位:秒 作为口令变化的时间周期
+     * 10S存活
      * 来保证OPT即时性 若User -> Server-Web后时间过期 则可发二次码
      */
-    private static final long STEP = 15000;
+    private static final long STEP = 10;
 
     /**
      * 转码位数 [1-8]
@@ -43,8 +43,9 @@ public class Topt {
      * 5S User -> Ngrok/Frp -> Server-Web
      * or
      * 5S User -> Server-Web
+     * 防止在前一个到期时发送旧码 即 发送后五秒内依然可验证
      */
-    private static final long FLEXIBILIT_TIME = 5000;
+    private static final long FLEXIBILIT_TIME = 5;
 
     /**
      * 数子量级
@@ -53,43 +54,42 @@ public class Topt {
 
     /**
      * 生成一次性密码
-     * @param code 用户名
      * @param pass 密码
      * @return String
      */
-    public static String newTotp(String code, String pass) {
+    public static String newTotp(String pass) {
         long now = getLocalTimeFromU();
         String time = Long.toHexString(timeFactor(now)).toUpperCase();
-        return generateTotp(code + pass + Config.TOPT_KEY, time);
+        return generateTotp(pass + Config.TOPT_KEY, time);
     }
 
     /**
      * 刚性口令验证
-     * @param code 用户名
      * @param pass 密码
      * @param totp 待验证的口令
      * @return boolean
      */
-    public static boolean verifyTotpRigidity(String code, String pass, String totp) {
-        return generateTotp(code, pass).equals(totp);
+    public static boolean verifyTotpRigidity(String pass, String totp) {
+        long now = getLocalTimeFromU();
+        String time = Long.toHexString(timeFactor(now)).toUpperCase();
+        return generateTotp(pass + Config.TOPT_KEY, time).equals(totp);
     }
 
     /**
      * 柔性口令验证
-     * @param code 用户名
      * @param pass 密码
      * @param totp 待验证的口令
      * @return boolean
      */
-    public static boolean verifyTotpFlexibility(String code, String pass, String totp) {
+    public static boolean verifyTotpFlexibility(String pass, String totp) {
         long now = getLocalTimeFromU();
         String time = Long.toHexString(timeFactor(now)).toUpperCase();
-        String tempTotp = generateTotp(code + pass + Config.TOPT_KEY, time);
+        String tempTotp = generateTotp(pass + Config.TOPT_KEY, time);
         if (tempTotp.equals(totp)) {
             return true;
         }
         String time2 = Long.toHexString(timeFactor(now - FLEXIBILIT_TIME)).toUpperCase();
-        String tempTotp2 = generateTotp(code + pass + Config.TOPT_KEY, time2);
+        String tempTotp2 = generateTotp(pass + Config.TOPT_KEY, time2);
         return tempTotp2.equals(totp);
     }
 
