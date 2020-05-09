@@ -1,7 +1,7 @@
 {
   "name": "Command extension",
   "author": "Dr",
-  "main": "extension.Main",
+  "main": "com.github.dr.extension.Main",
   "description": "Command extension",
   "version": 1.6
 }
