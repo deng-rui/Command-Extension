@@ -13,7 +13,7 @@ linglan512572354:https://github.com/linglan512572354
 
 ## 前言  
 
-警告: 当前项目处于不稳定状态 数据库 数据将不会做迁移操作 请谨慎使用 :)  
+警告: 当前项目处于不稳定状态 数据库中数据将不会做迁移操作!!!  如需迁移 请跟随开发版临时迁移 请谨慎使用 :)  
 
   
 这个项目是开放的，如果有任何问题，请给我发电子邮件或提交一个问题  
@@ -158,4 +158,32 @@ config
 ### 许可证 
 
 The Unlicense-公共领域  
-:) 
+
+```text
+This is free and unencumbered software released into the public domain.
+
+Anyone is free to copy, modify, publish, use, compile, sell, or
+distribute this software, either in source code form or as a compiled
+binary, for any purpose, commercial or non-commercial, and by any
+means.
+
+In jurisdictions that recognize copyright laws, the author or authors
+of this software dedicate any and all copyright interest in the
+software to the public domain. We make this dedication for the benefit
+of the public at large and to the detriment of our heirs and
+successors. We intend this dedication to be an overt act of
+relinquishment in perpetuity of all present and future rights to this
+software under copyright law.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+For more information, please refer to <http://unlicense.org>
+```
+
+:)  
