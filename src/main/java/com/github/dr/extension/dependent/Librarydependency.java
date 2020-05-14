@@ -47,7 +47,7 @@ public class Librarydependency implements Driver {
     }
 
 
-    public static void importLib(String str, String name, String version, String savePath) {
+    public static void importLib(String str, String name, String version, String savePath, String classname) {
         File filepath = new File(FileUtil.File(savePath).getPath());
         if (!filepath.exists()) {
             filepath.mkdirs();
@@ -56,19 +56,19 @@ public class Librarydependency implements Driver {
 
         for (int i = 0, len = filePathList.size(); i < len; i++) {
             if ((name + "_" + version).equals(filePathList.get(i).getName().replace(".jar", ""))) {
-                notWork(name, version, savePath);
+                notWork(name, version, savePath, classname);
                 return;
             }
         }
         downLoadFromUrl(str, name, version, "China", FileUtil.File(savePath).getPath(name + "_" + version + ".jar"));
-        notWork(name, version, savePath);
+        notWork(name, version, savePath, classname);
     }
 
-    private static void notWork(String name, String version, String savePath) {
+    private static void notWork(String name, String version, String savePath, String classname) {
         Log.info("START import SQL");
         try {
             URLClassLoader classLoader = new URLClassLoader(new URL[]{new File(FileUtil.File(savePath).getPath(name + "_" + version + ".jar")).toURI().toURL()});
-            Driver driver = (Driver) Class.forName("org.sqlite.JDBC", true, classLoader).getDeclaredConstructor().newInstance();
+            Driver driver = (Driver) Class.forName(classname, true, classLoader).getDeclaredConstructor().newInstance();
             // 加壳
             DriverManager.registerDriver(new Librarydependency(driver));
             Log.info("SQL import Done");
