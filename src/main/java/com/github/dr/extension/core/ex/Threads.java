@@ -30,17 +30,9 @@ import static com.github.dr.extension.util.DateUtil.getLocalTimeFromU;
 import static com.github.dr.extension.util.file.LoadConfig.customLoad;
 import static mindustry.Vars.state;
 
-//Java
-//
-//
-//
-//GA-Exted
-//Static
 //import javax.mail.NoSuchProviderException;
 //import javax.mail.internet.AddressException;
 //import javax.mail.MessagingException;
-//
-//
 
 public class Threads {
 
@@ -57,7 +49,7 @@ public class Threads {
 
 	// 定时任务 1min/S
 
-    public Threads() {
+    public void initialization() {
 		Runnable atime=new Runnable() {
 			@Override
 			public void run() {
@@ -95,8 +87,11 @@ public class Threads {
 		Data.THRED_SERVICE.execute(run);
 	}
 
-	// 用户过期?
-
+	/**
+	 * 清理过期
+	 * 也可以把过期玩家扔List里 到时候读
+	 * 但我还是倾向这种做法 (懒)
+	 */
     private static void loginStatus() {
 		if (Config.LOGIN_TIME > STATUS_LOGIN) {
 			STATUS_LOGIN++;
@@ -249,4 +244,11 @@ public class Threads {
 		state.rules.playerDamageMultiplier = 0f;
 		Call.onSetRules(state.rules);
 	}
+
+	/**
+	 * TODO : 单用户验证
+	 * 防止注册多账号
+	 * IP ? ?
+	 * 暂未实现
+	 */
 }

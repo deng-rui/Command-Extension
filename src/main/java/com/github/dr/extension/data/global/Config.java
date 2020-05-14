@@ -5,7 +5,6 @@ import static com.github.dr.extension.util.file.LoadConfig.*;
 
 public class Config {
 
-	// [服务器]
 	/**
 	 * 服务器有无网络
 	 */
@@ -16,69 +15,137 @@ public class Config {
 	 */
 	public static boolean SERVER_COUNTRY_CN = false;
 
-	// [服务器语言]
+
+
 	/**
 	 * 服务器唯一ID
 	 */
-	public static String Server_ID = null;
+	public static String SERVER_ID = null;
 
 	/**
 	 * 服务器主语言
 	 */
 	public static String SERVER_LANGUAGE = "en_US";
 
-	// [DB]
+
+
 	/**
 	 * 服务器是否使用MARIADB
 	 */
 	public static boolean SERVER_MARIADB = false;
+
+	/**
+	 * MARIADB IP
+	 */
 	public static String DB_IP = null;
+
+	/**
+	 * MARIADB 端口
+	 */
 	public static String DB_PORT = null;
+
+	/**
+	 * MARIADB 数据库名字
+	 */
 	public static String DB_NAME = null;
+
+	/**
+	 * MARIADB 用户名
+	 */
 	public static String DB_USER = null;
+
+	/**
+	 * MARIADB 密码
+	 */
 	public static String DB_PASSWD = null;
 
-	// [登录]
+
+
 	/**
 	 * 登录状态保存时间
 	 */
 	public static int LOGIN_TIME = 0;
+
+	/**
+	 * 激进登陆
+	 */
 	public static boolean LOGIN_RADICAL = false;
+
+	/**
+	 * 权限传递
+	 */
 	public static boolean PERMISSION_PASSING = false;
 
-	// [投票]
+
+
 	/**
-	 * ?
+	 * ?-TODO
 	 */
 	public static boolean VOTE_ADMIN = false;
+
+	/**
+	 * 新进玩家可否投票-TODO
+	 */
 	public static boolean VOTE_NEW_PLAYER = false;
+
+	/**
+	 * 新进多少时间后可投-TODO
+	 */
 	public static int VOTE_NEW_PLAYER_TIME = 0;
 
-	//
+
+
 	/**
 	 * 是否启用昼夜交替
 	 */
 	public static boolean DAY_AND_NIGHT = false;
+
+	/**
+	 * 白天时间
+	 */
 	public static int DAY_TIME = 0;
+
+	/**
+	 * 晚上时间
+	 */
 	public static float NIGHT_TIME = 0;
 
-	// [建造限制]
+
+
 	/**
 	 * 是否启用建筑限制
 	 */
 	public static boolean BUILDING_RESTRICTION = false;
+
+	/**
+	 * 警告单位
+	 */
 	public static int BUILDING_WARNING_QUANTITY = 0;
+
+	/**
+	 * 最大单位
+	 */
 	public static int BUILDING_REJECT_QUANTITY = 0;
 
-	// [单位限制]
+
+
 	/**
 	 * 是否启用单位限制
 	 */
 	public static boolean SOLDIER_RESTRICTION = false;
+
+	/**
+	 * 警告单位
+	 */
 	public static int SOLDIER_WARNING_QUANTITY = 0;
+
+	/**
+	 * 最大单位
+	 */
 	public static int SOLDIER_REJECT_QUANTITY = 0;
 
-	// [邮件]
+
+
 	/**
 	 * 是否启用MAIL
 	 */
@@ -91,33 +158,48 @@ public class Config {
 	public static int REGULAR_REPORTING_TIME = 0;
 	public static String REGULAR_REPORTING_TOMAIL = null;
 
-	// [Display]
+
+
 	/**
 	 * 列表最大显示
 	 */
 	public static int MAXIMUM_SCREEN_DISPLAY = 0;
 
-	// [Help]
+
+
 	/**
 	 * Help是否显示显示无权限命令
 	 */
 	public static boolean HELP_SHOW_UNAUTHORIZE_CONTENT = false;
 	
-	// [Baidu]
+
+
+	/**
+	 * 是否启用百度翻译
+	 */
 	public static boolean BAIDU_TR = false;
+
+	/**
+	 * 百度翻译APPID
+	 */
 	public static String BAIDU_ID = null;
+
+	/**
+	 * 百度翻译KEY
+	 */
 	public static String BAIDU_KEY = null;
 
-	// [KEY!]
+
+
 	/**
 	 * TOPT双方私有密钥
 	 */
-	public static String TOPT_KEY = "@@@@@@%%%%%&&&&&&";
+	public static String TOPT_KEY = null;
 	
 	/**
 	 * SSL密码
 	 */
-	public static String SSL_PASSWD = "dengrui@dr";
+	public static String SSL_PASSWD = null;
 
 
 
@@ -177,10 +259,10 @@ public class Config {
 			MAIL_SMTP_PORT 										= loadstring("Mail_SMTP.Port");
 			MAIL_SMTP_USER 										= loadstring("Mail_SMTP.User");
 			MAIL_SMTP_PASSWD 									= loadstring("Mail_SMTP.Passwd");
-			REGULAR_REPORTING 									= loadboolean("Mail_Regular_Reporting");
+			REGULAR_REPORTING 									= loadboolean("Mail_SMTP.Regular_Reporting");
 			if (REGULAR_REPORTING) {
-				REGULAR_REPORTING_TIME 							= loadint("Mail_Regular_Reporting.Time");
-				REGULAR_REPORTING_TOMAIL 						= loadstring("Mail_Regular_Reporting.ToMail");
+				REGULAR_REPORTING_TIME 							= loadint("Mail_SMTP.Regular_Reporting.Time");
+				REGULAR_REPORTING_TOMAIL 						= loadstring("Mail_SMTP.Regular_Reporting.ToMail");
 			}
 		}
 		// [显示]
