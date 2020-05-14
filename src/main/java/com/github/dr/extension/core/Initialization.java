@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import static com.github.dr.extension.data.db.Sqlite.initSqlite;
+import static com.github.dr.extension.data.db.Sql.*;
 import static com.github.dr.extension.dependent.Librarydependency.importLib;
 import static com.github.dr.extension.util.file.LoadConfig.loadstring;
 import static mindustry.Vars.maps;
@@ -31,16 +31,19 @@ public class Initialization {
     public void startInitialization() {
         // 配置文件初始化
         config();
-        // 初始化配置
-        Config.laodConfig();
         //Resource();
         //IsCN();
-        new Threads();
-        //新线程 初始化数据
-        Threads.newThredSe(() -> sql());
+
+        // 初始化计数线程
+        new Threads().initialization();
+
+        // 新线程 初始化数据 (WARN: SQL不能使用新线程)
+        //Threads.newThredSe(() -> );
+        sql();
         // 新线程 初始化权限list
         Threads.newThredSe(() -> playerPrivilegeClassification());
 
+        // 加载语言
         Maps.setLocale("zh_CN", new LocaleUtil("zh_CN"));
         Maps.setLocale("zh_HK", new LocaleUtil("zh_HK"));
         Maps.setLocale("zh_MO", new LocaleUtil("zh_MO"));
@@ -48,7 +51,6 @@ public class Initialization {
         Maps.setLocale("ru_RU", new LocaleUtil("ru_RU"));
         Maps.setLocale("en_US", new LocaleUtil("en_US"));
     }
-
 
     public void overrideInitialization() {
         coverGameover();
@@ -76,10 +78,15 @@ public class Initialization {
 
 
     private void sql() {
-        importLib("org.xerial", "sqlite-jdbc", "3.30.1", Data.PLUGIN_LIB_PATH);
+        //importLib("org.xerial", "sqlite-jdbc", "3.30.1", Data.PLUGIN_LIB_PATH, "org.sqlite.JDBC");
+        importLib("org.mariadb.jdbc", "mariadb-java-client", "2.6.0", Data.PLUGIN_LIB_PATH, "org.mariadb.jdbc.Driver");
         if (!Core.settings.getDataDirectory().child("mods/GA/Data.db").exists()) {
             initSqlite();
         }
+        /**
+         * 加载全局SQL Conntion
+         */
+        new Data().initialization();
     }
 
 
@@ -93,6 +100,10 @@ public class Initialization {
         } catch (UnsupportedEncodingException e) {
             Log.fatal("File write error", e);
         }
+        /**
+         * 加载配置文件
+         */
+        Config.laodConfig();
     }
 
     // CP出jar特定文件至硬盘
