@@ -1,10 +1,16 @@
 package com.github.dr.extension.data.global;
 
 import com.github.dr.extension.core.ex.Vote;
+import com.github.dr.extension.data.db.AbstractSql;
+import com.github.dr.extension.data.db.Maria;
+import com.github.dr.extension.data.db.Sqlite;
+import com.github.dr.extension.util.file.FileUtil;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.concurrent.*;
 
 /**
@@ -41,6 +47,8 @@ public class Data {
 	// [Cache]
 
 	public static Vote VOTE = null;
+	public static Connection C;
+	public static AbstractSql SQL;
 	public static boolean ISMSG = true;
 
 	/**
@@ -49,4 +57,23 @@ public class Data {
 	 */
 	public static PrivateKey PRIVATEKEY = null;
 
+	/**
+	 * 全局
+	 */
+    public void initialization() {
+   		try {
+   			if (Config.SERVER_MARIADB) {
+				//C = DriverManager.getConnection("jdbc:mariadb://"+Config.DB_IP+":"+Config.DB_PORT+"/"+Config.DB_NAME,Config.DB_USER,Config.DB_PASSWD);
+				//C.setAutoCommit(false);
+				SQL = new Maria();
+			} else {
+				C = DriverManager.getConnection("jdbc:sqlite:" + FileUtil.File(Data.PLUGIN_DATA_PATH).getPath("Data.db"));
+				C.setAutoCommit(false);
+				SQL = new Sqlite();
+			}
+        } catch (Exception e) {
+            //Log.fatal(e);
+        }
+
+	}
 }

@@ -27,7 +27,6 @@ import java.util.List;
 import static com.github.dr.extension.core.ex.Extend.authorityControl;
 import static com.github.dr.extension.core.ex.Extend.playerdatatoObject;
 import static com.github.dr.extension.core.ex.Threads.newThredDb;
-import static com.github.dr.extension.data.db.Player.*;
 import static com.github.dr.extension.util.DateUtil.getLocalTimeFromU;
 import static com.github.dr.extension.util.DateUtil.longtoTime;
 import static com.github.dr.extension.util.IsUtil.isBlank;
@@ -111,12 +110,12 @@ public class ClientCommandsx {
                             player.sendMessage(localeUtil.getinput("login.yes"));
                             return;
                         }
-                        if ((boolean) isSqliteUser(id)) {
+                        if ((boolean) Data.SQL.isSqliteUser(id)) {
                             player.sendMessage(localeUtil.getinput("login.usrno"));
                             return;
                         }
                         PlayerData temp = new PlayerData("temp", "temp", 0);
-                        getSqlite(temp, id);
+                        Data.SQL.getSqlite(temp, id);
                         if (temp.online) {
                             player.sendMessage(localeUtil.getinput("login.in"));
                             return;
@@ -130,7 +129,7 @@ public class ClientCommandsx {
                             player.sendMessage(localeUtil.getinput("passwd.err"));
                             return;
                         }
-                        getSqlite(playerdata, id);
+                        Data.SQL.getSqlite(playerdata, id);
                         playerdata.login = true;
                         playerdata.online = true;
                         playerdata.lastLogin = getLocalTimeFromU(playerdata.gmt);
@@ -150,7 +149,7 @@ public class ClientCommandsx {
                         Maps.setPlayerData(player.uuid, playerdata);
                         newThredDb(() -> {
                             PlayerData.playerip(playerdata, player, Vars.netServer.admins.getInfo(player.uuid).lastIP);
-                            savePlayer(playerdata, playerdata.user);
+                            Data.SQL.savePlayer(playerdata, playerdata.user);
                         });
                     }
                 });
@@ -179,7 +178,7 @@ public class ClientCommandsx {
                             player.sendMessage(localeUtil.getinput("register.pawno"));
                             return;
                         }
-                        if (!(boolean) isSqliteUser(newid)) {
+                        if (!(boolean) Data.SQL.isSqliteUser(newid)) {
                             player.sendMessage(localeUtil.getinput("register.usrerr"));
                             return;
                         }
@@ -200,7 +199,10 @@ public class ClientCommandsx {
                                 }
                                 player.kill();
                             }
-                            initPlayersSqlite(newid);
+                            if (Data.SQL.initPlayersSqlite(newid)) {
+                                player.sendMessage(localeUtil.getinput("register.usrerr"));
+                                return;
+                            }
                             playerdata.user = newid;
                             playerdata.login = true;
                             playerdata.authority = 1;
@@ -211,7 +213,7 @@ public class ClientCommandsx {
                             player.sendMessage(localeUtil.getinput("register.to"));
                             newThredDb(() -> {
                                 PlayerData.playerip(playerdata, player, Vars.netServer.admins.getInfo(player.uuid).lastIP);
-                                savePlayer(playerdata, playerdata.user);
+                                Data.SQL.savePlayer(playerdata, playerdata.user);
                             });
                         } else {
                             player.sendMessage(localeUtil.getinput("passwd.err"));
@@ -494,15 +496,18 @@ public class ClientCommandsx {
             LocaleUtil localeUtil = Maps.getPlayerData(player.uuid).info;
             final String commid = "ukey";
             if (authorityControl(player, commid)) {
-                if (isSqliteKey(args[0])) {
+                if (Data.SQL.isSqliteKey(args[0])) {
                     player.sendMessage(localeUtil.getinput("key.no"));
                 } else {
                     PlayerData playerdata = Maps.getPlayerData(player.uuid);
-                    java.util.Map<String, Object> data = getKey(args[0]);
+                    java.util.Map<String, Object> data = Data.SQL.getKey(args[0]);
+                    if (Integer.parseInt(data.get("Surplus").toString()) == 0) {
+                        return;
+                    }
                     long leftTime = Long.parseLong(data.get("Expire").toString());
                     if (leftTime < getLocalTimeFromU()) {
                         player.sendMessage(localeUtil.getinput("key.expire"));
-                        newThredDb(() -> rmKey(data.get("KEY").toString()));
+                        newThredDb(() -> Data.SQL.rmKey(data.get("KEY").toString()));
                         return;
                     }
                     int resultAuthority = Integer.parseInt(data.get("Authority").toString());
@@ -519,9 +524,9 @@ public class ClientCommandsx {
                         player.sendMessage(localeUtil.getinput("key.use.yes", playerdata.authority, longtoTime(playerdata.authorityEffectiveTime)));
                         final int sur = Integer.parseInt(data.get("Surplus").toString()) - 1;
                         if (sur == 0) {
-                            newThredDb(() -> rmKey(data.get("KEY").toString()));
+                            newThredDb(() -> Data.SQL.rmKey(data.get("KEY").toString()));
                         } else {
-                            newThredDb(() -> saveKey(data.get("KEY").toString(), Integer.parseInt(data.get("Authority").toString()), Integer.parseInt(data.get("Total").toString()), sur, Long.parseLong(data.get("Time").toString()), Long.parseLong(data.get("Expire").toString())));
+                            newThredDb(() -> Data.SQL.saveKey(data.get("KEY").toString(), Integer.parseInt(data.get("Authority").toString()), Integer.parseInt(data.get("Total").toString()), sur, Long.parseLong(data.get("Time").toString()), Long.parseLong(data.get("Expire").toString())));
                         }
                         // OK
                     }
