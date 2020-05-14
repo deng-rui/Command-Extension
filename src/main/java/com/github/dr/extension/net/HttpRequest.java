@@ -116,6 +116,9 @@ public class HttpRequest {
                     in = null;
                 }
             }
+            if(conn != null) {
+                conn.disconnect();
+            }
 		}
 		return result.toString();
 	}
