@@ -6,9 +6,7 @@ import com.github.dr.extension.util.log.Log;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 public class HttpRequest {
 
@@ -30,20 +28,24 @@ public class HttpRequest {
 			con.addRequestProperty("Accept-Charset", "UTF-8");
 			con.setRequestProperty("User-Agent", USER_AGENT);
 			con.setRequestProperty("Accept-Encoding", "gzip,deflate");
-			int responseCode = con.getResponseCode();
-			String contentEncoding = con.getContentEncoding(); 
-			Log.info(contentEncoding);
-			if (null != contentEncoding && contentEncoding.indexOf("gzip") != -1) { 
-				GZIPInputStream gzipInputStream = new GZIPInputStream(con.getInputStream());
-				in = new BufferedReader(new InputStreamReader(gzipInputStream,"utf-8"));
-				while ((line = in.readLine()) != null) {
-                    result.append(new String(line.getBytes("UTF-8")));
-                }
-			} else {
-				in = new BufferedReader(new InputStreamReader(con.getInputStream(),"utf-8"));
-				while ((line = in.readLine()) != null) {
-                    result.append("\n"+line);
-                }
+			InputStream inst = null;
+			/**
+			 * 2XX不会出现IOEXP 利用?
+			 */
+			try {
+				inst = con.getInputStream();
+			} catch (IOException e) {
+				inst = con.getErrorStream();
+			}
+			String contentEncoding = con.getContentEncoding();
+			// 定义双BufferedReader输入流来读取URL的响应
+			in = (null != contentEncoding && contentEncoding.contains("gzip")) ? new BufferedReader(new InputStreamReader(new GZIPInputStream(inst), Data.UTF_8)) : new BufferedReader(new InputStreamReader(inst, Data.UTF_8));
+			/**
+			 * 不需要换行符
+			 * 先读GBK 再转UTF-8
+			 */
+			while ((line = in.readLine()) != null) {
+				result.append(new String(line.getBytes("ISO-8859-1"), Data.UTF_8));
 			}
 		} catch (IOException e) {
 			Log.error("doGet!",e);
@@ -62,18 +64,15 @@ public class HttpRequest {
 		return result.toString();
 	}
 
-	public static String doPost(String url, String param) {
-    	return doPost(url,param,false);
-	}
-
-    public static String doPost(String url, String param, boolean gzip) {
+    public static String doPost(String url, String param) {
 		StringBuilder result = new StringBuilder();
 		PrintWriter out = null;
+		HttpURLConnection conn = null;
 		BufferedReader in = null;
 		String line = null;
 		try{
 			URL realUrl = new URL(url);
-			URLConnection conn =  realUrl.openConnection();
+			conn = (HttpURLConnection) realUrl.openConnection();
 			conn.setRequestProperty("accept", "*/*");
 			conn.setRequestProperty("connection", "Keep-Alive");
 			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -81,23 +80,28 @@ public class HttpRequest {
 			conn.setRequestProperty("Accept-Encoding", "gzip,deflate");
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
-			out = gzip ? new PrintWriter(new GZIPOutputStream(conn.getOutputStream())) : new PrintWriter(conn.getOutputStream());
+			out = new PrintWriter(conn.getOutputStream());
 			out.print(param);
 			out.flush();
-			// 定义 BufferedReader输入流来读取URL的响应
-			in = new BufferedReader(new InputStreamReader(conn.getInputStream(), Data.UTF_8));
-			String contentEncoding = conn.getContentEncoding(); 
-			if (null != contentEncoding && contentEncoding.indexOf("gzip") != -1) { 
-				GZIPInputStream gzipInputStream = new GZIPInputStream(conn.getInputStream());
-				in = new BufferedReader(new InputStreamReader(gzipInputStream, Data.UTF_8));
-	            while ((line = in.readLine()) != null) {
-                    result.append(new String(line.getBytes("ISO-8859-1"), Data.UTF_8));
-                }
-			} else {
-				in = new BufferedReader(new InputStreamReader(conn.getInputStream(), Data.UTF_8));
-				while ((line = in.readLine()) != null) {
-                    result.append("\n"+line);
-                }
+			// 定义InputStream流来根据返回状态读取流
+			InputStream inst = null;
+			/**
+			 * 2XX不会出现IOEXP 利用?
+			 */
+			try {
+				inst = conn.getInputStream();
+			} catch (IOException e) {
+				inst = conn.getErrorStream();
+			}
+			String contentEncoding = conn.getContentEncoding();
+			// 定义双BufferedReader输入流来读取URL的响应
+			in = (null != contentEncoding && contentEncoding.contains("gzip")) ? new BufferedReader(new InputStreamReader(new GZIPInputStream(inst), Data.UTF_8)) : new BufferedReader(new InputStreamReader(inst, Data.UTF_8));
+			/**
+			 * 不需要换行符
+			 * 先读GBK 再转UTF-8
+			 */
+			while ((line = in.readLine()) != null) {
+				result.append(new String(line.getBytes("ISO-8859-1"), Data.UTF_8));
 			}
 		} catch (IOException e) {
 			Log.error("doPost!",e);
