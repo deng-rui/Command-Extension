@@ -126,27 +126,43 @@ public abstract class AbstractSql {
 	 * 关闭流
 	 * @param conn
 	 */
-	abstract void close(Connection conn);
-
+	void close(Connection conn) {
+		close(null,null,conn);
+	}
 	/**
 	 * 关闭流
 	 * @param stmt
 	 */
-	abstract void close(Statement stmt);
+	void close(Statement stmt) {
+		close(stmt,null,null);
+	}
 
 	/**
 	 * 关闭流
 	 * @param rs
 	 * @param stmt
 	 */
-	abstract void close(ResultSet rs, Statement stmt);
+	void close(ResultSet rs, Statement stmt) {
+		close(rs,stmt,null);
+	}
 
 	/**
 	 * 关闭流
 	 * @param stmt
 	 * @param conn
 	 */
-	abstract void close(Statement stmt,Connection conn);
+	void close(Statement stmt, Connection conn) {
+		close(null,stmt,conn);
+	}
+
+	/**
+	 * 关闭流
+	 * @param stmt
+	 * @param stmt
+	 */
+	void close(Statement stmt0, Statement stmt1) {
+		close(stmt0,stmt1,null);
+	}
 
 	/**
 	 * 关闭流
@@ -154,5 +170,61 @@ public abstract class AbstractSql {
 	 * @param stmt
 	 * @param conn
 	 */
-	abstract void close(ResultSet rs,Statement stmt,Connection conn);
+	void close(ResultSet rs, Statement stmt, Connection conn) {
+		try {
+			if (rs != null) {
+                rs.close();
+            }
+		} catch (Exception e) {  
+			rs = null;  
+		} finally {
+			try {
+				if (stmt != null) {
+                    stmt.close();
+                }
+			} catch (Exception e) {  
+				stmt = null;  
+			} finally {
+				try {
+					if (conn != null) {
+                        conn.close();
+                    }
+				} catch (Exception e) {  
+					conn = null;  
+				}
+			}
+		}
+	}
+
+	/**
+	 * 关闭流
+	 * @param stmt
+	 * @param stmt
+	 * @param stmt
+	 */
+	void close(Statement stmt0, Statement stmt1, Statement stmt2) {
+		try {
+			if (stmt0 != null) {
+                stmt0.close();
+            }
+		} catch (Exception e) {  
+			stmt0 = null;  
+		} finally {
+			try {
+				if (stmt1 != null) {
+                    stmt1.close();
+                }
+			} catch (Exception e) {  
+				stmt1 = null;  
+			} finally {
+				try {
+					if (stmt2 != null) {
+                    	stmt2.close();
+                	}
+				} catch (Exception e) {  
+					stmt2 = null;  
+				}
+			}
+		}
+	}
 }
