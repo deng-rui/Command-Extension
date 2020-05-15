@@ -19,7 +19,7 @@ import java.util.Properties;
  */
 public class LoadConfig {
 
-	private static Object load(String input) throws RuntimeException, com.github.dr.extension.util.log.VariableException {
+	private static Object load(String input) throws RuntimeException {
 		Properties properties = new Properties();
         InputStreamReader inputStream = com.github.dr.extension.util.file.FileUtil.File(Data.PLUGIN_DATA_PATH).toPath("/Config.ini").readconfig();
         try {
@@ -34,7 +34,7 @@ public class LoadConfig {
             return result;
         }
 		Log.warn("NO KEY- Please check the file",input);
-		throw new com.github.dr.extension.util.log.VariableException("INVALID_PARAMETER");
+		throw new com.github.dr.extension.util.log.exp.VariableException("INVALID_PARAMETER");
 	}
 
 

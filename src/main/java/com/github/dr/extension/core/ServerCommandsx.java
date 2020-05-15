@@ -4,7 +4,7 @@ import arc.Core;
 import arc.Events;
 import arc.util.CommandHandler;
 import com.github.dr.extension.core.ex.Threads;
-import com.github.dr.extension.data.db.Player;
+import com.github.dr.extension.data.global.Data;
 import com.github.dr.extension.data.db.PlayerData;
 import com.github.dr.extension.data.global.Maps;
 import mindustry.game.EventType.GameOverEvent;
@@ -19,6 +19,7 @@ import static com.github.dr.extension.util.DateUtil.getLocalTimeFromU;
 import static com.github.dr.extension.util.DateUtil.longtoTime;
 import static com.github.dr.extension.util.IsUtil.notisNumeric;
 import static com.github.dr.extension.util.RandomUtil.generateStr;
+import static com.github.dr.extension.util.encryption.Topt.*;
 import static mindustry.Vars.maps;
 import static mindustry.Vars.net;
 
@@ -76,12 +77,12 @@ public class ServerCommandsx {
             } else if (notisNumeric(arg[1])) {
                 info("Invalid permission");
             } else {
-                Player.addKey(generateStr(Integer.parseInt(arg[0])), Integer.parseInt(arg[1]), Long.parseLong(arg[2]) * 60, getLocalTimeFromU(Long.parseLong(arg[3]) * 60000L), arg.length > 4 ? Integer.parseInt(arg[4]) : 1);
+                Data.SQL.addKey(generateStr(Integer.parseInt(arg[0])), Integer.parseInt(arg[1]), Long.parseLong(arg[2]) * 60, getLocalTimeFromU(Long.parseLong(arg[3]) * 60000L), arg.length > 4 ? Integer.parseInt(arg[4]) : 1);
             }
         });
 
         handler.register("keys", "List all keys", (arg) -> {
-            List<Map<String, Object>> data = Player.getKey();
+            List<Map<String, Object>> data = Data.SQL.getKey();
             info("KEY List:");
             for (Map<String, Object> map : data) {
                 info("Authority: {0} ,KEY: {1} \n Surplus/Total : {2}/{3} \nTime: {4} Expire(UTC): {5}", map.get("Authority"), map.get("Key"), map.get("Surplus"), map.get("Total"), secToTime((long) map.get("Time")), longtoTime((long) map.get("Expire")));
@@ -89,13 +90,13 @@ public class ServerCommandsx {
         });
 
         handler.register("rmkeys", "Rm all keys", (arg) -> {
-            Player.rmKey();
+            Data.SQL.rmKey();
             info("Delete all key");
         });
 
         handler.register("rmkey", "<key>", "rm key", (arg) -> {
-            if (!Player.isSqliteKey(arg[0])) {
-                Player.rmKey(arg[0]);
+            if (!Data.SQL.isSqliteKey(arg[0])) {
+                Data.SQL.rmKey(arg[0]);
             } else {
                 info("Invalid key, key:{0}", arg[0]);
             }
