@@ -1,5 +1,6 @@
 package com.github.dr.extension.net.server;
 
+import com.github.dr.extension.data.global.Config;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -15,10 +16,11 @@ import java.io.File;
 import java.io.IOException;
 
 public class Start {
+
+	private final Server server = new Server();
+
 	public Start() {
 		try {
-
-			Server server = new Server();
 			ServletContextHandler serverPath = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
 			/**
@@ -58,17 +60,23 @@ public class Start {
 			 */
 			SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
 			sslContextFactory.setKeyStorePath("/mnt/l/web/web-mindustry-top.jks");
-			sslContextFactory.setKeyStorePassword("dengrui@dr");
-			sslContextFactory.setKeyManagerPassword("dengrui@dr");
+			sslContextFactory.setKeyStorePassword(Config.SSL_PASSWD);
+			sslContextFactory.setKeyManagerPassword(Config.SSL_PASSWD);
 			/**
 			 * SSL-HTTP 1.1 不想支持2(需要新依赖 org.eclipse.jetty.http2)
+			 * 启用重定向 302
 			 */
-			ServerConnector serverConnector = new ServerConnector(server,new SslConnectionFactory(sslContextFactory, "http/1.1"),new HttpConnectionFactory());
+			HttpConfiguration httpConf = new HttpConfiguration();
+			httpConf.setSecurePort(8443);
+			httpConf.setSecureScheme("https");
+			HttpConfiguration httpsConf = new HttpConfiguration(httpConf);
+			httpsConf.addCustomizer(new SecureRequestCustomizer());
+			ServerConnector serverConnector = new ServerConnector(server,new SslConnectionFactory(sslContextFactory, "http/1.1"),new HttpConnectionFactory(httpsConf));
 			//ServerConnector serverConnector = new ServerConnector(server, prepareSsl(alpn),alpn, http2ConnectionFactory, httpConnectionFactory);
 			serverConnector.setPort(8443);
 			serverConnector.setReuseAddress(true);
 
-			server.setConnectors(new Connector[] { serverConnector });
+			server.addConnector(serverConnector);
 		    server.setHandler(contexts);
 			server.start();
 			//✓
@@ -82,7 +90,8 @@ public class Start {
 		public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
 			response.setHeader("Server", "Mindustry-Server-Web");
 			response.getWriter().println(String.valueOf(response.getStatus()));
-			response.getWriter().println(target);
+			response.getWriter().println(request.getRequestURI());
+			response.getWriter().println(request.getServletPath());
 		}
 	}
 }
