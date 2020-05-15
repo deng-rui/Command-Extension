@@ -2,15 +2,17 @@ package com.github.dr.extension.net.server;
 
 import arc.Core;
 import com.alibaba.fastjson.JSON;
-import com.github.dr.extension.data.db.Player;
 import com.github.dr.extension.data.db.PlayerData;
 import com.github.dr.extension.data.global.Data;
+import com.github.dr.extension.util.encryption.Base64;
 import com.github.dr.extension.util.encryption.Rsa;
 import com.github.dr.extension.util.log.Log;
 import mindustry.core.GameState.State;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,16 +23,15 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import static com.github.dr.extension.util.ExtractUtil.stringToUtf8;
-import static com.github.dr.extension.util.IsUtil.isBlank;
-import static com.github.dr.extension.util.IsUtil.notisBlank;
+import static com.github.dr.extension.util.IsUtil.*;
 import static com.github.dr.extension.util.RandomUtil.generateStr;
+import static com.github.dr.extension.util.encryption.Base64.isBase64;
+import static com.github.dr.extension.util.encryption.Topt.verifyTotpFlexibility;
 import static com.github.dr.extension.util.log.Error.code;
 import static com.github.dr.extension.util.log.Error.error;
 import static mindustry.Vars.*;
@@ -58,7 +59,7 @@ public class Get {
     private static PrintWriter getGzipWriter(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String encodings = request.getHeader("Accept-Encoding");
         String flag = request.getParameter("disableGzip");
-        boolean isGzipSupported = ((encodings != null) && (encodings.indexOf("gzip") != -1));
+        boolean isGzipSupported = ((encodings != null) && (encodings.contains("gzip")));
         boolean isGzipDisabled = ((flag != null) && (!"false".equalsIgnoreCase(flag)));
         if (isGzipSupported && !isGzipDisabled) {
             response.setHeader("Content-Encoding", "gzip");
@@ -78,18 +79,14 @@ public class Get {
         String line = null;
         try {
             request.setCharacterEncoding("UTF-8");
-            String contentEncoding = request.getHeader("Content-Encoding");
-            if (null != contentEncoding && contentEncoding.indexOf("gzip") != -1) {
-                GZIPInputStream gZIPInputStream = new GZIPInputStream(request.getInputStream());
-                in = new BufferedReader(new InputStreamReader(gZIPInputStream));
-                while ((line = in.readLine()) != null) {
-                    result.append(new String(line.getBytes("ISO-8859-1"),Data.UTF_8));
-                }
-            } else {
-                in = new BufferedReader(new InputStreamReader(request.getInputStream(),Data.UTF_8));
-                while ((line = in.readLine()) != null) {
-                    result.append("\n"+line);
-                }
+            /**
+             * 很遗憾 JETTY不支持GZIP流 普通的只支持UTF-8解码
+             * 我会考虑采取GzipHandler的 (没希望)
+             * RSA加密的内容还没16K大
+             */
+            in = new BufferedReader(new InputStreamReader(request.getInputStream(),Data.UTF_8));
+            while ((line = in.readLine()) != null) {
+                result.append(line);
             }
         } catch (IOException e) {
         } finally {
@@ -97,11 +94,47 @@ public class Get {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //
                 }
             }
         }
         return result.toString();
+    }
+
+    /**
+     * API验证核心 验证请求时效
+     * @param response
+     */
+    private static boolean handlerAsd(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setStatus(HttpServletResponse.SC_OK);
+        PrintWriter out = getGzipWriter(request, response);
+        setHandler(response);
+        Map<String, Object> result = new HashMap<String, Object>(4);
+        String tonkenAsd = request.getHeader("Tonken-ASD");
+        if (null != tonkenAsd) {
+            if (isNumeric(tonkenAsd)) {
+                if (verifyTotpFlexibility("fuck",tonkenAsd)) {
+                    return true;
+                }
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                result.put("state", code("INVALID_VERIFICATION"));
+                out.println(stringToUtf8(JSON.toJSONString(result)));
+                out.close();
+                return false;
+            }
+            // 401
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            result.put("state", code("ILLEGAL_OPERATION"));
+            out.println(stringToUtf8(JSON.toJSONString(result)));
+            out.close();
+            return false;
+        }
+        // 400
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        result.put("state", code("INCOMPLETE_PARAMETERS"));
+        out.println(stringToUtf8(JSON.toJSONString(result)));
+        out.close();
+        return false;
     }
 
     /**
@@ -110,16 +143,18 @@ public class Get {
     private class Info extends HttpServlet {
         @Override
         protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-            response.setStatus(HttpServletResponse.SC_OK);
+            if (!handlerAsd(request,response)) {
+                return;
+            }
             PrintWriter out = getGzipWriter(request, response);
             setHandler(response);
             String user = request.getParameter("user");
             String info = generateStr(10);
             PlayerData data = new PlayerData(info, info, 0);
-            Player.getSqlite(data, user);
+            Data.SQL.getSqlite(data, user);
             Map<String, Object> result = new HashMap<String, Object>(4);
             result.put("state", code("SUCCESS"));
-            result.put("result", Base64.getEncoder().encodeToString(JSON.toJSONString(data).getBytes(Data.UTF_8)));
+            result.put("result", new Base64().encode(JSON.toJSONString(data)));
             out.println(stringToUtf8(JSON.toJSONString(result)));
             out.close();
         }
@@ -139,7 +174,7 @@ public class Get {
                 map.put("player", playerGroup.size());
                 map.put("map", world.getMap().name());
                 result.put("state", code("SUCCESS"));
-                result.put("result", Base64.getEncoder().encodeToString(JSON.toJSONString(map).getBytes(Data.UTF_8)));
+                result.put("result", new Base64().encode(JSON.toJSONString(map)));
             } else {
                 result.put("state", code("SERVER_CLOSE"));
             }
@@ -157,29 +192,55 @@ public class Get {
      */
     private class Key extends HttpServlet {
         @Override
-        // GET 当然是不够的 只能切为POST (也好压缩啊)
         protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
             response.setStatus(HttpServletResponse.SC_OK);
             PrintWriter out = getGzipWriter(request, response);
             String data = getPostDate(request);
+            Log.info(data);
             setHandler(response);
             Map<String, Object> result = new HashMap<String, Object>(4);
             if (notisBlank(data)) {
                 if (isBlank(Data.PRIVATEKEY)) {
-                    if (true) {
-
-                    }
-                    try {
-                        KeyPair keyPair = new Rsa().buildKeyPair();
-                        result.put("state", code("SUCCESS"));
-                    } catch (NoSuchAlgorithmException e) {
-                        Log.error(error("UNSUPPORTED_ENCRYPTION"),e);
+                    if (verifyTotpFlexibility("fuck",data)) {
+                        try {
+                            KeyPair keyPair = new Rsa().buildKeyPair();
+                            Data.PRIVATEKEY = keyPair.getPrivate();
+                            result.put("state", code("SUCCESS"));
+                            result.put("pubkey", Rsa.getPublicKey(keyPair.getPublic()));
+                        } catch (NoSuchAlgorithmException e) {
+                            // 500
+                            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                            result.put("state", code("UNSUPPORTED_ENCRYPTION"));
+                            Log.error(error("UNSUPPORTED_ENCRYPTION"),e);
+                        }
+                    } else {
+                        // 401
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        result.put("state", code("NO_PERMISSION"));
                     }
                 } else {
-                    
+                    if (isBase64(data)) {
+                        try {
+                            byte[] secret = Rsa.decrypt(Data.PRIVATEKEY, new Base64().decode(data));
+                            Integer.parseInt(new String(secret,Data.UTF_8));
+                        } catch (BadPaddingException e) {
+                            // 400
+                            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                            result.put("state", code("INVALID_ENCRYPTION"));
+                        } catch (IllegalBlockSizeException e) {
+                            // 500
+                            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                            result.put("state", code("DATA_CORRUPTION"));
+                        }
+                    } else {
+                        // 415
+                        response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+                        result.put("state", code("NO_ENCRYPTION"));
+                    }
                 }
-
             } else {
+                // 400
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 result.put("state", code("INCOMPLETE_PARAMETERS"));
             }
             result.put("result", null);
@@ -199,6 +260,17 @@ public class Get {
             result.put("result", null);
             out.println(stringToUtf8(JSON.toJSONString(result)));
             out.close();
+        }
+    }
+    /**
+     * 自定义实现方法23333
+     * 思路
+     * 文件后辍为html js css jpg png返回数据 其他一律去世
+     */
+    private class Web extends HttpServlet {
+        @Override
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
         }
     }
 }
