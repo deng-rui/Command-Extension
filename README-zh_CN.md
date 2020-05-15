@@ -36,13 +36,16 @@ PVP :
 2.限制每一局队伍累计建筑数量  
 3.保存本局玩家队伍-适合玩家留存时间较短
 
-通用功能  
+通用功能:  
 1.Login无法关闭 请须知! 默认已关闭激进登陆  
 2.半自动识别地图游戏模式 可自动改变模式  
 3.Vote  
 4.状态定时上报 (Mail)  
 5.屏蔽关键词 (DFA)  
 6.昼夜变换 将会覆盖地图默认设置  
+
+扩展:  
+1.[QQBot](https://github.com/deng-rui/ServerBot)  
 
 ## 运行配置  
 
@@ -118,10 +121,15 @@ PVP :
     - [ ] 逻辑处理
 - [ ] 可选性
     - [ ] 数据库
+- [ ] QQ-Bot
+    - [ ] Bind
+    - [ ] Info
+    - [ ] RePasswd
+    - [ ] BindMail
+    - [ ] Register    
 - [ ] WEB-API
-    - [ ] QQ-Bot
     - [ ] WEB-USER
-    - [ ] HTTPS
+    - [x] HTTPS
     - [ ] WEB-API(Bot)
 - [ ] 个人
     - [ ] 测试命令 (java/core/testmode)

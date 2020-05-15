@@ -42,6 +42,9 @@ General function
 3.Regular status reporting (Mail)  
 4.Shielding keywords (DFA)  
 
+EX:  
+1.[QQBot](https://github.com/deng-rui/ServerBot)  
+
 ## Required configuration  
 
 | configure     | CPU             | RAM   | System        | Hard disk | Java      |
@@ -117,10 +120,15 @@ Notes:
     - [ ] Logical processing
 - [ ] Optional
     - [ ] DB
+- [ ] QQ-Bot
+    - [ ] Bind
+    - [ ] Info
+    - [ ] RePasswd
+    - [ ] BindMail
+    - [ ] Register   
 - [ ] WEB-API
-    - [ ] QQ-Bot
     - [ ] WEB-USER
-    - [ ] HTTPS
+    - [x] HTTPS
     - [ ] WEB-API(Bot)
 - [ ] No tab
     - [ ] Test comm (java/core/testmode)
