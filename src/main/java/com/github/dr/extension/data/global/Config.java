@@ -206,7 +206,7 @@ public class Config {
 
     public static void laodConfig() {
 		// [服务器]
-		Server_ID 												= loadstring("Server.ID");
+		SERVER_ID 												= loadstring("Server.ID");
 		SERVER_LANGUAGE 										= loadstring("Server.Language");
 
 		// [DB]
