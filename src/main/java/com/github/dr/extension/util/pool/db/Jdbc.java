@@ -10,9 +10,10 @@ import java.sql.Statement;
  * @author Dr
  */
 public class Jdbc {
-	//private static JdbcPool pool = new JdbcPool(10, FileUtil.File(Data.PLUGIN_DATA_PATH).getPath("Data.db"));
 	/**
-	 * 可以更改为在线SQL 使得可以多服同步
+	 * 在线SQL 使得可以多服同步
+	 * 也只支持MYSQL/MARIADB
+	 * SQLITE并发感人
 	 */
 	private static final JdbcPool pool = new JdbcPool(10, "jdbc:mariadb://"+ Config.DB_IP+":"+Config.DB_PORT+"/"+Config.DB_NAME,Config.DB_USER,Config.DB_PASSWD);
 
@@ -22,6 +23,10 @@ public class Jdbc {
 
 	public static void backConnection(Connection conn) throws SQLException{
 		pool.backConnection(conn);
+	}
+
+	public void heartbeat() {
+		pool.heartbeat();
 	}
 
 	public static void close(Statement stmt,Connection conn) {
