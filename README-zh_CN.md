@@ -1,3 +1,6 @@
+## 警告
+项目搁置  
+
 ## 语言  
 
 [跳转中文](https://github.com/deng-rui/Command-Extension/blob/master/README-zh_CN.md)  
